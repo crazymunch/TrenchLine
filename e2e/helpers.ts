@@ -80,15 +80,42 @@ export async function openApp(page: Page, path = '/roster') {
   }
 }
 
+export type NavView = 'Roster' | 'Play' | 'Crusade' | 'Players' | 'Codex' | 'Chronicle';
+
+/**
+ * The views the phone bar does NOT carry, and the label each has in the sheet
+ * behind its "More" button.
+ *
+ * The bar is a hard five at 375px — `MobileNav` records how much was shaved to
+ * keep the labels whole — so a sixth destination cannot go in it. Listing them
+ * here rather than in each test means a view moving into or out of the bar is
+ * one edit, not a hunt through the specs for whichever ones happened to click
+ * it directly.
+ */
+const BEHIND_MORE: Partial<Record<NavView, string>> = {
+  Players: 'Roster Directory',
+  Chronicle: 'Chronicle of Battles',
+};
+
 /** Go to a view through whichever nav the viewport shows. */
-export async function goTo(page: Page, view: 'Roster' | 'Play' | 'Crusade' | 'Players' | 'Codex') {
+export async function goTo(page: Page, view: NavView) {
   const bottomNav = page.locator('nav.fixed');
   if (await bottomNav.isVisible()) {
-    await bottomNav.getByRole('button', { name: view, exact: true }).click();
+    const behind = BEHIND_MORE[view];
+    if (behind) {
+      await bottomNav.getByRole('button', { name: 'More', exact: true }).click();
+      // Scoped to the dialog, not the nav: the sheet is a sibling of the bar
+      // (see `MobileNav` on why it cannot be a child), and a bare name lookup
+      // would also see the bar underneath it.
+      await page.getByRole('dialog').getByRole('button', { name: behind }).click();
+    } else {
+      await bottomNav.getByRole('button', { name: view, exact: true }).click();
+    }
   } else {
     const sidebarLabel = {
       Roster: 'Warband Roster', Play: 'Tabletop Combat', Crusade: 'Crusade Campaign',
       Players: 'Roster Directory', Codex: 'Rules Codex',
+      Chronicle: 'Chronicle of Battles',
     }[view];
     await page.getByRole('button', { name: new RegExp(sidebarLabel) }).first().click();
   }

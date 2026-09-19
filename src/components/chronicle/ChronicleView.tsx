@@ -14,14 +14,33 @@
  * editable afterwards. A chronicle you can revise is a chronicle nobody
  * trusts.
  */
-import React, { useEffect, useMemo, useState } from 'react';
-import { Award, ScrollText, Shield, Swords, Trash2, Users } from 'lucide-react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  Award, Cloud, CloudOff, RefreshCw, ScrollText, Shield, Swords, Trash2, Upload, Users,
+} from 'lucide-react';
 
 import { storage } from '@/services/storage';
+import {
+  deleteCloudBattle, fetchCloudBattles, mergeBattles, pushBattle,
+  type BattleSyncFailure, type CloudBattle,
+} from '@/services/battleSync';
 import { victors, type BattleRecord } from '@/types/battle';
 import { COALITION_NAME } from '@/rules/coalitions';
 
 type Tab = 'battles' | 'deeds';
+
+/**
+ * What the cloud half is doing, as a value the header renders.
+ *
+ * `offline` and `signed-out` are separate states with separate sentences,
+ * because they call for different things from the player: one is "try again
+ * when you have signal", the other is "sign in and your mates' games appear".
+ * Collapsing them into one grey icon is how a feature gets reported as broken.
+ */
+type CloudState =
+  | { kind: 'loading' }
+  | { kind: 'ready'; count: number }
+  | { kind: 'failed'; failure: BattleSyncFailure };
 
 const dateOf = (iso: string) => {
   const d = new Date(iso);
@@ -30,8 +49,19 @@ const dateOf = (iso: string) => {
     : d.toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' });
 };
 
-const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => void }> =
-  ({ battle, onForget }) => {
+interface CardProps {
+  battle: BattleRecord;
+  /** Absent where this device did not record it — see `onForget` below. */
+  onForget?: (id: string) => void;
+  /** Who recorded it, where that was not this device. */
+  recordedBy?: string;
+  /** Recorded here and not yet in the cloud, with a way to try again. */
+  onShare?: (id: string) => void;
+  sharing?: boolean;
+}
+
+const BattleCard: React.FC<CardProps> =
+  ({ battle, onForget, recordedBy, onShare, sharing }) => {
     const won = victors(battle);
     const wonIds = new Set(won.map((s) => s.id));
     const [confirming, setConfirming] = useState(false);
@@ -43,12 +73,20 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
             <h3 className="font-gothic text-base font-bold text-theme-text">
               {battle.scenarioName}
             </h3>
-            <span className="block text-[10px] uppercase text-theme-muted">
+            <span className="block text-xs sm:text-[10px] uppercase text-theme-muted">
               {dateOf(battle.endedAt)} · {battle.turns} turn{battle.turns === 1 ? '' : 's'}
               {battle.weather ? ` · ${battle.weather.name}` : ''}
             </span>
           </div>
-          {confirming ? (
+          {/*
+            No forget button on someone else's record.
+
+            A battle you fought in but did not record is not yours to delete:
+            it is the same game the other three players are looking at. The
+            server refuses it too — this is so the control is never offered in
+            the first place.
+          */}
+          {onForget && (confirming ? (
             <div className="flex shrink-0 gap-1">
               <button
                 onClick={() => onForget(battle.id)}
@@ -71,15 +109,33 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
             >
               <Trash2 className="h-3.5 w-3.5" />
             </button>
-          )}
+          ))}
         </header>
+
+        {/* Where it came from, stated rather than assumed. */}
+        {recordedBy && (
+          <span className="flex items-center gap-1.5 text-xs sm:text-[10px] uppercase text-theme-muted">
+            <Cloud className="h-3 w-3 shrink-0 text-theme-primary" />
+            Recorded by {recordedBy}
+          </span>
+        )}
+        {onShare && (
+          <button
+            onClick={() => onShare(battle.id)}
+            disabled={sharing}
+            className="flex min-h-[44px] w-full items-center justify-center gap-1.5 rounded border border-theme-border text-xs font-bold uppercase text-theme-muted transition-colors hover:border-theme-primary hover:text-theme-primary disabled:opacity-50"
+          >
+            <Upload className="h-3.5 w-3.5" />
+            {sharing ? 'Sharing\u2026' : 'On this device only \u2014 share it'}
+          </button>
+        )}
 
         {/* Coalition totals where it was fought as one, per side always. */}
         {battle.coalitionTotals && (
           <div className="flex gap-2">
             {(['A', 'B'] as const).map((c) => (
               <div key={c} className="flex-1 rounded border border-theme-border bg-theme-base px-2.5 py-1.5">
-                <span className="block text-[10px] uppercase text-theme-muted">
+                <span className="block text-xs sm:text-[10px] uppercase text-theme-muted">
                   {COALITION_NAME[c]}
                 </span>
                 <span className="font-gothic text-lg font-bold text-theme-primary">
@@ -106,7 +162,7 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
                   : <Shield className="h-3.5 w-3.5 shrink-0 text-theme-primary" />}
                 <span className="min-w-0">
                   <span className="block truncate text-xs font-bold text-theme-text">{s.name}</span>
-                  <span className="block truncate text-[10px] uppercase text-theme-muted">
+                  <span className="block truncate text-xs sm:text-[10px] uppercase text-theme-muted">
                     {s.factionId}
                     {s.coalition ? ` · ${COALITION_NAME[s.coalition]}` : ''}
                   </span>
@@ -121,7 +177,7 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
 
         {/* A draw says so rather than leaving the reader to compare numbers. */}
         {!won.length && (
-          <span className="block text-center text-[10px] uppercase text-theme-muted">
+          <span className="block text-center text-xs sm:text-[10px] uppercase text-theme-muted">
             No side took the field
           </span>
         )}
@@ -146,17 +202,55 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
   };
 
 export const ChronicleView: React.FC = () => {
-  const [battles, setBattles] = useState<BattleRecord[]>([]);
+  const [local, setLocal] = useState<BattleRecord[]>([]);
+  const [remote, setRemote] = useState<CloudBattle[]>([]);
+  const [cloud, setCloud] = useState<CloudState>({ kind: 'loading' });
+  const [sharing, setSharing] = useState<string | null>(null);
   const [tab, setTab] = useState<Tab>('battles');
 
   /* Read once on mount, not at module scope: `localStorage` on the first
      render is the hydration mismatch `store/init.ts` exists to avoid. */
-  useEffect(() => { setBattles(storage.getBattles()); }, []);
+  useEffect(() => { setLocal(storage.getBattles()); }, []);
 
-  const ordered = useMemo(
-    () => [...battles].sort((a, b) => b.endedAt.localeCompare(a.endedAt)),
-    [battles],
+  const loadCloud = useCallback(async () => {
+    setCloud({ kind: 'loading' });
+    const res = await fetchCloudBattles();
+    if (!res.ok) {
+      /* The local list still renders. What does NOT happen is the cloud's
+         absence passing for an answer — rule 2, and `githubSync.ts` is the
+         shipped example of getting it wrong. */
+      setCloud({ kind: 'failed', failure: res.failure });
+      return;
+    }
+    setRemote(res.battles);
+    setCloud({ kind: 'ready', count: res.battles.length });
+  }, []);
+
+  useEffect(() => { void loadCloud(); }, [loadCloud]);
+
+  const localIds = useMemo(() => new Set(local.map((b) => b.id)), [local]);
+  const remoteById = useMemo(
+    () => new Map(remote.map((b) => [b.id, b])), [remote],
   );
+  const ordered = useMemo(() => mergeBattles(local, remote), [local, remote]);
+
+  /**
+   * Share a battle the cloud does not have.
+   *
+   * Offered rather than retried silently. The push at the end of the match is
+   * fire-and-forget, so a game recorded with no signal simply sits here until
+   * someone says to send it — and saying so is one tap, which is better than a
+   * background retry nobody can see succeed or fail.
+   */
+  const share = async (id: string) => {
+    const battle = local.find((b) => b.id === id);
+    if (!battle) return;
+    setSharing(id);
+    const res = await pushBattle(battle);
+    setSharing(null);
+    if (res.ok) await loadCloud();
+    else setCloud({ kind: 'failed', failure: res.failure });
+  };
 
   /**
    * Every Deed ever claimed, newest first.
@@ -170,7 +264,20 @@ export const ChronicleView: React.FC = () => {
     [ordered],
   );
 
-  const forget = (id: string) => setBattles(storage.deleteBattle(id));
+  /**
+   * Forget a battle this device recorded.
+   *
+   * Both copies. Forgetting it locally while leaving it in the cloud would
+   * bring it back on the next load, which reads as the app refusing to obey —
+   * and the cloud delete is attempted whether or not one is expected there,
+   * because a 404 for a battle that was never pushed is the right answer and
+   * costs nothing.
+   */
+  const forget = async (id: string) => {
+    setLocal(storage.deleteBattle(id));
+    setRemote((prev) => prev.filter((b) => b.id !== id));
+    await deleteCloudBattle(id);
+  };
 
   return (
     <div className="mx-auto max-w-7xl space-y-6 px-3 py-4 pb-24 font-mono text-xs sm:px-6 sm:py-6 lg:px-8">
@@ -180,10 +287,55 @@ export const ChronicleView: React.FC = () => {
           Chronicle of Battles
         </h1>
         <p className="text-theme-muted">
-          Every battle this device has recorded, as it stood when the match ended.
-          Written when a match ends, never when it is aborted, and never edited after.
+          Every battle recorded by you or fought against you, as it stood when
+          the match ended. Written when a match ends, never when it is aborted,
+          and never edited after.
         </p>
       </header>
+
+      {/*
+        What the cloud half is doing, in a sentence.
+
+        Four states and four sentences, because they ask different things of
+        the player. The one thing this must never do is go quiet on a failure
+        and let a short list pass for the whole Chronicle.
+      */}
+      <div
+        role="status"
+        className="flex flex-wrap items-center gap-2 rounded border border-theme-border bg-theme-surface px-3 py-2"
+      >
+        {cloud.kind === 'loading' && (
+          <span className="flex items-center gap-1.5 text-theme-muted">
+            <RefreshCw className="h-3.5 w-3.5 shrink-0 animate-spin" />
+            Looking for shared battles&hellip;
+          </span>
+        )}
+        {cloud.kind === 'ready' && (
+          <span className="flex items-center gap-1.5 text-theme-muted">
+            <Cloud className="h-3.5 w-3.5 shrink-0 text-theme-primary" />
+            Shared with your campaigns and the warbands you fought.
+          </span>
+        )}
+        {cloud.kind === 'failed' && (
+          <span className="flex items-center gap-1.5 text-theme-muted">
+            <CloudOff className="h-3.5 w-3.5 shrink-0 text-status-warning" />
+            {cloud.failure.kind === 'signed-out'
+              ? 'Signed out, so this is only what this device recorded. Sign in to see the games your opponents recorded.'
+              : cloud.failure.kind === 'offline'
+                ? 'The shared Chronicle could not be reached, so this is only what this device recorded. It is not the whole story.'
+                : `The shared Chronicle refused: ${cloud.failure.detail} This is only what this device recorded.`}
+          </span>
+        )}
+        {cloud.kind !== 'loading' && (
+          <button
+            onClick={() => { void loadCloud(); }}
+            className="ml-auto flex min-h-[44px] items-center gap-1.5 rounded border border-theme-border px-3 text-xs font-bold uppercase text-theme-muted transition-colors hover:border-theme-primary hover:text-theme-primary"
+          >
+            <RefreshCw className="h-3.5 w-3.5" />
+            Refresh
+          </button>
+        )}
+      </div>
 
       <div className="flex gap-1.5">
         {([['battles', 'Battles', Swords], ['deeds', 'Glorious Deeds', Award]] as const)
@@ -200,7 +352,7 @@ export const ChronicleView: React.FC = () => {
             >
               <Icon className="h-4 w-4" />
               <span>{label}</span>
-              <span className="text-[10px]">
+              <span className="text-xs sm:text-[10px]">
                 ({id === 'battles' ? ordered.length : allDeeds.length})
               </span>
             </button>
@@ -213,7 +365,8 @@ export const ChronicleView: React.FC = () => {
             No battles recorded yet
           </span>
           <span className="mt-1 block text-theme-muted">
-            Finish a match in Play Mode with End Match and it will be written here.
+            Finish a match in Play Mode with End Match and it will be written here,
+            and shared with the other warbands that were on the table.
             A match you abort is not recorded.
           </span>
         </div>
@@ -221,7 +374,25 @@ export const ChronicleView: React.FC = () => {
 
       {tab === 'battles' && ordered.length > 0 && (
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-          {ordered.map((b) => <BattleCard key={b.id} battle={b} onForget={forget} />)}
+          {ordered.map((b) => {
+            const mine = localIds.has(b.id);
+            const inCloud = remoteById.has(b.id);
+            return (
+              <BattleCard
+                key={b.id}
+                battle={b}
+                onForget={mine ? (id) => { void forget(id); } : undefined}
+                recordedBy={mine ? undefined : remoteById.get(b.id)?.cloud.ownerName}
+                /* Offered only where the cloud ANSWERED and did not have it.
+                   While the fetch is failing, nothing is known about what the
+                   server holds, and "share it" would be a guess. */
+                onShare={mine && cloud.kind === 'ready' && !inCloud
+                  ? (id) => { void share(id); }
+                  : undefined}
+                sharing={sharing === b.id}
+              />
+            );
+          })}
         </div>
       )}
 
@@ -239,7 +410,7 @@ export const ChronicleView: React.FC = () => {
             >
               <div className="flex items-baseline justify-between gap-2">
                 <h3 className="font-gothic text-sm font-bold text-theme-text">{d.title}</h3>
-                <span className="shrink-0 text-[10px] uppercase text-theme-muted">
+                <span className="shrink-0 text-xs sm:text-[10px] uppercase text-theme-muted">
                   {dateOf(d.battle.endedAt)}
                 </span>
               </div>
@@ -254,7 +425,7 @@ export const ChronicleView: React.FC = () => {
                 : <p className="italic text-theme-muted">
                     The scenario no longer prints this Deed&rsquo;s text.
                   </p>}
-              <span className="block text-[10px] uppercase text-theme-muted">
+              <span className="block text-xs sm:text-[10px] uppercase text-theme-muted">
                 {d.battle.scenarioName}
               </span>
             </article>

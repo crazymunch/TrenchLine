@@ -70,6 +70,7 @@ import {
   pruneCoalitions, suggestCoalitions, type CoalitionMap,
 } from '@/rules/coalitions';
 import { storage } from '@/services/storage';
+import { pushBattle } from '@/services/battleSync';
 import { OpponentPicker } from './OpponentPicker';
 
 export const PlayModeView: React.FC = () => {
@@ -90,6 +91,7 @@ export const PlayModeView: React.FC = () => {
     toggleUnitActed,
     isPostBattleOpen,
     setIsPostBattleOpen,
+    campaign,
   } = useStore();
 
   const primaryWarband = getActiveWarband();
@@ -394,7 +396,26 @@ export const PlayModeView: React.FC = () => {
         ? { name: activeWeather.name, effect: activeWeather.effect }
         : null,
     });
-    if (battle) storage.addBattle(battle);
+    if (battle) {
+      /*
+        Local first, and the local write is not conditional on the push.
+
+        A phone at a club with no signal has to be able to end a match and keep
+        what happened; the cloud copy is an extra, not the copy. The push is
+        fire-and-forget here for the same reason — holding the post-battle
+        wizard behind a network round trip would make a lost signal look like
+        the app hanging at the one moment everyone is waiting on it.
+      */
+      storage.addBattle(battle);
+      /*
+        Nothing records whether this landed. The Chronicle works it out by
+        comparing what it holds against what the cloud returns — a local
+        battle the server does not know is one that has not been shared —
+        which cannot go stale the way a stored flag can, and is right again
+        the moment the push is retried from there.
+      */
+      void pushBattle(battle, campaign?.cloudId ? { campaignId: campaign.cloudId } : {});
+    }
     setIsPostBattleOpen(true);
   };
 
@@ -1282,7 +1303,7 @@ export const PlayModeView: React.FC = () => {
                           {/* Wraps rather than truncating: "Bayt al-Nahas +
                               Iro…" hides which ally it is, which is the one
                               thing this line exists to say. */}
-                          <span className="block text-[10px] leading-tight text-theme-muted">
+                          <span className="block text-xs sm:text-[10px] leading-tight text-theme-muted">
                             {matchWarbandIds
                               .filter((id) => coalitions[id] === c)
                               .map((id) => side(id)?.name ?? '—')

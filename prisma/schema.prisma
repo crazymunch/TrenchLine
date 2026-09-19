@@ -94,6 +94,11 @@ model User {
   customRules      CustomRuleOverride[]
   bugReports       BugReport[]
   hostedMatches    LiveMatch[]
+  /// Battles this account recorded — the device that ran the tracker.
+  recordedBattles  Battle[]
+  /// Battles this account's warbands FOUGHT IN, which is how a game reaches
+  /// the other players in a 2v2 rather than only the one who tracked it.
+  battlesFought    BattleParticipant[]
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
 }
@@ -212,6 +217,7 @@ model Campaign {
   territories           TerritoryNode[]
   syncOps               CampaignSyncOp[]
   liveMatches           LiveMatch[]
+  battles               Battle[]
   createdAt             DateTime         @default(now())
   updatedAt             DateTime         @updatedAt
 }
@@ -394,4 +400,103 @@ model CustomRuleOverride {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, ruleType, ruleId])
+}
+
+/// Who may read a battle record.
+///
+/// Three values, not a boolean, because "shared" has two meanings here and
+/// they are not the same decision. A battle is normally interesting to the
+/// people who fought it and to the campaign it belongs to; that it should be
+/// readable by strangers is a further, separate choice.
+///
+/// `PUBLIC` is in the enum and is NOT reachable from the UI yet — see the note
+/// on the route. A schema that cannot express it would have to be migrated
+/// again to gain it; a UI that cannot set it costs nothing.
+enum BattleVisibility {
+  PRIVATE
+  CAMPAIGN
+  PUBLIC
+}
+
+/// One battle, as it stood when the match ended.
+///
+/// The cloud half of docs/CHRONICLE.md. The record itself is built on the
+/// device by `rules/battleFromMatch.ts` and is **immutable** — a chronicle you
+/// can revise is a chronicle nobody trusts — so this table is written once per
+/// battle and thereafter only read or deleted. There is no version column and
+/// no merge, because there is no second writer: unlike a roster, a finished
+/// battle is not edited from two devices.
+///
+/// The columns that are columns rather than JSON are the ones something
+/// queries or sorts by. The rest of the record rides as JSON, in the shape
+/// `types/battle.ts` validates on the way back in — the client re-parses what
+/// the server returns rather than trusting the column types, because a row
+/// written by an older build is exactly the case `parseBattle` exists for.
+model Battle {
+  /// Minted by the CLIENT, like a campaign's cloud id and `LiveMatch.id`: the
+  /// device writes the record when the match ends, possibly with no signal at
+  /// the table, so a retry has to land on an id it already holds rather than
+  /// producing a second copy of the same game. The primary key IS the
+  /// idempotency.
+  id              String              @id
+  /// The account whose device recorded it, from the SESSION and never the
+  /// body. The only account that may delete it.
+  ownerId         String
+  owner           User                @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  /// Set when the match was fought inside a synced campaign. A one-off game
+  /// between friends has none, and is still shared with its participants.
+  campaignId      String?
+  campaign        Campaign?           @relation(fields: [campaignId], references: [id], onDelete: SetNull)
+  visibility      BattleVisibility    @default(CAMPAIGN)
+  /// When the match ENDED, which is what the Chronicle sorts by — not when the
+  /// row reached the server. A phone that recorded a battle offline and pushed
+  /// it two days later must not sort above a game played since.
+  endedAt         DateTime
+  scenarioId      String
+  scenarioName    String
+  turns           Int
+  /// `BattleSide[]` — name, faction, VP, per-turn scores, coalition.
+  sides           Json
+  /// `DeedClaim[]` — title, description AS PRINTED ON THE NIGHT, who claimed
+  /// it and on which turn.
+  deeds           Json                @default("[]")
+  coalitionTotals Json?
+  weather         Json?
+  participants    BattleParticipant[]
+  createdAt       DateTime            @default(now())
+
+  @@index([campaignId, endedAt])
+  @@index([ownerId, endedAt])
+  @@index([visibility, endedAt])
+}
+
+/// One side of a battle, joined to the account that owns that warband.
+///
+/// This exists so that "battles I fought in" is an indexed lookup rather than
+/// a JSON scan of every row in the table. It is also the thing that makes a
+/// battle reach the other players at all: the device that ran the tracker is
+/// the only one that recorded anything, and without this the other three
+/// warbands in a 2v2 would have no way to find the game they played.
+///
+/// `userId` is resolved SERVER-SIDE from warband ownership at write time and
+/// is null for a placeholder opponent, who has no account by definition. It is
+/// not taken from the body: a client that could name the participants could
+/// name anyone, and a battle appearing in a stranger's Chronicle is a write to
+/// their account by someone else.
+model BattleParticipant {
+  id        String  @id @default(cuid())
+  battleId  String
+  battle    Battle  @relation(fields: [battleId], references: [id], onDelete: Cascade)
+  /// The warband's id as the record holds it. For a placeholder side this is
+  /// the `opp-*` id, which is local to the recording device and matches no
+  /// row — kept anyway so the join is total and a side is never silently
+  /// dropped.
+  warbandId String
+  /// The warband's owner, or null where the warband is not one this service
+  /// knows. Null is the honest answer, not a fallback to the recorder.
+  userId    String?
+  user      User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@unique([battleId, warbandId])
+  @@index([userId])
 }

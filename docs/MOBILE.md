@@ -195,6 +195,45 @@ one Login exist anywhere on the page, and the budget is stated once at each
 width. The Login count replaced a `page.locator('header')` workaround the test
 needed to get past the duplicate — the disambiguation became the assertion.
 
+### 6c. The phone bar is five slots, and the fifth is a door
+
+Five is a ceiling, not a current count. A 375px bar gives each slot about 53px
+of label, and whether a given word *appears* to fit depends on the platform
+font — `Directory` fitted exactly in the sandbox and ellipsed on CI's, which is
+how a clipped label shipped twice. §4 records the rest of the history.
+
+So the count stopped being a variable. Four destinations, then a **More**
+button opening the shared `Sheet` with everything else. A new view costs a row
+in that sheet and nothing else; nobody has to reopen the question of which
+seven-character word can be shaved out of the bar.
+
+What goes in the bar rather than behind the door is *how often it is opened
+mid-game*, not how important it is. The Codex keeps a slot because it is
+consulted with a model in your other hand, so an extra tap is paid on every
+use. Roster Directory and the Chronicle of Battles are read between games.
+
+The door is marked active when the view behind it is the one on screen, so the
+bar still says where you are. Labels in the sheet are the full names — a list
+with the whole width to itself has no seven-character budget — which is why it
+reads `Roster Directory` there and read `Players` in the bar.
+
+`e2e/helpers.ts` routes `goTo` through the sheet for the views behind it, so
+the per-view mobile sweep covers them like any other. That matters more than it
+sounds: the Chronicle shipped with seven `text-[10px]` spans because no test in
+the sweep had ever opened it on a phone.
+
+**The sheet is a sibling of the bar, never a child of it.** The bar carries
+`backdrop-blur`, and an element with a `filter` or `backdrop-filter` becomes
+the containing block for its `position: fixed` descendants — so a sheet
+rendered inside it resolves `inset-0` against the bar's own 73px strip rather
+than the viewport. It fit on a 375px phone by luck and put a row outside the
+viewport on the tablet: visible, enabled, and unclickable. The sheet's own
+markup was correct throughout, which is why this is a rule and not a fix.
+
+The same trap applies to `transform`, `perspective`, `contain: paint` and a
+`will-change` naming any of them. If an overlay has to live under one of those,
+it needs a portal, not a bigger `z-index`.
+
 ### 7. Modals become sheets
 
 Thirty modals hand-roll `fixed inset-0 flex items-center justify-center p-4`.
