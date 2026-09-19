@@ -1,0 +1,33 @@
+# What Vercel does NOT need a copy of, on every single deployment.
+#
+# Deployment Storage is cumulative: every retained deployment keeps its own
+# copy of whatever was uploaded. At 134 MB a deployment this project passed
+# the 10 GB free allowance around the 75th deploy and reached 63 GB, at which
+# point Vercel stops accepting new builds. Roughly 50 MB of that was source
+# material the running app never reads.
+#
+# The test for whether something belongs here: does `prisma generate &&
+# next build` read it, or does the server serve it? Everything below fails
+# both. `public/` is NOT here — those scenario maps are served.
+
+# Source material for the offline pipeline (`npm run rules:fetch`,
+# `rules:extract`, `rules:crosscheck`). The app reads the GENERATED output in
+# src/data/generated/, which is committed; it never reads these. The only
+# mentions of `data-sources/` under src/ are prose comments citing where a
+# value came from, and provenance strings inside the generated JSON.
+data-sources/
+
+# Extracted PDF text and working notes from the same pipeline.
+scratch/
+
+# Design mockups. Never imported, never served.
+stitch_designs/
+
+# Tests and their artefacts. CI runs these; the deployment does not.
+e2e/
+playwright.config.ts
+test-results/
+playwright-report/
+
+# Repo documentation.
+docs/
