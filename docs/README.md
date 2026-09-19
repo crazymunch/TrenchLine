@@ -31,6 +31,7 @@ no design documentation at all.
 | [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |
 | [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) | Current disposition of the 3 September engineering audit and sequenced work packages for what remains. |
 | [`GEMINI-AUDIT-REVIEW.md`](GEMINI-AUDIT-REVIEW.md) | The 17 September external audit, re-tested claim by claim: what holds, what does not, the remedy that would have deleted a production row, and the finding it missed. |
+| [`RULES-REVIEW-2026-09-19.md`](RULES-REVIEW-2026-09-19.md) | The campaign rules chapter against the wizard, the stores and the validator, line by line: where the Trauma text comes from the wrong source, which screens still carry hand-written payouts and advancements, and which rules modules the app never calls. Findings only, ranked, with the fix order. |
 | [`../design/canvas/README.md`](../design/canvas/README.md) | The interface design canvas — seven artboards drawn from the real Al-Qarn Rihla roster and the app's own tokens. |
 
 ## The one-paragraph version
