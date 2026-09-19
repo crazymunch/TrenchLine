@@ -1282,7 +1282,7 @@ export const PlayModeView: React.FC = () => {
                           {/* Wraps rather than truncating: "Bayt al-Nahas +
                               Iro…" hides which ally it is, which is the one
                               thing this line exists to say. */}
-                          <span className="block text-[10px] leading-tight text-theme-muted">
+                          <span className="block text-xs sm:text-[10px] leading-tight text-theme-muted">
                             {matchWarbandIds
                               .filter((id) => coalitions[id] === c)
                               .map((id) => side(id)?.name ?? '—')

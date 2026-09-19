@@ -22,7 +22,13 @@ import {
  * forcing it there would only make neighbouring controls fight for clicks.
  * What every format shares is the sideways-scroll rule and a clean console.
  */
-const VIEWS = ['Roster', 'Play', 'Crusade', 'Players', 'Codex'] as const;
+/*
+  Six, not five. The bar carries five; `goTo` reaches the rest through its
+  "More" sheet. A destination that is one tap further away is still a
+  destination, and the Chronicle shipped with seven `text-[10px]` spans
+  precisely because nothing in this sweep had ever opened it on a phone.
+*/
+const VIEWS = ['Roster', 'Play', 'Crusade', 'Players', 'Codex', 'Chronicle'] as const;
 
 for (const view of VIEWS) {
   test(`${view} meets the definition of done`, async ({ page }, testInfo) => {
@@ -158,14 +164,21 @@ test('no row of controls scrolls sideways', async ({ page }) => {
 });
 
 /**
- * The bottom bar carries five destinations, at a size a thumb can find.
+ * The bottom bar carries five slots, at a size a thumb can find.
  *
  * It used to carry the theme switcher, the bug reporter and the admin ruleset
  * differ too — seven or eight items in 375px, with every label one font metric
  * from clipping, and two that had already clipped in CI while passing locally.
  * Those three are settings rather than places and moved to the account menu.
+ *
+ * Five is now the permanent ceiling rather than a count that gets renegotiated
+ * each time a view is added: the fifth slot is a door ("More") rather than a
+ * destination, so the sixth and seventh destinations cost a tap instead of a
+ * font metric. This test is what stops the door being spent on a destination
+ * again — the count is asserted, so adding a sixth button fails here rather
+ * than clipping silently on whichever platform font CI happens to have.
  */
-test('the bottom bar is five destinations, none of them clipped', async ({ page }, testInfo) => {
+test('the bottom bar is five slots, none of them clipped', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'phone', 'the bottom bar is phone-only');
 
   await openApp(page, '/roster');
@@ -175,7 +188,7 @@ test('the bottom bar is five destinations, none of them clipped', async ({ page 
   const items = nav.locator('button');
   await expect(items).toHaveCount(5);
 
-  for (const label of ['Roster', 'Play', 'Crusade', 'Players', 'Codex']) {
+  for (const label of ['Roster', 'Play', 'Crusade', 'Codex', 'More']) {
     await expect(nav.getByText(label, { exact: true }), `${label} is missing`).toBeVisible();
   }
 
@@ -286,4 +299,39 @@ test('the desktop chrome states the budget once', async ({ page }, testInfo) => 
       await expect(header.getByText(budget).first()).toBeVisible();
     }
   }
+});
+
+/**
+ * The bottom bar stays five wide, and the sixth destination lives behind it.
+ *
+ * `MobileNav` records how much was shaved to keep "Crusade" and "Players"
+ * whole at 375px — padding, then icon size, then other labels entirely — and
+ * a sixth item clips whatever it is called. So the fifth slot stopped being a
+ * destination and became a door: everything behind it costs one extra tap and
+ * the bar never has to be renegotiated when something new is added.
+ */
+test('the phone bar reaches the Chronicle without growing', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'phone', 'this is about a 375px bar');
+
+  await openApp(page);
+
+  const nav = page.locator('nav.fixed');
+  const tabs = nav.locator('button');
+  await expect(tabs).toHaveCount(5);
+
+  // Every one still clears the touch floor, which is what the count protects.
+  for (const box of await tabs.evaluateAll((bs) =>
+    bs.map((b) => b.getBoundingClientRect().height))) {
+    expect(box).toBeGreaterThanOrEqual(44);
+  }
+
+  await nav.getByRole('button', { name: 'More' }).click();
+  await expect(page.getByRole('button', { name: /Chronicle of Battles/ })).toBeVisible();
+
+  await page.getByRole('button', { name: /Chronicle of Battles/ }).click();
+  await expect(page).toHaveURL(/\/chronicle$/);
+  await expect(page.getByRole('heading', { name: /Chronicle of Battles/i })).toBeVisible();
+
+  // And the page itself still must never scroll sideways (docs/MOBILE.md §6).
+  await expectNoHorizontalScroll(page);
 });

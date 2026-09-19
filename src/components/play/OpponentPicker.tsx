@@ -85,7 +85,7 @@ export const OpponentPicker: React.FC<Props> = ({ usedIds, onSelect }) => {
                     <span className="block truncate text-xs font-bold text-theme-text">
                       {opponentLabel(o, factionName)}
                     </span>
-                    <span className="block truncate text-[10px] uppercase text-theme-muted">
+                    <span className="block truncate text-xs sm:text-[10px] uppercase text-theme-muted">
                       {factionName(o.factionId) ?? o.factionId}
                       {/* Only where it was given — never "0 models" for an
                           opponent who simply did not say. */}
@@ -131,7 +131,7 @@ export const OpponentPicker: React.FC<Props> = ({ usedIds, onSelect }) => {
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="opp-name" className="block text-[10px] uppercase text-theme-muted">
+        <label htmlFor="opp-name" className="block text-xs sm:text-[10px] uppercase text-theme-muted">
           Name — the player, or their warband
         </label>
         <input
@@ -145,7 +145,7 @@ export const OpponentPicker: React.FC<Props> = ({ usedIds, onSelect }) => {
       </div>
 
       <div className="space-y-1">
-        <span className="block text-[10px] uppercase text-theme-muted">Faction</span>
+        <span className="block text-xs sm:text-[10px] uppercase text-theme-muted">Faction</span>
         {/*
           Chips, not a `<select>`. A native select on a phone opens a
           full-screen wheel, which is a lot of ceremony for a six-way choice
@@ -170,7 +170,7 @@ export const OpponentPicker: React.FC<Props> = ({ usedIds, onSelect }) => {
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="opp-strength" className="block text-[10px] uppercase text-theme-muted">
+        <label htmlFor="opp-strength" className="block text-xs sm:text-[10px] uppercase text-theme-muted">
           Models they field — optional
         </label>
         <input

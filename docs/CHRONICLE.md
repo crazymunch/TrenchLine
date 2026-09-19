@@ -57,12 +57,15 @@ the only way to discard a battle mid-flight, and it is deliberate: a chronicle
 you can revise is a chronicle nobody trusts. A written record can be forgotten
 one at a time from the view, with a confirm.
 
+## Reaching it
+
+Desktop sidebar, and `/chronicle` on any device. On a phone it is behind the
+bottom bar's **More** button, with Roster Directory — the bar is a hard five at
+375px, so its fifth slot is a door rather than a sixth destination. The
+reasoning is in [MOBILE.md §6c](MOBILE.md#6c-the-phone-bar-is-five-slots-and-the-fifth-is-a-door).
+
 ## Known gaps
 
-- **Not in the phone's bottom bar.** That bar is a five-way split at 375px and
-  `MobileNav` documents why a sixth item clips its label. The Chronicle is in
-  the desktop sidebar and routable at `/chronicle` on any device, but a phone
-  has no tab for it yet. Worth solving properly rather than by cramming.
 - **Device-local.** Records live in `localStorage` and do not sync. The
   campaign half already syncs; this does not.
 - **Casualties and injuries are not in the record.** Those are applied to the

@@ -43,7 +43,7 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
             <h3 className="font-gothic text-base font-bold text-theme-text">
               {battle.scenarioName}
             </h3>
-            <span className="block text-[10px] uppercase text-theme-muted">
+            <span className="block text-xs sm:text-[10px] uppercase text-theme-muted">
               {dateOf(battle.endedAt)} · {battle.turns} turn{battle.turns === 1 ? '' : 's'}
               {battle.weather ? ` · ${battle.weather.name}` : ''}
             </span>
@@ -79,7 +79,7 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
           <div className="flex gap-2">
             {(['A', 'B'] as const).map((c) => (
               <div key={c} className="flex-1 rounded border border-theme-border bg-theme-base px-2.5 py-1.5">
-                <span className="block text-[10px] uppercase text-theme-muted">
+                <span className="block text-xs sm:text-[10px] uppercase text-theme-muted">
                   {COALITION_NAME[c]}
                 </span>
                 <span className="font-gothic text-lg font-bold text-theme-primary">
@@ -106,7 +106,7 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
                   : <Shield className="h-3.5 w-3.5 shrink-0 text-theme-primary" />}
                 <span className="min-w-0">
                   <span className="block truncate text-xs font-bold text-theme-text">{s.name}</span>
-                  <span className="block truncate text-[10px] uppercase text-theme-muted">
+                  <span className="block truncate text-xs sm:text-[10px] uppercase text-theme-muted">
                     {s.factionId}
                     {s.coalition ? ` · ${COALITION_NAME[s.coalition]}` : ''}
                   </span>
@@ -121,7 +121,7 @@ const BattleCard: React.FC<{ battle: BattleRecord; onForget: (id: string) => voi
 
         {/* A draw says so rather than leaving the reader to compare numbers. */}
         {!won.length && (
-          <span className="block text-center text-[10px] uppercase text-theme-muted">
+          <span className="block text-center text-xs sm:text-[10px] uppercase text-theme-muted">
             No side took the field
           </span>
         )}
@@ -200,7 +200,7 @@ export const ChronicleView: React.FC = () => {
             >
               <Icon className="h-4 w-4" />
               <span>{label}</span>
-              <span className="text-[10px]">
+              <span className="text-xs sm:text-[10px]">
                 ({id === 'battles' ? ordered.length : allDeeds.length})
               </span>
             </button>
@@ -239,7 +239,7 @@ export const ChronicleView: React.FC = () => {
             >
               <div className="flex items-baseline justify-between gap-2">
                 <h3 className="font-gothic text-sm font-bold text-theme-text">{d.title}</h3>
-                <span className="shrink-0 text-[10px] uppercase text-theme-muted">
+                <span className="shrink-0 text-xs sm:text-[10px] uppercase text-theme-muted">
                   {dateOf(d.battle.endedAt)}
                 </span>
               </div>
@@ -254,7 +254,7 @@ export const ChronicleView: React.FC = () => {
                 : <p className="italic text-theme-muted">
                     The scenario no longer prints this Deed&rsquo;s text.
                   </p>}
-              <span className="block text-[10px] uppercase text-theme-muted">
+              <span className="block text-xs sm:text-[10px] uppercase text-theme-muted">
                 {d.battle.scenarioName}
               </span>
             </article>
