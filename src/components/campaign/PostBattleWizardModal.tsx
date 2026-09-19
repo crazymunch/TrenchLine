@@ -29,6 +29,8 @@ import {
   HelpCircle,
 } from 'lucide-react';
 
+import { opponentLabel } from '@/types/opponent';
+
 interface PostBattleWizardModalProps {
   onClose: () => void;
 }
@@ -36,7 +38,7 @@ interface PostBattleWizardModalProps {
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
   const {
     getActiveWarband, applyPostBattleResults, campaign, setCampaignHouseRule,
-    claimEarnedRecruitment,
+    claimEarnedRecruitment, opponents, factions,
   } = useStore();
 
   const warband = getActiveWarband();
@@ -1460,14 +1462,42 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div className="space-y-1">
-                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Opponent Warband / Commander:</label>
+                    <label htmlFor="pb-opponent" className="text-xs sm:text-[10px] uppercase text-theme-muted block">Opponent Warband / Commander:</label>
                     <input
+                      id="pb-opponent"
                       type="text"
                       value={opponentWarbandName}
                       onChange={(e) => setOpponentWarbandName(e.target.value)}
                       placeholder="e.g. Court of the Seven-Headed Serpent (Sorcerer Zortan)"
                       className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-xs text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
                     />
+                    {/*
+                      The opponents you have already played, one tap each.
+
+                      Still free text underneath, because the field records who
+                      you played and that is not always somebody you have saved.
+                      These only fill it in — the record keeps the NAME, not a
+                      reference, so forgetting an opponent later cannot rewrite
+                      a battle you have already fought.
+                    */}
+                    {opponents.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {opponents.map((o) => {
+                          const label = opponentLabel(
+                            o, (id) => factions.find((f) => f.id === id)?.name);
+                          return (
+                            <button
+                              key={o.id}
+                              type="button"
+                              onClick={() => setOpponentWarbandName(label)}
+                              className="min-h-[44px] rounded border border-theme-border px-2.5 text-xs text-theme-muted transition-colors hover:border-theme-primary hover:text-theme-primary"
+                            >
+                              {label}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-1">

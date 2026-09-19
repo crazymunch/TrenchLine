@@ -3,6 +3,7 @@ import { repairInventedFormulae } from './repairSavedRosters';
 import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
 import { parseCampaign } from './campaignFromCloud';
+import type { PlaceholderOpponent } from '../types/opponent';
 import { UnitProfile, WeaponProfile } from '../types/rules';
 
 const WARBANDS_KEY = 'tc_warbands_v1';
@@ -10,6 +11,14 @@ const ACTIVE_WARBAND_KEY = 'tc_active_warband_id';
 const CAMPAIGN_KEY = 'tc_campaign_v1';
 const CUSTOM_UNITS_KEY = 'tc_custom_units_v1';
 const CUSTOM_WEAPONS_KEY = 'tc_custom_weapons_v1';
+/*
+  Placeholder opponents, in their own key.
+
+  Never in `tc_warbands_v1`. They are not the player's rosters: they must not
+  appear in the roster picker, must not be counted as warbands, and must not be
+  pushed by cloud sync, all of which follow from simply not being in that list.
+*/
+const OPPONENTS_KEY = 'tc_opponents_v1';
 
 const isBrowser = typeof window !== 'undefined';
 
@@ -521,6 +530,29 @@ export const storage = {
     }
   },
 
+  getOpponents(): PlaceholderOpponent[] {
+    if (!isBrowser) return [];
+    try {
+      const data = localStorage.getItem(OPPONENTS_KEY);
+      if (!data) return [];
+      const parsed = JSON.parse(data);
+      // A hand-edited or half-written key is discarded rather than handed on
+      // as a list of `undefined`s — the same rule the warband reader follows.
+      return Array.isArray(parsed) ? parsed.filter((o) => o && o.id && o.factionId) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  saveOpponents(opponents: PlaceholderOpponent[]): void {
+    if (!isBrowser) return;
+    try {
+      localStorage.setItem(OPPONENTS_KEY, JSON.stringify(opponents));
+    } catch (e) {
+      console.warn('Opponents save failed:', e);
+    }
+  },
+
   getCustomWeapons(): WeaponProfile[] {
     if (!isBrowser) return [];
     try {
@@ -548,6 +580,7 @@ export const storage = {
       localStorage.removeItem(CAMPAIGN_KEY);
       localStorage.removeItem(CUSTOM_UNITS_KEY);
       localStorage.removeItem(CUSTOM_WEAPONS_KEY);
+      localStorage.removeItem(OPPONENTS_KEY);
       localStorage.removeItem('tc_theme_id');
     } catch (e) {
       console.warn('Clear data failed:', e);

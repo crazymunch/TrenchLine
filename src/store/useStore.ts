@@ -24,6 +24,7 @@ import { emptyInitialState, readInitialState } from './init';
 import { createSettingsSlice } from './slices/settings';
 import { createCatalogSlice } from './slices/catalog';
 import { createRosterSlice } from './slices/roster';
+import { createOpponentsSlice } from './slices/opponents';
 import { createUnitsSlice } from './slices/units';
 import { createProgressionSlice } from './slices/progression';
 import { createMatchSlice } from './slices/match';
@@ -51,6 +52,7 @@ export const useStore = create<AppState>()((...a) => {
     ...createSettingsSlice(init)(...a),
     ...createCatalogSlice(init)(...a),
     ...createRosterSlice(init)(...a),
+    ...createOpponentsSlice(init)(...a),
     ...createUnitsSlice(...a),
     ...createProgressionSlice(...a),
     ...createMatchSlice(...a),
@@ -70,6 +72,7 @@ export function hydrateStore(): void {
   const saved = readInitialState();
   useStore.setState({
     warbands: saved.warbands,
+    opponents: saved.opponents,
     activeWarbandId: saved.activeWarbandId,
     customUnits: saved.customUnits,
     customWeapons: saved.customWeapons,

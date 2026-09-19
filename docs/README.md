@@ -25,6 +25,7 @@ no design documentation at all.
 | [`ROS-EXPORT.md`](ROS-EXPORT.md) | Writing a warband as a BattleScribe `.ros`: the fatal/warning/informational report, the decisions in the file, what it deliberately leaves out, and the acceptance gate nobody has cleared. |
 | [`ROSTER-PATHS.md`](ROSTER-PATHS.md) | The roster-path layer the build emits: what a BattleScribe roster calls each model, each thing it can carry and each Warband Variant, and what has no identity at all. |
 | [`ROSTER-FILE.md`](ROSTER-FILE.md) | The roster file TrenchLine writes and reads: the envelope, the field inventory, the round-trip promise and the compatibility policy. |
+| [`PLACEHOLDER-OPPONENTS.md`](PLACEHOLDER-OPPONENTS.md) | Playing somebody whose warband is not in the app: what a placeholder carries, why it lives in its own list, and why it is a side you score rather than one you run. |
 | [`FEATURES.md`](FEATURES.md) | Feature checklist — NewRecruit parity plus TrenchLine's own ideas, with honest status. |
 | [`HANDOVER-CARCASS-FRONT.md`](HANDOVER-CARCASS-FRONT.md) | Picking up the Carcass Front work: what has landed, what is left, and the five things about this book and this pipeline that cost a day to learn. |
 | [`ENGINEERING-AUDIT-FOLLOWUP.md`](ENGINEERING-AUDIT-FOLLOWUP.md) | Current disposition of the 3 September engineering audit and sequenced work packages for what remains. |

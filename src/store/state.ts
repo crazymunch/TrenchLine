@@ -15,6 +15,7 @@
  * 2,000 lines of *behaviour*, not of the type.
  */
 import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
+import type { PlaceholderOpponent } from '../types/opponent';
 import { Campaign, CampaignFramework, CampaignHouseRules, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
@@ -95,6 +96,14 @@ export interface AppState {
    */
   gloryPriced: DroppedDetail[];
 
+  /**
+   * Opponents with no roster in this app — see `types/opponent.ts`.
+   *
+   * Separate from `warbands` on purpose. Everything that asks "what are the
+   * player's warbands" reads that list, so keeping these out of it is what
+   * stops a placeholder appearing in the roster picker or syncing as one.
+   */
+  opponents: PlaceholderOpponent[];
   customUnits: UnitProfile[];
   customWeapons: WeaponProfile[];
 
@@ -415,6 +424,11 @@ export interface AppState {
   // Customizer & Overrides
   customArmour: ArmourProfile[];
   customEquipment: EquipmentItem[];
+  /** Add or replace a placeholder opponent. Omit `id` to create one. */
+  saveOpponent: (opponent: {
+    id?: string; name: string; factionId: string; fieldStrength?: number;
+  }) => void;
+  deleteOpponent: (id: string) => void;
   saveCustomUnit: (unit: UnitProfile) => void;
   deleteCustomUnit: (id: string) => void;
   saveCustomWeapon: (weapon: WeaponProfile) => void;
