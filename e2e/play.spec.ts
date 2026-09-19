@@ -188,7 +188,10 @@ test('the Chronicle says when it is only showing this device', async ({ page }) 
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(800);
 
-  const status = page.getByRole('status');
+  /* Scoped to `main`: the app shell's header carries its own `role="status"`
+     for the "On this device" sign-in indicator, and an unscoped lookup is a
+     strict-mode violation rather than a miss. */
+  const status = page.locator('main').getByRole('status');
   await expect(status).toBeVisible();
   await expect(status).toContainText(/only what this device recorded/i);
 
