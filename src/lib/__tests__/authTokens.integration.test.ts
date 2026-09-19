@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 import { createHash } from 'node:crypto';
+import { integrationDbUrl } from '@/lib/integrationDb';
 
 /**
  * Single-use, expiring tokens, against a real Postgres.
@@ -10,7 +11,10 @@ import { createHash } from 'node:crypto';
  * race, and that the unique index on the digest behaves as the lookup assumes.
  */
 
-const url = process.env.DATABASE_URL;
+/* Not DATABASE_URL: that is the application's database and may be
+   production. See `lib/integrationDb.ts` — this throws on a remote host
+   rather than skipping, so a misconfiguration interrupts. */
+const url = integrationDbUrl();
 const describeDb = url ? describe : describe.skip;
 const prisma = new PrismaClient({ datasources: { db: { url: url ?? 'postgresql://unused' } } });
 vi.mock('@/lib/prisma', () => ({ prisma }));

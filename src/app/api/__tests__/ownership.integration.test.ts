@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
 import { PrismaClient } from '@prisma/client';
+import { integrationDbUrl } from '@/lib/integrationDb';
 
 /**
  * Ownership, against a real migrated Postgres.
@@ -13,7 +14,10 @@ import { PrismaClient } from '@prisma/client';
  * and a contributor without a database still gets a green run. CI sets it.
  */
 
-const url = process.env.DATABASE_URL;
+/* Not DATABASE_URL: that is the application's database and may be
+   production. See `lib/integrationDb.ts` — this throws on a remote host
+   rather than skipping, so a misconfiguration interrupts. */
+const url = integrationDbUrl();
 const describeDb = url ? describe : describe.skip;
 
 const prisma = new PrismaClient({ datasources: { db: { url: url ?? 'postgresql://unused' } } });
