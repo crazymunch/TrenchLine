@@ -13,6 +13,8 @@ import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
 import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
 import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
 import { KeywordText, KeywordChip } from '../ui/KeywordText';
+import { DATASET } from '@/data/generated/trenchline.generated';
+import { effectiveMovement, type TraumaRow } from '@/rules/effectiveStats';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -47,6 +49,16 @@ interface UnitCardProps {
 }
 
 export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll = false }) => {
+  /* Injuries reaching the statline they modify — reported from a live game,
+     where a Leg Wound left the printed Movement on the card. */
+  const injuredMovement = effectiveMovement(
+    unit.profileSnapshot.stats.movementInches
+      ? `${unit.profileSnapshot.stats.movementInches}"`
+      : unit.profileSnapshot.stats.movement,
+    unit.injuries ?? [],
+    DATASET.campaign.trauma as TraumaRow[],
+  );
+
   const { 
     removeUnitFromWarband, 
     duplicateUnit,
@@ -433,10 +445,17 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
           */}
           <div className="grid grid-cols-4 bg-theme-base border border-theme-border divide-x divide-theme-border">
             {([
-              ['MOV', unit.profileSnapshot.stats.movementInches
-                ? `${unit.profileSnapshot.stats.movementInches}"`
-                : unit.profileSnapshot.stats.movement,
-                unit.profileSnapshot.stats.movementType],
+              /*
+                Movement AFTER injuries.
+
+                A Leg Wound reduces it by 2", and this card used to show the
+                printed number — so a player checking a model between games saw
+                a distance it can no longer move. The modifier is read out of
+                the Trauma table's own text; see `rules/effectiveStats.ts`.
+              */
+              ['MOV', injuredMovement.effective, injuredMovement.delta !== 0
+                ? `was ${injuredMovement.base}`
+                : unit.profileSnapshot.stats.movementType],
               ['RNG', unit.profileSnapshot.stats.ranged, undefined],
               ['MELEE', unit.profileSnapshot.stats.melee, undefined],
               ['SAVE', unit.profileSnapshot.stats.armour, undefined],
