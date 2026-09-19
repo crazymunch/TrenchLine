@@ -15,6 +15,7 @@
  * catalogue does not exist yet — see docs/RULESET-MODEL.md.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 export const WARBANDS_TXT =
   'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt';
@@ -35,7 +36,7 @@ const cell = (s) => s.split('\t').map((c) => c.trim()).filter(Boolean);
 
 export function parseWarbandEntries(src = WARBANDS_TXT) {
   if (!fs.existsSync(src)) return [];
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
   const entries = [];
 
   for (let i = 0; i < lines.length; i++) {
@@ -85,7 +86,7 @@ export function parseWarbandEntries(src = WARBANDS_TXT) {
 export function parseVariants(src = WARBANDS_TXT) {
   if (!fs.existsSync(src)) return [];
   const text = fs.readFileSync(src, 'utf8');
-  const lines = text.split('\n');
+  const lines = toLines(text);
   const out = [];
 
   for (let i = 0; i < lines.length; i++) {
@@ -149,7 +150,7 @@ const SECTIONS = new Set([
 
 export function parseArmouryTables(src = WARBANDS_TXT) {
   if (!fs.existsSync(src)) return [];
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
   const out = [];
   let section = null;
   let faction = null;
@@ -218,7 +219,7 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
 export function parseFactionRules(src = WARBANDS_TXT) {
   if (!fs.existsSync(src)) return [];
   const clean = (x) => String(x ?? '').replace(/\u00a0/g, ' ').replace(/\s+/g, ' ').trim();
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
   const out = [];
 
   for (let i = 0; i < lines.length; i++) {

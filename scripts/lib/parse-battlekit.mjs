@@ -29,6 +29,7 @@
  * Armoury Tables — so a caller wanting a price must ask the armoury.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 export const RULEBOOK_TXT =
   'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
@@ -95,7 +96,7 @@ const looksLikeName = (l) => l.length <= NAME_MAX && !endsSentence(l);
 
 /** Split the chapter into pages and strip the furniture from each. */
 function chapterLines(src) {
-  const all = fs.readFileSync(src, 'utf8').split('\n');
+  const all = toLines(fs.readFileSync(src, 'utf8'));
 
   const headers = [];
   all.forEach((l, i) => { if (PAGE_HEADER.test(l)) headers.push(i); });
@@ -706,7 +707,7 @@ const WB_SIDEBAR = new Set([
  * a card is indistinguishable from a real one.
  */
 export function parseWarbandsBattlekit(src = WARBANDS_TXT) {
-  const raw = fs.readFileSync(src, 'utf8').split('\n');
+  const raw = toLines(fs.readFileSync(src, 'utf8'));
   const lines = raw.map((l) => l.replace(/\s+$/, ''));
 
   const headers = [];

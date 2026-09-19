@@ -38,6 +38,7 @@
 import fs from 'node:fs';
 import { chapterLines } from './cf-prose.mjs';
 import { joinWrapped } from './dehyphenate.mjs';
+import { toLines } from './lines.mjs';
 
 export const RULEBOOK_TXT =
   'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
@@ -111,7 +112,7 @@ const slug = (name) => name
  * line of a rule.
  */
 function rulebookChapter(src) {
-  const all = fs.readFileSync(src, 'utf8').split('\n').map((l) => l.replace(/\s+$/, ''));
+  const all = toLines(fs.readFileSync(src, 'utf8')).map((l) => l.replace(/\s+$/, ''));
 
   const from = all.findIndex((l, i) =>
     /^Patrons$/.test(l) && /^Select a Patron for your Warband/.test(all[i + 1] ?? ''));

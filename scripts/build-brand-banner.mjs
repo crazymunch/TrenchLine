@@ -23,6 +23,7 @@ import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
+import { toLines } from './lib/lines.mjs';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
 const BRAND = path.join(ROOT, 'public/brand');
@@ -104,7 +105,7 @@ const banner = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" 
   <line x1="0" y1="${H - 0.5}" x2="${W}" y2="${H - 0.5}" stroke="${HAIRLINE}" stroke-width="1"/>
 
   <g transform="translate(24, ${(H - MARK) / 2}) scale(${MARK / 512})">
-${markContent().trim().split('\n').map((l) => `    ${l.trim()}`).join('\n')}
+${toLines(markContent().trim()).map((l) => `    ${l.trim()}`).join('\n')}
   </g>
 
   <text x="${24 + MARK + 20}" y="62" font-family="Archivo" font-weight="700"

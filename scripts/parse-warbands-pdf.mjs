@@ -24,6 +24,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { toLines } from './lib/lines.mjs';
 
 const SRC = 'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt';
 
@@ -32,7 +33,7 @@ if (!fs.existsSync(SRC)) {
   process.exit(1);
 }
 
-const lines = fs.readFileSync(SRC, 'utf8').split('\n');
+const lines = toLines(fs.readFileSync(SRC, 'utf8'));
 
 /** `0-2 Sniper Priests - Cost: 50` / `1 Lieutenant - Cost: 70` */
 const HEADER = /^\s*(\d+)(?:\s*[-–]\s*(\d+))?\s+(.+?)\s+-\s+Cost:\s*(\d+)/;

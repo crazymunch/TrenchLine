@@ -18,6 +18,7 @@
  * flattened into one list.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 export const RULEBOOK_TXT =
   'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
@@ -52,7 +53,7 @@ const isGlossaryName = (s) => !/[a-z]/.test(s) && /[A-Z]/.test(s);
  * `'Tag'` or `'Effect'` exactly as the book prints it.
  */
 export function parseKeywords(src = RULEBOOK_TXT) {
-  const all = fs.readFileSync(src, 'utf8').split('\n');
+  const all = toLines(fs.readFileSync(src, 'utf8'));
 
   const headers = [];
   all.forEach((l, i) => { if (PAGE_HEADER.test(l)) headers.push(i); });

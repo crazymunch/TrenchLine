@@ -28,6 +28,7 @@
  */
 import fs from 'node:fs';
 import { XMLParser } from 'fast-xml-parser';
+import { toLines } from './lines.mjs';
 
 export const RULEBOOK_TXT =
   'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
@@ -44,7 +45,7 @@ const ROW = /^\s*(\d{1,2})\s*\t\s*([\d,]{3,5})\s*\t\s*(\d{1,2})\s*$/;
  * unlimited budget is a worse lie than a wrong one, because nothing looks odd.
  */
 export function parseThresholdTable(src = RULEBOOK_TXT) {
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
 
   const start = lines.findIndex((l) => /^\s*WARBAND THRESHOLD TABLE\s*$/i.test(l));
   if (start < 0) {
@@ -308,7 +309,7 @@ function parseExplorationSequence(lines) {
  * the Strongbox's only source of income, so it is derived here.
  */
 export function parseExploration(src = RULEBOOK_TXT) {
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
 
   const dice = parseBands(lines, /^\s*Games Played\s*\t\s*Exploration Dice\s*$/,
     (v) => { const m = /^(\d+)\s+Exploration Dice$/.exec(v); return m ? Number(m[1]) : null; });
@@ -387,7 +388,7 @@ export function parseExploration(src = RULEBOOK_TXT) {
  * wargear and keyword sweep — the same fabrication surfacing twice.
  */
 export function parseSkillsTables(src = RULEBOOK_TXT) {
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
 
   const HEADS = {
     melee: 'MELEE & STRENGTH SKILLS TABLE',
@@ -437,7 +438,7 @@ export function parseSkillsTables(src = RULEBOOK_TXT) {
  * Derived so the app has something true to show while the wizard is decided.
  */
 export function parseCampaignPhaseSteps(src = RULEBOOK_TXT) {
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
 
   const at = lines.findIndex((l) => /^CAMPAIGN PHASE STEPS\s*$/.test(l.trim()));
   if (at < 0) {
@@ -538,7 +539,7 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
   if (!rows.size) throw new Error('parse-campaign: no Injuries found in the campaign catalogue.');
 
   // The four the catalogue cannot carry, read one at a time from the rulebook.
-  const lines = fs.readFileSync(book, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(book, 'utf8'));
   /**
    * The Trauma page prints its heading twice and the extraction scrambles one
    * of the two columns, so a row can appear both intact and shredded. Every
@@ -715,7 +716,7 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
  * (`Unify for Duty`, `unles's`). Only the first, clean occurrence is read.
  */
 export function parseTraumaProcedure(src = RULEBOOK_TXT) {
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
 
   /*
     NOT the first `Trauma Step` line: the phrase is the campaign chapter's
@@ -912,7 +913,7 @@ export function parseTraumaProcedure(src = RULEBOOK_TXT) {
  * finding is.
  */
 export function parseReinforcementsSequence(src = RULEBOOK_TXT) {
-  const lines = fs.readFileSync(src, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
 
   const at = lines.findIndex((l) => /^REINFORCEMENTS SEQUENCE$/.test(l.trim()));
   if (at < 0) {

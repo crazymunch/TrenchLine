@@ -19,6 +19,7 @@
  */
 import fs from 'node:fs';
 import { joinWrapped } from './dehyphenate.mjs';
+import { toLines } from './lines.mjs';
 
 export const BOOK_TXT = 'data-sources/carcass-front/extracted/carcass-front-book.txt';
 
@@ -93,7 +94,7 @@ function withoutMaps(lines) {
  * @param label the running head, e.g. 'Scenarios & Terrain'
  */
 export function chapterLines(label, src = BOOK_TXT) {
-  const all = fs.readFileSync(src, 'utf8').split('\n');
+  const all = toLines(fs.readFileSync(src, 'utf8'));
   const head = new RegExp(`^${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\t\\d+$`);
 
   const headers = [];

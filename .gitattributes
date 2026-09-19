@@ -1,0 +1,25 @@
+# Line endings, decided here rather than by whoever cloned the repository.
+#
+# The external audit reported three extract parsers failing on CRLF input. The
+# mechanism was real — a parser that splits on "\n" leaves a trailing "\r" on
+# every line, so a heading match, a table cell or a keyword name silently
+# carries an invisible character — but the scope was wider than the three files
+# it named: nineteen scripts split on a bare newline.
+#
+# Two halves to the fix. This file stops CRLF entering the working tree in the
+# first place; `scripts/lib/lines.mjs` makes the parsers survive it anyway, for
+# input that does not come from git — a PDF extraction, a download, a file a
+# contributor pastes in from Windows.
+* text=auto eol=lf
+
+# Never normalise these. Git's heuristic is good but not perfect, and a byte
+# it "fixes" inside a PDF or a PNG corrupts the file.
+*.pdf   binary
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.zip   binary

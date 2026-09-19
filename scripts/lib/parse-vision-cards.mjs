@@ -37,6 +37,7 @@
  * perfectly well, because every one of these words describes a warband.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 export const VISION_CARDS_TXT =
   'data-sources/carcass-front/extracted/vision-cards.txt';
@@ -119,7 +120,7 @@ export function parseVisionCards(file = VISION_CARDS_TXT) {
       + `${file}`);
   }
 
-  const lines = fs.readFileSync(file, 'utf8').split('\n').map((l) => l.replace(/\s+$/, ''));
+  const lines = toLines(fs.readFileSync(file, 'utf8')).map((l) => l.replace(/\s+$/, ''));
 
   /* ---- 1. the objective groups, three tiers each ---- */
   const tiers = [];
