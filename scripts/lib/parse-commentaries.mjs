@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 /**
  * The official Rules Commentaries — the FAQ.
@@ -128,7 +129,7 @@ export function loadCommentaries() {
  * @returns {{id: string, section: string, label: string, question: string, answer: string}[]}
  */
 export function parseCommentaries(text) {
-  const lines = text.split('\n');
+  const lines = toLines(text);
   const out = [];
   let current = null;
   /** Which half of the entry the following lines continue. */

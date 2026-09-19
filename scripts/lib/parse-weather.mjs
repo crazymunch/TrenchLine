@@ -23,6 +23,7 @@
  * which is the failure this whole area exists to correct.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 export const WEATHER_TXT =
   'data-sources/rulebook/extracted/hell-on-earth-weather-events.txt';
@@ -56,8 +57,7 @@ export function parseWeatherEvents(file = WEATHER_TXT) {
       + `${file}`);
   }
 
-  const lines = fs.readFileSync(file, 'utf8')
-    .split('\n')
+  const lines = toLines(fs.readFileSync(file, 'utf8'))
     .map((l) => l.replace(/\s+$/, ''))
     .filter((l) => l && !PAGE_BREAK.test(l) && !NOISE.some((n) => n.test(l)));
 

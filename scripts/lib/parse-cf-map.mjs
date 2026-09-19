@@ -26,12 +26,13 @@
  * than kept.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 export const MAP_TXT = 'data-sources/carcass-front/extracted/carcass-front-map.txt';
 export const BOOK_TXT = 'data-sources/carcass-front/extracted/carcass-front-book.txt';
 
 const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
-const lines = (src) => fs.readFileSync(src, 'utf8').split('\n').map((l) => l.replace(/\s+$/, ''));
+const lines = (src) => toLines(fs.readFileSync(src, 'utf8')).map((l) => l.replace(/\s+$/, ''));
 
 /** A page marker the extractor writes, e.g. `-- 1 of 2 --`. */
 const PAGE = /^--\s*\d+\s*of\s*\d+\s*--$/;

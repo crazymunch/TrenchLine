@@ -33,6 +33,36 @@ enforces two things on every pull request:
    `db push` and never captured, fails here rather than becoming a column that
    only exists in production.
 
+### Two database addresses, and only one of them is safe to write to
+
+`DATABASE_URL` is the **application's** database. In this development
+environment it points at production Neon — it is what
+`scripts/apply-migrations-http.mjs` uses.
+
+`TRENCHLINE_TEST_DATABASE_URL` is the **test** database. It is the only one the
+integration suites read, it must be a local host, and
+[`src/lib/integrationDb.ts`](../src/lib/integrationDb.ts) enforces that.
+
+The split exists because the nine integration suites used to read
+`DATABASE_URL` with no check of any kind, and several of them end with a
+`deleteMany`. Running `npm test` in this environment would have created and
+deleted rows in production. Nothing had gone wrong only because the sandbox
+cannot open TCP 5432 — a network accident standing in for a safety rule, and
+one that stops protecting anyone the moment the tests run somewhere with a
+working connection.
+
+| `TRENCHLINE_TEST_DATABASE_URL` | What happens |
+|---|---|
+| unset | the integration suites skip; the rest of `npm test` is green |
+| a local host | they run |
+| anything else | the run **fails**, naming the host |
+
+The last row is the point. Skipping and refusing must not look the same: a
+developer who has pointed this at a server has made a mistake worth
+interrupting, and a silent skip would hide it. The host check is an allowlist
+rather than a denylist of known production hostnames, because a denylist fails
+open the first time infrastructure changes.
+
 ### Making a change
 
 ```bash

@@ -15,6 +15,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
+import { toLines } from './lib/lines.mjs';
 
 const REPO = 'Fawkstrot11/TrenchCrusade';
 const OUT_DIR = 'data-sources/battlescribe';
@@ -40,7 +41,7 @@ function discoverFiles(_commit) {
                  { stdio: ['ignore', 'ignore', 'pipe'] });
     const out = execFileSync('git', ['-C', tmp, 'ls-tree', '-r', '--name-only', 'HEAD'],
                              { encoding: 'utf8' });
-    return out.split('\n')
+    return toLines(out)
       .map((f) => f.trim())
       .filter((f) => /\.(cat|gst)$/i.test(f))
       .sort();

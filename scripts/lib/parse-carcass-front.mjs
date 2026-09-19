@@ -32,6 +32,7 @@
  */
 import fs from 'node:fs';
 import { keepsHyphen } from './dehyphenate.mjs';
+import { toLines } from './lines.mjs';
 
 export const BOOK_TXT = 'data-sources/carcass-front/extracted/carcass-front-book.txt';
 
@@ -553,7 +554,7 @@ export function parseCarcassFront(file = BOOK_TXT) {
       + 'data-sources/carcass-front/carcass-front-book.pdf '
       + `${file}`);
   }
-  const lines = fs.readFileSync(file, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(file, 'utf8'));
 
   /*
     The two faction lists, bounded by their own running heads.

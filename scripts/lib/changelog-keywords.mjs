@@ -24,6 +24,7 @@
  * can anchor on, because the PDF has no headings — which is why the second
  * form is recognised by what FOLLOWS the name rather than by the name itself.
  */
+import { toLines } from './lines.mjs';
 
 /** `NAME (Effect):`, `NAME (Tag):`, `NAME (Special):` — a definition. */
 const DEFINED = /\b([A-Z][A-Z0-9 ()X“”'’/-]{2,40}?)\s*\((?:Effect|Tag|Special)\):/g;
@@ -41,7 +42,7 @@ export function changelogKeywords(text) {
   const names = new Set();
   for (const m of text.matchAll(DEFINED)) names.add(m[1].trim());
 
-  const lines = text.split('\n');
+  const lines = toLines(text);
   for (let i = 0; i < lines.length - 1; i += 1) {
     const m = CHANGED.exec(lines[i]);
     /* `New Keyword` is the label of the first form's own row, not a Keyword. */
