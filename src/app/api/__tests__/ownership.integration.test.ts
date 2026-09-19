@@ -331,11 +331,40 @@ describeDb('ownership, against a migrated database', () => {
       expect(await prisma.customRuleOverride.count({ where: { userId: alice.id } })).toBe(1);
     });
 
-    it('creates no shared account for a signed-out write', async () => {
+    /**
+     * The shared-account upsert, checked as a change rather than an absence.
+     *
+     * The original assertion was that `commander@trenchline.org` does not
+     * exist anywhere in the database. That is a claim about the whole
+     * universe, and it is only true by luck: the row is absent because no
+     * previous test happened to create one.
+     *
+     * Measured against a real database, on all four combinations of
+     * seeded/absent and sabotaged/clean: on a seeded database the old
+     * assertion fails **unconditionally** — with the defect present and with
+     * it absent alike. It is not blind to the bug, it is noise, which is
+     * worse in a different way: a failure that means nothing teaches people
+     * to ignore the test.
+     *
+     * A before/after snapshot is true either way, deletes nothing, and is
+     * strictly stronger: `User.updatedAt` is `@updatedAt`, so the upsert that
+     * was the original defect moves it and fails this even when the row was
+     * already present. The absence assertion could not catch that case at all.
+     *
+     * The audit proposed adding this address to a `deleteMany` instead. That
+     * is a production data change wearing a test fix's clothes, and it is
+     * rejected in docs/GEMINI-AUDIT-REVIEW.md.
+     */
+    const sharedAccount = async () => prisma.user.findUnique({
+      where: { email: 'commander@trenchline.org' },
+      select: { id: true, createdAt: true, updatedAt: true },
+    });
+
+    it('creates no shared account, and touches none, for a signed-out write', async () => {
+      const before = await sharedAccount();
       as(null);
       expect((await post(rulesPOST, override)).status).toBe(401);
-      expect(await prisma.user.findUnique({ where: { email: 'commander@trenchline.org' } }))
-        .toBeNull();
+      expect(await sharedAccount()).toEqual(before);
     });
   });
 });
