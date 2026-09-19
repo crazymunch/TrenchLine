@@ -78,6 +78,22 @@ export const MobileNav: React.FC = () => {
   const isMoreActive = moreItems.some((i) => i.id === currentView);
 
   return (
+    /*
+      The sheet is a SIBLING of the bar, not a child of it.
+
+      `backdrop-blur` on the nav sets `backdrop-filter`, and an element with a
+      filter becomes the containing block for its `position: fixed`
+      descendants. So a `Sheet` rendered inside this nav resolves its
+      `inset-0` against the nav's own box — a ~73px strip along the bottom
+      edge — rather than the viewport.
+
+      That failed silently on a phone, where the sheet's content happened to
+      fit inside what was left, and failed on the tablet, where the second row
+      landed outside the viewport: visible, enabled, and unclickable. CI caught
+      it; the phone run did not. Nothing about the sheet's own markup was
+      wrong, which is what makes this worth a comment rather than a fix.
+    */
+    <>
     <nav className="fixed bottom-0 left-0 right-0 z-40 lg:hidden bg-theme-base/95 backdrop-blur border-t border-theme-border px-1 pt-1.5 pb-safe">
         {/*
           Flex, not grid.
@@ -128,7 +144,9 @@ export const MobileNav: React.FC = () => {
           </button>
         </div>
 
-        <Sheet
+    </nav>
+
+    <Sheet
           open={isMoreOpen}
           onClose={() => setIsMoreOpen(false)}
           title="More"
@@ -156,6 +174,6 @@ export const MobileNav: React.FC = () => {
             ))}
           </ul>
         </Sheet>
-    </nav>
+    </>
   );
 };

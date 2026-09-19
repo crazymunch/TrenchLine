@@ -104,8 +104,9 @@ export async function goTo(page: Page, view: NavView) {
     const behind = BEHIND_MORE[view];
     if (behind) {
       await bottomNav.getByRole('button', { name: 'More', exact: true }).click();
-      // The sheet renders inside the nav, so scope to the dialog rather than
-      // the nav: a bare name lookup would also see the bar underneath it.
+      // Scoped to the dialog, not the nav: the sheet is a sibling of the bar
+      // (see `MobileNav` on why it cannot be a child), and a bare name lookup
+      // would also see the bar underneath it.
       await page.getByRole('dialog').getByRole('button', { name: behind }).click();
     } else {
       await bottomNav.getByRole('button', { name: view, exact: true }).click();

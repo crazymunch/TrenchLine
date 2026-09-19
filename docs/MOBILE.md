@@ -222,6 +222,18 @@ the per-view mobile sweep covers them like any other. That matters more than it
 sounds: the Chronicle shipped with seven `text-[10px]` spans because no test in
 the sweep had ever opened it on a phone.
 
+**The sheet is a sibling of the bar, never a child of it.** The bar carries
+`backdrop-blur`, and an element with a `filter` or `backdrop-filter` becomes
+the containing block for its `position: fixed` descendants — so a sheet
+rendered inside it resolves `inset-0` against the bar's own 73px strip rather
+than the viewport. It fit on a 375px phone by luck and put a row outside the
+viewport on the tablet: visible, enabled, and unclickable. The sheet's own
+markup was correct throughout, which is why this is a rule and not a fix.
+
+The same trap applies to `transform`, `perspective`, `contain: paint` and a
+`will-change` naming any of them. If an overlay has to live under one of those,
+it needs a portal, not a bigger `z-index`.
+
 ### 7. Modals become sheets
 
 Thirty modals hand-roll `fixed inset-0 flex items-center justify-center p-4`.
