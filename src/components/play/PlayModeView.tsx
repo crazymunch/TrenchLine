@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { useStore } from '../../store/useStore';
 import { LiveMirrorPanel } from './LiveMirrorPanel';
 import { useScenarios, sectionOf } from '../../rules/useScenarios';
@@ -57,11 +57,19 @@ import {
   CloudRain,
   Lock,
   History,
+  X,
   TrendingUp
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
+import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch } from '@/rules/matchState';
+import { battleFromMatch } from '@/rules/battleFromMatch';
+import {
+  COALITIONS, COALITION_NAME, coalitionScore, hasCoalitions, leader,
+  pruneCoalitions, suggestCoalitions, type CoalitionMap,
+} from '@/rules/coalitions';
+import { storage } from '@/services/storage';
 import { OpponentPicker } from './OpponentPicker';
 
 export const PlayModeView: React.FC = () => {
@@ -72,6 +80,7 @@ export const PlayModeView: React.FC = () => {
     getActiveWarband, 
     playTurn, 
     incrementTurn, 
+    setPlayTurn,
     resetMatchState,
     updateUnitWounds, 
     updateUnitBloodMarkers, 
@@ -132,6 +141,9 @@ export const PlayModeView: React.FC = () => {
   }>>({});
   
   // Squad / Sub-list Deployment Filter
+  /* Which side fights for which coalition. Empty in a free-for-all, which is
+     most matches — so nothing below assumes a match HAS teams. */
+  const [coalitions, setCoalitions] = useState<CoalitionMap>({});
   const [deployedUnitIds, setDeployedUnitIds] = useState<Record<string, string[]>>({});
   const [isSquadSelectOpen, setIsSquadSelectOpen] = useState(false);
   const [isObjectivesPanelOpen, setIsObjectivesPanelOpen] = useState(true);
@@ -215,6 +227,79 @@ export const PlayModeView: React.FC = () => {
   );
 
   /*
+    Restore a match in progress, then keep saving it.
+
+    None of this state reached `localStorage` before, so a reload — or a phone
+    evicting a backgrounded tab, which they do routinely — lost every Victory
+    Point, every claimed Deed and the list of who was in the match. Over a
+    three-hour game that is the whole scorecard.
+
+    Two guards stop the save from destroying what the restore is about to
+    read, and only one of them currently does the work.
+
+    The save effect runs on mount too, when this state is still its empty
+    initial value. What actually prevents the clobber today is the
+    `matchWarbandIds.length === 0` check below: on that first pass the list IS
+    empty, so nothing is written. Sabotaging `restored` alone does not break
+    the test, and saying otherwise here would be a comment claiming a guard it
+    does not earn.
+
+    `restored` is kept as the second lock, because the first one holds only
+    while the restore effect is declared ABOVE the seeding effect that fills
+    that list. Reorder them and the empty check stops protecting anything;
+    this one does not care about order.
+  */
+  const restored = useRef(false);
+  const [resumedFrom, setResumedFrom] = useState<string | null>(null);
+
+  useEffect(() => {
+    const saved = storage.getMatch();
+    if (isRestorable(saved)) {
+      setIsMatchActive(saved.isMatchActive);
+      setMatchMode(saved.matchMode);
+      setMatchWarbandIds(saved.matchWarbandIds);
+      setActivePlayerIndex(saved.activePlayerIndex);
+      setSelectedScenarioId(saved.selectedScenarioId);
+      setWarbandScores(saved.scores);
+      setDeployedUnitIds(saved.deployedUnitIds);
+      setEnvironmentalHazard(saved.environmentalHazard);
+      setWeatherRolls(saved.weatherRolls);
+      setActiveWeather(saved.activeWeather);
+      setCoalitions(saved.coalitions);
+      setPlayTurn(saved.playTurn);
+      /* Said out loud rather than resumed silently: a match from last week
+         coming back looking like tonight's is its own kind of wrong. */
+      if (saved.isMatchActive) setResumedFrom(savedAgo(saved));
+    }
+    restored.current = true;
+    // Once, on mount. Re-running would fight the player for their own state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!restored.current) return;
+    /* An empty match is not worth a write, and writing one is how a saved
+       match gets lost — see the guard above. */
+    if (matchWarbandIds.length === 0) return;
+    const match: SavedMatch = {
+      version: MATCH_VERSION,
+      savedAt: new Date().toISOString(),
+      isMatchActive, matchMode, matchWarbandIds, activePlayerIndex,
+      selectedScenarioId, playTurn,
+      scores: warbandScores,
+      deployedUnitIds,
+      environmentalHazard,
+      weatherRolls, activeWeather,
+      coalitions,
+    };
+    storage.saveMatch(match);
+  }, [
+    isMatchActive, matchMode, matchWarbandIds, activePlayerIndex, selectedScenarioId,
+    playTurn, warbandScores, deployedUnitIds, environmentalHazard, weatherRolls, activeWeather,
+    coalitions,
+  ]);
+
+  /*
     Put the player's own warband in the match once the store has it.
 
     `matchWarbandIds` is seeded by `useState`, which runs on the FIRST render —
@@ -275,9 +360,53 @@ export const PlayModeView: React.FC = () => {
     setIsMatchActive(true);
   };
 
+  /*
+    Keep the battle, then hand over to the post-battle wizard.
+
+    Everything the tracker collected — every side's Victory Points, which turn
+    each was scored on, who claimed each Glorious Deed, the weather, who was
+    even on the table — was discarded here. The campaign's `MatchRecord` kept
+    a date, a scenario, a narrative and exactly ONE participant: the player's
+    own warband. Three of four sides in tonight's game would have left no
+    trace.
+
+    Written before the wizard opens rather than inside it, because the wizard
+    is campaign-only: a one-off game recorded nothing at all before, and the
+    battle happened either way.
+  */
+  const handleEndMatch = () => {
+    const battle = battleFromMatch({
+      matchWarbandIds,
+      sideInfo: (id) => {
+        const sd = side(id);
+        return sd && {
+          id: sd.id, name: sd.name, factionId: sd.factionId,
+          isPlaceholder: sd.isPlaceholder,
+        };
+      },
+      scores: warbandScores,
+      coalitions,
+      scenarioId: selectedScenarioId,
+      scenarioName: selectedScenario?.name ?? 'Unrecorded scenario',
+      scenarioDeeds: scenarioDeeds.map((d) => ({ title: d.title, description: d.desc })),
+      playTurn,
+      weather: activeWeather
+        ? { name: activeWeather.name, effect: activeWeather.effect }
+        : null,
+    });
+    if (battle) storage.addBattle(battle);
+    setIsPostBattleOpen(true);
+  };
+
   const handleAbortMatch = () => {
     soundEffects.playDiceRoll();
     resetMatchState();
+    /* Abort is the one thing that ends a match, so it is the one thing that
+       throws the saved scorecard away. A reload must not bring it back. */
+    storage.clearMatch();
+    setWarbandScores({});
+    setCoalitions({});
+    setResumedFrom(null);
     setIsMatchActive(false);
     setIsAbortConfirmOpen(false);
   };
@@ -389,6 +518,8 @@ export const PlayModeView: React.FC = () => {
   const handleRemovePlayerWarband = (wbId: string) => {
     if (matchWarbandIds.length <= 1) return;
     setMatchWarbandIds((prev) => prev.filter((id) => id !== wbId));
+    // Its tag goes with it, so a re-added side does not inherit an old team.
+    setCoalitions((prev) => pruneCoalitions(matchWarbandIds.filter((id) => id !== wbId), prev));
     setActivePlayerIndex(0);
   };
 
@@ -625,9 +756,21 @@ export const PlayModeView: React.FC = () => {
                   2. WARBAND INTEGRATION & SQUAD MUSTER (1 TO 4 PLAYERS)
                 </h2>
               </div>
-              <span className="text-xs text-theme-muted">
-                {matchWarbandIds.length} Warband{matchWarbandIds.length > 1 ? 's' : ''} Linked
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-theme-muted">
+                  {matchWarbandIds.length} Warband{matchWarbandIds.length > 1 ? 's' : ''} Linked
+                </span>
+                {/* A starting pair-off for a four-way, since that is how
+                    players sit down. Every tag stays editable. */}
+                {matchWarbandIds.length > 2 && !hasCoalitions(matchWarbandIds, coalitions) && (
+                  <button
+                    onClick={() => setCoalitions(suggestCoalitions(matchWarbandIds))}
+                    className="min-h-[44px] rounded border border-theme-border px-2.5 text-xs font-bold uppercase text-theme-muted transition-colors hover:border-theme-primary hover:text-theme-primary"
+                  >
+                    Pair into coalitions
+                  </button>
+                )}
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -668,6 +811,36 @@ export const PlayModeView: React.FC = () => {
                         Faction: {wb?.factionId}
                       </span>
                     </div>
+
+                    {/*
+                      Who this side fights for.
+
+                      Only offered once there are enough sides for it to mean
+                      anything — a coalition in a duel is a word for "you".
+                    */}
+                    {matchWarbandIds.length > 2 && (
+                      <div className="flex gap-1.5">
+                        {COALITIONS.map((c) => {
+                          const on = coalitions[wbId] === c;
+                          return (
+                            <button
+                              key={c}
+                              onClick={() => setCoalitions((prev) => ({
+                                ...prev, [wbId]: on ? undefined : c,
+                              }))}
+                              aria-pressed={on}
+                              className={`min-h-[44px] flex-1 rounded border px-2 text-xs font-bold uppercase transition-colors ${
+                                on
+                                  ? 'border-theme-primary bg-theme-primary/15 text-theme-primary'
+                                  : 'border-theme-border text-theme-muted hover:text-theme-text'
+                              }`}
+                            >
+                              {COALITION_NAME[c]}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
 
                     {/*
                       A placeholder has no roster here, so a deployment panel
@@ -982,13 +1155,42 @@ export const PlayModeView: React.FC = () => {
               <span className="truncate">Turn</span>
             </button>
             <button
-              onClick={() => setIsPostBattleOpen(true)}
+              onClick={handleEndMatch}
               className="flex-1 min-w-0 flex items-center justify-center gap-1 px-2 bg-theme-accent text-white rounded font-mono text-xs font-bold uppercase"
             >
               <Skull className="w-3.5 h-3.5 flex-shrink-0" />
               <span className="truncate">End</span>
             </button>
           </div>
+
+          {/*
+            A resumed match says so, and says how old it is.
+
+            Restoring silently is its own kind of wrong: a match from last week
+            comes back looking exactly like tonight's, and the first thing a
+            player does is add points to the wrong game. Dismissible, because
+            once you have read it you are resuming deliberately.
+          */}
+          {resumedFrom && (
+            <div className="flex items-start gap-2 rounded border border-theme-primary/50 bg-theme-elevated p-3">
+              <History className="mt-0.5 h-4 w-4 shrink-0 text-theme-primary" />
+              <div className="min-w-0 flex-1 text-xs">
+                <span className="block font-bold text-theme-text">
+                  Resumed a match saved {resumedFrom}
+                </span>
+                <span className="block text-theme-muted">
+                  Scores and claimed Deeds are as you left them. Abort Match starts over.
+                </span>
+              </div>
+              <button
+                onClick={() => setResumedFrom(null)}
+                aria-label="Dismiss"
+                className="flex h-11 w-11 shrink-0 items-center justify-center text-theme-muted hover:text-theme-text"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
 
           {/* Active Combat HUD — the full set, scrolling with the page. */}
           <div className="bg-theme-surface border-2 border-theme-primary rounded-md p-3 sm:p-4 shadow-2xl space-y-3 bevel-container">
@@ -1002,9 +1204,17 @@ export const PlayModeView: React.FC = () => {
                   <span className="font-gothic font-bold text-lg text-theme-primary">{playTurn}</span>
                 </div>
 
-                {/* Player Selector Tabs (if multiplayer) */}
+                {/*
+                  Player selector tabs, which SCROLL rather than overflow.
+
+                  Four sides at 375px does not fit on one line, and the fourth
+                  was being clipped at the right edge — in a 2v2 that is a
+                  whole player you cannot select. Horizontal scroll on this
+                  strip only; the page itself still must never scroll sideways
+                  (docs/MOBILE.md §6).
+                */}
                 {matchWarbandIds.length > 1 && (
-                  <div className="flex items-center space-x-1 bg-theme-base p-1 rounded border border-theme-border">
+                  <div className="flex max-w-full items-center space-x-1 overflow-x-auto rounded border border-theme-border bg-theme-base p-1">
                     {matchWarbandIds.map((wbId, pIdx) => {
                       const wb = side(wbId);
                       const isSel = pIdx === activePlayerIndex;
@@ -1019,7 +1229,7 @@ export const PlayModeView: React.FC = () => {
                           title={selectable ? undefined
                             : `${wb?.name ?? 'This side'} has no roster in the app — score only`}
                           onClick={() => { if (selectable) setActivePlayerIndex(pIdx); }}
-                          className={`px-3 py-1 rounded text-xs font-mono font-bold uppercase transition-all flex items-center space-x-1.5 ${
+                          className={`flex shrink-0 items-center space-x-1.5 rounded px-3 py-1 text-xs font-mono font-bold uppercase transition-all ${
                             isSel
                               ? 'bg-theme-primary text-theme-base shadow'
                               : 'text-theme-muted hover:text-theme-text'
@@ -1043,6 +1253,51 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               {/* Middle: Live Multi-Player VP Meters */}
+              {/*
+                Coalition totals, above the per-side ones and never instead of
+                them. Each warband still scores individually — that is the
+                number a campaign record wants and the one a player asks about
+                afterwards — so this is their sum, shown alongside.
+              */}
+              {hasCoalitions(matchWarbandIds, coalitions) && (
+                <div className="mb-2 flex w-full flex-wrap gap-2">
+                  {COALITIONS.map((c) => {
+                    const total = coalitionScore(
+                      matchWarbandIds, coalitions, c, (id) => warbandScores[id]?.vp || 0);
+                    const ahead = leader(
+                      matchWarbandIds, coalitions, (id) => warbandScores[id]?.vp || 0) === c;
+                    return (
+                      <div
+                        key={c}
+                        className={`flex min-w-0 flex-1 items-center justify-between gap-2 rounded border px-3 py-2 ${
+                          ahead
+                            ? 'border-theme-primary bg-theme-primary/10'
+                            : 'border-theme-border bg-theme-base'
+                        }`}
+                      >
+                        <span className="min-w-0">
+                          <span className="block text-xs sm:text-[10px] font-bold uppercase text-theme-muted">
+                            {COALITION_NAME[c]}
+                          </span>
+                          {/* Wraps rather than truncating: "Bayt al-Nahas +
+                              Iro…" hides which ally it is, which is the one
+                              thing this line exists to say. */}
+                          <span className="block text-[10px] leading-tight text-theme-muted">
+                            {matchWarbandIds
+                              .filter((id) => coalitions[id] === c)
+                              .map((id) => side(id)?.name ?? '—')
+                              .join(' + ')}
+                          </span>
+                        </span>
+                        <span className="font-gothic text-lg font-bold text-theme-primary">
+                          {total}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
               <div className="flex flex-wrap items-center gap-2">
                 {matchWarbandIds.map((wbId, pIdx) => {
                   const pScore = warbandScores[wbId]?.vp || 0;
@@ -1129,7 +1384,7 @@ export const PlayModeView: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => setIsPostBattleOpen(true)}
+                  onClick={handleEndMatch}
                   className="flex items-center space-x-2 px-4 py-2 bg-theme-accent hover:bg-status-error text-white rounded font-mono text-xs font-bold uppercase tracking-wider transition-all shadow-lg shadow-theme-accent/40"
                 >
                   <Skull className="w-4 h-4" />

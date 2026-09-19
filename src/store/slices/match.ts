@@ -10,7 +10,7 @@ import type { AppState } from '../state';
 import type { BattleMarker } from '../../types/catalogue';
 import { persistWarbands } from '../persist';
 
-export type MatchSlice = Pick<AppState, 'playTurn' | 'incrementTurn' | 'resetMatchState' | 'updateUnitWounds' | 'updateUnitBloodMarkers' | 'updateUnitBlessingMarkers' | 'setUnitStatus' | 'toggleUnitActed' | 'activeKeyword' | 'setActiveKeyword'>;
+export type MatchSlice = Pick<AppState, 'playTurn' | 'incrementTurn' | 'setPlayTurn' | 'resetMatchState' | 'updateUnitWounds' | 'updateUnitBloodMarkers' | 'updateUnitBlessingMarkers' | 'setUnitStatus' | 'toggleUnitActed' | 'activeKeyword' | 'setActiveKeyword'>;
 
 /**
  * How many of a marker a model may hold.
@@ -54,6 +54,15 @@ export const createMatchSlice: StateCreator<AppState, [], [], MatchSlice> = (set
         return { playTurn: nextTurn, warbands: updatedWarbands };
       });
     },
+
+    /*
+      Straight to a turn number, which only a restore should do.
+
+      Not a substitute for `incrementTurn`: that also clears every model's
+      acted-this-turn flag, and a restore must not, because the flags it is
+      restoring alongside are the real ones from the turn being resumed.
+    */
+    setPlayTurn: (turn) => set({ playTurn: Math.max(1, Math.floor(turn)) }),
 
     resetMatchState: () => {
       set((state) => {

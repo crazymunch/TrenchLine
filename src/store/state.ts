@@ -24,7 +24,7 @@ import { type DroppedDetail } from '../rules/recruitable';
 import type { SyncState } from '../services/sync';
 import type { CampaignSyncState } from '../services/campaignSync';
 
-export type AppView = 'builder' | 'play' | 'campaign' | 'codex' | 'customizer' | 'directory';
+export type AppView = 'builder' | 'play' | 'campaign' | 'chronicle' | 'codex' | 'customizer' | 'directory';
 
 /**
  * How the store asks for a navigation.
@@ -263,6 +263,8 @@ export interface AppState {
   // Tabletop Play Mode
   playTurn: number;
   incrementTurn: () => void;
+  /** Set the turn directly, for a match restored from storage. */
+  setPlayTurn: (turn: number) => void;
   resetMatchState: () => void;
   updateUnitWounds: (warbandId: string, unitId: string, delta: number) => void;
   updateUnitBloodMarkers: (warbandId: string, unitId: string, delta: number) => void;
