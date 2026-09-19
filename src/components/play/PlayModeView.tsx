@@ -8,6 +8,7 @@ import { useDataset } from '../../rules/useDataset';
 import { DiceRoller } from './DiceRoller';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
+import { ModelReferenceSheet } from './ModelReferenceSheet';
 import { QuickSearchModal } from './QuickSearchModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { AllOutWarCardConsole } from './AllOutWarCardConsole';
@@ -58,8 +59,7 @@ import {
   Lock,
   History,
   X,
-  TrendingUp
-} from 'lucide-react';
+  TrendingUp, BookOpen } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
@@ -164,6 +164,16 @@ export const PlayModeView: React.FC = () => {
   // Modals & Tools
   const [filterStatus, setFilterStatus] = useState<string>('All');
   const [attackingUnit, setAttackingUnit] = useState<ActiveUnit | null>(null);
+  /*
+    The model whose full card is open.
+
+    Reported after a live game: everything needed to play a model — its
+    keywords, abilities and earned skills — was only on the roster page, so
+    the player kept leaving the match to read it. Play Mode rendered no
+    keywords at all, which is also why tapping one never opened the rule:
+    `KeywordPopover` was mounted the whole time with nothing asking it.
+  */
+  const [referenceUnit, setReferenceUnit] = useState<ActiveUnit | null>(null);
   const [isQuickSearchOpen, setIsQuickSearchOpen] = useState(false);
   /**
    * Whether the phone HUD is showing its secondary controls.
@@ -1848,6 +1858,16 @@ export const PlayModeView: React.FC = () => {
                       ))}
                     </div>
 
+                    {/* The model's own card: stats with injuries applied,
+                        keywords as tappable chips, abilities and skills. */}
+                    <button
+                      onClick={() => setReferenceUnit(unit)}
+                      className="flex w-full items-center justify-center gap-1.5 rounded border border-theme-border bg-theme-base py-2 text-xs font-bold uppercase text-theme-muted transition-colors hover:border-theme-primary hover:text-theme-primary"
+                    >
+                      <BookOpen className="h-3.5 w-3.5" />
+                      <span>Rules, Keywords &amp; Skills</span>
+                    </button>
+
                     {/* Tactical Attack Trigger */}
                     <button
                       onClick={() => setAttackingUnit(unit)}
@@ -1953,6 +1973,18 @@ export const PlayModeView: React.FC = () => {
           attacker={attackingUnit}
           weather={activeWeather}
           onClose={() => setAttackingUnit(null)}
+        />
+      )}
+
+      {/* THE MODEL'S OWN CARD */}
+      {referenceUnit && (
+        <ModelReferenceSheet
+          unit={referenceUnit}
+          keywords={playDataset?.keywords}
+          /* The Trauma table, so a Leg Wound's -2" comes from the catalogue
+             rather than being written into the component. */
+          traumaTable={playDataset?.campaign?.trauma}
+          onClose={() => setReferenceUnit(null)}
         />
       )}
 
