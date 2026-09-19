@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { goTo, openApp, seedWarband } from './helpers';
+import { expectNoHorizontalScroll, goTo, openApp, seedWarband } from './helpers';
 
 /**
  * Play Mode on a phone (Phase 3.6).
@@ -197,4 +197,92 @@ test('the Chronicle says when it is only showing this device', async ({ page }) 
 
   // And it offers a way to try again rather than leaving it at that.
   await expect(status.getByRole('button', { name: /Refresh/i })).toBeVisible();
+});
+
+/**
+ * A placeholder opponent is seated by creating them, and fits inside its card.
+ *
+ * Both halves shipped broken and were reported from a real lobby.
+ *
+ * Creating one used to save it and stop there, so the player had to find the
+ * same opponent in the list and click it a second time — two steps for one
+ * intention, having just said who is playing.
+ *
+ * And the row it appeared in overflowed its column, because `flex-1` sets no
+ * min-width: a long name made the button 347px wide inside a 179px row, which
+ * put the `+` 138px outside the card and the delete button 200px outside, both
+ * over the neighbouring player's panel. A test that finds a control through
+ * the accessibility tree clicks it happily; a person aiming at the card cannot
+ * reach it. So this asserts GEOMETRY, not just clickability — that is the
+ * whole point, and a `click()` alone would have passed against the bug.
+ */
+test('a created opponent is seated, and its row stays inside the card', async ({ page }) => {
+  await seedWarband(page);
+  await page.addInitScript(() => localStorage.removeItem('tc_opponents_v1'));
+  await page.goto('/play');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(1200);
+
+  const players = () => page.locator('text=/^PLAYER \\d/i').count();
+  expect(await players()).toBe(1);
+
+  // A deliberately long name: the short ones fit by luck and prove nothing.
+  await page.getByRole('button', { name: /Opponent without a warband/i }).first().click();
+  await page.locator('#opp-name').fill('The Black Procession of the Heretic Legions');
+  await page.getByRole('button', { name: /^Save opponent$/i }).first().click();
+  await page.waitForTimeout(800);
+
+  // One step, not two.
+  expect(await players(), 'creating an opponent did not seat them').toBe(2);
+
+  /* Fill the remaining slots so the add panel is at its narrowest — the
+     column where the overflow actually bit. */
+  for (const name of ['Second Placeholder Warband', 'Third Placeholder Warband']) {
+    await page.getByRole('button', { name: /Opponent without a warband/i }).first().click();
+    await page.locator('#opp-name').fill(name);
+    await page.getByRole('button', { name: /^Save opponent$/i }).first().click();
+    await page.waitForTimeout(700);
+  }
+  expect(await players(), 'the fourth side could not be added').toBe(4);
+
+  await expectNoHorizontalScroll(page);
+});
+
+/**
+ * The same row, measured in the narrow slot it broke in.
+ *
+ * Separate from the test above because it needs a saved opponent that is NOT
+ * yet in the match while three sides already are — the exact state a fourth
+ * player is added from, and the one where the column is narrowest.
+ */
+test('a saved opponent row does not spill out of the add panel', async ({ page }) => {
+  await seedWarband(page);
+  await page.addInitScript(() => localStorage.setItem('tc_opponents_v1', JSON.stringify([
+    { id: 'opp-x', name: 'Short One', factionId: 'new-antioch', createdAt: '2026-01-01T00:00:00Z' },
+    { id: 'opp-y', name: 'Also Short', factionId: 'court-seven-serpents', createdAt: '2026-01-01T00:00:00Z' },
+    { id: 'opp-z', name: 'The Black Procession of the Heretic Legions', factionId: 'heretic-legions', createdAt: '2026-01-01T00:00:00Z' },
+  ])));
+  await page.goto('/play');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(1200);
+
+  for (const n of ['Short One', 'Also Short']) {
+    await page.getByRole('button', { name: new RegExp(n, 'i') }).first().click();
+    await page.waitForTimeout(600);
+  }
+
+  const spill = await page.evaluate(() => {
+    const panel = [...document.querySelectorAll('div')].find((d) =>
+      d.className.includes('border-dashed') && /Add Opponent/i.test(d.textContent || ''));
+    if (!panel) return { noPanel: true };
+    const pr = panel.getBoundingClientRect();
+    return [...panel.querySelectorAll('li')].flatMap((li) =>
+      [...li.children]
+        .map((c) => ({
+          text: (c.textContent || '').trim().slice(0, 24),
+          past: Math.round(c.getBoundingClientRect().right - pr.right),
+        }))
+        .filter((c) => c.past > 1));
+  });
+  expect(spill, 'a row spills past the right edge of its card').toEqual([]);
 });
