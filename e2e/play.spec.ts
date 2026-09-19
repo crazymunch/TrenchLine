@@ -168,3 +168,30 @@ test('ending a match records it in the Chronicle', async ({ page }) => {
   await expect(card.getByText('E2E Test Warband')).toBeVisible();
   await expect(card.getByText('2 VP')).toBeVisible();
 });
+
+/**
+ * A Chronicle that cannot reach the cloud says so.
+ *
+ * CHRON-2 puts battle records on the server so the other warbands in a game
+ * see the game they played. That creates a way for the view to be quietly
+ * wrong: a failed fetch returning an empty list looks exactly like "you have
+ * fought no battles", and the player cannot see through it.
+ *
+ * The suite runs signed OUT, so `/api/battles` answers 401 — which is the
+ * honest version of the same situation and the one this asserts. Rule 2 in
+ * CLAUDE.md, and `services/githubSync.ts` is the shipped example of getting it
+ * wrong.
+ */
+test('the Chronicle says when it is only showing this device', async ({ page }) => {
+  await seedWarband(page);
+  await page.goto('/chronicle');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(800);
+
+  const status = page.getByRole('status');
+  await expect(status).toBeVisible();
+  await expect(status).toContainText(/only what this device recorded/i);
+
+  // And it offers a way to try again rather than leaving it at that.
+  await expect(status.getByRole('button', { name: /Refresh/i })).toBeVisible();
+});

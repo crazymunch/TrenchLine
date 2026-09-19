@@ -3,7 +3,8 @@
 What a finished match leaves behind.
 
 `src/types/battle.ts`, `src/rules/battleFromMatch.ts`,
-`src/components/chronicle/ChronicleView.tsx`, at `/chronicle`.
+`src/components/chronicle/ChronicleView.tsx`, at `/chronicle`. The cloud half
+is `src/services/battleSync.ts` and `src/app/api/battles/route.ts`.
 
 ## What was being thrown away
 
@@ -64,10 +65,88 @@ bottom bar's **More** button, with Roster Directory — the bar is a hard five a
 375px, so its fifth slot is a door rather than a sixth destination. The
 reasoning is in [MOBILE.md §6c](MOBILE.md#6c-the-phone-bar-is-five-slots-and-the-fifth-is-a-door).
 
+## In the cloud (CHRON-2)
+
+A record used to live in the `localStorage` of the ONE device that ran the
+tracker. That is the wrong place for it twice over: in a 2v2 the other three
+players fought the same game and had no record of it at all, and the recording
+device losing its browser storage lost the lot.
+
+So a battle is pushed to `/api/battles` when the match ends, and the Chronicle
+merges what the cloud returns with what the device holds.
+
+### Who can read one
+
+| Reader | Sees |
+|---|---|
+| The recorder | Their own battles, at any visibility |
+| A player whose warband fought | That battle, unless it is `PRIVATE` |
+| A member of the campaign | Its battles, unless they are `PRIVATE` |
+| Anyone signed in | `PUBLIC` battles |
+| Signed out | 401 — the Chronicle is local-only, which is a supported way to play |
+
+Participation is resolved **server-side from warband ownership**, never from
+the request body (`BattleParticipant`). A client that could name the
+participants could name anyone, and putting a battle in a stranger's Chronicle
+is a write to their account by someone else.
+
+`PUBLIC` exists in the enum and the route honours it, but **nothing in the UI
+sets it**. trenchline.app is still in Safe Browsing review, and a feed of
+user-authored titles and free text readable by anyone is the last thing to turn
+on while that is open. The column costs nothing now and saves a migration when
+it clears.
+
+### Why this is not the campaign sync protocol
+
+`campaigns/sync` takes versioned operations, detects conflicts and hands them to
+a human. That machinery exists because a roster is edited, repeatedly, from more
+than one device.
+
+A battle record is **written once and never edited** — the rule the whole
+Chronicle is built on. With one writer and no edits there is no conflict to
+detect, so there is no version column, no merge, no operation log and nobody to
+ask. A repeat write of the same id is the same battle arriving twice, and the
+primary key says so, which is what makes a retry safe on a phone that lost its
+signal mid-write.
+
+### Local first, and never a silent fallback
+
+The local write happens before the push and is never undone by it: a phone at a
+club with no signal must still be able to end a match and keep what happened.
+The push is fire-and-forget for the same reason — holding the post-battle
+wizard behind a network round trip would make a lost signal look like the app
+hanging at the moment everyone is waiting on it.
+
+Nothing records whether a push landed. The Chronicle works it out by comparing
+what it holds against what the server returns, which cannot go stale the way a
+stored flag can; a local battle the server does not know is offered a **share**
+button. And a failed fetch is reported as a failure — `{ ok: false, failure }`,
+rendered as a sentence — never as an empty list. "The cloud has no battles for
+you" and "the cloud could not be reached" are different facts and only one of
+them is an answer (rule 2; `services/githubSync.ts` is the shipped example of
+getting this wrong).
+
+### Deleting
+
+The recorder only, and both copies at once. Forgetting a battle locally while
+leaving it in the cloud brings it back on the next load, which reads as the app
+refusing to obey. A battle you fought in but did not record shows no forget
+button at all: it is the same game the other players are looking at, and it is
+not yours to delete.
+
 ## Known gaps
 
-- **Device-local.** Records live in `localStorage` and do not sync. The
-  campaign half already syncs; this does not.
+- **No public feed.** `PUBLIC` is in the schema and unreachable from the UI
+  until the Safe Browsing review closes.
+- **The forget button follows the DEVICE, not the account.** A battle you
+  recorded on another device arrives here as a cloud record, so it shows no
+  forget button even though the server would allow you to delete it. Honest
+  rather than wrong — it says who recorded it — but it is one place where the
+  view knows less than the server does.
+- **A one-off game between strangers is not shared.** Sharing reaches campaign
+  members and warbands this service knows. A placeholder opponent has no
+  account by definition, so a pick-up game against someone who does not use
+  the app is recorded on one device, as it was before.
 - **Casualties and injuries are not in the record.** Those are applied to the
   warband by the post-battle wizard, so they are recoverable from the roster
   rather than lost — but the battle itself does not list them.
@@ -75,5 +154,11 @@ reasoning is in [MOBILE.md §6c](MOBILE.md#6c-the-phone-bar-is-five-slots-and-th
 ## Checking it
 
 `src/rules/__tests__/battleFromMatch.test.ts` — 17 tests over what is kept,
-what is derived and what a damaged record does. Plus an e2e that plays a
-match, ends it, and finds it in the Chronicle with its side and score.
+what is derived and what a damaged record does.
+
+`src/services/__tests__/battleSync.test.ts` — 16 over the cloud half, and the
+first of them is the one that matters: a failed read is a failure, never an
+empty Chronicle.
+
+Plus an e2e that plays a match, ends it, and finds it in the Chronicle with its
+side and score.
