@@ -224,6 +224,13 @@ book's step contains and the app does not (pages 104 to 106 and 111, lines
   beside its name and derives the second point from the id.
 - **War Stories** (+1 XP to every other ELITE) and **Bitter Lessons** (Trauma
   65, D3 extra XP, which the wizard displays and does not apply).
+  **Both landed, FD-06d.** `rules/extraExperience.ts` reads each from the text
+  the pipeline derived rather than from a roll number or a Skill name, so the
+  shipped table is the authority: exactly one Trauma row grants Experience and
+  it is 65 at D3, and War Stories' four clauses — +1, ELITE only, not the
+  holder, and *"you can give"* — are each read out of its own sentence. The
+  D3 is rolled in the step and blocks the commit until it is; War Stories is
+  offered as one switch and derived from the roster every time, never stored.
 - **Latecomers** (page 95, lines 5290 to 5300): 4 XP per game the top player
   has played, split among ELITE models. Not offered on enrolment.
 

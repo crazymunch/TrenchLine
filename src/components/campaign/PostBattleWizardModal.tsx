@@ -30,6 +30,10 @@ import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rul
 import type { MatchHandover } from '../../rules/matchHandover';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
+import {
+  warStoriesOffer, warStoriesEligible, extraExperienceFor, isValidRoll,
+  type ExtraExperienceRule,
+} from '../../rules/extraExperience';
 import type { ExplorationTableName, SkillsTableName, SkillRow } from '../../types/catalogue';
 import { CasualtyRecord } from '../../types/campaign';
 import type { ActiveUnit } from '../../types/warband';
@@ -254,6 +258,34 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     rolls: [number, number] | null;
   }>>({});
   const [skillPicks, setSkillPicks] = useState<SkillLearned[]>([]);
+
+  /*
+    War Stories (Wildcard Skill 11), taken or left — FD-06d.
+
+    ONE switch for the whole offer, not one per model, because that is the
+    shape of the sentence: *"you can give each model with the ELITE Keyword
+    that does not also have this Skill +1 extra Experience Point"*. The "can"
+    governs the giving; the "each" is not a menu. A per-model picker would be
+    offering a choice the book does not contain.
+
+    Default on. The rule costs nothing, spends nothing and is refused by
+    nobody — a player who has gone to the trouble of holding the Skill wants
+    its points — and unlike FD-07's by-hand Exploration modifiers, which
+    change a die the player is rolling at the table where the app cannot see,
+    this is bookkeeping the app is doing itself and can show in full before
+    anything is committed.
+  */
+  const [takeWarStories, setTakeWarStories] = useState(true);
+
+  /*
+    The D3 owed to a model that rolled Bitter Lessons (Trauma 65).
+
+    `null` is "owed and not yet rolled", and nothing commits while one is
+    outstanding — the same refusal an unresolved ransom gets. A roll the app
+    invented would be a number the player never saw a die make.
+  */
+  const [extraXpRolls, setExtraXpRolls] = useState<Record<string, number | null>>({});
+  const [extraXpRollMode, setExtraXpRollMode] = useState<'digital' | 'manual'>('digital');
 
   // Exploration roll
   const [selectedExplorationTable, setSelectedExplorationTable] = useState<ExplorationTableName>('common');
@@ -534,9 +566,56 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   */
   const deedUnitIds = new Set(handover?.deedUnitIds ?? []);
 
+  /*
+    War Stories, and who in this Warband is holding it (FD-06d).
+
+    Derived from the roster on every render, never stored — the rule FD-07
+    settled for Scavenger and Friends In High Places. A model that held the
+    Skill and died in this game is not in the Warband any more, and a stored
+    flag would go on paying the roster on its behalf.
+  */
+  const warStories = warStoriesOffer(dataset, warband.units);
+
+  /** Whether one model may take the War Stories point, ELITE resolved as everywhere else. */
+  const takesWarStories = (unitId: string) =>
+    takeWarStories && warStoriesEligible(warStories, unitId, eliteOf(unitId).elite === true);
+
+  /**
+   * The models a Trauma result owes extra Experience, with the rule that owes it.
+   *
+   * Read off the recorded outcome rather than the roll, so a Dispatch that
+   * renumbers 65 changes nothing here. Only ELITE models reach the D66 chart
+   * at all — a Troop takes the D6 Survival Roll — so this never meets one.
+   */
+  const extraXpOwed = warband.units
+    .map((u) => ({
+      unit: u,
+      rule: extraExperienceFor(dataset, casualtyOutcomes[u.id]?.outcome),
+    }))
+    .filter((x): x is { unit: typeof x.unit; rule: ExtraExperienceRule } => x.rule !== null);
+
+  /** Rolls owed and not yet made. Nothing commits while any remain. */
+  const unresolvedExtraXp = extraXpOwed.filter(
+    (x) => x.rule.die !== null && typeof extraXpRolls[x.unit.id] !== 'number');
+
+  /** What a Trauma result has actually handed this model, once rolled. */
+  const extraXpFor = (unitId: string) => {
+    const owed = extraXpOwed.find((x) => x.unit.id === unitId);
+    if (!owed) return 0;
+    if (owed.rule.die === null) return owed.rule.fixed ?? 0;
+    const rolled = extraXpRolls[unitId];
+    return typeof rolled === 'number' ? rolled : 0;
+  };
+
   const experienceFor = (unitId: string) => {
     const u = warband.units.find((x) => x.id === unitId);
-    if (!u) return { earns: false as const, points: 0, forDeed: false, blocked: 'elite-unknown' as const };
+    if (!u) {
+      return {
+        earns: false as const, points: 0, forDeed: false,
+        fromTrauma: 0, fromWarStories: 0, want: 0, withheld: 0,
+        blocked: 'elite-unknown' as const,
+      };
+    }
     const override = unitId in eliteOverrides
       ? { ...u, profileSnapshot: { ...u.profileSnapshot, elite: eliteOverrides[unitId] } }
       : u;
@@ -547,14 +626,28 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       died: diedInStep(unitId),
       xpBarringInjuries: barring,
     });
-    if (!verdict.earns) return { ...verdict, points: 0, forDeed: false };
+    if (!verdict.earns) return { ...verdict, points: 0, forDeed: false, fromTrauma: 0, fromWarStories: 0, want: 0, withheld: 0 };
 
     /* The Deed's point rides on the survivor's point and is not a separate
        entitlement: a model that earns nothing this game — dead, sat out, Head
        Wound — earns nothing for its Deed either, which is why this is reached
        only after the verdict above. */
     const forDeed = deedUnitIds.has(unitId);
-    const want = 1 + (forDeed ? 1 : 0);
+    /*
+      The two awards FD-06d adds, both riding on the survivor's point for the
+      same reason the Deed's does: a model that earns nothing this game — dead,
+      sat out, Head Wound — earns nothing extra either.
+
+      Head Wound is the case that makes that more than a tidiness argument. It
+      is permanent, the model keeps playing, and it can go Out of Action again
+      and roll Bitter Lessons: one row says "gains D3 extra Experience Points"
+      and the other says "can no longer gain Experience Points". A prohibition
+      beats a grant, and the early return above is already where that is
+      settled.
+    */
+    const fromTrauma = extraXpFor(unitId);
+    const fromWarStories = takesWarStories(unitId) ? (warStories?.rule.points ?? 0) : 0;
+    const want = 1 + (forDeed ? 1 : 0) + fromTrauma + fromWarStories;
 
     /*
       Limited Potential: "The following models cannot have more than 7
@@ -566,8 +659,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     */
     const { withheld } = cappedExperience(dataset, u, want);
     const granted = want - withheld;
-    if (granted <= 0) return { earns: false as const, points: 0, forDeed, blocked: 'at-experience-cap' as const };
-    return { ...verdict, points: granted, forDeed };
+    if (granted <= 0) {
+      return {
+        earns: false as const, points: 0, forDeed,
+        fromTrauma, fromWarStories, want, withheld,
+        blocked: 'at-experience-cap' as const,
+      };
+    }
+    return { ...verdict, points: granted, forDeed, fromTrauma, fromWarStories, want, withheld };
   };
 
   /** The cap a model is sitting on, for the sentence that explains it. */
@@ -894,6 +993,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     /* The button is disabled while a capture is outstanding; this is the same
        refusal for anything that reaches the handler another way. */
     if (unresolvedCaptures.length > 0) return;
+    /* Same refusal for a Trauma result that owes a die nobody has rolled. */
+    if (unresolvedExtraXp.length > 0) return;
 
     const casualties: CasualtyRecord[] = Object.entries(casualtyOutcomes).map(([unitId, data]) => {
       const u = warband.units.find((item) => item.id === unitId);
@@ -1057,17 +1158,22 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
             ) : (
               <button
                 onClick={handleFinalSubmit}
-                disabled={unresolvedCaptures.length > 0}
+                disabled={unresolvedCaptures.length > 0 || unresolvedExtraXp.length > 0}
                 title={unresolvedCaptures.length > 0
                   ? `Resolve the ransom for ${unresolvedCaptures.map((u) => u.customName).join(', ')} first.`
-                  : undefined}
+                  : unresolvedExtraXp.length > 0
+                    ? `Roll the ${unresolvedExtraXp[0].rule.name} Experience for `
+                      + `${unresolvedExtraXp.map((x) => x.unit.customName).join(', ')} first.`
+                    : undefined}
                 className="flex items-center space-x-1.5 px-5 py-2 bg-theme-accent hover:bg-status-error disabled:cursor-not-allowed disabled:bg-theme-elevated disabled:text-theme-muted disabled:shadow-none text-white text-xs font-bold uppercase rounded shadow-lg shadow-theme-accent/40"
               >
                 <Check className="w-4 h-4" />
                 <span>
                   {unresolvedCaptures.length > 0
                     ? 'Ransom unresolved'
-                    : 'Commit to Campaign Chronicle'}
+                    : unresolvedExtraXp.length > 0
+                      ? `${unresolvedExtraXp[0].rule.name} unrolled`
+                      : 'Commit to Campaign Chronicle'}
                 </span>
               </button>
             )}
@@ -1756,6 +1862,123 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                 </p>
               )}
 
+              {/*
+                War Stories (Wildcard Skill 11), where a model holds it.
+
+                Hidden entirely otherwise, rather than shown greyed out: a
+                Warband with nobody holding the Skill has no decision to make,
+                and a permanent empty panel is a rule the player has to learn
+                to ignore.
+              */}
+              {warStories && (
+                <div className="space-y-2 rounded border border-theme-border bg-theme-base p-3">
+                  <p className="font-gothic text-sm font-bold text-theme-text">
+                    {warStories.rule.name}
+                  </p>
+                  <p className="text-xs text-theme-muted">{warStories.rule.text}</p>
+                  <p className="text-xs text-theme-muted">
+                    Held by{' '}
+                    {warband.units
+                      .filter((u) => warStories.holderIds.has(u.id))
+                      .map((u) => u.customName).join(', ')}
+                    .
+                  </p>
+                  <label className="flex min-h-[44px] items-center gap-2 text-xs text-theme-primary">
+                    <input
+                      type="checkbox"
+                      checked={takeWarStories}
+                      onChange={(e) => setTakeWarStories(e.target.checked)}
+                      className="h-4 w-4 shrink-0 accent-current"
+                    />
+                    <span>
+                      Give every other ELITE model +{warStories.rule.points} Experience Point
+                    </span>
+                  </label>
+                </div>
+              )}
+
+              {/*
+                The die a Trauma result owes, one panel per model that rolled
+                one. The roll is the player's: digital rolls it here, manual
+                takes the number off the table's own dice, exactly as the
+                Trauma and Exploration steps already do.
+              */}
+              {extraXpOwed.map(({ unit, rule }) => {
+                const rolled = extraXpRolls[unit.id];
+                const sides = rule.die;
+                return (
+                  <div key={`extra-xp-${unit.id}`} className="space-y-2 rounded border border-theme-accent bg-theme-base p-3">
+                    <p className="font-gothic text-sm font-bold text-theme-text">
+                      {unit.customName} — {rule.name}
+                    </p>
+                    <p className="text-xs text-theme-muted">{rule.text}</p>
+                    {sides === null ? (
+                      <p className="text-xs text-theme-primary">+{rule.fixed} Experience.</p>
+                    ) : typeof rolled === 'number' ? (
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs text-theme-primary">
+                          Rolled {rolled} — +{rolled} Experience.
+                        </span>
+                        <button
+                          onClick={() => setExtraXpRolls((r) => ({ ...r, [unit.id]: null }))}
+                          className="min-h-[44px] rounded border border-theme-border px-3 text-xs uppercase text-theme-muted"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => setExtraXpRollMode('digital')}
+                            className={`min-h-[44px] flex-1 rounded border px-3 text-xs uppercase ${
+                              extraXpRollMode === 'digital'
+                                ? 'border-theme-accent bg-theme-accent text-white'
+                                : 'border-theme-border text-theme-muted'}`}
+                          >
+                            Roll here
+                          </button>
+                          <button
+                            onClick={() => setExtraXpRollMode('manual')}
+                            className={`min-h-[44px] flex-1 rounded border px-3 text-xs uppercase ${
+                              extraXpRollMode === 'manual'
+                                ? 'border-theme-accent bg-theme-accent text-white'
+                                : 'border-theme-border text-theme-muted'}`}
+                          >
+                            Enter a roll
+                          </button>
+                        </div>
+                        {extraXpRollMode === 'digital' ? (
+                          <button
+                            onClick={() => setExtraXpRolls((r) => ({
+                              ...r,
+                              [unit.id]: 1 + Math.floor(Math.random() * sides),
+                            }))}
+                            className="min-h-[44px] w-full rounded border border-theme-accent bg-theme-accent px-3 text-xs font-bold uppercase text-white"
+                          >
+                            Roll D{sides}
+                          </button>
+                        ) : (
+                          <div className="flex flex-wrap gap-2">
+                            {Array.from({ length: sides }, (_, i) => i + 1).map((n) => (
+                              <button
+                                key={n}
+                                onClick={() => setExtraXpRolls((r) => ({ ...r, [unit.id]: n }))}
+                                disabled={!isValidRoll(rule, n)}
+                                aria-label={`${unit.customName} rolled ${n}`}
+                                className="min-h-[44px] min-w-[44px] rounded border border-theme-border text-sm text-theme-text"
+                              >
+                                {n}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
               <div className="space-y-3">
                 {warband.units.map((unit) => {
                   const xp = experienceFor(unit.id);
@@ -1778,11 +2001,28 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                       because a Deed that earned nothing looks like the app
                       forgetting rather than the cap working.
                     */}
-                    {xp.earns && xp.forDeed && (
+                    {/*
+                      The award, broken into the rules that made it. Two points
+                      was already the unusual case; with War Stories and a
+                      Trauma result in play an award can now be five, and a
+                      number that large with no working shown is one a player
+                      cannot check against the page.
+                    */}
+                    {xp.earns && (xp.forDeed || xp.fromTrauma > 0 || xp.fromWarStories > 0) && (
                       <p className="text-xs sm:text-[11px] text-theme-primary">
-                        {xp.points >= 2
-                          ? '+1 for surviving, +1 for a Glorious Deed'
-                          : `+1 only — a Glorious Deed's second point would pass its cap of ${capFor(unit.id)}`}
+                        {[
+                          '+1 for surviving',
+                          ...(xp.forDeed ? ['+1 for a Glorious Deed'] : []),
+                          ...(xp.fromTrauma > 0
+                            ? [`+${xp.fromTrauma} from ${
+                                extraXpOwed.find((x) => x.unit.id === unit.id)?.rule.name}`]
+                            : []),
+                          ...(xp.fromWarStories > 0
+                            ? [`+${xp.fromWarStories} from ${warStories?.rule.name}`]
+                            : []),
+                        ].join(', ')}
+                        {xp.withheld > 0
+                          && ` — ${xp.withheld} withheld at its cap of ${capFor(unit.id)}`}
                       </p>
                     )}
                     {/*
