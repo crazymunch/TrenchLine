@@ -316,6 +316,28 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
           stampLeaves(provenance, op.target.kind, target?.id ?? op.target.id,
                       op.value, { layer: layer.id, source }, op.field);
         }
+        /*
+          A weapon's name is ONE fact, stored twice.
+
+          Forced kit carries the name the catalogue's `selectionEntry` used,
+          and the profile it points at carries its own. Across the whole
+          dataset these agreed everywhere but one place: the Goetic Warlock's
+          kit said `Iron-Clawed Hands` while its profile said `Reaping Claws`,
+          and the Dispatch calls the thing `Flaying Iron Claws`. Three names,
+          one weapon — and renaming the profile alone would have left the
+          Warlock's card still printing the old one.
+
+          So a `set name` on a weapon follows through to every kit entry
+          pointing at it. `rules-build.mjs` then asserts the two agree, which
+          is what stops the next such pair from drifting unnoticed.
+        */
+        if (op.target.kind === 'weapon' && op.field === 'name') {
+          for (const u of dataset.units ?? []) {
+            for (const kit of u.battlekit ?? []) {
+              if (kit.profileId === target.id) kit.name = op.value;
+            }
+          }
+        }
         break;
       }
 
@@ -330,6 +352,30 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
         const coll = dataset[COLLECTIONS[op.target.kind]];
         const i = coll.indexOf(target);
         if (i >= 0) coll.splice(i, 1);
+        break;
+      }
+
+      /*
+        `unset` is not `set` to an empty string.
+
+        A weapon with no special rule carries no `rules` key at all — 69 of the
+        658 do — and the app tests the field's presence. Writing `""` would
+        give it a rules section containing nothing, which reads as "this weapon
+        has a rule and we lost it". Deleting the key says what the printed
+        entry says: there is no rule here.
+
+        It exists because the Dispatch REPLACES entries. The Gavel of Justice
+        is reprinted with Type, Range and Keywords and no rule, and the
+        catalogue's `Wrath of God` on it is the rule the Dispatch replaced with
+        the Witchburner's `Found Guilty` ability. Keeping both would place the
+        extra BLOOD MARKER twice.
+      */
+      case 'unset': {
+        const parts = op.field.split('.');
+        let cur = target;
+        for (let i = 0; i < parts.length - 1 && cur; i++) cur = cur[parts[i]];
+        if (cur) delete cur[parts.at(-1)];
+        stamp(op.target, op.field, target);
         break;
       }
 

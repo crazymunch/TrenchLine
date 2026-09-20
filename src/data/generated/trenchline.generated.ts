@@ -18873,7 +18873,9 @@ export const DATASET: Dataset = {
       "roles": [
         "Mercenary"
       ],
-      "keywords": [],
+      "keywords": [
+        "NEGATE FEAR"
+      ],
       "stats": {
         "movement": "6\"/Infantry",
         "movementInches": 6,
@@ -18982,7 +18984,11 @@ export const DATASET: Dataset = {
         }
       ],
       "sourceFile": "Mercenaries.cat",
-      "battlekitNote": "A Sister of Saint Cosmas always has Standard Armour, a Gas Mask, Medi-kit and a Misericordia."
+      "battlekitNote": "A Sister of Saint Cosmas always has Standard Armour, a Gas Mask, Medi-kit and a Misericordia.",
+      "allowedFactions": [
+        "Trench Pilgrims",
+        "Procession of the Sacred Affliction"
+      ]
     },
     {
       "id": "05fe-9537-b2ad-0782",
@@ -19329,6 +19335,21 @@ export const DATASET: Dataset = {
             "glory": 0
           },
           "profileId": "33ed-6314-e75f-8982"
+        },
+        {
+          "id": "fb45-9c9c-7cf1-6745",
+          "linkId": "dispatch-01:b5ac-1a57-c1d4-3f4c:gavel-of-justice",
+          "name": "Gavel of Justice",
+          "quantity": 1,
+          "keywords": [
+            "CRITICAL",
+            "FIRE"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "ddce-0973-220d-51e0"
         }
       ],
       "constraints": [
@@ -19373,7 +19394,8 @@ export const DATASET: Dataset = {
         "New Antioch",
         "Trench Pilgrims",
         "Procession of the Sacred Affliction"
-      ]
+      ],
+      "battlekitNote": "A Witchburner always has Reinforced Armour, a Combat Helmet, and a Gavel of Justice."
     },
     {
       "id": "2d21-7af1-0770-da4c",
@@ -19445,7 +19467,7 @@ export const DATASET: Dataset = {
         {
           "id": "4d1c-67e3-95cf-1169",
           "linkId": "4d1c-67e3-95cf-1169",
-          "name": "Tenderizer Maul",
+          "name": "Tenderiser Maul",
           "quantity": 1,
           "keywords": [
             "+1 INJURY MODIFIER",
@@ -20505,7 +20527,7 @@ export const DATASET: Dataset = {
       ],
       "keywords": [
         "MERCENARY",
-        "FIRETEAM (see Sworn Brethren)",
+        "FIRETEAM (▶ see Sworn Brethren)",
         "IGNORE OFF-HAND WEAPON"
       ],
       "stats": {
@@ -20694,18 +20716,57 @@ export const DATASET: Dataset = {
       "max": null,
       "abilities": [
         {
-          "id": "0f36-c292-faa5-8041",
+          "id": "dispatch01-scripture-guardian-slow",
           "name": "Slow",
-          "description": "Scripture Guardian has a half Dash distance (i.e. 3”)."
-        },
-        {
-          "id": "c2eb-07dc-8c93-93a6",
-          "name": "Vengeful Scripture",
-          "description": "The Scripture Guardian reads words from the holy (or unholy!) text it carries. This is an attack ACTION with 18” range, and it can be used in either Melee or as a Ranged attack (though not both during the same Activation). Use Ranged and Melee Characteristics as appropriate. This attack ignores armour and cover. For each BLOOD MARKER the target has, add +1 to the Injury roll. Note that if armed with a melee weapon, both the Melee attack and the use of the Vengeageful Scripture can be used simultaneously."
+          "description": "Treat a Scripture Guardian as having a Movement Characteristic of 3”/Infantry when it takes a Dash ACTION."
         }
       ],
       "options": [],
-      "battlekit": [],
+      "battlekit": [
+        {
+          "id": "a535-4fb6-c587-691a",
+          "linkId": "dispatch-01:3fe9-1530-6fcd-1855:reinforced-armour",
+          "name": "Reinforced Armour",
+          "quantity": 1,
+          "keywords": [
+            "-2 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "33ed-6314-e75f-8982"
+        },
+        {
+          "id": "dd63-2453-14d7-7e00",
+          "linkId": "dispatch-01:3fe9-1530-6fcd-1855:combat-helmet",
+          "name": "Combat Helmet",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE SHRAPNEL"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "f742-ff2c-671c-3e20"
+        },
+        {
+          "id": "dispatch01-weapon-vengeful-scripture",
+          "linkId": "dispatch-01:3fe9-1530-6fcd-1855:vengeful-scripture",
+          "name": "Vengeful Scripture",
+          "quantity": 1,
+          "keywords": [
+            "ASSAULT",
+            "IGNORE COVER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "dispatch01-weapon-vengeful-scripture"
+        }
+      ],
       "constraints": [
         {
           "id": "6e44-7b89-6f05-d44e",
@@ -20746,7 +20807,8 @@ export const DATASET: Dataset = {
         }
       ],
       "sourceFile": "Mercenaries.cat",
-      "allowedFactions": null
+      "allowedFactions": null,
+      "battlekitNote": "A Scripture Guardian always has Reinforced Armour, Combat Helmet, and a Vengeful Scripture. In addition, it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon. You must purchase the Melee Weapons from your Faction Armoury Tables at their normal Cost, and you must obey any stipulations that apply to the weapons you choose (e.g. ELITE only, Limit: 1 etc.). Vengeful Scripture and the weapons you choose cannot be removed or lost over the course of the campaign for any reason."
     },
     {
       "id": "1a28-719d-fbd0-5bf0",
@@ -20820,7 +20882,7 @@ export const DATASET: Dataset = {
         {
           "id": "1e63-fd87-a6a7-eb5e",
           "linkId": "1e63-fd87-a6a7-eb5e",
-          "name": "Iron-Clawed Hands",
+          "name": "Flaying Iron Claws",
           "quantity": 1,
           "keywords": [
             "CLEAVE 2",
@@ -20957,7 +21019,8 @@ export const DATASET: Dataset = {
         "Heretic Legion",
         "Court of the Seven-Headed Serpent",
         "Heretic Naval Raiders"
-      ]
+      ],
+      "battlekitNote": "A Goetic Warlock always has Reinforced Armour and Flaying Iron Claws. These pieces of Battlekit can never be removed or lost."
     },
     {
       "id": "bc90-d206-2b0d-b743",
@@ -54323,9 +54386,9 @@ export const DATASET: Dataset = {
       "type": "1-handed",
       "range": "Melee",
       "keywords": [
-        "CRITICAL"
+        "CRITICAL",
+        "FIRE"
       ],
-      "rules": "Wrath of God: After making the Injury Roll for a Gavel of Justice, place 1 extra BLOOD MARKER next to the target model (even if the Injury Roll has No Effect). If the target has the BLACK GRAIL, DEMONIC, or HERETIC Keyword, place 2 BLOOD MARKERS next to it instead of 1.",
       "cost": {
         "ducats": 0,
         "glory": 0
@@ -54369,19 +54432,20 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "lore": "The staff of a Witchburner is both a mark of their office and a weapon imbued with the wrath of God against those who have broken divine law. It dooms the souls of those found guilty to burn in flames for all eternity."
     },
     {
       "id": "c63d-fe53-a980-4a2a",
       "entryId": "4d1c-67e3-95cf-1169",
-      "name": "Tenderizer Maul",
+      "name": "Tenderiser Maul",
       "type": "2-Handed",
       "range": "Melee",
       "keywords": [
         "+1 INJURY MODIFIER",
         "HEAVY"
       ],
-      "rules": "Swinging Blow: When a model armed with a Tenderiser Maul takes a Fight ACTION, instead of making only 1 Melee Attack, you can make 1 Melee Attack against each enemy model with 1\" of the attacking model. Resolve each Melee Attack one at a time in the order of your choice.",
+      "rules": "Mulch: When a model armed with a Tenderiser Maul takes a Fight ACTION, you must choose if the model takes a Crushing Blow or a Swinging Blow: Crushing Blow: Injury Rolls for an attack made with a Crushing Blow have the +2 INJURY MODIFIER Keyword instead of the +1 INJURY MODIFIER Keyword. Swinging Blow: Make 1 Melee Attack against each enemy model within 1” of the attacking model. Resolve each Melee Attack one at a time in the order of your choice.",
       "cost": {
         "ducats": 0,
         "glory": 0
@@ -55344,14 +55408,13 @@ export const DATASET: Dataset = {
     {
       "id": "e8d8-c2a3-9a3e-b3b8",
       "entryId": "1e63-fd87-a6a7-eb5e",
-      "name": "Reaping Claws",
-      "type": "Special",
+      "name": "Flaying Iron Claws",
+      "type": "2-Handed",
       "range": "Melee",
       "keywords": [
         "CLEAVE 2",
         "CRITICAL"
       ],
-      "rules": "A Goetic Warlock can make a Melee Attack with the CLEAVE 2 and CRITICAL Keywords even though it does not have a Melee Weapon. In addition, the Off-Hand Weapon modifier applies to the second attack.",
       "cost": {
         "ducats": 0,
         "glory": 0
@@ -61044,7 +61107,7 @@ export const DATASET: Dataset = {
       "range": "-",
       "keywords": [],
       "rules": "Favoured Strain: At the start of each game, choose 1 Strain. Friendly models that have the chosen Strain gain the additional Favoured effects listed below for the rest of the game. Bolgias Gut Favoured: Burst ACTIONS taken by model with the Bolgias Gut Strain do not have the -1 INJURY DICE Keyword. Hellfly Host Favoured: A model with the Hellfly Host Strain gains the Undead Fortitude ability. Leech Grip Favoured: Place D3 BLOOD MARKERS next to any enemy model that takes a Retreat ACTION while within 1” of a model with the Leech Grip Strain instead of 1 BLOOD MARKER. Tapeworm Throng Favoured: The Long Range modifier for Ranged Attacks that target a model with the Tapeworm Throng Strain is -2 DICE instead of -1 DICE.",
-      "description": "To face the Black Grail is to fight against both entropy and evolution. Left unchecked, the myriad Strains of Beelzebub’s plaguecraft fester, strengthening their grip on even the lowliest of thralls. On rare occasions, tenacious members of the Order of the Fly prove their worth to the Prince of Decay enough that he offers his foetid blessing, advancing these Strains faster than otherwise possible."
+      "lore": "To face the Black Grail is to fight against both entropy and evolution. Left unchecked, the myriad Strains of Beelzebub’s plaguecraft fester, strengthening their grip on even the lowliest of thralls. On rare occasions, tenacious members of the Order of the Fly prove their worth to the Prince of Decay enough that he offers his foetid blessing, advancing these Strains faster than otherwise possible."
     },
     {
       "id": "dispatch01-glory-regimental-kasik",
@@ -61055,7 +61118,7 @@ export const DATASET: Dataset = {
         "LEADER"
       ],
       "rules": "Brotherhood of the Spoon: Do not count friendly Janissaries that are Down or have been taken Out of Action in the Morale Phase whilst there is a friendly Janissary with a Regimental Kaşık on the battlefield. In addition, this counts as a Musical Instrument for the purposes of the Mehterân ability.",
-      "description": "Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık."
+      "lore": "Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık."
     },
     {
       "id": "dispatch01-gluttonous-arsenal",
@@ -61068,7 +61131,7 @@ export const DATASET: Dataset = {
         "CLEAVE 3"
       ],
       "rules": "✥ Putrid Spray: ACTION: Melee Attacks made with a Gluttonous Arsenal have the INFECTION MARKERS Keyword.",
-      "description": "The Amalgam absorbs the remnants of battle, consuming, digesting, and readopting fallen arms into a vile armoury of cascading violence."
+      "lore": "The Amalgam absorbs the remnants of battle, consuming, digesting, and readopting fallen arms into a vile armoury of cascading violence."
     },
     {
       "id": "dispatch01-al-inbiq-kit",
@@ -61077,7 +61140,7 @@ export const DATASET: Dataset = {
       "range": "-",
       "keywords": [],
       "rules": "✥ 'Ilm al-Mīzān ACTION: A model with an Al-inbīq Kit can take an 'Ilm al-Mīzān ACTION if it is not within 1” of any enemy models. If it does so, make a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model with the ARTIFICIAL Keyword within 6” and in Line of Sight of the Jabirean Alchemist. The model you pick can stand back up at no cost to their movement, and you can remove up to D3 BLOOD MARKERS and/or INFECTION MARKERS from the model.",
-      "description": "Were a Takwin to become seriously damaged on the front lines, a Jabirean Alchemist often comes prepared with a field repair kit consisting of talisman-engraved alembics. Such is the potency of this blessed process perfected by Jabir ibn Hayyan himself that the mere scent of the distilled vapors can cause the artificial flesh of the Takwin creature to rapidly re-knit."
+      "lore": "Were a Takwin to become seriously damaged on the front lines, a Jabirean Alchemist often comes prepared with a field repair kit consisting of talisman-engraved alembics. Such is the potency of this blessed process perfected by Jabir ibn Hayyan himself that the mere scent of the distilled vapors can cause the artificial flesh of the Takwin creature to rapidly re-knit."
     },
     {
       "id": "dispatch01-alchemical-fire",
@@ -61086,7 +61149,7 @@ export const DATASET: Dataset = {
       "range": "-",
       "keywords": [],
       "rules": "✥ Unfettered Flame: Injury Rolls caused by Ranged Attacks made by a model with Alchemical Fire are unaffected by the NEGATE FIRE Keyword.",
-      "description": "So hot and pure does this green fire used by the House of Wisdom burn that neither infernal flesh nor orichalcum plate can deter its destructive heat."
+      "lore": "So hot and pure does this green fire used by the House of Wisdom burn that neither infernal flesh nor orichalcum plate can deter its destructive heat."
     },
     {
       "id": "dispatch01-corrosive-ammunition",
@@ -61097,7 +61160,23 @@ export const DATASET: Dataset = {
         "AMMUNITION (ARMOUR PIERCING)"
       ],
       "rules": "✥ Volatile Concoction: Corrosive Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail, or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Corrosive Ammunition to another model.",
-      "description": "The rate at which the forges of Jahannam advanced their armour-craft forced those associated with the Iron Wall to explore equally advanced corrosive ammunition. The alchemagi of the House of Wisdom often use catabolic sigils wrought to command the Elements to part, whereas the mystics of the Fida’i are known to use secret acids, Djinn-blood curses, or slugs etched with time-bending talismans that rapidly rust and rot enemy armour."
+      "lore": "The rate at which the forges of Jahannam advanced their armour-craft forced those associated with the Iron Wall to explore equally advanced corrosive ammunition. The alchemagi of the House of Wisdom often use catabolic sigils wrought to command the Elements to part, whereas the mystics of the Fida’i are known to use secret acids, Djinn-blood curses, or slugs etched with time-bending talismans that rapidly rust and rot enemy armour."
+    },
+    {
+      "id": "dispatch01-weapon-vengeful-scripture",
+      "name": "Vengeful Scripture",
+      "type": "Special",
+      "range": "18”",
+      "keywords": [
+        "ASSAULT",
+        "IGNORE COVER"
+      ],
+      "rules": "Unmaking: Add +1 INJURY MODIFIER for each BLOOD MARKER the enemy has (in addition to any benefits you receive if you spend them to affect the Injury Roll). If the Success Roll for a Ranged Attack made with Vengeful Scripture is a Critical Success, make an Injury Roll for the enemy model with IGNORE ARMOUR, add +1 INJURY DICE, and a +1 INJURY MODIFIER for each BLOOD MARKER the enemy model has. Spoken: A model may make a Ranged Attack with Vengeful Scripture even if it is within 1” of an enemy model.",
+      "cost": {
+        "ducats": 0,
+        "glory": 0
+      },
+      "lore": "The Scripture Guardian reads words from the holy (or unholy) text it carries, unmaking foes with words of primordial power."
     },
     {
       "id": "cf-weapon-procession-of-the-sacred-affliction-bells-of-warding",

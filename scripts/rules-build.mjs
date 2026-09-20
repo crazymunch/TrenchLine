@@ -1536,6 +1536,42 @@ for (const ruleset of RULESETS) {
         + 'THIS FAILS THE BUILD');
     }
   }
+  /*
+    Forced kit and the profile it points at must call the weapon the same
+    thing.
+
+    Two places hold the name — the catalogue's `selectionEntry` and the
+    profile — and when they disagree the card prints one while the rules popup
+    prints the other, so a player looking the weapon up in the book finds
+    neither. The Goetic Warlock was carrying exactly that: `Iron-Clawed Hands`
+    on the kit, `Reaping Claws` on the profile, and `Flaying Iron Claws` in the
+    Dispatch that replaced the entry.
+
+    It was the only pair in the dataset that disagreed, which is what makes
+    this worth asserting rather than reporting: the invariant already held
+    everywhere else, so a new violation is a mistake, not a backlog.
+
+    Except on a ruleset with NO layers. `github-latest` promises the community
+    catalogues exactly as published, so that it agrees with NewRecruit — and
+    the disagreement IS what the catalogues publish. Correcting it there would
+    break the one thing that ruleset is for, so it is reported instead, and
+    only a ruleset that carries corrections has to be consistent.
+  */
+  const profileNames = new Map((dataset.weapons ?? []).map((w) => [w.id, w.name]));
+  const corrected = ruleset.layers.length > 0;
+  for (const u of dataset.units ?? []) {
+    for (const kit of u.battlekit ?? []) {
+      if (!kit.profileId || !profileNames.has(kit.profileId)) continue;
+      const profileName = profileNames.get(kit.profileId);
+      if (profileName === kit.name) continue;
+      if (corrected) failed = true;
+      console.log(
+        `  ${u.name}'s Battlekit calls it "${kit.name}" and its profile calls `
+        + `it "${profileName}" (${kit.profileId}) — the card and the rules `
+        + `popup would disagree.${corrected ? ' THIS FAILS THE BUILD'
+          : ' Left as published: this ruleset carries no corrections.'}`);
+    }
+  }
   if (gearRenames.length) {
     console.log(`  gear renamed to the books' spelling: ${gearRenames.length}`);
     for (const r of gearRenames) console.log(`    ${r.from}  ->  ${r.to}`);

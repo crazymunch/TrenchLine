@@ -245,16 +245,17 @@ describe('FD-11a: forced Battlekit that the parser used to miss', () => {
 
   it('gives the Sin Eater the Maul stated by a nested min=max entry', () => {
     // "Sin Eater always has Reinforced Armour, a Combat Helmet, and a
-    // Tenderiser Maul" — L10281. The catalogue spells it "Tenderizer"; that
-    // is a gear-name ruling, not this change.
-    expect(kit('Sin Eater')).toEqual(['Combat Helmet', 'Reinforced Armour', 'Tenderizer Maul']);
+    // Tenderiser Maul" — L10281. The catalogue spelt it "Tenderizer"; the
+    // Dispatch's own heading (L702) spells it with an s, and FD-11b renames it.
+    expect(kit('Sin Eater')).toEqual(['Combat Helmet', 'Reinforced Armour', 'Tenderiser Maul']);
   });
 
   it('gives the Goetic Warlock the claws the Dispatch puts on its kit', () => {
     // "A Goetic Warlock always has Reinforced Armour and Flaying Iron Claws"
-    // — Trench Dispatch 01, L785-786. The rename is FD-11b's op; the
-    // catalogue calls them Iron-Clawed Hands.
-    expect(kit('Goetic Warlock')).toEqual(['Iron-Clawed Hands', 'Reinforced Armour']);
+    // — Trench Dispatch 01, L785-786. The catalogue called them Iron-Clawed
+    // Hands on the kit and Reaping Claws on the profile; FD-11b's rename,
+    // promised in this comment, settles both on the Dispatch's name.
+    expect(kit('Goetic Warlock')).toEqual(['Flaying Iron Claws', 'Reinforced Armour']);
   });
 
   it('prices a model’s own gear profile at zero, not at the model’s cost', () => {
@@ -387,5 +388,131 @@ describe('FD-11b: the Warbands book reaches the dataset', () => {
     expect(by('court-of-the-seven-headed-serpent')).toBe('Fallen');
     // Every faction carries one, so an alignment filter can never match nobody.
     expect(DATASET.factions.every((f: { alignment?: string }) => f.alignment)).toBe(true);
+  });
+
+  it('gives the Sister the keywords and the one host the book states', () => {
+    /*
+      Her keyword list was EMPTY — the only model in the game with none — so
+      NEGATE FEAR (L10393) was not being applied, and with no host restriction
+      at all (L10367-10368 names Trench Pilgrims) every Warband was offered her.
+
+      The Procession is here because Carcass Front delegates: "any Faithful
+      Mercenaries that can be taken by Trench Pilgrim Warbands". That is why
+      the layer states a faction and not an alignment — the delegation extends
+      a named list and would not see one.
+    */
+    const sister = DATASET.units.find((u: { id: string }) => u.id === 'aa7f-02df-a12f-1ed3')!;
+    expect(sister.keywords).toContain('NEGATE FEAR');
+    expect(sister.allowedFactions).toEqual(
+      ['Trench Pilgrims', 'Procession of the Sacred Affliction']);
+  });
+});
+
+describe('Trench Dispatch #1 — the Mercenary entries it reprints', () => {
+  const byId = (id: string) => DATASET.units.find((u: { id: string }) => u.id === id)!;
+  const weapon = (id: string) => DATASET.weapons.find((w: { id: string }) => w.id === id)!;
+  const kitNames = (id: string) =>
+    (byId(id).battlekit ?? []).map((b: { name: string }) => b.name).sort();
+
+  it('arms the Scripture Guardian, whose Battlekit was empty', () => {
+    // L748: "always has Reinforced Armour, Combat Helmet, and a Vengeful Scripture."
+    expect(kitNames('3fe9-1530-6fcd-1855'))
+      .toEqual(['Combat Helmet', 'Reinforced Armour', 'Vengeful Scripture']);
+  });
+
+  it('makes Vengeful Scripture a weapon, not an ability', () => {
+    /*
+      The catalogue carried it as an ABILITY, in the pre-Dispatch wording: that
+      version ignores armour outright and may be used in Melee. The Dispatch's
+      profile (L757-768) does neither — IGNORE ARMOUR only on a Critical
+      Success, and Spoken is what lets it be fired within 1".
+    */
+    const sg = byId('3fe9-1530-6fcd-1855');
+    expect((sg.abilities ?? []).map((a: { name: string }) => a.name)).toEqual(['Slow']);
+    const w = weapon('dispatch01-weapon-vengeful-scripture');
+    expect(w.type).toBe('Special');
+    expect(w.range).toBe('18”');
+    expect(w.keywords).toEqual(['ASSAULT', 'IGNORE COVER']);
+    expect(w.rules).toContain('Unmaking');
+    expect(w.rules).toContain('Spoken');
+  });
+
+  it('states Slow as a Movement Characteristic, as the Dispatch does', () => {
+    // L754-755. The catalogue said "half Dash distance", which no other rule reads.
+    const slow = (byId('3fe9-1530-6fcd-1855').abilities ?? [])
+      .find((a: { name: string }) => a.name === 'Slow')!;
+    expect(slow.description).toContain('Movement Characteristic of 3”/Infantry');
+  });
+
+  it('calls the Warlock’s claws what the Dispatch calls them, in both places', () => {
+    /*
+      Three names for one weapon: the Battlekit said "Iron-Clawed Hands", the
+      profile said "Reaping Claws", the Dispatch says "Flaying Iron Claws"
+      (L797). The build now fails if the two places ever disagree again.
+    */
+    expect(kitNames('1a28-719d-fbd0-5bf0'))
+      .toEqual(['Flaying Iron Claws', 'Reinforced Armour']);
+    const claws = weapon('e8d8-c2a3-9a3e-b3b8');
+    expect(claws.name).toBe('Flaying Iron Claws');
+    expect(claws.type).toBe('2-Handed');
+    // The catalogue's rule was the workaround for the weapon not existing.
+    expect(claws.rules).toBeUndefined();
+  });
+
+  it('arms the Witchburner with the Gavel its own ability names', () => {
+    // L834. Found Guilty triggers off "an attack made with … a Gavel of
+    // Justice", and the model was not carrying one.
+    expect(kitNames('b5ac-1a57-c1d4-3f4c'))
+      .toEqual(['Combat Helmet', 'Gavel of Justice', 'Reinforced Armour']);
+  });
+
+  it('gives the Gavel FIRE, and drops the rule the Dispatch replaced', () => {
+    /*
+      L863 prints "CRITICAL, FIRE". The catalogue's own "Wrath of God" on the
+      Gavel places an extra BLOOD MARKER — which is what the new Found Guilty
+      ability does, on different terms, so keeping both places it twice.
+    */
+    const gavel = weapon('ddce-0973-220d-51e0');
+    expect(gavel.keywords).toEqual(['CRITICAL', 'FIRE']);
+    expect(gavel.rules).toBeUndefined();
+  });
+
+  it('gives the Tenderiser Maul the Mulch rule, and the book’s spelling', () => {
+    /*
+      L701 replaces the Battlekit outright. The catalogue carried only Swinging
+      Blow; Mulch makes that one of two choices, and the other — Crushing Blow,
+      a +2 INJURY MODIFIER — was simply not in the app.
+    */
+    const maul = weapon('c63d-fe53-a980-4a2a');
+    expect(maul.name).toBe('Tenderiser Maul');
+    expect(maul.rules).toContain('Mulch');
+    expect(maul.rules).toContain('Crushing Blow');
+    expect(maul.rules).toContain('+2 INJURY MODIFIER');
+    // and the rename reached the Sin Eater's kit, not just the profile
+    expect(kitNames('2d21-7af1-0770-da4c')).toContain('Tenderiser Maul');
+  });
+
+  it('states each reprinted entry’s Battlekit sentence without its column label', () => {
+    // The extract renders the row as "Battlekit \t <text>"; the label is a
+    // heading, not part of the rule.
+    for (const id of ['3fe9-1530-6fcd-1855', '1a28-719d-fbd0-5bf0', 'b5ac-1a57-c1d4-3f4c']) {
+      const note = byId(id).battlekitNote!;
+      expect(note, `${byId(id).name}`).toBeTruthy();
+      expect(note.startsWith('Battlekit'), `${byId(id).name}: "${note.slice(0, 30)}"`)
+        .toBe(false);
+    }
+  });
+
+  it('keeps forced kit and its profile on the same name, dataset-wide', () => {
+    /*
+      The invariant the build now asserts, checked here too so a reader can see
+      what it means. One pair disagreed before this — the Warlock's.
+    */
+    const names = new Map(DATASET.weapons.map((w: { id: string; name: string }) => [w.id, w.name]));
+    const clashes = DATASET.units.flatMap((u) =>
+      (u.battlekit ?? [])
+        .filter((b) => b.profileId && names.has(b.profileId) && names.get(b.profileId) !== b.name)
+        .map((b) => `${u.name}: ${b.name} vs ${names.get(b.profileId!)}`));
+    expect(clashes).toEqual([]);
   });
 });

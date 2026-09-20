@@ -128,6 +128,29 @@
       "value": "Fallen",
       "_why": "Stated by alignment, not by a list of names. Writing the Fallen factions out here would go stale the moment a Fallen Warband is added — which is how the Heretic Naval Raiders came to be missed by hand-written host lists. `recruitable.ts` resolves it against each faction's own alignment.",
       "_src": "warbands-of-trench-crusade.txt L10273 — 'A Sin Eater is Fallen and can be recruited as a Mercenary by Fallen Warbands.'"
+    },
+    {
+      "op": "addKeyword",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "keyword": "NEGATE FEAR",
+      "_why": "The Sister's keyword list was EMPTY — the catalogue gives her none at all — so she was the one model in the game with no keywords, and NEGATE FEAR was simply not being applied.",
+      "_src": "warbands-of-trench-crusade.txt L10393 — 'Keywords NEGATE FEAR'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "field": "allowedFactions",
+      "value": [
+        "Trench Pilgrims"
+      ],
+      "_why": "She had NO host restriction, so all six Warbands were offered her. The book names one. Stated as a faction rather than as an alignment because the book names the Warband, and the Carcass Front delegation — the Procession takes what Trench Pilgrims take — extends a named list and would not see an alignment.",
+      "_src": "warbands-of-trench-crusade.txt L10367-10368 — 'A Sister of Saint Cosmas is Faithful and can be recruited as a Mercenary by Trench Pilgrim Warbands.'"
     }
   ]
 }
