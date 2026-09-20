@@ -18,6 +18,7 @@
 
 import React, { useMemo, useRef, useState } from 'react';
 import { Sheet } from '../ui/Sheet';
+import { strongbox } from '@/rules/ledger';
 import { useStore } from '../../store/useStore';
 import { nameKey } from '../../rules/names';
 import { UnitProfile } from '../../types/rules';
@@ -147,7 +148,27 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
     warband?.units.filter((u) => u.baseProfileId === unitId).length ?? 0;
 
   const spentDucats = warband?.units.reduce((sum, u) => sum + u.totalCost, 0) ?? 0;
-  const remainingDucats = (warband?.ducatLimit ?? 0) - spentDucats;
+  /*
+    What is left to spend is what the Strongbox holds (FD-05e).
+
+    This was `ducatLimit - spentDucats`: the founding allowance, re-derived
+    from the roster every render, in a Warband whose treasury the muster never
+    touched. Two pots, and the wrong one was being measured — a Warband that
+    had earned Ducats in a campaign still could not spend them here, and one
+    that had spent its allowance could keep recruiting as long as the roster
+    total stayed under the cap.
+
+    The Strongbox is the one account now: founding credits the allowance and
+    each recruit debits it, so its balance IS the remainder, and Ducats earned
+    in play are spendable here exactly as the Quartermaster Step says they are.
+
+    `ducatLimit` still governs an UNRESTRICTED Warband, where it is the list
+    cap the player set for a one-off game rather than a treasury — the same
+    split `createWarband` makes when it decides whether to credit at all.
+  */
+  const remainingDucats = warband && warband.forceMode !== 'unrestricted'
+    ? strongbox(warband).ducats
+    : (warband?.ducatLimit ?? 0) - spentDucats;
 
   const handleAdd = (unit: UnitProfile) => {
     const customName = customNameInput[unit.id] || unit.name;

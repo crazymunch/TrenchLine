@@ -192,7 +192,13 @@ describe('every money path leaves the warband reconciled', () => {
     /* And the history is there to read, which is the point of all of it. */
     const reasons = (at().ledger ?? []).map((e) => e.reason);
     expect(reasons).toEqual([
-      'admin-adjust', 'quartermaster', 'sold', 'admin-adjust',
+      /*
+        `founding` leads now (FD-05e). It used to be absent: founding booked
+        0 Ducats and 0 Glory for a Variant with no starting Glory, and `book`
+        does not append a movement of nothing. The allowance is credited at
+        the muster, so there is an opening entry to read.
+      */
+      'founding', 'admin-adjust', 'quartermaster', 'sold', 'admin-adjust',
     ]);
   });
 });
@@ -217,13 +223,22 @@ describe('founding a warband that starts with Glory', () => {
     );
 
     expect(w.gloryPoints).toBe(11);
-    expect(w.treasuryDucats).toBe(0);
+    /*
+      And the allowance is in the Strongbox (FD-05e). This read 0: the
+      allowance and the Strongbox were two pots and the muster never moved
+      anything between them.
+    */
+    expect(w.treasuryDucats).toBe(500);
     expect(reconciled(w)).toBe(true);
     expect(w.ledger).toHaveLength(1);
     expect(w.ledger![0].reason).toBe('founding');
     expect(w.ledger![0].glory).toBe(11);
-    /* The allowance is a fact in the note, not Ducats the Warband holds. */
+    /*
+      The allowance is both named in the note and credited (FD-05e). It used
+      to be only the note: the entry booked 0 Ducats, because the allowance
+      and the Strongbox were two pots and nothing moved between them.
+    */
     expect(w.ledger![0].note).toContain('500');
-    expect(w.ledger![0].ducats).toBe(0);
+    expect(w.ledger![0].ducats).toBe(500);
   });
 });
