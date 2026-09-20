@@ -515,7 +515,6 @@ export function applyArmouryRowOps(dataset, deferred) {
   let applied = 0;
 
   for (const { op, layer: layerId } of deferred) {
-    if (op && layerId && op.__layerId === undefined) op.__layerId = layerId;
     /* Variant ops share this pass; they are handled by `applyVariantOps`. */
     if (op.target?.kind === 'variant') continue;
     /*
@@ -567,7 +566,7 @@ export function applyArmouryRowOps(dataset, deferred) {
            does not walk them — so the layer that set the price says so on the
            row, and the audit can report "set by dispatch-01" rather than
            reporting it as drift from the catalogue. */
-        if (op.__layerId) row.source = op.__layerId;
+        if (layerId) row.source = layerId;
       }
       applied++;
       continue;
