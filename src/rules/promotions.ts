@@ -278,6 +278,18 @@ export function promotionPool(
 /** How many dice each model has been given. Keyed by unit id. */
 export type DiceAssignment = Record<string, number>;
 
+/**
+ * `3rd`, `4th`, `21st` — for the sentence that names the die being refused.
+ *
+ * The rule runs "and so on", so the number is not bounded at 4 and a hardcoded
+ * suffix reads wrong the moment a Warband fields enough Troops to reach one.
+ */
+const ordinal = (n: number): string => {
+  const rem100 = n % 100;
+  if (rem100 >= 11 && rem100 <= 13) return `${n}th`;
+  return `${n}${({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th'}`;
+};
+
 export interface AssignmentVerdict {
   legal: boolean;
   /** The rule broken, in the book's terms, or `''`. */
@@ -293,10 +305,19 @@ export interface AssignmentVerdict {
  * > your Warband have at least 2 dice each, or assign a 4th dice until all
  * > Troop models have at least 3 dice each, and so on.
  *
- * Generalised from that sentence: a model may hold `n + 1` dice only when
- * every promotable model holds at least `n`. Equivalently, the most any model
- * holds may exceed the least by no more than one — which is the same rule
- * stated in the form a checker can apply in one pass.
+ * **The rule binds from the THIRD die up, and not before.** The sentence
+ * names the 3rd die, the 4th die, "and so on" — it says nothing about the
+ * 2nd. So two dice on one Troop while another holds none is legal, and the
+ * book means it: the spreading requirement exists to stop a pool being poured
+ * into one model, and two dice is not pouring.
+ *
+ * This was first written as "the most any model holds may exceed the least by
+ * no more than one", which is a tidier sentence and a different rule. It
+ * rejects `[2, 0, 0]`, which the book allows. It happens to agree on
+ * `[3, 1, 1]`, so a test written from the same misreading would have passed.
+ *
+ * The rule as printed: for every model holding `k` dice where `k >= 3`, every
+ * eligible model holds at least `k - 1`.
  *
  * `eligible` is the models the dice may go to at all, which is
  * `canBePromoted`'s business and is passed in rather than recomputed: a die on
@@ -338,12 +359,14 @@ export function assignmentIsLegal(
   if (counts.length) {
     const most = Math.max(...counts);
     const least = Math.min(...counts);
-    if (most - least > 1) {
+    /* Only a third die or beyond is constrained — see the note above. A
+       second die is free, so `most` of 2 asks nothing of anybody. */
+    if (most >= 3 && least < most - 1) {
       return {
         legal: false,
         assigned,
         detail: `A model holds ${most} dice while another holds ${least}. `
-          + `No model may take a ${most}${most === 3 ? 'rd' : 'th'} die until every `
+          + `No model may take a ${ordinal(most)} die until every `
           + `model that can be Promoted has at least ${most - 1}.`,
       };
     }

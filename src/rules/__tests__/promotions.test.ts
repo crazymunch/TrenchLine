@@ -303,14 +303,60 @@ describe('assigning the dice', () => {
     expect(v.detail).toContain('3');
   });
 
-  it('counts a model given nothing', () => {
+  it('allows a SECOND die on one model while others hold none', () => {
+    /*
+      The rule names the 3rd die, the 4th die, "and so on", and says nothing
+      whatever about the 2nd. So [2, 0, 0] is legal.
+
+      This was the first version's error, and it is the kind that hides: the
+      rule was written as "the most any model holds may exceed the least by no
+      more than one", which is tidier, stricter, and agrees with the book on
+      [3, 1, 1] — so the test written beside it passed. Only the case the two
+      readings disagree about tells them apart.
+    */
+    expect(assignmentIsLegal({ a: 2 }, ids, 2).legal).toBe(true);
+    expect(assignmentIsLegal({ a: 2, b: 2 }, ids, 4).legal).toBe(true);
+  });
+
+  it('counts a model given nothing, once a third die is in play', () => {
     /*
       The sentence is about ALL Troop models, so a model on nought is what
-      makes a second die on another illegal. Stacking the whole pool on one
-      model was the obvious way to game this.
+      makes a THIRD die on another illegal. Stacking the whole pool on one
+      model was the obvious way to game this, and this is what stops it.
     */
-    expect(assignmentIsLegal({ a: 2 }, ids, 2).legal).toBe(false);
+    expect(assignmentIsLegal({ a: 3 }, ids, 3).legal).toBe(false);
     expect(assignmentIsLegal({ a: 1 }, ids, 1).legal).toBe(true);
+  });
+
+  it('applies the same rule above the fourth die, as the book says', () => {
+    // "…or assign a 4th dice until all Troop models have at least 3 dice
+    // each, and so on." The rule is not a table of two cases.
+    expect(assignmentIsLegal({ a: 4, b: 3, c: 3 }, ids, 10).legal).toBe(true);
+    expect(assignmentIsLegal({ a: 4, b: 2, c: 2 }, ids, 8).legal).toBe(false);
+    expect(assignmentIsLegal({ a: 5, b: 4, c: 4 }, ids, 13).legal).toBe(true);
+    expect(assignmentIsLegal({ a: 5, b: 3, c: 3 }, ids, 11).legal).toBe(false);
+  });
+
+  it('names the die it is refusing, with the right ordinal', () => {
+    expect(assignmentIsLegal({ a: 3, b: 1, c: 1 }, ids, 5).detail).toContain('3rd die');
+    expect(assignmentIsLegal({ a: 4, b: 2, c: 2 }, ids, 8).detail).toContain('4th die');
+    expect(assignmentIsLegal({ a: 5, b: 3, c: 3 }, ids, 11).detail).toContain('5th die');
+  });
+
+  it('holds for a pool this Warband could actually earn', () => {
+    /*
+      Read from the dataset rather than typed: a pool of 1D6 plus 1D6 per
+      Glorious Deed is what the rule is spreading, so the sizes worth checking
+      are the ones the rule can produce.
+    */
+    const pool = promotionPool(DATASET, { deeds: 3 })!.dice;
+    expect(pool).toBeGreaterThanOrEqual(3);
+    // Spread as evenly as the pool allows over three models: always legal.
+    const even: Record<string, number> = {};
+    ids.forEach((id, i) => { even[id] = Math.floor(pool / ids.length) + (i < pool % ids.length ? 1 : 0); });
+    expect(assignmentIsLegal(even, ids, pool).legal).toBe(true);
+    // The whole pool on one model: legal only while it is under three dice.
+    expect(assignmentIsLegal({ a: pool }, ids, pool).legal).toBe(pool < 3);
   });
 
   it('refuses more dice than the pool holds', () => {
