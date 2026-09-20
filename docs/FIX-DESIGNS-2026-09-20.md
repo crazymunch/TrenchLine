@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | `src/data/warbandLore.ts`, `prisma/seed.ts`, the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 08:20 UTC on 20 September
+### Landed, as of 09:20 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -63,7 +63,8 @@ carry, and what these designs cover:
 | FD-11a (a min-only link and a nested min = max entry are fixed kit; a model's own gear profile costs zero) | #76 | merged, with three corrections recorded under FD-11 |
 | FD-11b part 1 (a layer op naming two entities edits neither; `all` for an item the dataset holds twice; FUMBLE reaches the shared Incendiary Grenades and Molotov Cocktail) | #77 | merged |
 | The review documents, the designs to FD-11, the two audit scripts | #58 | merged |
-| FD-11b part 2 (the Warbands-book layer: the Sister of Saint Cosmas by name, statline and Finish the Fallen; the Combat Biologist's abilities and Vivisector; `addBattlekit`; faction alignment parsed from the book; `allowedAlignment` resolved in the recruit list; the transcription test) | #79 | reviewed, correct, green; merge, with the stale `CATALOGUE_ALIASES` row in `scripts/rules-audit-book.mjs` removed, since the rename it compensated for has now happened |
+| FD-11b part 2 (the Warbands-book layer: the Sister of Saint Cosmas by name, statline and Finish the Fallen; the Combat Biologist's abilities and Vivisector; `addBattlekit`; faction alignment parsed from the book; `allowedAlignment` resolved in the recruit list; the transcription test) | #79 | merged, with the stale audit alias removed and the book audit back to 58 matched entries |
+| FD-11b part 5 (the Dispatch's Mercenaries section: Vengeful Scripture as a weapon on the Scripture Guardian's kit, the Maul's Mulch, Flaying Iron Claws, the Gavel's CRITICAL and FIRE with Wrath of God gone, the Witchburner's and Warlock's kit; `unset`; a weapon rename follows through to kit entries; the transcription test widened to the Dispatch, which found four citation slips) | #80 | merged; reviewed after the fact against the dataset on `main`, correct except one thing recorded below: the Sister of Saint Cosmas lacks MERCENARY |
 
 ## FD-00. PR #59 as it stands
 
@@ -1273,6 +1274,22 @@ Three corrections from the developer, each checked here.
 One catalogue-only addition to note: the Crimson Communicant gained an
 Atonement Bell, stated by the catalogue in the nested min = max shape and
 by no text we hold. Recorded rather than doubted; the catalogue is the base.
+
+PR #80 left the Sister of Saint Cosmas with the keyword NEGATE FEAR alone,
+on the reasoning that "no source states MERCENARY for her". The Warbands
+book does not (L10393 prints NEGATE FEAR), but the Dispatch does: L654–655
+reads "Replace the Keywords with: MERCENARY NEGATE FEAR", under her name,
+on the page the layer transcribes. So the correction is corrected: a
+`setKeywords` op in the Dispatch layer, by her id, citing L654–655, and
+the dataset test that every Mercenaries entry carries MERCENARY includes
+her. Ordered to ride with FD-11c.
+
+PR #80 also read FD-11c's citation of "L550–551" for the Mercenary
+Battlekit rule as the Warbands book and found the FACTION BATTLEKIT
+heading there. The citation is to the Dispatch file, as FD-11's first
+paragraph says every bare line number is; the same rule is printed in the
+Warbands book at L9751–9756, and either serves. Recorded so nobody
+re-derives it.
 
 PR #77 turned the ambiguity guard on and the first build failed on three
 WEAPON ops the design never mentioned: the Dispatch's "Add the FUMBLE
