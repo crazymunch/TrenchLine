@@ -529,9 +529,9 @@ so the match is a two-way subset on stemmed words. Three of the four names
 the dataset appeared not to have were the catalogue's entry name against its
 profile name (`Anchorite Shrine` / `Anchorite`), so units now carry
 `entryName`; the one real rename, the book's `Fly Thralls` for the catalogue's
-`Winged Thrall`, is a cited equivalence in
-`data-sources/rulebook/promotion-model-names.json` that fails the build in
-both directions.
+`Winged Thrall`, is a cited equivalence in a
+`promotion-model-names.json` file under `data-sources/rulebook/` (on PR #63)
+that fails the build in both directions.
 
 ### The change
 
