@@ -265,3 +265,28 @@ describe('FD-11a: forced Battlekit that the parser used to miss', () => {
     expect(w('Vivisector')!.cost).toEqual({ ducats: 0, glory: 0 });
   });
 });
+
+/**
+ * The Dispatch names an ITEM; the dataset holds several copies of it.
+ *
+ * FD-11b. "Add the FUMBLE Keyword to: … Incendiary Grenades … Molotov
+ * Cocktail …" is one line about one thing on the page. Each of those is two
+ * entries here — the Iron Sultanate's copy and the shared Ranged Weapons one
+ * — and `findTarget` took the first match, so the keyword reached the
+ * Sultanate's copy and every other faction, which draws from the shared list,
+ * fought without it. The op reported success, which is why it shipped.
+ */
+describe('FD-11b: an errata line that names one item and finds two', () => {
+  const weapon = (id: string) =>
+    (DATASET.weapons ?? []).find((w: { id: string }) => w.id === id)!;
+
+  it('gives FUMBLE to both copies of the Incendiary Grenades', () => {
+    expect(weapon('3bfd-2c1d-2d6b-a36c').keywords).toContain('FUMBLE'); // Iron Sultanate
+    expect(weapon('316b-d210-767e-e340').keywords).toContain('FUMBLE'); // shared list
+  });
+
+  it('gives FUMBLE to both copies of the Molotov Cocktail', () => {
+    expect(weapon('b16a-e1fa-433f-efc0').keywords).toContain('FUMBLE'); // Iron Sultanate
+    expect(weapon('414f-af63-666d-59d1').keywords).toContain('FUMBLE'); // shared list
+  });
+});

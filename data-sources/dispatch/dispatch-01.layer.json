@@ -200,18 +200,22 @@
       "op": "addKeyword",
       "target": {
         "kind": "weapon",
-        "id": "Incendiary Grenades"
+        "id": "Incendiary Grenades",
+        "all": true
       },
       "keyword": "FUMBLE",
+      "_all": "One item on the page, two entries in the dataset: the Iron Sultanate's copy and the shared Ranged Weapons one. Without this the keyword reached the Sultanate's copy only, and every other faction — which draws from the shared list — fought without FUMBLE on its Incendiary Grenades.",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Incendiary Grenades …'"
     },
     {
       "op": "addKeyword",
       "target": {
         "kind": "weapon",
-        "id": "Molotov Cocktail"
+        "id": "Molotov Cocktail",
+        "all": true
       },
       "keyword": "FUMBLE",
+      "_all": "Two entries, as with the Incendiary Grenades above, and the same shipped gap.",
       "_src": "p.2 — 'Add the FUMBLE Keyword to: … Molotov Cocktail …'"
     },
     {

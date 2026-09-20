@@ -59547,7 +59547,8 @@ export const DATASET: Dataset = {
         "ASSAULT",
         "FIRE",
         "IGNORE COVER",
-        "IGNORE LONG RANGE"
+        "IGNORE LONG RANGE",
+        "FUMBLE"
       ],
       "rules": "**Liquid Fire**: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword",
       "cost": {
@@ -59582,7 +59583,8 @@ export const DATASET: Dataset = {
         "ASSAULT",
         "FIRE",
         "IGNORE COVER",
-        "IGNORE LONG RANGE"
+        "IGNORE LONG RANGE",
+        "FUMBLE"
       ],
       "rules": "**Liquid Fire**: If the Success Roll for a Ranged Attack made with an Incendiary Grenade is a Critical Success then the Injury Roll for the attack has the IGNORE ARMOUR Keyword",
       "cost": {
