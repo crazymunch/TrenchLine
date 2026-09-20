@@ -797,18 +797,31 @@ export const CodexView: React.FC = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => {
+                  /*
+                    A real 2D6, looked up in the table's own roll column.
+
+                    This picked a UNIFORM random index into the list and then
+                    rolled two separate d6 purely to display — so the dice
+                    shown had nothing to do with the Skill chosen, and a
+                    Skill on 7 came up as often as one on 12. A fabricated
+                    roll printed beside a real Skill is worse than no roll:
+                    it reads as though the book produced it (RR-04).
+                  */
                   const list = skillsFor(selectedSkillsCategory);
                   if (!list.length) return;
-                  const roll = Math.floor(Math.random() * list.length);
-                  const chosen = list[roll];
                   const d1 = Math.floor(Math.random() * 6) + 1;
                   const d2 = Math.floor(Math.random() * 6) + 1;
+                  const total = d1 + d2;
+                  const chosen = list.find((r) => Number(r.roll) === total);
+                  /* A table with no row for a legal 2D6 total is a data fault,
+                     not something to paper over with a nearby Skill. */
+                  if (!chosen) return;
                   setSelectedSkillModal({
                     name: chosen.name,
                     description: chosen.description,
                     category: `${selectedSkillsCategory.toUpperCase()} SKILLS TABLE`,
-                    d66Roll: `${d1}${d2}`,
-                    howToObtain: `Rolled on the ${selectedSkillsCategory.toUpperCase()} Skills Table (Roll ${d1}${d2}). Awarded during Campaign Promotions when spending 5 XP or when a Troop model is Promoted to Elite.`
+                    d66Roll: `${d1} + ${d2} = ${total}`,
+                    howToObtain: `Rolled ${total} on the ${selectedSkillsCategory.toUpperCase()} Skills Table during an Advancement Roll.`
                   });
                   soundEffects.playDiceRoll();
                 }}
@@ -868,13 +881,15 @@ export const CodexView: React.FC = () => {
                 <div
                   key={idx}
                   onClick={() => {
-                    const d6Roll = `${idx + 1} (or D66 ${idx + 1}${idx + 1})`;
+                    /* The row's own 2D6 total, not its position in the list.
+                       `idx + 1` numbered the first row 1, which is not a
+                       result on 2D6 at all. */
                     setSelectedSkillModal({
                       name: skill.name,
                       description: skill.description,
                       category: `${selectedSkillsCategory.toUpperCase()} SKILLS TABLE`,
-                      d66Roll: d6Roll,
-                      howToObtain: `Rolled on the ${selectedSkillsCategory.toUpperCase()} Skills Table (Roll ${idx + 1}). Available to ELITE models spending 5 XP in the Campaign Phase or when a Troop model gains a Promotion.`
+                      d66Roll: `${skill.roll}`,
+                      howToObtain: `Rolled ${skill.roll} on the ${selectedSkillsCategory.toUpperCase()} Skills Table during an Advancement Roll.`
                     });
                     soundEffects.playCathedralBell();
                   }}
@@ -888,7 +903,7 @@ export const CodexView: React.FC = () => {
                       </span>
                     </div>
                     <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-base text-theme-primary border border-theme-border font-bold">
-                      Roll {idx + 1}
+                      Roll {skill.roll}
                     </span>
                   </div>
                   <p className="text-xs font-mono text-theme-text leading-relaxed">
@@ -916,7 +931,7 @@ export const CodexView: React.FC = () => {
                   {skillsFor(selectedSkillsCategory).map((skill, idx) => (
                     <tr key={idx} className="hover:bg-theme-elevated transition-colors">
                       <td className="p-3 font-bold text-theme-primary">
-                        {idx + 1} / {idx + 1}{idx + 1}
+                        {skill.roll}
                       </td>
                       <td className="p-3 font-bold text-theme-text font-gothic text-sm">
                         {skill.name}
@@ -931,8 +946,8 @@ export const CodexView: React.FC = () => {
                               name: skill.name,
                               description: skill.description,
                               category: `${selectedSkillsCategory.toUpperCase()} SKILLS TABLE`,
-                              d66Roll: `${idx + 1}`,
-                              howToObtain: `Rolled on the ${selectedSkillsCategory.toUpperCase()} Skills Table (Roll ${idx + 1}). Awarded when an Elite warrior spends 5 XP or when a Troop model is Promoted.`
+                              d66Roll: `${skill.roll}`,
+                              howToObtain: `Rolled ${skill.roll} on the ${selectedSkillsCategory.toUpperCase()} Skills Table during an Advancement Roll.`
                             });
                           }}
                           className="px-2.5 py-1 bg-theme-elevated hover:bg-theme-border text-theme-primary rounded border border-theme-border text-xs sm:text-[10px] font-bold uppercase"

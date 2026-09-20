@@ -9,6 +9,7 @@ import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { canBePromoted } from '../../rules/promotions';
+import { nextAdvancementAt } from '../../rules/advancement';
 import { 
   Sparkles, 
   Skull, 
@@ -92,6 +93,9 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
    * removed from the roster rather than scarred.
    */
   const traumaRows = (dataset?.campaign.trauma ?? []).filter((t) => !/^dead$/i.test(t.name));
+  /* The next circled box on the Experience track, derived. `null` past the
+     end of the track, or where the ruleset predates it. */
+  const nextRoll = nextAdvancementAt(dataset, unit?.xp ?? 0);
 
   /*
     This model's purchasable options, as the catalogues carry them: real names,
@@ -402,7 +406,18 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                 <div className="space-y-1">
                   <span className="text-xs uppercase text-theme-muted font-bold block">Experience Points (XP)</span>
                   <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
-                    Warriors gain 1 XP per match survived or objective scored. 5 XP unlocks an official Compendium Skill roll.
+                    {/*
+                      "5 XP unlocks a Skill" was not a rule. The book checks
+                      Experience off box by box and a CIRCLED box earns an
+                      Advancement Roll; the circles are printed on the Roster
+                      Sheet, and the totals are derived into
+                      `campaign.experience.advancementAt` (RR-04).
+                    */}
+                    Warriors gain 1 XP per game survived, and a second for carrying out a
+                    Glorious Deed.{' '}
+                    {nextRoll !== null
+                      ? <>The next <strong className="text-theme-text">Advancement Roll</strong> is at {nextRoll} XP.</>
+                      : <>No further Advancement Rolls: this model is at the end of the Experience track.</>}
                   </p>
                 </div>
 

@@ -21,7 +21,7 @@ import path from 'node:path';
 import { parseCatalogues } from './lib/parse-battlescribe.mjs';
 import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRules, parseVariantEconomy } from './lib/parse-warbands.mjs';
 import { parseThresholdTable, parseStartingBudget, parseExploration,
-         parseSkillsTables, parseTraumaTable,
+         parseSkillsTables, parseTraumaTable, parseExperienceTrack,
          parseCampaignPhaseSteps, parseTraumaProcedure,
          parseReinforcementsSequence, parsePromotions,
          promotionKeywordDrift } from './lib/parse-campaign.mjs';
@@ -742,6 +742,17 @@ for (const ruleset of RULESETS) {
       // hand-written versions of both, and the four Skills tables there are
       // fabricated (AUDIT §1.13) — these are what replaces them.
       skills: parseSkillsTables(),
+      /*
+        When a model may make an Advancement Roll.
+
+        From the catalogue rather than the book, and that is not a precedence
+        slip: page 105 describes the track ("when you reach a box that is a
+        circle") and the circles are printed on the Roster Sheet, which the
+        text extraction does not carry. The catalogue is the only machine-
+        readable record of where they are. See `parseExperienceTrack` for the
+        one place it deliberately differs from NewRecruit.
+      */
+      experience: parseExperienceTrack(),
       trauma: parseTraumaTable(),
       /**
        * Who is entitled to roll on that table, and what removes a model.

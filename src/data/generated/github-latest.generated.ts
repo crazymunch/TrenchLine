@@ -65403,6 +65403,17 @@ export const DATASET: Dataset = {
         }
       ]
     },
+    "experience": {
+      "max": 18,
+      "advancementAt": [
+        2,
+        4,
+        7,
+        10,
+        14,
+        18
+      ]
+    },
     "trauma": [
       {
         "roll": "11",
