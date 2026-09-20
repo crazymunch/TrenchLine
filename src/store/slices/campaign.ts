@@ -369,7 +369,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       gloryGained,
       ducatsGained,
       casualties,
-      advancements,
+      skillsLearned,
       experience,
       tookReinforcements,
       narrative,
@@ -385,7 +385,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
 
       const updatedUnits = activeWb.units.map((u) => {
         const cas = casualties.find((c) => c.unitId === u.id);
-        const adv = advancements.find((a) => a.unitId === u.id);
+        const learned = skillsLearned.filter((a) => a.unitId === u.id);
 
         const newInjuries = [...u.injuries];
         /* Battle Scars, which nothing in this slice used to write at all — so
@@ -468,7 +468,16 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
             }
           }
         }
-        const newAdvancements = [...u.advancements];
+        /*
+          A Skill learned from an Advancement Roll goes to `skills`, with the
+          table and the 2D6 total that produced it. It used to go to
+          `advancements` as the label of whichever of eight buttons the player
+          pressed — four of which were characteristic advances the game does
+          not have. `advancements` is left exactly as it is: the strings in it
+          are the player's own record, and clearing them would be a data
+          change rather than a fix.
+        */
+        const newSkills = [...(u.skills ?? [])];
         /*
           Experience goes to the models the rules entitle to it, not to everyone
           on the roster.
@@ -486,8 +495,15 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           Troops correctly earns no Experience at all.
         */
         const newXp = u.xp + (experience.some((x) => x.unitId === u.id && x.earns) ? 1 : 0);
-        if (adv) {
-          newAdvancements.push(adv.advancement);
+        for (const l of learned) {
+          newSkills.push({
+            name: l.name,
+            category: l.table === 'patron' ? 'Patron' : l.table,
+            /* The total the dice actually showed, so the roster can be checked
+               against the table it came from. */
+            roll: String(l.roll),
+            effect: l.description,
+          });
         }
 
         /*
@@ -514,7 +530,10 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           injuries: newInjuries,
           scars: newScars,
           isDead,
-          advancements: newAdvancements,
+          skills: newSkills,
+          /* One per Skill learned, which is what `advancementRollsDue`
+             subtracts from the thresholds the model's Experience has passed. */
+          advancementRolls: (u.advancementRolls ?? 0) + learned.length,
           deeds: newDeeds,
           titleRecords: currentRecords,
           titles: activeTitles,
@@ -532,10 +551,12 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       if (casualties.length > 0) {
         casualties.forEach((c) => changesSummary.push(`Casualty: ${c.unitName} - ${c.outcome}`));
       }
-      if (advancements.length > 0) {
-        advancements.forEach((a) => {
+      if (skillsLearned.length > 0) {
+        skillsLearned.forEach((a) => {
           const u = activeWb.units.find((item) => item.id === a.unitId);
-          changesSummary.push(`Advancement: ${u?.customName || 'Warrior'} learned ${a.advancement}`);
+          const where = a.table === 'patron' ? 'the Patron\'s list' : `${a.table} on ${a.roll}`;
+          changesSummary.push(
+            `Advancement Roll: ${u?.customName || 'Warrior'} learned ${a.name} (${where})`);
         });
       }
       if (mvpUnitName) {
