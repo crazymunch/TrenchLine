@@ -215,10 +215,13 @@ book's step contains and the app does not (pages 104 to 106 and 111, lines
   6026 to 6029). The wizard awards a flat 1. Play Mode knows which model
   claimed which deed (`completedDeeds` in `rules/matchState.ts`), so this is
   derivable, not a question for the player.
-  **Correction, 20 September:** it is not. `completedDeeds` keys a deed by
-  title to the turn it was claimed, per side; the model is not recorded, and
-  `battleFromMatch.ts` carries the claim into the Chronicle without one. The
-  design in `FIX-DESIGNS-2026-09-20.md` FD-06 adds the model to the claim.
+  **Correction, 20 September, and corrected again the same night:** the first
+  correction said the model was not recorded. It was, by name: Play Mode's
+  performer picker wrote the model's `customName` into the `completedDeeds`
+  value whose type comment called it the turn, so `battleFromMatch.ts` carried
+  it into the Chronicle as `turn` and the battles API rejected any record whose
+  performer's name ran past eight characters. PR #70 stores the model's id
+  beside its name and derives the second point from the id.
 - **War Stories** (+1 XP to every other ELITE) and **Bitter Lessons** (Trauma
   65, D3 extra XP, which the wizard displays and does not apply).
 - **Latecomers** (page 95, lines 5290 to 5300): 4 XP per game the top player
@@ -569,9 +572,9 @@ Glorious Deeds, which Play Mode already records per model; there is no MVP and
 no "Heroic Deed". It is a hand-written mechanic that writes a hand-written
 deed onto the roster, beside the real ones.
 
-**Correction, 20 September:** "which Play Mode already records per model" is
-wrong. Play Mode records a Deed against a side, not a model (see the RR-05
-correction). The MVP removal itself landed in #59.
+**Correction, 20 September:** partly right after all. Play Mode recorded the
+performer's name in a field typed as the turn (see the RR-05 correction and
+PR #70). The MVP removal itself landed in #59.
 
 ### After the commit
 

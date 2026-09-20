@@ -35,7 +35,7 @@ carry, and what these designs cover:
 | FD-09 | RR-17, RR-27 | the campaign store, Play Mode's end of match, the Chronicle record |
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 
-### Landed, as of 04:20 UTC on 20 September
+### Landed, as of 05:10 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -46,10 +46,11 @@ carry, and what these designs cover:
 | FD-06a (eligibility and the Experience cap) | #63 | merged, with five corrections recorded below |
 | Follow-ups from #60 and #61 | #64 | merged |
 | FD-04b | #65 | merged |
-| FD-03a (Campaign Victory Points, standings, the Weather chooser) | #66 | reviewed; rebased on `main`, check running |
+| FD-03a (Campaign Victory Points, standings, the Weather chooser) | #66 | merged |
 | WIZ-1 (the 44px rule's width, `sm:` to `lg:`, checkbox by label) | #67 | merged |
-| MVP-1 (the standout note names any roster's model) | #68 | reviewed; rebased on `main`, check running |
-| FD-06b (the Promotion Dice Pool, the miss counter, the end of the switch) | #69 | reviewed; one rule to correct before merge, see FD-06 |
+| MVP-1 (the standout note names any roster's model) | #68 | merged |
+| FD-06b (the Promotion Dice Pool, the miss counter, the end of the switch) | #69 | reviewed; the assignment rule corrected as ordered, green, to merge |
+| FD-06c (a Deed carries the model's id; the second Experience Point) | #70 | reviewed, green, to rebase and merge |
 
 ## FD-00. PR #59 as it stands
 
@@ -513,6 +514,13 @@ side, not a model. `completedDeeds` in `src/rules/matchState.ts` line 25 is
 title to turn, and `src/rules/battleFromMatch.ts` lines 91 to 104 carries that
 into `DeedClaim` with a `sideId` and no model. **This corrects RR-05**, which
 said the model was known; the review document carries the same correction.
+
+**Corrected by PR #70:** the value under that comment held the performer's
+name, written by a picker Play Mode had all along; the comment was wrong, not
+the review. The id was not stored, so the award could not safely be made from
+a name a player can edit. #70 stores `unitId` and `unitName` on the mark and
+the claim, recovers a name misfiled as `turn` in every record already written,
+and derives the second point from the id.
 
 The book, page 104 to 106 and 111:
 
