@@ -48,8 +48,10 @@ const apply = (casualty: CasualtyRecord) =>
     [casualty], [], { unitIds: [], misses: 0 }, [], false, 'narrative',
   );
 
-const captive = () => useStore.getState().warbands.find((w) => w.id === WB)!
-  .units.find((u) => u.id === CAPTIVE)!;
+const warband = () => useStore.getState().warbands.find((w) => w.id === WB)!;
+const captive = () => warband().units.find((u) => u.id === CAPTIVE)!;
+/** The same model once the Roster has let it go. */
+const executed = () => (warband().fallen ?? []).find((u) => u.id === CAPTIVE);
 const purse = () => useStore.getState().warbands.find((w) => w.id === WB)!.treasuryDucats;
 
 const record = (over: Partial<CasualtyRecord>): CasualtyRecord => ({
@@ -97,17 +99,41 @@ describe('a ransom that was paid', () => {
 
 describe('a ransom that was not paid', () => {
   it('removes the model, which is what the rule says happens', () => {
+    /*
+      "If the ransom is not paid, the captured model is executed — remove them
+      from your Warband Roster."
+
+      This used to assert `isDead: true` on a model still sitting in `units`,
+      which is not a removal: the builder went on summing its Ducats, the
+      legality engine went on counting it towards a minimum, and Play Mode
+      went on deploying it. It is off the Roster now.
+    */
     apply(record({
       outcome: 'D66: 12 - Captured: … no ransom was paid — executed.',
       isDead: true,
     }));
-    expect(captive().isDead).toBe(true);
+    expect(warband().units.some((u) => u.id === CAPTIVE)).toBe(false);
+    expect(executed()).toBeDefined();
     expect(purse()).toBe(400);
+  });
+
+  it('keeps the model and its Battlekit rather than deleting either', () => {
+    /*
+      The gear goes with the model — the book removes both and the Arsenal
+      does not get it back — and the model itself is kept because a campaign's
+      dead are half of what its history means.
+    */
+    const gearBefore = captive().equippedWeapons?.length ?? 0;
+    apply(record({ outcome: 'executed', isDead: true }));
+    const gone = executed()!;
+    expect(gone.customName).toBe('Brother Anselm');
+    expect(gone.equippedWeapons?.length ?? 0).toBe(gearBefore);
+    expect(warband().armoryStash.some((i) => i.name === gone.equippedWeapons?.[0]?.name)).toBe(false);
   });
 
   it('records the outcome as an injury line, unlike a Full Recovery', () => {
     apply(record({ outcome: 'executed', isDead: true }));
-    expect(captive().injuries).toEqual(['executed']);
+    expect(executed()!.injuries).toEqual(['executed']);
   });
 });
 

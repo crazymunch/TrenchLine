@@ -380,22 +380,42 @@ describe('the v0 fixture, as the old exporter actually wrote one', () => {
     expect(r.ok).toBe(true);
     const { file } = r as { file: { roster: DecodedRoster } };
     expect(file.roster.name).toBe('The Ninefold Penance');
-    expect(file.roster.units).toHaveLength(3);
+    /* Three models in the file, one of them dead — and a dead model is not on
+       the Roster. It is read into `fallen`, below. */
+    expect(file.roster.units).toHaveLength(2);
+    expect(file.roster.fallen).toHaveLength(1);
     expect(file.roster.units[0].xp).toBe(5);
     expect(file.roster.units[0].injuries![0]).toContain('Lost an Eye');
     expect(file.roster.treasuryDucats).toBe(85);
   });
 
-  it('keeps the model the campaign killed', () => {
+  it('keeps the model the campaign killed, off the Roster', () => {
+    /*
+      It used to be kept IN `units` behind `isDead: true`, which is not what
+      the Trauma Table says happens to it — and which left the builder summing
+      its Ducats and Play Mode deploying it. Kept, because a campaign's dead
+      are half of its history; not on the Roster, because the book removes
+      them from it.
+    */
     const { file } = decodeRosterFile(raw) as { file: { roster: DecodedRoster } };
-    expect(file.roster.units[2].isDead).toBe(true);
+    expect(file.roster.units.some((u) => u.isDead)).toBe(false);
+    expect(file.roster.fallen![0].isDead).toBe(true);
+  });
+
+  it('says so, rather than revaluing the roster quietly', () => {
+    // The model count and the Ducat total both change; an import that does
+    // that without a word is worse than one that explains itself.
+    const r = decodeRosterFile(raw) as { warnings: string[] };
+    expect(r.warnings.join(' ')).toMatch(/moved off the active roster/i);
   });
 
   it('leaves the mid-battle state behind', () => {
     // The fixture has a model Downed with two Blood Markers, from a game that
     // ended before the file was written.
     const { file } = decodeRosterFile(raw) as { file: { roster: DecodedRoster } };
-    for (const u of file.roster.units) {
+    /* The fallen too: moving a model off the Roster must not put back the one
+       thing the format deliberately drops. */
+    for (const u of [...file.roster.units, ...(file.roster.fallen ?? [])]) {
       expect(u).not.toHaveProperty('bloodMarkers');
       expect(u).not.toHaveProperty('status');
       expect(u).not.toHaveProperty('hasActedThisTurn');
