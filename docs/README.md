@@ -33,6 +33,7 @@ no design documentation at all.
 | [`GEMINI-AUDIT-REVIEW.md`](GEMINI-AUDIT-REVIEW.md) | The 17 September external audit, re-tested claim by claim: what holds, what does not, the remedy that would have deleted a production row, and the finding it missed. |
 | [`RULES-REVIEW-2026-09-19.md`](RULES-REVIEW-2026-09-19.md) | The campaign rules chapter against the wizard, the stores and the validator, line by line: where the Trauma text comes from the wrong source, which screens still carry hand-written payouts and advancements, and which rules modules the app never calls. Findings only, ranked, with the fix order. |
 | [`DATA-ALIGNMENT-2026-09-19.md`](DATA-ALIGNMENT-2026-09-19.md) | Every unit and weapon against the books, on the fields `rules:check` never compares: ability names and text, keywords, Movement, limits. Hidden variant abilities shown on base units, a Dispatch price that never reaches the armoury, a parser that drops every rule under a wrapped keyword line. Two re-runnable audit scripts. |
+| [`FIX-DESIGNS-2026-09-20.md`](FIX-DESIGNS-2026-09-20.md) | Designs for the review findings that need a decision before a diff: a wrapped keyword line, a Dispatch price that stops at one profile, Campaign Victory Points, Advancement Rolls from the catalogue's Experience track, and the economy in three steps. Plus a review of PR #59 as it stands. |
 | [`../design/canvas/README.md`](../design/canvas/README.md) | The interface design canvas — seven artboards drawn from the real Al-Qarn Rihla roster and the app's own tokens. |
 
 ## The one-paragraph version
