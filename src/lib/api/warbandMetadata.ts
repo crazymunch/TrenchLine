@@ -45,6 +45,7 @@ export const CLIENT_OWNED = {
   forceMode: undefined as unknown,
   ledger: undefined as unknown,
   explorationDiscoveries: undefined as unknown,
+  explorationEffects: undefined as unknown,
 };
 
 type ClientField = keyof typeof CLIENT_OWNED;

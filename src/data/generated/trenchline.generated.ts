@@ -68785,6 +68785,36 @@ export const DATASET: Dataset = {
           }
         ]
       },
+      "skills": [
+        {
+          "name": "Extra dice",
+          "text": "Roll 1 extra Exploration Dice."
+        },
+        {
+          "name": "Duplicate",
+          "text": "After you make an Exploration Roll, select one of the Exploration Dice and add an extra Exploration Dice with an identical result to your roll."
+        },
+        {
+          "name": "Re-roll",
+          "text": "Re-roll up to 1 extra Exploration Dice."
+        },
+        {
+          "name": "Set Dice",
+          "text": "After you make an Exploration Roll, select one of the Exploration Dice and change the result on the dice to the result of your choice."
+        },
+        {
+          "name": "Seek",
+          "text": "Add 1 to your Exploration Roll."
+        },
+        {
+          "name": "Circle Back",
+          "text": "Subtract 1 from your Exploration Roll."
+        },
+        {
+          "name": "Lucky",
+          "text": "After you make an Exploration Roll, select one of the Exploration Dice, and then roll an extra Exploration Dice. You can either keep the dice that you picked, or to replace it with extra dice that you rolled."
+        }
+      ],
       "sequence": [
         "Determine the number of Exploration Dice you receive.",
         "Roll the Exploration Dice.",

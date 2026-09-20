@@ -314,6 +314,15 @@ collects roll times ten, and both players consult a table.
 
 ### RR-10. Exploration mechanics the in-app roll leaves out
 
+> **Landed in FD-07.** All four, plus the writer the step needed. Two counts in
+> the list below did not survive contact with the data and are corrected in
+> place: **four** Locations grant a named Exploration Skill, not seven (a fifth,
+> the Fruit from the Tree of Good and Evil Knowledge, offers a *choice* of any
+> Skill and so grants none the app may pick), and a sixth — the Pot of Manna —
+> grants standing loot rather than a Skill. The two Wildcard Skills are real and
+> are now derived from the Roster rather than stored, because the book gives
+> those to a model and not to the Warband.
+
 - Re-rolls: "you can re-roll one of the Exploration Dice, and if you won the
   game that was just played you are allowed to reroll another" (page 113, lines
   6551 to 6556). The in-app roll (wizard line 430) sums N dice with no re-roll
