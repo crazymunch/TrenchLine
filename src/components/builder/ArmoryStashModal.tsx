@@ -27,6 +27,45 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
     soundEffects.playBladeClang();
   };
 
+  /*
+    One row, so the affordability rule is written once rather than three
+    times. The store refuses a purchase over the balance; this is what stops
+    the player reaching a refusal at all, and says why the button is dead
+    instead of leaving them to guess.
+  */
+  const BuyRow: React.FC<{
+    /* Optional, because not every catalogue row carries one — an Armour
+       entry with no modifier is a real entry, not a missing field. */
+    id: string; name: string; detail?: string;
+    type: 'Weapon' | 'Armour' | 'Equipment'; cost: number;
+  }> = ({ id, name, detail, type, cost }) => {
+    const affordable = cost <= (warband.treasuryDucats ?? 0);
+    return (
+      <div className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
+        <div>
+          <strong className="text-theme-text">{name}</strong>
+          {detail && (
+            <span className="text-xs sm:text-[10px] text-theme-muted block">{detail}</span>
+          )}
+        </div>
+        <button
+          onClick={() => handleBuy({ id, name, type, cost })}
+          disabled={!affordable}
+          title={affordable
+            ? undefined
+            : `The Strongbox holds ${warband.treasuryDucats ?? 0} Ducats, and this costs ${cost}.`}
+          className={`px-3 py-1 rounded font-bold transition-colors border ${
+            affordable
+              ? 'bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border-theme-primary/50'
+              : 'bg-theme-base/50 text-theme-muted border-theme-border cursor-not-allowed'
+          }`}
+        >
+          {affordable ? `Buy (${cost} D)` : `${cost} D — short ${cost - (warband.treasuryDucats ?? 0)}`}
+        </button>
+      </div>
+    );
+  };
+
   const handleSell = (itemId: string) => {
     sellFromStash(warband.id, itemId);
   };
@@ -138,7 +177,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                         className="px-3 py-1.5 bg-theme-surface hover:bg-theme-accent text-theme-text border border-theme-border rounded font-bold uppercase text-xs sm:text-[10px]"
                         title="Sell for 50% Ducats"
                       >
-                        Sell (+{Math.floor(item.cost / 2)} D)
+                        Sell (+{Math.ceil(item.cost / 2)} D)
                       </button>
                     </div>
                   </div>
@@ -173,48 +212,36 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
             {/* Purchase Grid */}
             <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
               {buyCategory === 'weapons' && weapons.map((w) => (
-                <div key={w.id} className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
-                  <div>
-                    <strong className="text-theme-text">{w.name}</strong>
-                    <span className="text-xs sm:text-[10px] text-theme-muted block">{w.range} | {w.damage}</span>
-                  </div>
-                  <button
-                    onClick={() => handleBuy({ id: w.id, name: w.name, type: 'Weapon', cost: w.cost })}
-                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
-                  >
-                    Buy ({w.cost} D)
-                  </button>
-                </div>
+                <BuyRow
+                  key={w.id}
+                  id={w.id}
+                  name={w.name}
+                  detail={`${w.range} | ${w.damage}`}
+                  type="Weapon"
+                  cost={w.cost}
+                />
               ))}
 
               {buyCategory === 'armour' && armour.map((a) => (
-                <div key={a.id} className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
-                  <div>
-                    <strong className="text-theme-text">{a.name}</strong>
-                    <span className="text-xs sm:text-[10px] text-theme-muted block">{a.armourModifier}</span>
-                  </div>
-                  <button
-                    onClick={() => handleBuy({ id: a.id, name: a.name, type: 'Armour', cost: a.cost })}
-                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
-                  >
-                    Buy ({a.cost} D)
-                  </button>
-                </div>
+                <BuyRow
+                  key={a.id}
+                  id={a.id}
+                  name={a.name}
+                  detail={a.armourModifier}
+                  type="Armour"
+                  cost={a.cost}
+                />
               ))}
 
               {buyCategory === 'equipment' && equipment.map((e) => (
-                <div key={e.id} className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
-                  <div>
-                    <strong className="text-theme-text">{e.name}</strong>
-                    <span className="text-xs sm:text-[10px] text-theme-muted block">{e.effect}</span>
-                  </div>
-                  <button
-                    onClick={() => handleBuy({ id: e.id, name: e.name, type: 'Equipment', cost: e.cost })}
-                    className="px-3 py-1 bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border border-theme-primary/50 rounded font-bold transition-colors"
-                  >
-                    Buy ({e.cost} D)
-                  </button>
-                </div>
+                <BuyRow
+                  key={e.id}
+                  id={e.id}
+                  name={e.name}
+                  detail={e.effect}
+                  type="Equipment"
+                  cost={e.cost}
+                />
               ))}
             </div>
 

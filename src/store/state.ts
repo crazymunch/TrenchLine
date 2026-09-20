@@ -277,7 +277,17 @@ export interface AppState {
   removeEquipment: (warbandId: string, unitId: string, instanceId: string) => void;
 
   // Warband Stash Management
-  buyToStash: (warbandId: string, item: { id: string; name: string; type: 'Weapon' | 'Armour' | 'Equipment'; cost: number }) => void;
+  /**
+   * Buy Battlekit into the Arsenal.
+   *
+   * **Refuses** a purchase the Strongbox cannot cover, rather than taking
+   * whatever is there. `currency` says which Strongbox pays; omitted means
+   * Ducats, which is what every purchase before this was.
+   */
+  buyToStash: (warbandId: string, item: {
+    id: string; name: string; type: 'Weapon' | 'Armour' | 'Equipment';
+    cost: number; currency?: 'ducats' | 'glory';
+  }) => void;
   sellFromStash: (warbandId: string, stashItemId: string) => void;
   assignStashToUnit: (warbandId: string, stashItemId: string, unitId: string) => void;
 

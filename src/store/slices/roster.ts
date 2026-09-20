@@ -9,6 +9,7 @@ import type { AppState } from '../state';
 import { storage } from '../../services/storage';
 import { enrichUnitWithLore } from '../../data/warbandLore';
 import type { Warband, ActiveUnit, StashedItem, WarbandSnapshot } from '../../types/warband';
+import { stashCurrency } from '../../types/warband';
 import type { CampaignMember } from '../../types/campaign';
 import type { InitialState } from '../init';
 import { persistWarbands, mergeWarbands } from '../persist';
@@ -588,30 +589,79 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       });
     },
 
-    // Armory Stash Management
+    /*
+      Buying Battlekit into the Arsenal.
+
+      Two things were wrong with the money, and the second is the serious one.
+
+      `Math.max(0, treasury - cost)` does not refuse a purchase the Strongbox
+      cannot cover — it takes everything there is and hands over the item. A
+      player with 10 Ducats could buy a 50-Ducat weapon, keep it, and watch the
+      Strongbox read 0. The 40 Ducats they did not have were simply forgiven,
+      and nothing anywhere said so.
+
+      And the Quartermaster debited Ducats whatever the item was priced in, so
+      a Glory Item cost Ducats and left the Glory alone: free in the currency
+      it is priced in, paid for in one it is not.
+
+      A purchase over the balance is now REFUSED and the warband is returned
+      untouched. The caller checks first and disables the control; this is the
+      same refusal for anything that reaches the store another way.
+    */
     buyToStash: (warbandId, item) => {
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
+
+          const currency = item.currency === 'glory' ? 'glory' : 'ducats';
+          const held = currency === 'glory' ? (w.gloryPoints ?? 0) : (w.treasuryDucats ?? 0);
+          /* Refused, not clamped. A player cannot spend what they do not
+             hold, and a Strongbox silently emptied is worse than a button
+             that will not press. */
+          if (item.cost > held) return w;
+
           const existing = w.armoryStash.find((i) => i.id === item.id);
           let newStash: StashedItem[];
           if (existing) {
             newStash = w.armoryStash.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
           } else {
-            newStash = [...w.armoryStash, { id: item.id, name: item.name, type: item.type, cost: item.cost, quantity: 1 }];
+            newStash = [...w.armoryStash, {
+              id: item.id, name: item.name, type: item.type, cost: item.cost,
+              /* Recorded at purchase, so selling it back knows which
+                 Strongbox to credit however long the item sits there. */
+              ...(currency === 'glory' ? { currency: 'glory' as const } : {}),
+              quantity: 1,
+            }];
           }
-          const updatedWb = {
+          return {
             ...w,
             armoryStash: newStash,
-            treasuryDucats: Math.max(0, w.treasuryDucats - item.cost)
+            ...(currency === 'glory'
+              ? { gloryPoints: (w.gloryPoints ?? 0) - item.cost }
+              : { treasuryDucats: (w.treasuryDucats ?? 0) - item.cost }),
           };
-          return updatedWb;
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
     },
 
+    /*
+      Selling Battlekit back, at the price the book sets.
+
+      Page 121:
+
+        "If you do so, you receive half the Cost of the item you were
+         selling, ROUNDING ANY FRACTIONS UP."
+
+      It rounded down. Every odd-priced item paid a Ducat less than it should
+      — a 45-Ducat weapon returned 22 instead of 23 — which is small once and
+      is not small across a season's Arsenal.
+
+      And it credited Ducats whatever the item was priced in, so selling a
+      Glory Item paid out in the wrong currency: the Glory was gone and the
+      Ducats went up.
+    */
     sellFromStash: (warbandId, stashItemId) => {
       set((state) => {
         let updated = state.warbands.map((w) => {
@@ -619,7 +669,8 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
           const item = w.armoryStash.find((i) => i.id === stashItemId);
           if (!item) return w;
 
-          const sellValue = Math.floor(item.cost / 2);
+          const sellValue = Math.ceil(item.cost / 2);
+          const currency = stashCurrency(item);
           let newStash: StashedItem[];
           if (item.quantity > 1) {
             newStash = w.armoryStash.map((i) => (i.id === stashItemId ? { ...i, quantity: i.quantity - 1 } : i));
@@ -627,12 +678,13 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             newStash = w.armoryStash.filter((i) => i.id !== stashItemId);
           }
 
-          const updatedWb = {
+          return {
             ...w,
             armoryStash: newStash,
-            treasuryDucats: w.treasuryDucats + sellValue
+            ...(currency === 'glory'
+              ? { gloryPoints: (w.gloryPoints ?? 0) + sellValue }
+              : { treasuryDucats: (w.treasuryDucats ?? 0) + sellValue }),
           };
-          return updatedWb;
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
