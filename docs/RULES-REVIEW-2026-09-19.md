@@ -54,6 +54,13 @@ because the pipeline only verifies values it derived.
 | RR-18 | Medium | Code | Eight rules functions have tests and no production caller |
 | RR-19 | Low | Play Mode | A "wounds" stat the game does not have |
 | RR-20 | Medium | Docs | `FEATURES.md` marks four of the above areas done |
+| RR-21 | High | Play Mode | The in-game card shows no abilities, gear or keywords |
+| RR-22 | High | Wizard | The wizard reads nothing from the match: scenario, deployment, scores, deeds and opponent are all retyped or defaulted |
+| RR-23 | Medium | Records | The Chronicle and the campaign keep two records of one game that never agree |
+| RR-24 | Medium | Wizard | "Match MVP (Awards Heroic Deed)" is an invented mechanic written onto the roster |
+| RR-25 | High | Roster | A dead model keeps its card, its cost and its place in the next deployment |
+| RR-26 | High | Builder | The builder is the Quartermaster Step by design and implements none of it |
+| RR-27 | Medium | Wizard | Only the active warband gets a post-game; the other side of a single-device match gets none |
 
 ---
 
@@ -444,6 +451,125 @@ RR-05), and the Carcass Front campaign framework's exploration (RR-09). Each
 should read 🟡 with the RR id until the fix lands, or the checklist will keep
 telling the next reviewer these are done.
 
+---
+
+## Part C. The match night, step by step
+
+Added after the maintainer ran an end-to-end game on 19 September and reported
+two things: no way to see a model's abilities, gear or keywords during the
+game, and a post-game flow that was wrong at every step but the injury roll.
+This section walks that path in order and names what breaks at each point.
+Where a step's fault is already a numbered finding it is cited rather than
+repeated; the new ones are RR-21 to RR-27.
+
+### During the game
+
+**RR-21. The Play Mode card carries no abilities, no gear and no keywords.**
+`src/components/play/PlayModeView.tsx` lines 1690 to 1860 render the card: the
+model's name and entry, an Activate toggle, four characteristics labelled
+MOV, RNG, MEL and SAVE, a wounds counter, the two marker pools, three status
+buttons and an attack button. That is the whole card. Its `innateAbilities`,
+`equippedWeapons`, `equippedArmour`, `equippedEquipment` and `keywords` are on
+the same object and none is rendered. The only routes to them mid-game are the
+attack calculator, which lists weapons because it must pick one, and the Quick
+Search sheet, which finds a keyword if the player already knows its name and
+types it. The builder's `UnitCard` (lines 477 to 610) does show abilities,
+gear and tappable keywords, so the data and the component exist; the game
+screen does not use them. For a companion "used at a table, on a phone, with
+dice in one hand" (`docs/MOBILE.md` line 3) this is the gap a player hits on
+every activation.
+
+Two smaller things on the same card: `SAVE` is not a term the game uses (the
+characteristic is Armour and it is an INJURY MODIFIER), and `WOUNDS` is RR-19.
+
+### Ending the match
+
+**RR-22. The wizard reads nothing from the match it follows.** Play Mode
+holds the scenario (`selectedScenarioId`), which models were deployed
+(`deployedUnitIds`), each side's Victory Points and turn scores, every claimed
+Glorious Deed with the model that claimed it, and the seated opponent, and
+`handleEndMatch` (line 379) writes all of it into the Chronicle before opening
+the wizard. The wizard (`PostBattleWizardModal.tsx`) imports none of it. So:
+
+- Step 1's scenario dropdown defaults to the first scenario in the list, not
+  the one just played, and the result defaults to Victory whatever the score.
+- "Did not take part in this game" (line 1117) starts unticked for every
+  model, although Play Mode knows exactly who was deployed. A model left in
+  the Arsenal earns Experience unless the player remembers to untick it.
+- Glory starts at 3 and Ducats at 30 or 35 (RR-02) while the deeds that
+  should decide Glory sit in the record written one line earlier.
+- The opponent is a free-text field with the seated opponents offered as
+  tap-to-fill chips.
+
+Everything the player did in Play Mode has to be retyped, and where they do
+not retype it, the defaults commit.
+
+**RR-23. Two records of one game.** `battleFromMatch` writes a
+`BattleRecord` to the Chronicle; the wizard writes a `MatchRecord` to the
+campaign with one participant, the typed opponent name and the typed Glory. The
+Campaign Hub reads the second (`CampaignHubView.tsx` line 378), the Chronicle
+the first. They never agree on the result, because one is scored and the other
+is typed, and neither knows the other exists.
+
+### The post-game steps
+
+- **Step 1, Scenario and Result.** RR-22 and RR-02. Nothing here is the book's:
+  the book has no per-result payout in either currency.
+- **Step 2, Trauma.** The one step the maintainer found right, and its roll
+  is right. What it writes is not: RR-07 (no Battle Scars recorded, Full
+  Recovery written as an injury, the reroll prompt then misfiring on the most
+  common result) and RR-01 (catalogue text for 12 of the 22 rows). It reads
+  right on the night and is wrong on the roster afterwards.
+- **Step 3, Promotions.** RR-03 (an invented advancement list is the only
+  thing offered), RR-05 (no Promotion Pool, no deed XP, no ELITE ceiling, no
+  non-promotable list, no Limited Potential), RR-04 (the "5 XP" rule the
+  Advancement modal states). The step's one correct output is the flat 1 XP to
+  surviving ELITE participants, which RR-22 makes conditional on the player
+  unticking absentees by hand.
+- **Step 4, Reinforcements.** The price is now shown and charged (RC-09). What
+  follows it is not: "Recruit in the roster builder after this phase" hands
+  the player to a builder that measures against the founding 700 (RR-11) and
+  never debits the Strongbox (RR-12), so the allowance this step computes is
+  never enforced anywhere.
+- **Step 5, Exploration.** RR-06 (a game behind on dice and tables from game
+  2), RR-10 (no re-roll, no Exploration Skills, a `?? 3` fallback), RR-09 on
+  a Carcass Front campaign, and RR-02 if the roll is skipped.
+
+**RR-24. "Match MVP (Awards Heroic Deed)" is not a rule.** Step 5 offers an
+MVP picker (wizard line 1504) and `applyPostBattleResults` (`campaign.ts`
+lines 480 to 483) prepends `Match MVP: <scenario> (<result>)` to the chosen
+model's `deeds` list, matched by substring on the model's name. The game has
+Glorious Deeds, which Play Mode already records per model; there is no MVP and
+no "Heroic Deed". It is a hand-written mechanic that writes a hand-written
+deed onto the roster, beside the real ones.
+
+### After the commit
+
+**RR-25. A dead model stays on the roster as a live one.** The commit sets
+`isDead: true` and `status: 'Out of Action'` and leaves the model in
+`warband.units`. No builder or Play Mode component reads `isDead`; the only
+readers are the print sheet, the `.ros` exporter and the roster file. So the
+model keeps its card in the builder, keeps counting toward the budget and the
+Force (RR-11), and is deployed by default in the next match, because Play Mode
+deploys every unit until the player deselects it (`deployedUnitIds` at
+`PlayModeView.tsx` line 333). The book says "remove the model from your
+Warband Roster"; the app has no control that does it.
+
+**RR-26. The Quartermaster is the builder, and the builder does not know a
+game was played.** The wizard leaves out the Quartermaster and Roster Steps
+on the grounds that the builder already is them. It is not: the builder has no
+notion of a Strongbox purchase (RR-12), no Threshold (RR-11), a sell price
+that rounds the wrong way (RR-08), no Arsenal count in `Limit: N` (RR-13), no
+retire-at-two-scars, no Glory Item gate (RR-14), and no way to mark who sits
+out. Every one of those is a thing the Quartermaster Step asks the player to
+do.
+
+**RR-27. Only the active warband gets a post-game.** `handleEndMatch` opens
+one wizard for `getActiveWarband()`. A single-device match between two of the
+player's own warbands, or a hosted match, gives the other side no Trauma Step,
+no Experience and no Exploration; the Chronicle records it, the campaign does
+not.
+
 ### Things looked at and found sound
 
 So the next pass does not re-check them:
@@ -478,3 +604,9 @@ So the next pass does not re-check them:
 6. RR-09, RR-08, RR-13.
 7. RR-05, RR-10, RR-14 as the next feature block, each derived from its page.
 8. RR-15, RR-18, RR-19, RR-20 as the tidy-up.
+
+For the match-night path specifically (Part C): RR-21 first, because it is
+what a player looks at forty times a game and the component already exists in
+the builder; then RR-22 and RR-25, which between them remove most of the
+retyping and the dead model; RR-24 with RR-02; RR-23, RR-26 and RR-27 once the
+economy findings above have a home.
