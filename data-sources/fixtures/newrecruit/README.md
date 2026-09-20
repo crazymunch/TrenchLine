@@ -11,6 +11,8 @@ rather than from inference.
 | `al-qarn-rihla-august.ros` | The XML, extracted for diffing and grepping |
 | `al-qarn-rihla-august.json` | NewRecruit's JSON export — the same tree under a `roster` key |
 | `al-qarn-rihla-august-print.pdf` | Its "Pretty" print output, the reference for our own pretty mode |
+| `al-qarn-rihla-september.json` | The same Warband after the game played the week of 14 September 2026: 1436 / 1440 Ducats, 13 / 13 Glory, 114 selections. Supplied 20 September |
+| `al-qarn-rihla-september.ros` | Its XML |
 
 ## What these settled
 
@@ -59,3 +61,32 @@ this purpose. `al-qarn-rihla-august.json` and the `.ros` embed full rules text
 copied out of the community catalogues; they are here as test input, not as a
 source the pipeline may derive from. Rule 1 still applies — game data comes
 from `data-sources/battlescribe/` and the rulebooks, never from a roster file.
+
+## What the September export adds
+
+The August export is the roster the app was loaded from; September is the
+same Warband one game later, and the difference between them is a post-battle
+as NewRecruit records one. It is the acceptance case for the Roster Sheet
+design (`docs/FIX-DESIGNS-2026-09-20.md`, FD-12) and the reproduction for the
+Homunculi (FD-13):
+
+- Experience moves on five models; five Skills arrive, each named with the
+  roll that granted it in brackets (`Point Blank [9]`, `Sharp Eyes [6]`,
+  `Melee Proficiency [7]`, `Dodge [11]`, `Champion [11]`), the same shape
+  the August injuries use (`Leg Wound [31]`, `Lost Arm [26]`).
+- Kasim's Leg Wound is gone and `Curative Fluids` arrived; the
+  `Campaign Rules > Enabled` subtree gains `Ransacked Alchemist Workshop`,
+  whose text says why.
+- Three Kavass and a Scripture Guardian (7 Glory) were hired.
+- `Campaign Rules > Enabled` also carries `Book of Golems`, `Sublime Gate`
+  (the Patron), `Reroll` (an Exploration Skill) and `Unleveraged Glory`
+  (NewRecruit's Glory counter): the rewards a Warband holds, which the
+  importer had no home for.
+
+Two places the export's rules text disagrees with the books, noted so nobody
+derives from it (rule 1): the Human Hands allowance reads "two 1-Handed Melee
+Weapons and one 2-Handed Melee Weapon" where Warbands L5386 to L5388 says
+"one 1-Handed Melee Weapon and one 2-Handed Melee Weapon"; and the Book of
+Golems reads "up to 100 ducats of value (40 ducats base cost)" where the
+rulebook, L6902 to L6912, says Human Hands plus up to fifty Ducats of
+Formulas, free. The app derives from the books.
