@@ -17,11 +17,40 @@ const TABLE = DATASET.campaign.trauma as TraumaRow[];
 const legWound = TABLE.find((r) => r.name === 'Leg Wound')!;
 
 describe('the Trauma table', () => {
-  it('still carries the Leg Wound row this reads', () => {
-    // If upstream renames or rewords it, this fails rather than the app
-    // silently going back to applying nothing.
+  it('still carries a Leg Wound row, and this still reads -2 out of it', () => {
+    /*
+      THE regression guard, and it is deliberately about the OUTCOME rather
+      than the wording.
+
+      It used to assert `/Movement Characteristic is reduced by 2/`, which
+      pinned the **BattleScribe catalogue's** sentence — and the comment above
+      it called that the book's. When `parseTraumaTable` was corrected to read
+      the table from the rulebook (RR-01), the shipped row became "Subtract 2\"
+      from this model's Movement Characteristic" and `deltaFromDescription`
+      matched nothing. The app went back to showing the printed Movement: the
+      exact defect this module was written to fix, reintroduced by a change to
+      a different file.
+
+      A wording assertion cannot catch that, because it fails for the wrong
+      reason and tempts you to update the pattern. This asserts what the player
+      is affected by, so it stays true through any rephrasing that still means
+      two inches, and fails loudly on one that does not.
+    */
     expect(legWound).toBeDefined();
-    expect(legWound.description).toMatch(/Movement Characteristic is reduced by 2/i);
+    expect(deltaFromDescription(legWound.description)).toEqual({ movement: -2 });
+  });
+
+  it('reads the row whichever source wrote it', () => {
+    // The rulebook's phrasing and the catalogue's, verbatim. A dataset
+    // generated before RR-01 still carries the second.
+    expect(deltaFromDescription(
+      'Subtract 2” from this model’s Movement Characteristic. In addition, add '
+      + '-1 DICE to the Risky Success Roll for this model when it takes a Dash ACTION.',
+    )).toEqual({ movement: -2 });
+
+    expect(deltaFromDescription(
+      'The model’s Movement Characteristic is reduced by 2” and it suffers -1 DICE to Dash.',
+    )).toEqual({ movement: -2 });
   });
 
   it('is the only row that changes a Characteristic', () => {
@@ -36,12 +65,14 @@ describe('the Trauma table', () => {
 });
 
 describe('reading the modifier out of the printed text', () => {
-  it('takes the number from the catalogue, not from here', () => {
+  it('takes the number from the table, not from here', () => {
     expect(deltaFromDescription(legWound.description)).toEqual({ movement: -2 });
   });
 
-  it('reads an increase as well as a reduction', () => {
+  it('reads an increase as well as a reduction, in both phrasings', () => {
     expect(deltaFromDescription('The model’s Movement Characteristic is increased by 1".'))
+      .toEqual({ movement: 1 });
+    expect(deltaFromDescription('Add 1” to this model’s Movement Characteristic.'))
       .toEqual({ movement: 1 });
   });
 

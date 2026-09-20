@@ -611,6 +611,21 @@ Trench Dispatch  >  Official rulebook  >  BattleScribe catalogue
 The Dispatch wins because it is the most recent rules update. The rulebook beats
 the catalogues because the catalogues are a community transcription of it.
 
+> **The Trauma Table was the exception, and is not any more.** Until
+> 2026-09-19 `parseTraumaTable` read eighteen of its twenty-two rows from
+> `Campaign Rules.cat` and only the four the catalogue cannot express from the
+> book — inverting this order for the one table whose text is read back to a
+> player as a rule to apply. Fourteen rows differed. Most were wording, but
+> **24 Dark Memory was a different rule entirely** (the catalogue makes the
+> model FEAR every enemy in a rematch; the book gives −1 DICE to Melee Attacks
+> against that Warband), **16 Chest Wound** named the wrong dice pool, and
+> **15 Lost an Eye**, **34 Muscle Damage** and **35 Minor Wound** each gained or
+> lost a clause. The catalogue is revision 5 of a community transcription and
+> predates 1.0.2, whose changelog rewrites only Head Wound and Captured — so
+> these were drift, not errata the app was behind on. All twenty-two rows now
+> come from the rulebook and the catalogue supplies row names and a drift
+> report. See RR-01 in the rules review (`docs/RULES-REVIEW-2026-09-19.md`, opened separately as PR #58).
+
 > **On the Dispatch's status:** the document describes itself as *"an unofficial,
 > fan-made digital rules update… not affiliated with or endorsed by Factory
 > Fortress Inc."* It is a **compilation** of official Trench Wire rules updates,

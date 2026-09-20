@@ -1034,9 +1034,17 @@ export interface TraumaRow {
   name: string;
   description: string;
   /**
-   * Which source carried it. The catalogue is exact and machine-readable; the
-   * rulebook rows come off a two-column page whose extraction scrambles, so
-   * they were read individually. Recorded because the two are not equal.
+   * Which source carried it.
+   *
+   * Every row a current build produces is `'rulebook'`. It used to be
+   * `'catalogue'` for eighteen of the twenty-two, which inverted the project's
+   * own precedence (docs/RULESET-MODEL.md section 6) for the one table read
+   * back to a player as a rule — and shipped a 24 Dark Memory that was a
+   * different rule from the book's.
+   *
+   * The other two values remain in the union because a ruleset generated
+   * before that fix is still a valid stored ruleset, and a reader must be able
+   * to tell which one it is holding.
    */
   source: 'catalogue' | 'rulebook' | 'catalogue+rulebook';
 }
