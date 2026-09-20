@@ -1232,6 +1232,70 @@ export function parseReinforcementsSequence(src = RULEBOOK_TXT) {
   };
 }
 
+/**
+ * Campaign Victory Points, the scale the campaign is actually won on.
+ *
+ * Page 95, under `Winning the Campaign`:
+ *
+ * > In a campaign you score Campaign Victory Points for each game that you
+ * > play:
+ * > ** The winner of the game scores +15 Campaign Victory Points
+ * > ** The loser of the game scores +7 Campaign Victory Points
+ * > ** In a draw, both players score +10 Campaign Victory Points
+ *
+ * > At the end of the campaign, the player with the most Campaign Victory
+ * > Points is the winner. In the case of a tie, all tied players are joint
+ * > winners.
+ *
+ * The app recorded none of this. The Campaign Hub ranked members on `glory`
+ * and `rating`, neither of which is how the game says a campaign is won — so
+ * the standings answered a question the rules do not ask, and the one they do
+ * ask had no answer anywhere.
+ *
+ * Note that a loss still scores. Seven of fifteen is a lot, and a scale read
+ * as "winner takes all" would change who wins a season, which is why this is
+ * derived and pinned rather than typed.
+ */
+export function parseCampaignVictoryPoints(src = RULEBOOK_TXT) {
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
+  const text = lines.join('\n');
+
+  const read = (re, what) => {
+    const m = re.exec(text);
+    if (!m) {
+      throw new Error(
+        `parse-campaign: cannot read the Campaign Victory Points for ${what} `
+        + `from the rulebook (${re.source}). The campaign is won on this scale, so `
+        + 'a missing value must fail the build rather than default — a zero here '
+        + 'silently decides a season.');
+    }
+    return Number(m[1]);
+  };
+
+  const win = read(/The winner of the game scores \+(\d+) Campaign Victory Points/i, 'a win');
+  const loss = read(/The loser of the game scores \+(\d+) Campaign Victory Points/i, 'a loss');
+  const draw = read(/In a draw, both players score \+(\d+) Campaign Victory Points/i, 'a draw');
+
+  /*
+    The book's own ordering. A scale that did not satisfy it would mean the
+    extraction had crossed two bullets — which is exactly the failure a
+    three-line list invites, and one that reads as plausible data.
+  */
+  if (!(win > draw && draw > loss)) {
+    throw new Error(
+      `parse-campaign: the Campaign Victory Points scale read as win=${win}, `
+      + `draw=${draw}, loss=${loss}, which is not ordered win > draw > loss. `
+      + 'The three bullets have most likely been crossed.');
+  }
+  if (loss <= 0) {
+    throw new Error(
+      `parse-campaign: a loss reads ${loss} Campaign Victory Points. The book `
+      + 'scores a loss, and a zero here would make the campaign winner-takes-all.');
+  }
+
+  return { win, loss, draw };
+}
+
 /* ------------------------------------------------------------------ *
  * Promotions & Experience Step — who may be promoted, and how much
  * Experience a model may hold.

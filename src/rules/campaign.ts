@@ -685,3 +685,75 @@ export function explorationLedgerEntry(
         `(${outcome.nothingBecause === 'already-discovered' ? 'already found' : 'not on the table'}).`,
   };
 }
+
+/* ------------------------------------------------------------------ *
+ * Campaign Victory Points (RR-02, second half)
+ * ------------------------------------------------------------------ */
+
+/** The derived scale, or `null` for a ruleset built before it existed. */
+export const victoryPointScale = (dataset: Dataset | null | undefined) =>
+  dataset?.campaign?.victoryPoints ?? null;
+
+/**
+ * A member's Campaign Victory Points.
+ *
+ * Page 95: *"The winner of the game scores +15… The loser of the game scores
+ * +7… In a draw, both players score +10… At the end of the campaign, the
+ * player with the most Campaign Victory Points is the winner."*
+ *
+ * **Derived, never stored.** It is a function of the win/loss/draw record the
+ * campaign already keeps, so there is no new field to sync, no second writer,
+ * and nothing that can drift out of step with the results it is computed
+ * from. A stored total would be one more number two members could disagree
+ * about after a merge.
+ *
+ * The app had nothing of this. The Campaign Hub ranked members on `glory` and
+ * `rating` — one is a spendable currency and the other is not in the rulebook
+ * at all — so the standings answered a question the game does not ask, and the
+ * one it does ask had no answer anywhere.
+ *
+ * **What this does not count.** Two Exploration results move Campaign Victory
+ * Points outside the per-game scale: `16 Treasure of the Holies` scores D3,
+ * and `23 Patron's Visit` exchanges up to 10 ☼ for the same number of points.
+ * Neither is derivable from a win/loss/draw record — both are a decision or a
+ * die roll at the table — so they need an adjustments ledger the campaign does
+ * not have yet. Until it does, this is the per-game total and says so, rather
+ * than being presented as a final score it cannot be.
+ *
+ * `null` where the ruleset carries no scale. Not zero: a campaign whose
+ * standings cannot be computed must not render as everyone on nothing.
+ */
+export function campaignVictoryPoints(
+  dataset: Dataset | null | undefined,
+  member: { wins?: number; losses?: number; draws?: number } | null | undefined,
+): number | null {
+  const scale = victoryPointScale(dataset);
+  if (!scale || !member) return null;
+
+  const n = (x: number | undefined) => (Number.isFinite(x) ? Math.max(0, x as number) : 0);
+  return n(member.wins) * scale.win
+    + n(member.losses) * scale.loss
+    + n(member.draws) * scale.draw;
+}
+
+/**
+ * Members ordered as the book decides a campaign, highest first.
+ *
+ * *"In the case of a tie, all tied players are joint winners"* — so a tie is a
+ * real result and this does not invent a winner between two equal totals. The
+ * secondary sort is Glory, which is the `classic` framework's own tiebreak for
+ * display purposes only; members tied on points remain tied on points, and a
+ * caller that needs to say who won must look at the totals rather than at
+ * position 0.
+ */
+export function byCampaignVictoryPoints<T extends { wins?: number; losses?: number; draws?: number; glory?: number }>(
+  dataset: Dataset | null | undefined,
+  members: readonly T[],
+): T[] {
+  return [...members].sort((a, b) => {
+    const pa = campaignVictoryPoints(dataset, a) ?? 0;
+    const pb = campaignVictoryPoints(dataset, b) ?? 0;
+    if (pa !== pb) return pb - pa;
+    return (b.glory ?? 0) - (a.glory ?? 0);
+  });
+}

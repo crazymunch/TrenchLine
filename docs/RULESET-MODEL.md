@@ -769,6 +769,43 @@ One engine, two uses.
 
 ---
 
+### `campaign.victoryPoints` — the scale a season is won on
+
+Derived from rulebook p.95 by `parseCampaignVictoryPoints`:
+
+```ts
+{ win: 15, loss: 7, draw: 10 }
+```
+
+> *"In a campaign you score Campaign Victory Points for each game that you
+> play… At the end of the campaign, the player with the most Campaign Victory
+> Points is the winner. In the case of a tie, all tied players are joint
+> winners."*
+
+**The total is derived, never stored.** `campaignVictoryPoints(dataset,
+member)` computes it from the win/loss/draw record the campaign already keeps,
+so there is no new field to sync, no second writer, and nothing that can drift
+from the results it is computed from. A stored total would be one more number
+two members could disagree about after a merge.
+
+Three things the parser refuses on, each proved by sabotage: a bullet that
+stops matching, a scale that is not ordered `win > draw > loss` (which is what
+crossed bullets look like — 7 for a win and 15 for a loss is a working scale
+that decides every season backwards), and a loss worth nothing.
+
+**Not counted here.** Two Exploration results move Campaign Victory Points
+outside the per-game scale: `16 Treasure of the Holies` scores D3, and
+`23 Patron's Visit` exchanges up to 10 ☼ for the same number of points. Neither
+is a function of a win/loss/draw record — one is a die roll, the other a
+decision at the table — so both need an adjustments ledger the campaign does
+not have yet. `campaignVictoryPoints` is the per-game total and says so.
+
+**Optional on the type**, for the same reason as `traumaProcedure`: a ruleset
+built before this existed states nothing, and "no scale" must stay
+distinguishable from "everyone on zero".
+
+---
+
 ### `campaign.promotions` — who may be Promoted, and how much Experience
 
 Derived from rulebook pp.105–111 by `parsePromotions`. It carries the two

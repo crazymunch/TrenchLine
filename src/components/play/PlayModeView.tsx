@@ -32,7 +32,8 @@ const SCENARIO_BOOKS: { source: string; label: string }[] = [
 ];
 import { parseDeeds } from './deeds';
 import { parseUnforeseenEvents } from '../../rules/unforeseen';
-import { rollWeatherForAll, type WeatherRoll } from '../../rules/weather';
+import { rollWeatherForAll, whoChooses, type WeatherRoll } from '../../rules/weather';
+import { campaignVictoryPoints } from '../../rules/campaign';
 import type { WeatherEvent } from '../../types/catalogue';
 import { WarbandCombobox } from '../ui/WarbandCombobox';
 import { warbandCode } from '../../rules/warbandCode';
@@ -221,6 +222,30 @@ export const PlayModeView: React.FC = () => {
     by hand, and the first three were all wrong.
   */
   const { dataset: playDataset } = useDataset();
+
+  /*
+    Who picks the Weather Event: "the player with the fewest Campaign Victory
+    Points decides… If all players have the same number… simply roll-off."
+
+    A seat with no campaign record — a placeholder, a guest, a one-off game —
+    contributes `undefined`, which is what `whoChooses` reads as "not scored"
+    rather than as nought. Two seats must be scored for the rule to apply at
+    all; below that it reports a roll-off, which is the book's own fallback.
+  */
+  const weatherChooser = useMemo(() => {
+    const seats = matchWarbandIds.map((wbId) => {
+      const member = campaign?.members?.find((m) => m.warbandId === wbId);
+      return campaignVictoryPoints(playDataset, member) ?? undefined;
+    });
+    const { seats: picked, rollOff } = whoChooses(seats);
+    return {
+      rollOff,
+      names: picked
+        .map((i) => side(matchWarbandIds[i])?.name)
+        .filter((n): n is string => Boolean(n)),
+    };
+  }, [matchWarbandIds, campaign, playDataset, side]);
+
   const weatherTable = playDataset?.weather ?? null;
 
   /*
@@ -1030,13 +1055,38 @@ export const PlayModeView: React.FC = () => {
               ) : (
                 <div className="space-y-2">
                   {/*
-                    Whose call it is, stated rather than decided: the app cannot
-                    know the table's Campaign VP standings, and guessing would
-                    be worse than asking.
+                    Whose call it is.
+
+                    This used to say the app "cannot know the table's Campaign
+                    VP standings", and that was true — nothing derived them, so
+                    `whoChooses` sat in `rules/weather.ts` with tests and no
+                    caller at all. Campaign Victory Points come off the
+                    win/loss/draw record now, so for a campaign match the app
+                    can name the player whose call it is instead of restating
+                    the rule at them.
+
+                    It still only names them: the decision is theirs, and a
+                    level table or a one-off game goes to a roll-off, which is
+                    what the book says and what `whoChooses` reports.
                   */}
                   <p className="text-theme-muted text-xs sm:text-[11px] leading-relaxed">
-                    The player with the fewest Campaign Victory Points picks which of these
-                    applies for the rest of the battle. Level, or a one-off game? Roll off.
+                    {weatherChooser.names.length && !weatherChooser.rollOff ? (
+                      <>
+                        <strong className="text-theme-text">{weatherChooser.names[0]}</strong>
+                        {' '}has the fewest Campaign Victory Points, so they pick which of these
+                        applies for the rest of the battle.
+                      </>
+                    ) : weatherChooser.names.length > 1 ? (
+                      <>
+                        <strong className="text-theme-text">{weatherChooser.names.join(' and ')}</strong>
+                        {' '}are level on Campaign Victory Points — roll off, and the winner picks.
+                      </>
+                    ) : (
+                      <>
+                        The player with the fewest Campaign Victory Points picks which of these
+                        applies for the rest of the battle. Level, or a one-off game? Roll off.
+                      </>
+                    )}
                   </p>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2">

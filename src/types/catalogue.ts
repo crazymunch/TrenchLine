@@ -1539,6 +1539,15 @@ export interface Dataset {
      */
     reinforcements?: ReinforcementsSequence;
     /**
+     * The scale a campaign is won on (p.95): 15 for a win, 7 for a loss, 10
+     * each for a draw.
+     *
+     * Optional for the same reason as `traumaProcedure`: a ruleset built
+     * before this existed states nothing, and "no scale" must stay
+     * distinguishable from "everyone on zero". See `campaignVictoryPoints`.
+     */
+    victoryPoints?: { win: number; loss: number; draw: number };
+    /**
      * Who may be Promoted, and how much Experience a model may hold.
      *
      * Optional for the same reason as `traumaProcedure`: a ruleset built
