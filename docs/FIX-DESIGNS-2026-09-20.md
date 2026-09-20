@@ -29,6 +29,8 @@ carry, and what these designs cover:
 | FD-03 | RR-02 (Campaign Victory Points), RR-24 | `scripts/lib/parse-campaign.mjs`, `src/rules/campaign.ts`, the Hub |
 | FD-04 | RR-03, RR-04 | the wizard's Promotions step, `UnitAdvancementModal`, the Codex roller |
 | FD-05 | RR-25, then RR-11, then RR-12 | the roster store, the builder, `validate.ts` |
+| FD-06 | RR-05 | the wizard's Promotions step, Play Mode's deed claim, `parse-campaign.mjs` |
+| FD-07 | RR-10 | the wizard's Exploration step |
 
 ## FD-00. PR #59 as it stands
 
@@ -455,12 +457,148 @@ balance of 120 and one reconciliation entry. Docs: `ROSTER-FILE.md`,
 `CAMPAIGN-SYNC.md` (the ledger is the authority; the cached fields are not),
 `RESTRUCTURE-PLAN.md` line 419 marked done.
 
+## FD-06. RR-05: the Promotions and Experience Step
+
+### Root cause
+
+Step 3 of the wizard (`src/components/campaign/PostBattleWizardModal.tsx`
+from line 1020) awards the survivor's Experience Point and offers the RR-03
+list. There is no Promotion Pool, no roll and no miss counter; promotion is
+`handleToggleElite` in `src/components/builder/UnitAdvancementModal.tsx` line
+189, a free switch. The award is a flat 1 (`earnsExperience`,
+`src/rules/trauma.ts` line 245).
+
+The second point for a Glorious Deed (page 105, lines 6027 to 6029) is not
+awarded, and it is not derivable today: Play Mode records a Deed against a
+side, not a model. `completedDeeds` in `src/rules/matchState.ts` line 25 is
+title to turn, and `src/rules/battleFromMatch.ts` lines 91 to 104 carries that
+into `DeedClaim` with a `sideId` and no model. **This corrects RR-05**, which
+said the model was known; the review document carries the same correction.
+
+The book, page 104 to 106 and 111:
+
+- the Pool is 1D6 plus 1D6 per Glorious Deed, plus Show Off (lines 5956 to
+  5965; `campaign.skills` carries Show Off's text);
+- no third die on a Troop until every Troop has two, and so on (5966 to 5971);
+- roll one die at a time, a 6 promotes, note misses in a row on the Roster,
+  after five the sixth is a 6 (5972 to 5979);
+- a promoted model gains ELITE, a new entry, 0 Experience and then the point
+  for surviving (5980 to 5987);
+- skip the step at 6 ELITE, stop when a promotion makes 6 (6010 to 6015);
+- Models That Cannot Be Promoted, a faction-by-faction table that the extract
+  prints cleanly at lines 6123 to 6139 as a faction heading followed by names
+  or `-`;
+- Limited Potential, 7 Experience at most, the same shape at lines 6425 to
+  6438.
+
+The dataset carries LIMITED POTENTIAL as a keyword on six units; the book's
+list has seven. The Brazen Bull is the difference, and its entry was replaced
+by `dispatch-01`, so the Dispatch's own keyword row decides, not this page.
+
+### The change
+
+1. **Derive `campaign.promotions`** in `parse-campaign.mjs`:
+   `{ poolBase, poolPerDeed, promoteOn, autoAfterMisses, maxElites,
+   cannotPromote: [{ faction, models }], limitedPotential: { maxXp, models:
+   [{ faction, models }] } }`. Each number is read from its sentence; the two
+   tables are read by one function that takes the heading and returns faction
+   to names, because both pages print the same shape. Fail if a number is
+   missing or a faction heading has nothing under it.
+2. **A rules module**, a new `promotions.ts` under `src/rules/`:
+   `promotionPool(dataset, deeds, showOffCount)`;
+   `assignmentIsLegal(assignment)`; `rollPromotions(assignment, rolls,
+   missesBefore)` returning each model's outcome and the new miss count, a 6
+   resetting it; `canBePromoted(dataset, unit, eliteCount)`;
+   `experienceCap(dataset, unit)`.
+3. **Roster.** `warband.promotionMisses?: number`: the book says to note it
+   "on your Roster", so it is one count per warband, and the comment says
+   that is a reading of an ambiguous sentence. `unit.isElite` stays as the
+   promotion flag; the promoted unit's `profileSnapshot.category` becomes
+   `Elite`.
+4. **Step 3, in the book's order.** The Maximum Elites check, then the pool
+   with its parts shown, then assignment with the rule enforced, then the
+   roll (entered or rolled, one die at a time), then the promotions, then
+   Experience: the point for surviving, the point for a Deed, War Stories,
+   Bitter Lessons (D3, which the wizard shows and does not apply), each
+   capped by `experienceCap`.
+5. **A Deed knows its model.** `completedDeeds` values become `{ turn,
+   unitId? }`, set from a model picker when the Deed is claimed in Play Mode;
+   a Deed claimed with no model is still the side's. `DeedClaim.unitId?` and
+   `MatchHandover.deedUnitIds` carry it through. Old records read as before.
+6. **The switch goes.** `handleToggleElite` is removed; promotion happens in
+   the step. An admin override, if the group wants one, is an admin tool with
+   a note in the history, not a button on every card.
+7. Latecomers (page 95, lines 5290 to 5300) stay a separate item.
+
+### The test
+
+Against `DATASET`: `promotions.maxElites` is 6 and `limitedPotential.maxXp`
+is 7, read in the test from the dataset rather than typed; `cannotPromote`
+lists the Amalgam under the Cult; `promotionPool` with two Deeds and one Show
+Off is the dataset's base plus three; `assignmentIsLegal` rejects a third die
+while another Troop has one; `rollPromotions` with four misses and a roll of 3
+promotes and resets the count; a promoted model reads 0 before the award and
+1 after; Experience on a LIMITED POTENTIAL model never exceeds the cap; a
+handover from a record with a model on a Deed awards that model 2.
+
+### Acceptance
+
+`docs/RULESET-MODEL.md` (`campaign.promotions`), `docs/FEATURES.md` rows for
+Promotions and Experience, `docs/ROSTER-FILE.md` (`promotionMisses`, the deed
+`unitId`), `docs/CHRONICLE.md` (`DeedClaim.unitId`).
+
+## FD-07. RR-10: the Exploration roll
+
+### Root cause
+
+`handleRollExploration` (`PostBattleWizardModal.tsx` line 430) sums N dice
+with `explorationDice(dataset, gamesPlayed) ?? 3`, which is rule 2: a dataset
+that cannot say gets three. There is no re-roll; page 113, lines 6552 to
+6555: one die may be re-rolled, a second if the game was won, never the same
+die twice. `warband.explorationDiscoveries` has a reader (wizard line 410) and,
+by grep at `bdf0bd8`, no writer; confirm that before anything else, because
+if it holds it means every Location found so far was never recorded.
+Exploration Skills (page 115, lines 6666 to 6700) and Pot of Manna have no
+field to live in.
+
+### The change
+
+1. Drop the `?? 3`. Where `explorationDice` returns null the step says the
+   ruleset carries no Exploration band for this game and the roll is
+   disabled; the manual entry stays.
+2. Keep the dice as an array in state and render them. After the first roll,
+   a die can be tapped to re-roll, once each, up to one die, or two when
+   `handover.result` is `Victory`; the total updates. The rule text sits
+   beside the dice.
+3. `warband.explorationEffects?: { name, source, sinceGame }[]`, written when
+   a Location's text grants one. The seven Skills come from page 115 into
+   `campaign.exploration.skills` by name and text; each Location's grant is
+   read from its own text ("gains the Re-roll Exploration Skill"). The roll
+   applies Extra Dice, Re-roll and Lucky as arithmetic and lists Duplicate,
+   Set Dice, Seek and Circle Back for the player to apply by hand until they
+   are modelled. Pot of Manna is `lootBonus` on the same record.
+4. The writer for `explorationDiscoveries`, if it is missing.
+
+### The test
+
+A null band disables the roll and never yields three dice; one re-roll after
+a loss, two after a win, and the same die cannot be re-rolled twice; a warband
+with Extra Dice rolls one more; loot with Pot of Manna is the roll times the
+dataset's `lootPerPoint` plus ten; a Location that grants a Skill leaves it in
+`explorationEffects` after commit.
+
+### Acceptance
+
+`docs/ROSTER-FILE.md` for the new field, `docs/FEATURES.md` for Exploration,
+and the RR-10 entry in the review marked with what landed.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
 2. FD-01 and FD-02, one PR each, pipeline only, with the audit counts before
    and after in the PR body.
-3. FD-04, then FD-03. Both change the wizard's later steps; #59 changed its
-   first step, so they rebase cleanly once it has merged.
+3. FD-04, then FD-06, then FD-03. All change the wizard's later steps; #59
+   changed its first step, so they rebase cleanly once it has merged.
 4. FD-05a, FD-05b, FD-05c, in that order, one PR each.
-5. Then RR-09, RR-13, DA-01/02, DA-03/05/04, and the rest of the two lists.
+5. FD-07.
+6. Then RR-09, RR-13, DA-01/02, DA-03/05/04, and the rest of the two lists.

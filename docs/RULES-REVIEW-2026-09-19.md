@@ -215,6 +215,10 @@ book's step contains and the app does not (pages 104 to 106 and 111, lines
   6026 to 6029). The wizard awards a flat 1. Play Mode knows which model
   claimed which deed (`completedDeeds` in `rules/matchState.ts`), so this is
   derivable, not a question for the player.
+  **Correction, 20 September:** it is not. `completedDeeds` keys a deed by
+  title to the turn it was claimed, per side; the model is not recorded, and
+  `battleFromMatch.ts` carries the claim into the Chronicle without one. The
+  design in `FIX-DESIGNS-2026-09-20.md` FD-06 adds the model to the claim.
 - **War Stories** (+1 XP to every other ELITE) and **Bitter Lessons** (Trauma
   65, D3 extra XP, which the wizard displays and does not apply).
 - **Latecomers** (page 95, lines 5290 to 5300): 4 XP per game the top player
