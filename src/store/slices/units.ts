@@ -8,7 +8,41 @@ import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import type { ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } from '../../types/warband';
 import { persistWarbands } from '../persist';
-import { book } from '../../rules/ledger';
+import { book, undoPurchases } from '../../rules/ledger';
+import { campaignGameOf } from '../../rules/campaign';
+import type { Warband, StashedItem } from '../../types/warband';
+
+/*
+  Every purchase in the builder goes through these two, and both are no-ops on
+  an unrestricted Warband — its Ducats are the player's to set, so the app
+  neither charges nor refunds them. See `createWarband` for that split.
+
+  FD-05e made the builder's remaining figure the Strongbox. FD-05e-2 is the
+  other half: the things that spend it. Equipping Battlekit added its cost to
+  the model's `totalCost` and booked nothing, so once the budget stopped being
+  `ducatLimit - rosterCost` a campaign Warband could equip its whole Armoury
+  for free. `duplicateUnit` was a free hire for the same reason.
+*/
+
+/** Charge a campaign Warband for something, tagged so removal can undo it. */
+const charge = (w: Warband, ducats: number, ref: string, note: string, game: number): Warband =>
+  (w.forceMode === 'unrestricted' || ducats <= 0)
+    ? w
+    : book(w, { reason: 'quartermaster', ducats: -ducats, ref, note, game }, w.updatedAt);
+
+/**
+ * Take back what was paid for `refs`, where the player may still take it back.
+ *
+ * "Users can make any variations from the end of one game to the start of the
+ * next": a model added and removed in the same muster costs nothing. Once the
+ * game it was bought in has been played the purchase is settled — a removed
+ * model refunds nothing, because the book sells Battlekit and never models,
+ * and removed Battlekit goes to the Arsenal where selling it gives half back.
+ */
+const refund = (w: Warband, refs: readonly string[], game: number) =>
+  w.forceMode === 'unrestricted'
+    ? { warband: w, undone: new Set<string>() }
+    : undoPurchases(w, refs, game);
 
 export type UnitsSlice = Pick<AppState, 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
 
@@ -108,12 +142,10 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             unrestricted Warband's Ducats are the player's to set, and
             debiting a pot they never opened would drive it negative.
           */
-          if (w.forceMode === 'unrestricted') return updatedWb;
-          return book(updatedWb, {
-            reason: 'quartermaster',
-            ducats: -newUnit.totalCost,
-            note: `Recruited ${newUnit.customName}.`,
-          }, updatedWb.updatedAt);
+          /* `charge`, so the entry carries the `ref` and `game` that let
+             removal undo it — see the helper at the top of this file. */
+          return charge(updatedWb, newUnit.totalCost, newUnit.id,
+            `Recruited ${newUnit.customName}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
@@ -157,6 +189,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       };
 
       set((s) => {
+        const game = campaignGameOf(activeWb, s.campaign);
         let updated = s.warbands.map((w) => {
           if (w.id !== warbandId) return w;
           const updatedWb = {
@@ -164,7 +197,9 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             units: [...w.units, clonedUnit],
             updatedAt: new Date().toISOString()
           };
-          return updatedWb;
+          /* A copy is a hire and costs what the model costs. */
+          return charge(updatedWb, clonedUnit.totalCost, clonedUnit.id,
+            `Recruited ${clonedUnit.customName}.`, game);
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
@@ -175,12 +210,26 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
+          const going = w.units.find((u) => u.id === unitId);
           const updatedWb = {
             ...w,
             units: w.units.filter((u) => u.id !== unitId),
             updatedAt: new Date().toISOString()
           };
-          return updatedWb;
+          if (!going) return updatedWb;
+          /*
+            The model and everything bought onto it. Its Battlekit was paid for
+            separately, so taking the model off in the same muster has to take
+            those purchases back too — otherwise the player is down the gear's
+            price with neither the gear nor the Ducats.
+          */
+          const refs = [
+            going.id,
+            ...going.equippedWeapons.map((i) => i.instanceId),
+            ...going.equippedArmour.map((i) => i.instanceId),
+            ...going.equippedEquipment.map((i) => i.instanceId),
+          ];
+          return refund(updatedWb, refs, campaignGameOf(w, state.campaign)).warband;
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
@@ -323,7 +372,10 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          return updatedWb;
+          /* Battlekit is paid for out of the Strongbox (FD-05e-2). It was
+             added to the model's cost and charged to nobody. */
+          return charge(updatedWb, equipped.cost, equipped.instanceId,
+            `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
@@ -334,11 +386,12 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
+          const unit = w.units.find((u) => u.id === unitId);
+          const target = unit?.equippedWeapons.find((wep) => wep.instanceId === instanceId);
           const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
-              const target = u.equippedWeapons.find((wep) => wep.instanceId === instanceId);
               const deductedCost = target ? target.cost : 0;
               return {
                 ...u,
@@ -347,7 +400,27 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          return updatedWb;
+          if (!target) return updatedWb;
+
+          /*
+            Unequipping in the same game undoes the purchase; after that
+            game has been played the item is property, so it goes to the
+            Arsenal rather than evaporating. The book sells Battlekit from
+            there for half, which is the existing `sold` path.
+          */
+          const back = refund(updatedWb, [instanceId], campaignGameOf(w, state.campaign));
+          if (back.undone.has(instanceId)) return back.warband;
+          if (w.forceMode === 'unrestricted') return updatedWb;
+
+          const stash = back.warband.armoryStash ?? [];
+          const held = stash.find((i) => i.id === target.id);
+          const stashed: StashedItem[] = held
+            ? stash.map((i) => (i.id === target.id ? { ...i, quantity: i.quantity + 1 } : i))
+            : [...stash, {
+                id: target.id, name: target.name, type: 'Weapon' as const,
+                cost: target.cost, quantity: 1,
+              }];
+          return { ...back.warband, armoryStash: stashed };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
@@ -378,7 +451,10 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          return updatedWb;
+          /* Battlekit is paid for out of the Strongbox (FD-05e-2). It was
+             added to the model's cost and charged to nobody. */
+          return charge(updatedWb, equipped.cost, equipped.instanceId,
+            `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
@@ -389,11 +465,12 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
+          const unit = w.units.find((u) => u.id === unitId);
+          const target = unit?.equippedArmour.find((a) => a.instanceId === instanceId);
           const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
-              const target = u.equippedArmour.find((a) => a.instanceId === instanceId);
               const deductedCost = target ? target.cost : 0;
               return {
                 ...u,
@@ -402,7 +479,27 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          return updatedWb;
+          if (!target) return updatedWb;
+
+          /*
+            Unequipping in the same game undoes the purchase; after that
+            game has been played the item is property, so it goes to the
+            Arsenal rather than evaporating. The book sells Battlekit from
+            there for half, which is the existing `sold` path.
+          */
+          const back = refund(updatedWb, [instanceId], campaignGameOf(w, state.campaign));
+          if (back.undone.has(instanceId)) return back.warband;
+          if (w.forceMode === 'unrestricted') return updatedWb;
+
+          const stash = back.warband.armoryStash ?? [];
+          const held = stash.find((i) => i.id === target.id);
+          const stashed: StashedItem[] = held
+            ? stash.map((i) => (i.id === target.id ? { ...i, quantity: i.quantity + 1 } : i))
+            : [...stash, {
+                id: target.id, name: target.name, type: 'Armour' as const,
+                cost: target.cost, quantity: 1,
+              }];
+          return { ...back.warband, armoryStash: stashed };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
@@ -433,7 +530,10 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          return updatedWb;
+          /* Battlekit is paid for out of the Strongbox (FD-05e-2). It was
+             added to the model's cost and charged to nobody. */
+          return charge(updatedWb, equipped.cost, equipped.instanceId,
+            `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
@@ -444,11 +544,12 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
+          const unit = w.units.find((u) => u.id === unitId);
+          const target = unit?.equippedEquipment.find((e) => e.instanceId === instanceId);
           const updatedWb = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
-              const target = u.equippedEquipment.find((e) => e.instanceId === instanceId);
               const deductedCost = target ? target.cost : 0;
               return {
                 ...u,
@@ -457,7 +558,27 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
               };
             })
           };
-          return updatedWb;
+          if (!target) return updatedWb;
+
+          /*
+            Unequipping in the same game undoes the purchase; after that
+            game has been played the item is property, so it goes to the
+            Arsenal rather than evaporating. The book sells Battlekit from
+            there for half, which is the existing `sold` path.
+          */
+          const back = refund(updatedWb, [instanceId], campaignGameOf(w, state.campaign));
+          if (back.undone.has(instanceId)) return back.warband;
+          if (w.forceMode === 'unrestricted') return updatedWb;
+
+          const stash = back.warband.armoryStash ?? [];
+          const held = stash.find((i) => i.id === target.id);
+          const stashed: StashedItem[] = held
+            ? stash.map((i) => (i.id === target.id ? { ...i, quantity: i.quantity + 1 } : i))
+            : [...stash, {
+                id: target.id, name: target.name, type: 'Equipment' as const,
+                cost: target.cost, quantity: 1,
+              }];
+          return { ...back.warband, armoryStash: stashed };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };

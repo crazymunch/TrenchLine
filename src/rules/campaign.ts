@@ -331,6 +331,21 @@ export interface LedgerEntry {
   byName?: string;
   /** The game this belongs to, so a turn can be reversed as a unit. */
   game?: number;
+  /**
+   * What this entry paid for, so the purchase can be undone by name.
+   *
+   * A model's `id` for a hire, a Battlekit instance's `instanceId` for gear.
+   * "Users can make any variations from the end of one game to the start of
+   * the next", so a purchase made this game and undone this game should leave
+   * no trace — and to remove the right entry the ledger has to know which one
+   * it is. Without it the only options were to guess by amount, which matches
+   * the wrong 25-Ducat entry as readily as the right one, or to refund by
+   * appending a credit, which claims a sale the player never made.
+   *
+   * Optional: every entry written before FD-05e-2 has none, and an entry with
+   * no `ref` is simply never undone by removal.
+   */
+  ref?: string;
 }
 
 /** The Strongbox is the sum of its ledger, never a number someone typed. */
