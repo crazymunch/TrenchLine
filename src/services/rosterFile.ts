@@ -74,6 +74,7 @@ export const WARBAND_FIELDS: Record<keyof Warband, Disposition> = {
   forceMode: 'durable',
   ledger: 'durable',
   explorationDiscoveries: 'durable',
+  explorationEffects: 'durable',
   ducatLimit: 'durable',
   treasuryDucats: 'durable',
   /* Promotion Dice rolled in a row without a Promotion. Durable, and it reads

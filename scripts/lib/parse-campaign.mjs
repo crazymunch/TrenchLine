@@ -302,6 +302,73 @@ function parseExplorationSequence(lines) {
 }
 
 /**
+ * The seven Exploration Skills, page 115.
+ *
+ * *"During a campaign, your Warband may gain one or more of the following
+ * Exploration Skills, either by hiring allies, making useful discoveries, or
+ * having the right piece of Equipment. Record the Exploration Skills you have
+ * gained on your Warband Roster. You can have multiples of any of the
+ * Exploration Skills on this list."*
+ *
+ * Seven bullets, each `* Name: text`, wrapped across however many lines the
+ * column was narrow enough to need. The text is what decides whether a Skill
+ * is arithmetic the app can apply or a choice the player makes, so it is read
+ * rather than classified here — `explorationSkill` in `src/rules/campaign.ts`
+ * is the one place that reads a meaning out of it.
+ *
+ * A bullet ends where its own sentence does: the accumulated text takes lines
+ * until it ends in a full stop. That is exact for all seven and it is what
+ * keeps the page's sidebar furniture — `MF`, `Campaign`, `Trauma Step`, the
+ * running list of section names printed down the edge of every page — out of
+ * the last one, which is the only bullet the furniture touches.
+ */
+export function parseExplorationSkills(lines) {
+  const at = lines.findIndex((l) => /^\s*EXPLORATION SKILLS\s*$/.test(l));
+  if (at < 0) {
+    throw new Error(
+      'parse-campaign: no "EXPLORATION SKILLS" heading in the rulebook text. '
+      + 'Seven Skills change what an Exploration Roll is, and a Warband that '
+      + 'has one is owed it.');
+  }
+
+  const skills = [];
+  let current = null;
+  for (let i = at + 1; i < lines.length; i++) {
+    const line = lines[i].trim();
+    const bullet = /^[*\u2022]\s*(.+?)\s*:\s*(.*)$/.exec(line);
+    if (bullet) {
+      current = { name: bullet[1].trim(), text: bullet[2].trim() };
+      skills.push(current);
+      if (/\.$/.test(current.text)) current = null;
+      continue;
+    }
+    // A line that is not a bullet continues the one before it, until that
+    // bullet's sentence is finished.
+    if (current && line) {
+      current.text = `${current.text} ${line}`.replace(/\s+/g, ' ').trim();
+      if (/\.$/.test(current.text)) current = null;
+      continue;
+    }
+    if (skills.length && !current) break;
+  }
+
+  if (skills.length !== 7) {
+    throw new Error(
+      `parse-campaign: read ${skills.length} Exploration Skills, and the book `
+      + 'prints seven. A Skill that is not read is one a Warband holds and '
+      + 'never gets to use.');
+  }
+  const empty = skills.filter((s) => !s.text);
+  if (empty.length) {
+    throw new Error(
+      `parse-campaign: the Exploration Skill(s) ${empty.map((s) => s.name).join(', ')} `
+      + 'came back with no rules text. The text is what says what the Skill '
+      + 'does, and a name on its own does nothing.');
+  }
+  return skills;
+}
+
+/**
  * The whole Exploration Step: dice, table selection, and the three tables.
  *
  * The app's hand-written version of this was fabricated end to end — wrong
@@ -362,6 +429,8 @@ export function parseExploration(src = RULEBOOK_TXT) {
     dice,
     tables,
     locations,
+    /** The seven Exploration Skills a Warband can gain, page 115. */
+    skills: parseExplorationSkills(lines),
     /** The book's own five numbered steps, in order. */
     sequence: sequence.steps,
     /**

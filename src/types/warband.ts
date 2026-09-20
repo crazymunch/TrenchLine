@@ -1,5 +1,5 @@
 import type { EarnedClaim } from '@/rules/earnedRecruitment';
-import type { LedgerEntry } from '@/rules/campaign';
+import type { LedgerEntry, ExplorationEffect } from '@/rules/campaign';
 import type { Cost } from './catalogue';
 
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from './rules';
@@ -303,6 +303,15 @@ export interface Warband {
    * roll as a Pillaged result instead." The loot is still collected.
    */
   explorationDiscoveries?: string[];
+  /**
+   * Exploration Skills this Warband holds, and the Pot of Manna's standing
+   * loot, with what granted each and when.
+   *
+   * A LIST with repeats, because page 115 says *"You can have multiples of any
+   * of the Exploration Skills on this list"* — two Map & Document Bags is two
+   * Re-rolls. See `ExplorationEffect`.
+   */
+  explorationEffects?: ExplorationEffect[];
   /**
    * Only meaningful for 'unrestricted'. A campaign warband's cap is derived, and
    * this is ignored — kept because existing saved warbands carry it.

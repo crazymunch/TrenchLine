@@ -600,13 +600,20 @@ export function resolveExploration(
   dataset: Dataset,
   roll: number,
   table: ExplorationTableName,
-  alreadyDiscovered: string[] = []
+  alreadyDiscovered: string[] = [],
+  /**
+   * Ducats this Warband adds to every Step's loot — the Pot of Manna, from
+   * `explorationLootBonus`. "(including this one)", so a Step that discovers
+   * it pays the bonus straight away; the caller passes the bonus it will be
+   * holding after this roll.
+   */
+  lootBonus = 0,
 ): ExplorationOutcome | null {
   const e = explorationOf(dataset);
   if (!e) return null;
 
   const n = Math.max(0, Math.floor(roll) || 0);
-  const loot = n * e.lootPerPoint;
+  const loot = n * e.lootPerPoint + Math.max(0, Math.floor(lootBonus) || 0);
 
   const found = (e.locations[table] ?? []).find((l) => inRange(l.roll, n));
   if (!found) return { roll: n, loot, table, location: null, nothingBecause: 'not-on-table' };
@@ -618,6 +625,271 @@ export function resolveExploration(
 
   return { roll: n, loot, table, location: found };
 }
+
+/* --------------------------------------------- exploration: the Skills */
+
+/**
+ * An Exploration Skill this Warband holds, and where it got it.
+ *
+ * A LIST, repeats included, because page 115 says so: *"You can have multiples
+ * of any of the Exploration Skills on this list."* Two Map & Document Bags is
+ * two Re-rolls.
+ *
+ * `source` is what granted it — a Location's name, an ally, a piece of
+ * Equipment — so a player can see why their pool is what it is, and
+ * `sinceGame` is when, so a record read back after a season still says it.
+ */
+export interface ExplorationEffect {
+  /** The Skill, spelled as `campaign.exploration.skills` prints it. */
+  name: string;
+  source: string;
+  sinceGame: number;
+  /**
+   * Ducats added to every Exploration Step's loot. The Pot of Manna:
+   * *"Add 10 👑 to the amount of loot you receive each Exploration Step
+   * (including this one)."*
+   *
+   * On this record rather than its own field because it is the same kind of
+   * thing — a permanent change to Exploration a Location handed out — and a
+   * second list would be a second place to forget.
+   */
+  lootBonus?: number;
+}
+
+/**
+ * What a Skill does to a roll, read out of the Skill's own text.
+ *
+ * Three of the seven are arithmetic the app can do, and each is recognised by
+ * the sentence that states it rather than by its name:
+ *
+ *   Extra dice   "Roll 1 extra Exploration Dice."
+ *   Re-roll      "Re-roll up to 1 extra Exploration Dice."
+ *   Seek         "Add 1 to your Exploration Roll."
+ *   Circle Back  "Subtract 1 from your Exploration Roll."
+ *
+ * The other three — Duplicate, Set Dice, Lucky — each begin *"After you make
+ * an Exploration Roll, select one of the Exploration Dice"*: they are a choice
+ * a player makes about a particular die, not a number. Those come back as
+ * `byHand`, which the step shows with its published text beside the dice.
+ *
+ * **`modifier` is what is AVAILABLE, not what is applied.** The book's own
+ * fourth heading is *"Modify Exploration Roll — After making your Exploration
+ * Roll, you **can** use any Mercenaries, pieces of Equipment…"*, and step 3 of
+ * the sequence reads *"Use Allies, Equipment, and Exploration Skills to modify
+ * the Exploration Roll"*. Using one is a choice, so Seek and Circle Back are
+ * offered rather than spent: a Warband holding Circle Back is not made to lose
+ * a point off every roll it ever makes. They are listed in `byHand` with the
+ * others for that reason — it is the player's to apply, not the app's.
+ *
+ * A wording this cannot read also comes back as `byHand`. That is the safe
+ * side to fail on: the Skill is still shown, with its rules, and the player
+ * applies it — rather than being silently dropped, or silently applied as a
+ * number nobody checked. `explorationSkills.test.ts` asserts that all seven of
+ * the shipped Skills classify, so a wording that drifts is a failed test here
+ * rather than a Skill that quietly stops working in a campaign.
+ */
+export interface ExplorationSkillEffect {
+  /** Extra Exploration Dice to roll. */
+  extraDice: number;
+  /** Extra dice that may be re-rolled, beyond the Step's own allowance. */
+  rerolls: number;
+  /**
+   * What this Skill could add to the total: `Seek` +1, `Circle Back` -1.
+   *
+   * Offered, never applied on the player's behalf — see above.
+   */
+  modifier: number;
+  /** True where the player decides: which die, or whether to use it at all. */
+  byHand: boolean;
+}
+
+export function explorationSkillEffect(text: string): ExplorationSkillEffect {
+  const none = { extraDice: 0, rerolls: 0, modifier: 0, byHand: false };
+
+  const extra = /^\s*Roll\s+(\d+)\s+extra\s+Exploration\s+Dice/i.exec(text);
+  if (extra) return { ...none, extraDice: Number(extra[1]) };
+
+  const reroll = /^\s*Re-?roll\s+up\s+to\s+(\d+)\s+extra\s+Exploration\s+Dice/i.exec(text);
+  if (reroll) return { ...none, rerolls: Number(reroll[1]) };
+
+  const mod = /^\s*(Add|Subtract)\s+(\d+)\s+(?:to|from)\s+your\s+Exploration\s+Roll/i.exec(text);
+  if (mod) {
+    return {
+      ...none,
+      modifier: (/^add$/i.test(mod[1]) ? 1 : -1) * Number(mod[2]),
+      byHand: true,
+    };
+  }
+
+  return { ...none, byHand: true };
+}
+
+/**
+ * Match a Skill named in prose against the list on page 115.
+ *
+ * The book does not spell its own Skills the same way twice: the list prints
+ * `Extra dice` and `Re-roll`, and the Locations that grant them say `Extra
+ * Dice` and `Reroll`. Both are the same Skill, and a lookup that says
+ * otherwise loses a Skill a Warband has been awarded.
+ */
+const skillKey = (name: string) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+export function explorationSkillNamed(
+  dataset: Dataset | null | undefined,
+  name: string,
+): { name: string; text: string } | undefined {
+  const printed = dataset ? explorationOf(dataset)?.skills ?? [] : [];
+  const want = skillKey(name);
+  const exact = printed.find((s) => skillKey(s.name) === want);
+  if (exact) return exact;
+  /*
+    The Wildcard Skill Friends In High Places says *"has the Re-roll Dice
+    Exploration Skill"*, where the list on page 115 prints `Re-roll` — a third
+    spelling of the same Skill, after `Re-roll` and the Map & Document Bag's
+    `Reroll`. A trailing "Dice" is dropped and the lookup retried, which
+    cannot collide with `Set Dice`: that one matches exactly first.
+  */
+  const trimmed = want.replace(/dice$/, '');
+  return trimmed && trimmed !== want
+    ? printed.find((s) => skillKey(s.name) === trimmed)
+    : undefined;
+}
+
+/**
+ * Exploration Skills the Warband has because of who is on the Roster.
+ *
+ * Two Wildcard Skills grant one: *"A model with this Skill has the Extra Dice
+ * Exploration Skill"* (Scavenger) and the same for Re-roll (Friends In High
+ * Places). RR-10 counted them and the app had nowhere to put either.
+ *
+ * **Derived from the Roster every time, never stored.** The book gives the
+ * Skill to *a model*, so a Warband holds it for exactly as long as it holds
+ * the model: writing it into `explorationEffects` would leave a dead
+ * Scavenger rolling an extra die for the rest of the campaign. The Locations'
+ * grants are the opposite — those are the Warband's, and are stored.
+ */
+export function explorationFromModels(
+  dataset: Dataset | null | undefined,
+  /* `effect` is where a learned Skill's published text lands — see the
+     Advancement write in `store/slices/campaign.ts`. */
+  units: readonly {
+    customName?: string;
+    skills?: readonly { name: string; effect?: string }[];
+  }[] = [],
+  sinceGame = 0,
+): ExplorationEffect[] {
+  const out: ExplorationEffect[] = [];
+  for (const unit of units) {
+    for (const skill of unit.skills ?? []) {
+      const granted = /has the ([A-Za-z][A-Za-z -]*?) Exploration Skill/i.exec(skill.effect ?? '');
+      if (!granted) continue;
+      const known = explorationSkillNamed(dataset, granted[1]);
+      out.push({
+        name: known?.name ?? granted[1].trim(),
+        source: `${unit.customName ?? 'a model'} — ${skill.name}`,
+        sinceGame,
+      });
+    }
+  }
+  return out;
+}
+
+/**
+ * What a Location's own text hands out, permanently.
+ *
+ * Read from the text, not from a list of Location names kept beside it: four
+ * of the shipped Locations grant an Exploration Skill and one grants loot on
+ * every future Step, and a hand-kept list of which is exactly the thing that
+ * goes stale the first time the Dispatch adds a fifth.
+ */
+export function explorationGrants(
+  dataset: Dataset | null | undefined,
+  location: { name: string; description?: string } | null | undefined,
+  sinceGame: number,
+): ExplorationEffect[] {
+  if (!location) return [];
+  const text = location.description ?? '';
+  const out: ExplorationEffect[] = [];
+
+  const granted = /gains? the ([A-Za-z][A-Za-z -]*?) Exploration Skill/i.exec(text);
+  if (granted) {
+    // The list's spelling where it is one of the seven; otherwise the text's
+    // own, so a Skill the app does not know still reaches the Roster rather
+    // than being dropped on the floor.
+    const known = explorationSkillNamed(dataset, granted[1]);
+    out.push({ name: known?.name ?? granted[1].trim(), source: location.name, sinceGame });
+  }
+
+  // "Add 10 👑 to the amount of loot you receive each Exploration Step" — the
+  // number comes from the sentence, like every other number in this project.
+  const loot = /Add\s+(\d+)\s*(?:👑|Ducats?)?\s+to the amount of loot you receive each Exploration Step/i
+    .exec(text);
+  if (loot) {
+    out.push({ name: location.name, source: location.name, sinceGame, lootBonus: Number(loot[1]) });
+  }
+
+  return out;
+}
+
+/**
+ * The pool an Exploration Roll is actually made with.
+ *
+ * `dice` is null where the ruleset carries no band for this game. It stays
+ * null: the step says so and disables the roll. It used to read
+ * `explorationDice(...) ?? 3`, which is the second of the project's four rules
+ * broken in one expression — a dataset that cannot say how many dice gave the
+ * player three, and three is the first band's number, so a ruleset with no
+ * Exploration at all quietly paid out as though it had one.
+ */
+export function explorationPool(
+  dataset: Dataset | null | undefined,
+  band: { dice: number | null },
+  held: readonly ExplorationEffect[] = [],
+): { dice: number | null; rerolls: number; modifier: number; byHand: { name: string; text: string }[] } {
+  let extraDice = 0;
+  let rerolls = 0;
+  let modifier = 0;
+  const byHand: { name: string; text: string }[] = [];
+
+  for (const effect of held) {
+    const skill = explorationSkillNamed(dataset, effect.name);
+    if (!skill) continue;
+    const what = explorationSkillEffect(skill.text);
+    extraDice += what.extraDice;
+    rerolls += what.rerolls;
+    modifier += what.modifier;
+    if (what.byHand) byHand.push(skill);
+  }
+
+  return {
+    dice: band.dice === null ? null : band.dice + extraDice,
+    rerolls,
+    /* The net the player MAY apply, shown beside the dice. Not added here. */
+    modifier,
+    byHand,
+  };
+}
+
+/**
+ * How many Exploration Dice may be re-rolled, page 113:
+ *
+ *   "If you wish, you can re-roll one of the Exploration Dice, and if you won
+ *    the game that was just played you are allowed to reroll another
+ *    Exploration Dice (you can't re-roll the same Exploration Dice twice)."
+ *
+ * Plus one for each Re-roll Exploration Skill the Warband holds — "Re-roll:
+ * Re-roll up to 1 extra Exploration Dice" — which is what `pool.rerolls`
+ * counts. The last clause is not here: that one is about WHICH dice, and is
+ * enforced by marking each die as it is spent.
+ */
+export const explorationRerolls = (
+  result: 'Victory' | 'Defeat' | 'Draw',
+  fromSkills = 0,
+): number => 1 + (result === 'Victory' ? 1 : 0) + Math.max(0, fromSkills);
+
+/** Ducats added to every Exploration Step by what this Warband has found. */
+export const explorationLootBonus = (held: readonly ExplorationEffect[] = []): number =>
+  held.reduce((sum, e) => sum + (e.lootBonus ?? 0), 0);
 
 /* ------------------------------------------- exploration: Carcass Front */
 

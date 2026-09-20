@@ -381,7 +381,8 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       mvpUnitName,
       opponentWarbandName,
       notableMoments,
-      battleId
+      battleId,
+      exploration,
     ) => {
       const state = get();
       const activeWb = state.getActiveWarband();
@@ -744,9 +745,43 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         notes: narrativeReport || narrative
       };
 
+      /*
+        What the Exploration Step found, written down at last.
+
+        `explorationDiscoveries` had a reader — this step's own Pillaged
+        branch — and no writer, so "You can discover a Location only once
+        during the campaign" never once fired and a Warband's finds were
+        never recorded (FD-07 / RR-10). Appended and de-duplicated by name,
+        because the list is what that rule is checked against.
+
+        The Skills a Location grants are appended WITHOUT de-duplication, and
+        that is the rule rather than an oversight: "You can have multiples of
+        any of the Exploration Skills on this list" (page 115). Two Map &
+        Document Bags is two Re-rolls.
+      */
+      const discoveredBefore = activeWb.explorationDiscoveries ?? [];
+      const discoveries = exploration?.discovered
+        && !discoveredBefore.some((n) => n.toLowerCase() === exploration.discovered!.toLowerCase())
+        ? [...discoveredBefore, exploration.discovered]
+        : discoveredBefore;
+      const effectsAfter = exploration?.effects?.length
+        ? [...(activeWb.explorationEffects ?? []), ...exploration.effects]
+        : activeWb.explorationEffects;
+
+      if (exploration?.discovered) {
+        changesSummary.push(`Exploration: discovered ${exploration.discovered}.`);
+      }
+      for (const effect of exploration?.effects ?? []) {
+        changesSummary.push(effect.lootBonus
+          ? `Exploration: ${effect.source} adds ${effect.lootBonus} Ducats to every Exploration Step.`
+          : `Exploration: gained the ${effect.name} Exploration Skill from ${effect.source}.`);
+      }
+
       const existingSnapshots = activeWb.snapshots || [];
       const updatedWarband: Warband = {
         ...activeWb,
+        explorationDiscoveries: discoveries,
+        ...(effectsAfter ? { explorationEffects: effectsAfter } : {}),
         /* Totals and ledger both come from the booking, so they agree by
            construction rather than by two expressions matching. */
         ledger: moneyFinal.ledger,

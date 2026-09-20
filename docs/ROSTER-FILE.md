@@ -232,6 +232,33 @@ meant by it.
 So no migration has to touch an existing Arsenal, and an item bought before
 `price` existed still sells back into the Strongbox it came out of.
 
+## `explorationEffects` — the Exploration Skills a Warband has gained
+
+Page 115 prints seven Exploration Skills, and `Warband` had nowhere to put one.
+So a Warband that found the Map & Document Bag — *"Your Warband gains the
+Reroll Exploration Skill"* — gained nothing: the discovery was not even
+recorded, because `explorationDiscoveries` had a reader and **no writer**
+anywhere in the app.
+
+A **list, with repeats**, because the book says so: *"You can have multiples of
+any of the Exploration Skills on this list."* Two Map & Document Bags is two
+re-rolls, so this is never de-duplicated. `explorationDiscoveries` beside it
+**is** de-duplicated, because that one is what *"you can discover a Location
+only once during the campaign"* is checked against.
+
+Each entry says what granted it and when, so a pool a player does not recognise
+can be traced back to the game that produced it. The Pot of Manna's standing
++10 Ducats rides on the same record as `lootBonus`: it is the same kind of
+thing — a permanent change to Exploration that a Location handed out — and a
+second list would be a second place to forget.
+
+**A Skill a MODEL carries is not in here, and must not be.** The two Wildcard
+Skills that grant one say *"A model with this Skill has the Extra Dice
+Exploration Skill"*: it belongs to the model, so the Warband holds it for
+exactly as long as it holds the model. Those are derived from the Roster on
+every roll by `explorationFromModels`. Storing one would leave a dead Scavenger
+rolling an extra die for the rest of the campaign.
+
 ## `benched` — the models left out of the Force
 
 The Threshold Value caps the Ducats a Force may field and Field Strength caps

@@ -22,6 +22,7 @@ import { RuleDiffItem } from '../types/diff';
 import type { Cost, Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SkillLearned } from '../rules/advancement';
+import type { ExplorationEffect } from '../rules/campaign';
 import type { SyncState } from '../services/sync';
 import type { CampaignSyncState } from '../services/campaignSync';
 
@@ -416,7 +417,22 @@ export interface AppState {
      * Optional because a post-battle can still be opened without a match
      * behind it, and that case has no battle to link to.
      */
-    battleId?: string
+    battleId?: string,
+    /**
+     * What the Exploration Step found, for the Roster to keep.
+     *
+     * `discovered` is the Location's name. `warband.explorationDiscoveries`
+     * existed, was read by this very step to decide a Pillaged result — "You
+     * can discover a Location only once during the campaign" — and **had no
+     * writer anywhere in the app** (FD-07 / RR-10). So the list was always
+     * empty, the rule never fired, and every Location a player had ever found
+     * went unrecorded.
+     *
+     * `effects` are the Exploration Skills and standing loot the Location's
+     * own text hands over, from `explorationGrants`. Appended, never replaced:
+     * page 115 says a Warband can hold multiples of any of them.
+     */
+    exploration?: { discovered?: string; effects?: ExplorationEffect[] },
   ) => void;
 
   // Multiplayer Campaign State

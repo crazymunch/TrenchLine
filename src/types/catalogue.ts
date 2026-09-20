@@ -1554,6 +1554,19 @@ export interface Dataset {
       tables: { from: number; to: number | null;
                 value: { tables: ExplorationTableName[]; choose: boolean } }[];
       locations: Record<ExplorationTableName, ExplorationLocation[]>;
+      /**
+       * The seven Exploration Skills, page 115, name and text as printed.
+       *
+       * *"You can have multiples of any of the Exploration Skills on this
+       * list"* — so a Warband holds a LIST of them, repeats included, not a
+       * set. What each one does is in its own text; `explorationSkill` in
+       * `src/rules/campaign.ts` is the only place that reads a meaning out of
+       * it, so a Skill whose wording changes is one edit, not a hunt.
+       *
+       * Optional because a ruleset built before this was parsed has none, and
+       * a caller must be able to tell that from "this Warband has no Skills".
+       */
+      skills?: { name: string; text: string }[];
       /** The book's own five numbered steps of the Exploration Sequence. */
       sequence: string[];
       /** Ducats per point of the Exploration Roll. Read from the sequence's fifth step. */

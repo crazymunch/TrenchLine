@@ -6,7 +6,10 @@ import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import { useScenarios } from '../../rules/useScenarios';
 import {
-  explorationDice, explorationBandFor, resolveExploration, campaignGameOf,
+  explorationBandFor, resolveExploration, campaignGameOf,
+  explorationPool, explorationGrants, explorationLootBonus, explorationFromModels,
+  explorationRerolls,
+  type ExplorationEffect,
   reinforcementGlory, reinforcementCost, reinforcementsSequence,
 } from '../../rules/campaign';
 import {
@@ -255,6 +258,27 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   // Exploration roll
   const [selectedExplorationTable, setSelectedExplorationTable] = useState<ExplorationTableName>('common');
   const [explorationResult, setExplorationResult] = useState<{ roll?: string; title: string; reward: string; description: string } | null>(null);
+  /*
+    The dice themselves, not just their total.
+
+    The book gives a re-roll after the roll — page 113: "If you wish, you can
+    re-roll one of the Exploration Dice, and if you won the game that was just
+    played you are allowed to reroll another Exploration Dice (you can't
+    re-roll the same Exploration Dice twice)." — and a single number cannot
+    express any of it. Each die is kept with whether it has been spent, so the
+    last clause is the state rather than a thing to remember.
+  */
+  const [explorationDiceRolled, setExplorationDiceRolled] =
+    useState<{ value: number; rerolled: boolean }[] | null>(null);
+  /*
+    What the step found, to be written to the Roster on commit.
+
+    `explorationDiscoveries` was read by this very step and written by nothing
+    (FD-07 / RR-10). It is collected here and passed to the store, so a
+    Location found is a Location recorded.
+  */
+  const [explorationFound, setExplorationFound] =
+    useState<{ discovered?: string; effects: ExplorationEffect[] }>({ effects: [] });
 
   /*
     Above the early return, and it has to be. React identifies a hook by its
@@ -274,6 +298,36 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
      `explorationBandFor`, which carries why this is not `- 1`. */
   const band = explorationBandFor(dataset, warband, campaign);
   const gamesPlayed = band.gamesPlayed;
+  /*
+    The pool this Warband actually rolls: the band, plus a die for every Extra
+    dice Exploration Skill it holds, plus the re-rolls and the Skills the
+    player applies themselves. `dice` stays NULL where the ruleset has no band
+    — the roll is disabled and the step says so, rather than handing out three
+    dice and their loot from a dataset that said nothing (FD-07 / RR-10).
+  */
+  /*
+    What this Warband holds: the Skills its Locations granted, which are the
+    Warband's and are stored, plus the ones its MODELS carry, which are the
+    models' and are derived — the Wildcard Skills Scavenger and Friends In
+    High Places each grant one, and a Scavenger that dies takes its extra die
+    with it (`explorationFromModels`).
+  */
+  const explorationHeld = [
+    ...(warband.explorationEffects ?? []),
+    ...explorationFromModels(dataset, warband.units, gamesPlayed),
+  ];
+  const explorePool = explorationPool(dataset, band, explorationHeld);
+  /*
+    Page 113: one re-roll, "and if you won the game that was just played you
+    are allowed to reroll another", plus one for each Re-roll Skill held.
+
+    Off the step's own recorded `outcome`, not the handover: a post-battle
+    opened without a match behind it has no handover at all, and the player's
+    recorded Victory is what the book's sentence is about either way.
+  */
+  const explorationRerollAllowance = explorationRerolls(outcome, explorePool.rerolls);
+  const explorationRerollsLeft =
+    explorationRerollAllowance - (explorationDiceRolled ?? []).filter((d) => d.rerolled).length;
   const openTables = band.tables.length ? { tables: band.tables, choose: band.choose } : null;
   // A band change must not leave a table selected that is no longer open.
   const explorationTable: ExplorationTableName =
@@ -559,11 +613,28 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   const resolveExplorationRoll = (rollNum: number) => {
     if (!dataset) return;
     const found = warband.explorationDiscoveries ?? [];
-    const outcome = resolveExploration(dataset, rollNum, explorationTable, found);
+    /*
+      The total as rolled. Seek and Circle Back are NOT added here: the book
+      makes using them a choice — "you can use any Mercenaries, pieces of
+      Equipment…" — so they are offered beside the dice and the player applies
+      them, through the same total-entry box a physical roll uses. A Warband
+      holding Circle Back is not made to lose a point off every roll.
+    */
+    const total = Math.max(0, rollNum);
+    /*
+      The Pot of Manna pays "each Exploration Step (including this one)", so
+      the bonus counted here is what the Warband holds AFTER this roll — what
+      it already had, plus anything this Location is about to grant.
+    */
+    const held = explorationHeld;
+    const peek = resolveExploration(dataset, total, explorationTable, found);
+    const granted = explorationGrants(dataset, peek?.location, gamesPlayed);
+    const outcome = resolveExploration(dataset, total, explorationTable, found,
+      explorationLootBonus([...held, ...granted]));
     if (!outcome) return;
 
     setExplorationResult({
-      roll: `${rollNum}`,
+      roll: `${total}`,
       title: outcome.location?.name
         ?? (outcome.nothingBecause === 'already-discovered'
               ? 'Pillaged — already discovered'
@@ -572,17 +643,52 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       description: outcome.location?.description
         ?? 'No Location on this table matches the roll. You still collect the loot.',
     });
+    /* Only a Location actually discovered is recorded: a Pillaged result is
+       one this Warband already has, and a roll off the table found nothing. */
+    setExplorationFound(outcome.location
+      ? { discovered: outcome.location.name, effects: granted }
+      : { effects: [] });
     // Loot replaces rather than accumulates: rolling again is a correction, not
     // a second Exploration.
     setDucatsGained(outcome.loot);
   };
 
-  /** Sum the Exploration Dice this warband is entitled to. */
+  const d6 = () => Math.floor(Math.random() * 6) + 1;
+
+  /**
+   * Roll the pool this Warband is entitled to, and keep the dice.
+   *
+   * `pool.dice` is null where the ruleset carries no Exploration band for this
+   * game, and the control is disabled in that case — it used to be
+   * `explorationDice(...) ?? 3`, which paid out three dice and their loot from
+   * a dataset that had said nothing at all.
+   */
   const handleRollExploration = () => {
-    const n = dataset ? explorationDice(dataset, gamesPlayed) ?? 3 : 3;
-    let total = 0;
-    for (let i = 0; i < n; i++) total += Math.floor(Math.random() * 6) + 1;
-    resolveExplorationRoll(total);
+    if (explorePool.dice === null) return;
+    const dice = Array.from({ length: explorePool.dice }, () => ({ value: d6(), rerolled: false }));
+    setExplorationDiceRolled(dice);
+    resolveExplorationRoll(dice.reduce((sum, die) => sum + die.value, 0));
+  };
+
+  /**
+   * Re-roll one die, page 113:
+   *
+   *   "If you wish, you can re-roll one of the Exploration Dice, and if you
+   *    won the game that was just played you are allowed to reroll another
+   *    Exploration Dice (you can't re-roll the same Exploration Dice twice)."
+   *
+   * Plus one more for each Re-roll Exploration Skill held. A die that has been
+   * re-rolled is marked, so the last sentence is enforced by the data rather
+   * than by the player's memory.
+   */
+  const rerollExplorationDie = (index: number) => {
+    if (!explorationDiceRolled) return;
+    if (explorationDiceRolled[index]?.rerolled) return;
+    if (explorationRerollsLeft <= 0) return;
+    const dice = explorationDiceRolled.map((die, i) =>
+      (i === index ? { value: d6(), rerolled: true } : die));
+    setExplorationDiceRolled(dice);
+    resolveExplorationRoll(dice.reduce((sum, die) => sum + die.value, 0));
   };
 
   /* ---------------------------------------------------------------- *
@@ -881,6 +987,15 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       /* Joins this MatchRecord to the Chronicle's BattleRecord for the same
          game, which is what stops the two disagreeing (RR-23). */
       handover?.battleId,
+      /*
+        What Exploration found, for the Roster to keep (FD-07 / RR-10).
+
+        Forfeited along with the loot when Reinforcements were called: the
+        step did not happen, so nothing was discovered in it.
+      */
+      explorationForfeited
+        ? undefined
+        : { discovered: explorationFound.discovered, effects: explorationFound.effects },
     );
   };
 
@@ -2039,7 +2154,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center space-x-2">
                     <span className="font-gothic font-bold text-sm text-theme-primary">
-                      EXPLORATION — {explorationDice(dataset, gamesPlayed) ?? '?'}D6
+                      EXPLORATION — {explorePool.dice === null
+                        ? 'NO BAND'
+                        : `${explorePool.dice}D6`}
                     </span>
                     {/* Only the tables this warband's games-played band opens.
                         Offering all three would let a first-game warband roll on
@@ -2082,7 +2199,11 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     {explorationRollMode === 'digital' ? (
                       <button
                         onClick={handleRollExploration}
-                        className="flex items-center space-x-1.5 px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded text-xs font-bold uppercase transition-colors"
+                        disabled={explorePool.dice === null}
+                        title={explorePool.dice === null
+                          ? 'This ruleset carries no Exploration Dice band for this game.'
+                          : undefined}
+                        className="flex items-center space-x-1.5 px-3 py-1 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded text-xs font-bold uppercase transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         <Dices className="w-3.5 h-3.5" />
                         <span>Roll Scavenge</span>
@@ -2097,13 +2218,105 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                         aria-label="Exploration Roll total"
                         onChange={(e) => {
                           const n = parseInt(e.target.value, 10);
-                          if (n > 0) resolveExplorationRoll(n);
+                          if (!(n > 0)) return;
+                          /* A typed total is not the dice on screen — it is
+                             the one the player got on the table, Skills and
+                             re-rolls already applied. Clearing them keeps the
+                             two from disagreeing. */
+                          setExplorationDiceRolled(null);
+                          resolveExplorationRoll(n);
                         }}
                         className="w-24 min-h-[44px] bg-theme-base border border-theme-border text-theme-primary rounded px-2 py-1 text-base sm:text-sm focus:outline-none focus:border-theme-primary"
                       />
                     )}
                   </div>
                 </div>
+
+                {/*
+                  A ruleset that cannot say how many dice says so, and the roll
+                  is off. It used to read `explorationDice(...) ?? 3`: three is
+                  the FIRST BAND'S number, so a dataset carrying no Exploration
+                  at all paid out exactly as though it had carried the opening
+                  band — dice, Location and loot, invented (FD-07 / RR-10). The
+                  total can still be typed in, because a player with the book
+                  open is a better source than a fallback.
+                */}
+                {explorePool.dice === null && (
+                  <p className="text-xs text-status-warning leading-relaxed">
+                    This ruleset carries no Exploration Dice band for game {gamesPlayed},
+                    so the app will not roll one. Roll on the table in the book and
+                    enter the total.
+                  </p>
+                )}
+
+                {/*
+                  The dice, not just their sum, so the book's re-roll is a
+                  thing the player can do: tap a die to re-roll it, once each.
+                */}
+                {explorationDiceRolled && (
+                  <div className="space-y-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {explorationDiceRolled.map((die, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => rerollExplorationDie(i)}
+                          disabled={die.rerolled || explorationRerollsLeft <= 0}
+                          aria-label={die.rerolled
+                            ? `Exploration die ${i + 1} showing ${die.value}, already re-rolled`
+                            : `Re-roll Exploration die ${i + 1}, showing ${die.value}`}
+                          title={die.rerolled
+                            ? 'You can’t re-roll the same Exploration Dice twice.'
+                            : explorationRerollsLeft <= 0
+                              ? 'No re-rolls left.'
+                              : 'Re-roll this die'}
+                          className={`min-w-[44px] min-h-[44px] rounded border font-gothic font-bold text-lg
+                            ${die.rerolled
+                              ? 'bg-theme-surface border-theme-border text-theme-muted'
+                              : explorationRerollsLeft > 0
+                                ? 'bg-theme-base border-theme-primary text-theme-primary hover:bg-theme-primary hover:text-theme-base'
+                                : 'bg-theme-base border-theme-border text-theme-text'}`}
+                        >
+                          {die.value}
+                        </button>
+                      ))}
+                      <span className="text-xs sm:text-[11px] font-mono text-theme-muted">
+                        = {explorationDiceRolled.reduce((sum, die) => sum + die.value, 0)}
+                      </span>
+                    </div>
+                    <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
+                      {/* The rule beside the control it governs, in the book's words. */}
+                      “If you wish, you can re-roll one of the Exploration Dice, and if you
+                      won the game that was just played you are allowed to reroll another
+                      Exploration Dice (you can’t re-roll the same Exploration Dice twice).”
+                      {' '}<strong className="text-theme-primary">
+                        {explorationRerollsLeft} of {explorationRerollAllowance} left
+                      </strong>.
+                    </p>
+                  </div>
+                )}
+
+                {/*
+                  The Skills this Warband holds that the app does not apply for
+                  it — the three that need a die chosen, and the two that move
+                  the total, which the book makes optional ("you can use"). Shown
+                  with their published text, beside the dice they are about.
+                */}
+                {explorePool.byHand.length > 0 && (
+                  <div className="p-3 bg-theme-base border border-theme-border rounded space-y-1.5">
+                    <p className="text-xs sm:text-[11px] font-bold uppercase text-theme-primary">
+                      Your Exploration Skills — yours to apply
+                    </p>
+                    {explorePool.byHand.map((skill, i) => (
+                      <p key={`${skill.name}-${i}`} className="text-xs text-theme-text leading-relaxed">
+                        <strong className="text-theme-primary">{skill.name}:</strong> {skill.text}
+                      </p>
+                    ))}
+                    <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
+                      Apply them to the dice above, then enter the total you ended up with.
+                    </p>
+                  </div>
+                )}
 
                 {explorationResult && (
                   <div className="p-3 bg-theme-base border border-theme-primary rounded space-y-1">
