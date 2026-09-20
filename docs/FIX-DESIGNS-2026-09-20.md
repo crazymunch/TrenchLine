@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | `src/data/warbandLore.ts`, `prisma/seed.ts`, the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 10:10 UTC on 20 September
+### Landed, as of 11:10 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -66,7 +66,8 @@ carry, and what these designs cover:
 | FD-11b part 2 (the Warbands-book layer: the Sister of Saint Cosmas by name, statline and Finish the Fallen; the Combat Biologist's abilities and Vivisector; `addBattlekit`; faction alignment parsed from the book; `allowedAlignment` resolved in the recruit list; the transcription test) | #79 | merged, with the stale audit alias removed and the book audit back to 58 matched entries |
 | FD-11b part 5 (the Dispatch's Mercenaries section: Vengeful Scripture as a weapon on the Scripture Guardian's kit, the Maul's Mulch, Flaying Iron Claws, the Gavel's CRITICAL and FIRE with Wrath of God gone, the Witchburner's and Warlock's kit; `unset`; a weapon rename follows through to kit entries; the transcription test widened to the Dispatch, which found four citation slips) | #80 | merged; reviewed after the fact against the dataset on `main`, correct except the Sister's MERCENARY keyword, fixed in #81 |
 | FD-11c (a Mercenary is offered no Battlekit but its own, keyed on the Mercenary role; the Scripture Guardian's Melee permission as a cited field; the validator's error and the Guardian's warning; Gather Knowledge reaches Play Mode's deed list from the dataset; the Sister's MERCENARY keyword from Dispatch L654–655) | #81 | merged; verified on `main`: the Sister carries MERCENARY and NEGATE FEAR, the Guardian's permission is `["Melee"]`. Two follow-ups filed by the developer: the Mamluk Faris's unmodelled kit, and the Desecrated Saint's keyword reprint that would drop LIMITED POTENTIAL |
-| FD-14 AI-1 (the lore file deleted, both injection sites removed, the test roster materialised as a fixture, `scratch/` untracked) | #82 | open, CI running at 10:05 UTC; held from merging by Order 18 until the owner has read the production account recorded below |
+| FD-14 AI-1 (the lore file deleted, both injection sites removed, the test roster materialised as a fixture, `scratch/` untracked) | #82 | merged, after the owner confirmed the cleared row was another account's and the cleanup stands |
+| FD-14 AI-2 (the seed deleted and its hook removed; no starting territories from the campaigns API; a fresh device has no campaign; and a found bug fixed: the store replaced any stored map with fewer than six pins or without pin coordinates, which reseated every Carcass Front campaign on the twelve classic theatres) | #83 | open; `check` red on 53d5a1c because an integration test still expects the API to have created a territory; diagnosed and ordered fixed in the test (Order 21). Read-only production report: one inert seed user row remains, owning nothing; removing it is the owner's call |
 
 ## FD-00. PR #59 as it stands
 
