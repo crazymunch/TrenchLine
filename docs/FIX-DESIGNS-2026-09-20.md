@@ -35,6 +35,21 @@ carry, and what these designs cover:
 | FD-09 | RR-17, RR-27 | the campaign store, Play Mode's end of match, the Chronicle record |
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 
+### Landed, as of 03:20 UTC on 20 September
+
+| Design | PR | State |
+| --- | --- | --- |
+| FD-00's list (RR-01, RR-06, RR-07, RR-22, RR-23, RR-02 payouts, RR-24, the sheet gaps) | #59 | merged |
+| FD-01 | #60 | merged |
+| FD-02 | #61 | merged, with four corrections to the design recorded below |
+| FD-04a | #62 | merged |
+| FD-06a (eligibility and the Experience cap) | #63 | merged, with five corrections recorded below |
+| Follow-ups from #60 and #61 | #64 | merged |
+| FD-04b | #65 | reviewed, green, to merge |
+| FD-03a (Campaign Victory Points, standings, the Weather chooser) | #66 | reviewed, green, needs `main` merged in |
+| WIZ-1 (the 44px rule's width, `sm:` to `lg:`, checkbox by label) | #67 | reviewed, stacked on #65 |
+| MVP-1 (the standout note names any roster's model) | #68 | reviewed, stacked on #67 |
+
 ## FD-00. PR #59 as it stands
 
 Verdict: the six fixes are correct against the book and can merge once the
@@ -275,6 +290,9 @@ on. RR-24: the wizard's "Match MVP" writes an invented deed onto the roster
    `applyPostBattleResults`'s parameters, and the `Match MVP:` deed write.
    Keep `mvpUnitName` as an optional field on `MatchRecord` so old records
    still parse; write it nowhere.
+   **Withdrawn.** The deed write went in #59. The narrative field stays by
+   the owner's decision, relabelled "Standout model (battle report only)",
+   and #68 lets it name a model from any roster or a typed name.
 
 ### The test
 
