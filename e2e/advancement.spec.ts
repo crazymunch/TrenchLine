@@ -218,6 +218,60 @@ test('a Troop is offered no Advancement Roll, however much Experience it carries
   await expect(wizard(page).getByRole('button', { name: /Roll 2D6 on both/i })).toHaveCount(1);
 });
 
+test('a Troop is Promoted on a Promotion Die, not on a button', async ({ page }) => {
+  /*
+    RR-05. Promotion was `handleToggleElite` on the unit card: a switch that
+    set `isElite` and asked nothing. No pool, no assignment rule, no roll, no
+    ceiling — a Warband could promote its whole roster, one click each.
+  */
+  await endAMatch(page);
+  await toPromotionsStep(page);
+
+  const wiz = wizard(page);
+  await expect(wiz.getByText(/Promotion Dice Pool:/i)).toBeVisible();
+
+  /*
+    One die base, and the seeded battle claimed no Glorious Deeds — so the
+    pool is exactly the book's 1D6, shown with its working.
+  */
+  await expect(wiz.getByText(/Promotion Dice Pool:\s*1/)).toBeVisible();
+
+  // The Janissary is the only Troop; assign it the die.
+  await wiz.getByRole('button', { name: /One more Promotion Die for Janissary Kerem/i }).click();
+  await expect(wiz.getByText(/1 of 1 assigned/i)).toBeVisible();
+
+  /*
+    Typed, not rolled: the dice at a table are real, and a fixed 6 is what
+    makes this assert the outcome rather than a coin toss.
+  */
+  await wiz.getByLabel(/Promotion Dice rolled at the table/i).fill('6');
+  await wiz.getByRole('button', { name: /^Use$/ }).click();
+  await page.waitForTimeout(400);
+
+  await expect(wiz.getByText(/Janissary Kerem.*PROMOTED/i)).toBeVisible();
+});
+
+test('the assignment rule is enforced, not described', async ({ page }) => {
+  /*
+    "You cannot assign a 3rd dice to the same model until all Troop models in
+    your Warband have at least 2 dice each." The Yüzbaşı is already ELITE, so
+    the Janissary is the only model the dice may go to — and with one model
+    there is nothing to spread against, which is why this asserts the pool
+    bound instead: two dice out of a pool of one.
+  */
+  await endAMatch(page);
+  await toPromotionsStep(page);
+
+  const wiz = wizard(page);
+  const more = wiz.getByRole('button', { name: /One more Promotion Die for Janissary Kerem/i });
+  await more.click();
+  await more.click();
+
+  await expect(wiz.getByText(/2 dice are assigned and the pool holds 1/i)).toBeVisible();
+  // And the roll is refused while it is illegal.
+  await expect(wiz.getByRole('button', { name: /^Use$/ })).toBeDisabled();
+});
+
 test('the standout model can be any roster’s, or a name off it', async ({ page }) => {
   /*
     It offered the active Warband's models and nothing else. The model that

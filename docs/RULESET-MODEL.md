@@ -772,12 +772,16 @@ One engine, two uses.
 ### `campaign.promotions` — who may be Promoted, and how much Experience
 
 Derived from rulebook pp.105–111 by `parsePromotions`. It carries the two
-bounds that apply *before* any dice are picked up; the Promotion Dice Pool, its
-assignment rule and the five-miss counter arrive with the step that rolls them.
+bounds that apply *before* any dice are picked up, and the four numbers that
+decide what happens once they are.
 
 ```ts
 interface PromotionRules {
   maxElites: number;                     // 6 — the step is skipped at this many
+  poolBase?: number;                     // 1 — `1D6` before any Deeds
+  poolPerDeed?: number;                  // 1 — `plus 1D6 for each Glorious Deed`
+  promoteOn?: number;                    // 6 — the face that Promotes
+  autoAfterMisses?: number;              // 5 — misses after which the next die is automatic
   cannotPromote: PromotionTableRow[];    // p.107
   limitedPotential: { maxXp: number; factions: PromotionTableRow[] };  // p.111
 }
@@ -807,7 +811,22 @@ note under precedence above.
 **Optional on the type.** A ruleset built before this existed says nothing, and
 "no rules" must stay distinguishable from "anyone may be promoted, without
 limit" — which is what the app did for two years, with a switch on the unit
-card.
+card. The four dice numbers are optional for the same reason one step down: a
+ruleset built between FD-06a and FD-06b carries the bounds and not the dice,
+and a pool of `0` is a real answer that has to stay distinguishable from a
+ruleset that cannot say.
+
+Each of the four is read from its own sentence on p.105 and guarded, because a
+silently-missing number here is a rule the app applies wrongly rather than a
+build that stops: `promoteOn` must be a face a D6 has (1–6), and
+`autoAfterMisses` must be at least 1, or the build fails naming the sentence it
+could not read. `rollPromotions` checks the five-miss rule *before* it reads
+the die, so the sixth die Promotes whatever it rolls.
+
+**The miss count lives on the Warband, not the step.** `warband.promotionMisses`
+persists between games — five misses spread across three games still make the
+sixth die a Promotion — so it is `durable` in the roster file. See
+[`ROSTER-FILE.md`](ROSTER-FILE.md#progression-skills-advancementrolls-and-the-legacy-advancements).
 
 ## 7b. Catalogue modifiers — the conditional layer
 

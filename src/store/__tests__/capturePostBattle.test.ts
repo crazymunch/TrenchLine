@@ -45,7 +45,7 @@ const seed = (): Warband => ({
 const apply = (casualty: CasualtyRecord) =>
   useStore.getState().applyPostBattleResults(
     'sc-1', 'Bridgehead', 'Victory', 0, /* ducats */ 100,
-    [casualty], [], [], false, 'narrative',
+    [casualty], [], { unitIds: [], misses: 0 }, [], false, 'narrative',
   );
 
 const captive = () => useStore.getState().warbands.find((w) => w.id === WB)!

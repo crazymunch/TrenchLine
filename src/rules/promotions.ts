@@ -202,3 +202,246 @@ export function cappedExperience(
   const xp = Math.max(current, Math.min(current + gain, cap));
   return { xp, withheld: current + gain - xp, cap };
 }
+
+/* ------------------------------------------------------------------ *
+ * The Promotion Dice Pool (FD-06b)
+ *
+ * Page 105, in the book's own three steps: fill the pool, assign the dice,
+ * roll them.
+ * ------------------------------------------------------------------ */
+
+/**
+ * The Skill that adds dice, matched from the derived table rather than typed.
+ *
+ * `8 Show Off: Add 1 dice to the Promotion Pool in the Promotion step for each
+ * model in your Warband with this Skill.` Counted from the roster, because
+ * after FD-04b a Skill learned from an Advancement Roll is recorded properly —
+ * so the app can read this rather than ask the player for a number they would
+ * have to work out themselves.
+ */
+export const SHOW_OFF = 'Show Off';
+
+const hasShowOff = (unit: Pick<ActiveUnit, 'skills'>) =>
+  (unit.skills ?? []).some((s) => s.name?.trim().toLowerCase() === SHOW_OFF.toLowerCase());
+
+export interface PromotionPool {
+  /** How many dice the Warband has to assign. */
+  dice: number;
+  /** Each contribution, for a screen that shows its working. */
+  parts: { label: string; dice: number }[];
+}
+
+/**
+ * Fill the Promotion Dice Pool.
+ *
+ * > Your Promotion Dice Pool is made up of 1D6, plus 1D6 for each Glorious
+ * > Deed that was carried out during the game by any model from your Warband.
+ * > Note that the Glorious Deeds can have been carried out by any model in
+ * > your Warband, not just Troops models. In addition, some Skills and Glory
+ * > Items allow you to add more dice to the Promotion Dice Pool.
+ *
+ * `deeds` is the count this Warband claimed in the game — `matchHandover`
+ * already reads it off the battle record, and the book is explicit that any
+ * model's Deed counts, not just a Troop's.
+ *
+ * `extraDice` is for the Glory Items the app does not model. It is a number a
+ * player types, and it is separate from the Show Off count so that a screen can
+ * say which dice came from where: a pool that cannot show its working is one a
+ * player cannot check against the page.
+ */
+export function promotionPool(
+  dataset: Dataset | null | undefined,
+  opts: {
+    deeds?: number;
+    warband?: Pick<Warband, 'units'> | null;
+    extraDice?: number;
+  } = {},
+): PromotionPool | null {
+  const rules = promotionRules(dataset);
+  if (!rules || rules.poolBase == null || rules.poolPerDeed == null) return null;
+
+  const n = (x: number | undefined) => (Number.isFinite(x) ? Math.max(0, Math.floor(x as number)) : 0);
+  const deeds = n(opts.deeds);
+  const showOff = (opts.warband?.units ?? []).filter((u) => !u.isDead && hasShowOff(u)).length;
+  const extra = n(opts.extraDice);
+
+  const parts = [
+    { label: 'Base', dice: rules.poolBase },
+    ...(deeds ? [{ label: `Glorious Deeds (${deeds})`, dice: deeds * rules.poolPerDeed }] : []),
+    ...(showOff ? [{ label: `${SHOW_OFF} (${showOff})`, dice: showOff }] : []),
+    ...(extra ? [{ label: 'Glory Items and other Skills', dice: extra }] : []),
+  ];
+
+  return { dice: parts.reduce((t, p) => t + p.dice, 0), parts };
+}
+
+/** How many dice each model has been given. Keyed by unit id. */
+export type DiceAssignment = Record<string, number>;
+
+export interface AssignmentVerdict {
+  legal: boolean;
+  /** The rule broken, in the book's terms, or `''`. */
+  detail: string;
+  /** Dice assigned in total. Anything left in the pool is lost. */
+  assigned: number;
+}
+
+/**
+ * Check an assignment against the book's spreading rule.
+ *
+ * > You cannot assign a 3rd dice to the same model until all Troop models in
+ * > your Warband have at least 2 dice each, or assign a 4th dice until all
+ * > Troop models have at least 3 dice each, and so on.
+ *
+ * Generalised from that sentence: a model may hold `n + 1` dice only when
+ * every promotable model holds at least `n`. Equivalently, the most any model
+ * holds may exceed the least by no more than one — which is the same rule
+ * stated in the form a checker can apply in one pass.
+ *
+ * `eligible` is the models the dice may go to at all, which is
+ * `canBePromoted`'s business and is passed in rather than recomputed: a die on
+ * a model the rulebook forbids is a different error, reported separately so
+ * the player is told which rule they are up against.
+ */
+export function assignmentIsLegal(
+  assignment: DiceAssignment,
+  eligible: readonly string[],
+  pool: number,
+): AssignmentVerdict {
+  const allowed = new Set(eligible);
+  const given = Object.entries(assignment).filter(([, d]) => d > 0);
+  const assigned = given.reduce((t, [, d]) => t + d, 0);
+
+  const stranger = given.find(([id]) => !allowed.has(id));
+  if (stranger) {
+    return {
+      legal: false,
+      assigned,
+      detail: 'A Promotion Die is assigned to a model that cannot be Promoted.',
+    };
+  }
+
+  if (assigned > pool) {
+    return {
+      legal: false,
+      assigned,
+      detail: `${assigned} dice are assigned and the pool holds ${pool}.`,
+    };
+  }
+
+  /*
+    Every eligible model counts, including the ones given nothing: "until all
+    Troop models in your Warband have at least 2 dice each" is a statement
+    about all of them, so a model on nought is what makes a third die illegal.
+  */
+  const counts = eligible.map((id) => Math.max(0, assignment[id] ?? 0));
+  if (counts.length) {
+    const most = Math.max(...counts);
+    const least = Math.min(...counts);
+    if (most - least > 1) {
+      return {
+        legal: false,
+        assigned,
+        detail: `A model holds ${most} dice while another holds ${least}. `
+          + `No model may take a ${most}${most === 3 ? 'rd' : 'th'} die until every `
+          + `model that can be Promoted has at least ${most - 1}.`,
+      };
+    }
+  }
+
+  return { legal: true, assigned, detail: '' };
+}
+
+export interface PromotionOutcome {
+  unitId: string;
+  /** The dice actually rolled for this model, in order. */
+  rolled: number[];
+  promoted: boolean;
+  /** True where the Promotion came from the five-miss rule, not from a 6. */
+  automatic: boolean;
+}
+
+export interface PromotionResult {
+  outcomes: PromotionOutcome[];
+  /** The miss count to write back to the Roster. */
+  misses: number;
+  /** Dice never rolled, because the ceiling was reached. They are lost. */
+  unrolled: number;
+  /** ELITE models in the Warband once these Promotions are applied. */
+  eliteAfter: number;
+}
+
+/**
+ * Roll the assigned dice, in the book's order and with its two stopping rules.
+ *
+ * > Roll the dice you assigned to a model one at a time… As soon as one of the
+ * > dice rolls a "6", stop rolling for that model, and Promote the model you
+ * > were rolling for… If you roll all of the dice without a model being
+ * > Promoted, then make a note on your Roster of how many dice you have rolled
+ * > in a row without getting a Promotion. Once the total reaches 5 dice, then
+ * > the next roll (the 6th one), is automatically considered to be a 6.
+ *
+ * And, from Maximum Elites:
+ *
+ * > …stop rolling for Promotions when a successful Promotion Roll means that
+ * > you have 6 models with the ELITE Keyword in your Warband.
+ *
+ * `rolls` is the dice, supplied rather than generated, because this app is
+ * used at a table where the dice are real — and because a pure function is the
+ * only kind whose stopping rules can be tested. It is consumed in order; dice
+ * left over when the ceiling is reached are reported as `unrolled`.
+ *
+ * `missesBefore` is the count carried on the Roster between games. It survives
+ * the step: five misses spread over three games still make the sixth die a 6.
+ */
+export function rollPromotions(
+  dataset: Dataset | null | undefined,
+  order: readonly string[],
+  assignment: DiceAssignment,
+  rolls: readonly number[],
+  opts: { missesBefore?: number; eliteBefore?: number } = {},
+): PromotionResult | null {
+  const rules = promotionRules(dataset);
+  if (!rules || rules.promoteOn == null || rules.autoAfterMisses == null) return null;
+
+  let misses = Number.isFinite(opts.missesBefore) ? Math.max(0, opts.missesBefore!) : 0;
+  let elite = Number.isFinite(opts.eliteBefore) ? Math.max(0, opts.eliteBefore!) : 0;
+  let cursor = 0;
+
+  const outcomes: PromotionOutcome[] = [];
+
+  for (const unitId of order) {
+    const dice = Math.max(0, assignment[unitId] ?? 0);
+    const outcome: PromotionOutcome = { unitId, rolled: [], promoted: false, automatic: false };
+
+    for (let i = 0; i < dice; i += 1) {
+      /* The ceiling stops the step, not just this model. */
+      if (elite >= rules.maxElites) break;
+      if (cursor >= rolls.length) break;
+
+      /*
+        The five-miss rule fires BEFORE the die is read: the book says the
+        sixth roll "is automatically considered to be a 6", so the face on it
+        does not matter. The die is still consumed and still recorded, because
+        it was rolled.
+      */
+      const face = rolls[cursor];
+      cursor += 1;
+      outcome.rolled.push(face);
+
+      const automatic = misses >= rules.autoAfterMisses;
+      if (automatic || face >= rules.promoteOn) {
+        outcome.promoted = true;
+        outcome.automatic = automatic;
+        misses = 0;
+        elite += 1;
+        break;
+      }
+      misses += 1;
+    }
+
+    outcomes.push(outcome);
+  }
+
+  return { outcomes, misses, unrolled: Math.max(0, rolls.length - cursor), eliteAfter: elite };
+}

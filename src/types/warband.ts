@@ -190,6 +190,25 @@ export interface Warband {
   ducatLimit: number;
   treasuryDucats: number;
   gloryPoints: number;
+  /**
+   * Promotion Dice rolled in a row without a Promotion.
+   *
+   * > If you roll all of the dice without a model being Promoted, then make a
+   * > note on your Roster of how many dice you have rolled in a row without
+   * > getting a Promotion. Once the total reaches 5 dice, then the next roll
+   * > (the 6th one), is automatically considered to be a 6.
+   *
+   * On the WARBAND, not on a model: the book says "on your Roster", and the
+   * count runs across models within a step — a die that misses on one Troop
+   * brings the next Troop closer to an automatic Promotion. It also survives
+   * the step, so five misses spread over three games still make the sixth die
+   * a 6. That is a reading of a sentence that does not say either way, and it
+   * is the one that makes the rule mean anything: reset per game, a Warband
+   * assigning one or two dice a game would never reach five.
+   *
+   * Only a Promotion clears it. Absent on a Warband that has never rolled.
+   */
+  promotionMisses?: number;
   units: ActiveUnit[];
   armoryStash: StashedItem[];
   

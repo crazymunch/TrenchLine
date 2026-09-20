@@ -69,7 +69,7 @@ const battle = (over: Partial<BattleRecord> = {}): BattleRecord => ({
 const apply = (battleId?: string, mvpUnitName?: string) =>
   useStore.getState().applyPostBattleResults(
     'sc-1', 'Bridgehead', 'Victory', 0, 100,
-    [], [], [], false, 'narrative',
+    [], [], { unitIds: [], misses: 0 }, [], false, 'narrative',
     undefined, mvpUnitName, undefined, undefined, battleId,
   );
 

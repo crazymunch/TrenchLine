@@ -192,27 +192,20 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   };
 
   /*
-    Promotion is a rule, not a preference.
+    Promotion is not done here any more.
 
-    This was a free switch: it set `isElite` and asked nothing, so a Warband
-    could promote an Amalgam — which the rulebook lists under Models That
-    Cannot Be Promoted — and could promote its whole roster, when the book
-    skips the step entirely at six ELITE models.
+    It was `handleToggleElite`: a switch that set `isElite` and asked nothing.
+    FD-06a gated it on the rulebook's two tables and the ELITE ceiling, which
+    stopped the illegal promotions — but it still let a player promote a legal
+    model by pressing a button, and the game does not work that way. A
+    Promotion is won on a Promotion Die, out of a pool the Warband earns from
+    its Glorious Deeds, in the Promotions & Experience Step.
 
-    The Promotion Dice Pool, which decides whether an eligible model is
-    actually promoted, is not here yet (FD-06b). Until it is, this stays a
-    manual action for a player who has rolled at the table — but only for a
-    model the rules allow it for, and the reason is shown when they do not.
-
-    Demotion is left open: `isElite` set on the wrong model is a mistake a
-    player must be able to undo, and unsetting it is not a Promotion.
+    So the step rolls it, and this card reports it (RR-05).
   */
   const promotion = canBePromoted(dataset, unit, { units: warbandUnits });
 
-  const handleToggleElite = () => {
-    if (!unit.isElite && !promotion.eligible) return;
-    updateUnitAdvancement(warbandId, unit.id, unit.xp || 0, !unit.isElite);
-  };
+;
 
   const handleAddSkill = () => {
     if (!selectedSkillName) return;
@@ -460,26 +453,32 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     Points. ELITE models earn Experience after a game and roll on the Trauma
                     Table rather than making a Survival Roll.
                   </p>
-                  {!unit.isElite && !promotion.eligible && (
-                    <p className="text-xs sm:text-[11px] text-theme-danger leading-relaxed">
-                      {promotion.detail}
-                    </p>
-                  )}
+                  {/* Where it happens, and why it is not a button here. */}
+                  <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
+                    {unit.isElite
+                      ? 'Promotions are won on a Promotion Die in the Promotions & Experience Step.'
+                      : promotion.eligible
+                        ? 'This model can be Promoted. Assign it a Promotion Die in the '
+                          + 'Promotions & Experience Step after your next game — a 6 promotes it.'
+                        : promotion.detail}
+                  </p>
                 </div>
 
-                <button
-                  onClick={handleToggleElite}
-                  disabled={!unit.isElite && !promotion.eligible}
-                  title={!unit.isElite && !promotion.eligible ? promotion.detail : undefined}
-                  className={`min-h-[44px] px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-1.5 flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed ${
+                {/*
+                  Reported, not offered. The button that was here promoted a
+                  model on a click; the Promotion Dice are rolled in the
+                  post-battle step now.
+                */}
+                <span
+                  className={`flex min-h-[44px] flex-shrink-0 items-center space-x-1.5 rounded px-4 py-2 text-xs font-bold uppercase ${
                     unit.isElite
                       ? 'bg-theme-primary text-white shadow-lg'
-                      : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-theme-text'
+                      : 'bg-theme-elevated text-theme-muted border border-theme-border'
                   }`}
                 >
                   <Crown className="w-3.5 h-3.5" />
-                  <span>{unit.isElite ? 'Elite Veteran' : 'Promote to Elite'}</span>
-                </button>
+                  <span>{unit.isElite ? 'Elite Veteran' : 'Trooper'}</span>
+                </span>
               </div>
 
             </div>

@@ -61,7 +61,7 @@ const learned = (over: Partial<SkillLearned> = {}): SkillLearned => ({
 const apply = (skills: SkillLearned[]) =>
   useStore.getState().applyPostBattleResults(
     'sc-1', 'Bridgehead', 'Victory', 0, 0,
-    [], skills, [], false, 'narrative',
+    [], skills, { unitIds: [], misses: 0 }, [], false, 'narrative',
   );
 
 const unitAfter = (id = 'u1') => useStore.getState().warbands
@@ -163,5 +163,90 @@ describe('the snapshot changelog says what was rolled', () => {
   it('says the Patron’s list rather than naming a table it did not use', () => {
     apply([learned({ table: 'patron', roll: 2, substitution: 'patron', name: 'Gift of the Iron Sultan' })]);
     expect(summary().some((l) => l.includes("the Patron's list"))).toBe(true);
+  });
+});
+
+describe('what a Promotion writes onto the model', () => {
+  const troop = (over: Partial<ActiveUnit> = {}) => unit({
+    id: 'u2',
+    customName: 'Janissary Kerem',
+    profileSnapshot: { name: 'Janissary', category: 'Trooper', elite: false },
+    xp: 6,
+    ...over,
+  } as never);
+
+  const promote = (ids: string[], misses = 0, experience: { unitId: string; earns: boolean }[] = []) =>
+    useStore.getState().applyPostBattleResults(
+      'sc-1', 'Bridgehead', 'Victory', 0, 0,
+      [], [], { unitIds: ids, misses }, experience as never, false, 'narrative',
+    );
+
+  beforeEach(() => {
+    useStore.setState({ warbands: [seed([unit(), troop()])], activeWarbandId: WB });
+  });
+
+  it('gives the model the ELITE Keyword and its place on the Roster', () => {
+    /*
+      "…they immediately gain the ELITE Keyword and they are considered to be
+      an Elite model from then on… Cross out their old entry on your Warband
+      Roster and write a new one for them in the Elite Models section."
+    */
+    promote(['u2']);
+    const u = unitAfter('u2');
+    expect(u.isElite).toBe(true);
+    expect(u.profileSnapshot.category).toBe('Elite');
+    expect(u.profileSnapshot.elite).toBe(true);
+  });
+
+  it('starts it on 0 Experience, not on what it had as a Troop', () => {
+    /*
+      "They begin with 0 Experience Points, but will gain at least 1 due to
+      surviving the game after which they were Promoted."
+
+      The Janissary is seeded on 6 — which a carried-over Warband really does
+      have, because the step granted a point to every model on the roster for
+      two years. Adding its survival point to that would hand a brand-new
+      ELITE model three Advancement Rolls on the spot.
+    */
+    promote(['u2'], 0, [{ unitId: 'u2', earns: true }]);
+    expect(unitAfter('u2').xp).toBe(1);
+  });
+
+  it('starts it on 0 where it earned nothing either', () => {
+    promote(['u2']);
+    expect(unitAfter('u2').xp).toBe(0);
+  });
+
+  it('leaves a model that was not promoted exactly as it was', () => {
+    promote(['u2']);
+    const other = unitAfter('u1');
+    expect(other.isElite).toBeUndefined();
+    expect(other.xp).toBe(3);
+  });
+
+  it('writes the miss count onto the Warband, not onto a model', () => {
+    /*
+      "…make a note on your Roster of how many dice you have rolled in a row
+      without getting a Promotion." It runs across models and between games,
+      so it belongs to the Warband.
+    */
+    promote([], 4);
+    expect(useStore.getState().warbands.find((w) => w.id === WB)!.promotionMisses).toBe(4);
+  });
+
+  it('clears the count when a Promotion happened', () => {
+    useStore.setState({
+      warbands: [{ ...seed([unit(), troop()]), promotionMisses: 3 }],
+      activeWarbandId: WB,
+    });
+    promote(['u2'], 0);
+    expect(useStore.getState().warbands.find((w) => w.id === WB)!.promotionMisses).toBeUndefined();
+  });
+
+  it('records the Promotion in the snapshot changelog', () => {
+    promote(['u2']);
+    const summary = useStore.getState().warbands
+      .find((w) => w.id === WB)!.snapshots!.at(-1)!.changesSummary;
+    expect(summary.some((l) => l.includes('Promotion: Janissary Kerem'))).toBe(true);
   });
 });

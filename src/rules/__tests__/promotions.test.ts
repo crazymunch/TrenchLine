@@ -12,7 +12,10 @@ import { describe, it, expect } from 'vitest';
 
 import { DATASET } from '@/data/generated/trenchline.generated';
 import type { ActiveUnit } from '@/types/warband';
-import { canBePromoted, eliteCount, experienceCap, cappedExperience, promotionRules } from '../promotions';
+import {
+  canBePromoted, eliteCount, experienceCap, cappedExperience, promotionRules,
+  promotionPool, assignmentIsLegal, rollPromotions, SHOW_OFF,
+} from '../promotions';
 
 const rules = promotionRules(DATASET)!;
 
@@ -217,5 +220,191 @@ describe('the Experience cap', () => {
   it('applies no cap at all where the ruleset has no rules', () => {
     expect(experienceCap(null, unit())).toBeNull();
     expect(cappedExperience(null, { ...unit(), xp: 3 } as ActiveUnit, 1)).toMatchObject({ xp: 4, withheld: 0 });
+  });
+});
+
+describe('the Promotion Dice Pool', () => {
+  const showOff = (id: string) => unit({ id, skills: [{ name: SHOW_OFF, category: 'wildcard' }] } as never);
+
+  it('ships the book’s four numbers', () => {
+    /*
+      Pinned. Each decides how often a Warband gets a new ELITE model, and a
+      crossed pair — promoting on 5, or automatic after 6 — would read as a
+      working rule while changing every campaign in the app.
+    */
+    expect(rules.poolBase).toBe(1);
+    expect(rules.poolPerDeed).toBe(1);
+    expect(rules.promoteOn).toBe(6);
+    expect(rules.autoAfterMisses).toBe(5);
+  });
+
+  it('is one die, plus one for each Glorious Deed', () => {
+    expect(promotionPool(DATASET, { deeds: 0 })!.dice).toBe(rules.poolBase);
+    expect(promotionPool(DATASET, { deeds: 3 })!.dice).toBe(rules.poolBase! + 3 * rules.poolPerDeed!);
+  });
+
+  it('counts Show Off off the roster rather than asking for a number', () => {
+    /*
+      "Add 1 dice to the Promotion Pool in the Promotion step for each model in
+      your Warband with this Skill." After FD-04b a Skill learned from an
+      Advancement Roll is recorded properly, so this is derivable — and a
+      number the player has to work out themselves is a number they will get
+      wrong.
+    */
+    const w = { units: [showOff('a'), showOff('b'), unit({ id: 'c' })] };
+    expect(promotionPool(DATASET, { deeds: 0, warband: w })!.dice).toBe(rules.poolBase! + 2);
+  });
+
+  it('does not count a dead model’s Show Off', () => {
+    const w = { units: [showOff('a'), { ...showOff('b'), isDead: true } as never] };
+    expect(promotionPool(DATASET, { deeds: 0, warband: w })!.dice).toBe(rules.poolBase! + 1);
+  });
+
+  it('shows its working, so a player can check it against the page', () => {
+    const w = { units: [showOff('a')] };
+    const pool = promotionPool(DATASET, { deeds: 2, warband: w, extraDice: 1 })!;
+    expect(pool.parts.map((p) => p.dice)).toEqual([1, 2, 1, 1]);
+    expect(pool.dice).toBe(5);
+    expect(pool.parts.map((p) => p.label).join(' ')).toContain(SHOW_OFF);
+  });
+
+  it('leaves out a part that contributed nothing', () => {
+    // A pool listing "Glorious Deeds (0)" invites the reader to wonder what
+    // they missed.
+    expect(promotionPool(DATASET, { deeds: 0 })!.parts).toHaveLength(1);
+  });
+
+  it('returns null where the ruleset cannot say', () => {
+    // Not a pool of nought, which is a real answer and a different one.
+    expect(promotionPool(null, { deeds: 5 })).toBeNull();
+  });
+});
+
+describe('assigning the dice', () => {
+  const ids = ['a', 'b', 'c'];
+
+  it('allows an even spread', () => {
+    expect(assignmentIsLegal({ a: 1, b: 1, c: 1 }, ids, 3)).toMatchObject({ legal: true, assigned: 3 });
+  });
+
+  it('allows one model to be one ahead of another', () => {
+    // Four dice over three models cannot be even, and the book allows it: the
+    // rule bites at a THIRD die while another has one.
+    expect(assignmentIsLegal({ a: 2, b: 1, c: 1 }, ids, 4).legal).toBe(true);
+  });
+
+  it('refuses a third die while a model has one', () => {
+    /*
+      "You cannot assign a 3rd dice to the same model until all Troop models in
+      your Warband have at least 2 dice each."
+    */
+    const v = assignmentIsLegal({ a: 3, b: 1, c: 1 }, ids, 5);
+    expect(v.legal).toBe(false);
+    expect(v.detail).toContain('3');
+  });
+
+  it('counts a model given nothing', () => {
+    /*
+      The sentence is about ALL Troop models, so a model on nought is what
+      makes a second die on another illegal. Stacking the whole pool on one
+      model was the obvious way to game this.
+    */
+    expect(assignmentIsLegal({ a: 2 }, ids, 2).legal).toBe(false);
+    expect(assignmentIsLegal({ a: 1 }, ids, 1).legal).toBe(true);
+  });
+
+  it('refuses more dice than the pool holds', () => {
+    const v = assignmentIsLegal({ a: 2, b: 2 }, ids, 3);
+    expect(v.legal).toBe(false);
+    expect(v.detail).toContain('pool holds 3');
+  });
+
+  it('refuses a die on a model that cannot be Promoted, and says so', () => {
+    // A different rule from the spread, so a different sentence: the player
+    // needs to know which one they are up against.
+    const v = assignmentIsLegal({ z: 1 }, ids, 3);
+    expect(v.legal).toBe(false);
+    expect(v.detail).toContain('cannot be Promoted');
+  });
+
+  it('allows leaving dice unassigned', () => {
+    // "Any Promotion Dice not assigned are lost" — permitted, and a loss.
+    expect(assignmentIsLegal({ a: 1 }, ids, 4)).toMatchObject({ legal: true, assigned: 1 });
+  });
+});
+
+describe('rolling the dice', () => {
+  const order = ['a', 'b'];
+
+  it('promotes on a 6 and stops rolling for that model', () => {
+    /*
+      "As soon as one of the dice rolls a '6', stop rolling for that model."
+      The model has three dice and uses one; the other two are never rolled,
+      so they stay in the list for the NEXT model.
+    */
+    const r = rollPromotions(DATASET, order, { a: 3, b: 1 }, [6, 2], { eliteBefore: 0 })!;
+    expect(r.outcomes[0]).toMatchObject({ promoted: true, rolled: [6] });
+    expect(r.outcomes[1]).toMatchObject({ promoted: false, rolled: [2] });
+  });
+
+  it('counts misses across models, and across the whole step', () => {
+    const r = rollPromotions(DATASET, order, { a: 2, b: 2 }, [1, 2, 3, 4], {})!;
+    expect(r.outcomes.every((o) => !o.promoted)).toBe(true);
+    expect(r.misses).toBe(4);
+  });
+
+  it('makes the sixth die automatic, whatever it shows', () => {
+    /*
+      "Once the total reaches 5 dice, then the next roll (the 6th one), is
+      automatically considered to be a 6." Four misses carried plus one more
+      makes five; the die after that promotes on a 1.
+    */
+    const r = rollPromotions(DATASET, ['a'], { a: 2 }, [1, 1], { missesBefore: 4 })!;
+    expect(r.outcomes[0]).toMatchObject({ promoted: true, automatic: true, rolled: [1, 1] });
+    expect(r.misses).toBe(0);
+  });
+
+  it('carries the miss count between games', () => {
+    // It is kept on the Roster, so five misses spread over three games still
+    // make the sixth die a 6. Nothing resets it but a Promotion.
+    const r = rollPromotions(DATASET, ['a'], { a: 1 }, [2], { missesBefore: 2 })!;
+    expect(r.misses).toBe(3);
+  });
+
+  it('resets the count on a Promotion, automatic or not', () => {
+    expect(rollPromotions(DATASET, ['a'], { a: 1 }, [6], { missesBefore: 3 })!.misses).toBe(0);
+  });
+
+  it('stops the whole step at the Maximum Elites ceiling', () => {
+    /*
+      "…stop rolling for Promotions when a successful Promotion Roll means that
+      you have 6 models with the ELITE Keyword in your Warband." The second
+      model's die is never rolled.
+    */
+    const r = rollPromotions(
+      DATASET, order, { a: 1, b: 1 }, [6, 6], { eliteBefore: rules.maxElites - 1 },
+    )!;
+    expect(r.outcomes[0].promoted).toBe(true);
+    expect(r.outcomes[1].rolled).toEqual([]);
+    expect(r.eliteAfter).toBe(rules.maxElites);
+    expect(r.unrolled).toBe(1);
+  });
+
+  it('rolls nothing at all when the Warband is already at the ceiling', () => {
+    const r = rollPromotions(DATASET, order, { a: 2 }, [6, 6], { eliteBefore: rules.maxElites })!;
+    expect(r.outcomes.every((o) => o.rolled.length === 0)).toBe(true);
+    expect(r.unrolled).toBe(2);
+  });
+
+  it('stops when the supplied dice run out rather than inventing one', () => {
+    // Rule 2. The dice are the player's, and a roll the app made up is a
+    // Promotion the player did not earn.
+    const r = rollPromotions(DATASET, order, { a: 2, b: 2 }, [1], {})!;
+    expect(r.outcomes[0].rolled).toEqual([1]);
+    expect(r.outcomes[1].rolled).toEqual([]);
+  });
+
+  it('returns null where the ruleset carries no dice rules', () => {
+    expect(rollPromotions(null, order, { a: 1 }, [6], {})).toBeNull();
   });
 });

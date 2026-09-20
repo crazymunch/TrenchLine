@@ -312,6 +312,24 @@ export interface AppState {
      */
     skillsLearned: SkillLearned[],
     /**
+     * The Promotions this step made, and the miss count to carry forward.
+     *
+     * Promotion used to be a switch on the unit card that set `isElite` and
+     * asked nothing — no pool, no assignment rule, no roll, no ceiling. The
+     * Promotion Dice are rolled in the wizard now and the result is passed
+     * here, because the roll is a rules question and this slice is a writer.
+     *
+     * Applied BEFORE the Experience award, in the book's order: "They begin
+     * with 0 Experience Points, but will gain at least 1 due to surviving the
+     * game after which they were Promoted." So a promoted model's Experience
+     * is reset and then its point is added, which is why the caller must have
+     * counted it as ELITE when it worked out `experience`.
+     *
+     * `misses` is the whole new count, not a delta: it runs across models and
+     * between games, and only a Promotion clears it.
+     */
+    promotions: { unitIds: string[]; misses: number },
+    /**
      * Which models earn their Experience Point, decided by the caller.
      *
      * Required, and passed in rather than computed here, because it is a rules
