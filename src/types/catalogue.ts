@@ -1028,6 +1028,14 @@ export interface SkillRow {
   description: string;
 }
 
+/** How far Experience runs, and the totals that earn an Advancement Roll. */
+export interface ExperienceTrack {
+  /** The last box on the track. */
+  max: number;
+  /** Experience totals at which a model may make an Advancement Roll. */
+  advancementAt: number[];
+}
+
 export interface TraumaRow {
   /** A D66 result, or the one range the table has: `41-63`. */
   roll: string;
@@ -1436,6 +1444,24 @@ export interface Dataset {
     /** The four Advancement Skills tables. 2D6, dense, 11 rows each. */
     skills: Record<SkillsTableName, SkillRow[]>;
     /** The Trauma Table. Sparse only in that 41-63 is one range. */
+    /**
+     * The Experience track: how far it runs, and where the circles are.
+     *
+     * Page 105 says Experience is checked off "one Experience box per point,
+     * from left to right, starting with the top row; when you reach a box
+     * that is a circle, you can make an Advancement Roll for the model" — and
+     * the circles are printed on the Roster Sheet, which the PDF extraction
+     * does not carry. No sentence in the book lists the numbers.
+     *
+     * So this comes from `Campaign Rules.cat`, which encodes them because
+     * NewRecruit has to enforce them. Derived, not typed: see
+     * `parseExperienceTrack`, which also records the one place it departs from
+     * the catalogue's own reading.
+     *
+     * Optional because a ruleset built before this existed has no track, and a
+     * caller must be able to tell that from "no Advancement Rolls".
+     */
+    experience?: ExperienceTrack;
     trauma: TraumaRow[];
     /**
      * How the Trauma Step is run: who rolls what, and what removes a model.
