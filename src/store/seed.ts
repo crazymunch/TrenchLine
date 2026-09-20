@@ -147,24 +147,50 @@ export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
   }
 ];
 
-// Clean Default Campaign
-export const defaultFreshCampaign: Campaign = {
-  id: 'camp-default',
-  name: 'Crusade for the Lands of the Great Powers',
-  inviteCode: 'TRENCH-1099',
-  adminName: 'Commander',
-  status: 'active',
-  currentTurn: 1,
-  maxWarbandDucats: 700,
-  gloryVictoryThreshold: 25,
-  members: [],
-  territories: DEFAULT_WORLD_THEATERS,
-  // No matches. A fresh campaign has not been played yet, and filling it with
-  // one player's battle record made every new campaign open on someone else's
-  // history.
-  matches: [],
-  chronicleLogs: []
-};
+/**
+ * No campaign.
+ *
+ * This was `defaultFreshCampaign`, and it was every new device's campaign: a
+ * crusade named "Crusade for the Lands of the Great Powers", invite code
+ * `TRENCH-1099`, admin "Commander", already on Turn 1 and seated on all twelve
+ * world theatres. A player who had never made a campaign was shown one, with a
+ * copy button beside an invite code that no server had ever issued and nobody
+ * could join.
+ *
+ * A fresh device has no campaign, and the hub says so and offers the two
+ * things that make one: create, or join with a code. The shape stays a
+ * `Campaign` rather than `null` because every campaign surface reads it
+ * synchronously; `hasCampaign` is how they tell the two apart, and it keys on
+ * `id` because a real campaign always has one — `camp-<timestamp>` minted
+ * locally by `createCampaign`, or the server's uuid once published.
+ *
+ * A function, not a constant: a shared object one view mutates is a bug that
+ * only shows up on the second campaign.
+ */
+export function emptyCampaign(): Campaign {
+  return {
+    id: '',
+    name: '',
+    inviteCode: '',
+    adminName: '',
+    status: 'active',
+    currentTurn: 1,
+    maxWarbandDucats: 700,
+    gloryVictoryThreshold: 25,
+    members: [],
+    territories: [],
+    // No matches. A fresh campaign has not been played yet, and filling it with
+    // one player's battle record made every new campaign open on someone else's
+    // history.
+    matches: [],
+    chronicleLogs: []
+  };
+}
+
+/** Whether this is a campaign at all, or the placeholder above. */
+export function hasCampaign(campaign: Campaign | null | undefined): boolean {
+  return Boolean(campaign?.id);
+}
 
 export const defaultSultanateWarband: Warband = {
   id: 'wb-al-qarn-rihla',

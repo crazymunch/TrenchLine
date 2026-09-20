@@ -33,13 +33,25 @@ describe('the seeded world theatres', () => {
     for (const t of DEFAULT_WORLD_THEATERS) expect(t.perk, t.name).toBe('');
   });
 
-  it('and neither do the four a new cloud campaign starts with', () => {
-    // Read as source rather than imported: the route pulls in Prisma and
-    // NextAuth, and this asserts one constant in it.
+  /*
+    And a new cloud campaign starts with no territories at all.
+
+    This used to assert that the four the `create` action built carried no
+    perk, which was the narrower half of the fix: blanking the perks left four
+    territories nobody chose on every campaign made through the API, and
+    whichever framework the campaign turned out to be — twelve world theatres
+    or 32 published Carcass Front zones — those four were not its map.
+
+    Read as source rather than imported: the route pulls in Prisma and
+    NextAuth, and this asserts the absence of one constant in it.
+  */
+  it('and a new cloud campaign is created with no territories', () => {
     const src = fs.readFileSync('src/app/api/campaigns/route.ts', 'utf8');
-    const block = src.slice(src.indexOf('const STARTING_TERRITORIES'));
-    const perks = [...block.matchAll(/^\s*perk: '([^']*)',/gm)].map((m) => m[1]);
-    expect(perks).toHaveLength(4);
-    expect(perks).toEqual(['', '', '', '']);
+    expect(src).not.toContain('const STARTING_TERRITORIES');
+
+    // The `create` action's `data`, up to the `include` that closes it.
+    const create = src.slice(src.indexOf("if (body.action === 'create')"));
+    const data = create.slice(0, create.indexOf('include: FULL'));
+    expect(data).not.toContain('territories');
   });
 });

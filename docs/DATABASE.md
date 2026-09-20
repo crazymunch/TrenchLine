@@ -329,11 +329,32 @@ enough to reason about on its own.
 
 ## Seeding
 
-`prisma/seed.ts` creates a demo user and a sample warband. The demo user is
-seeded **with no password** and cannot be signed into — it used to carry
-`trenchline2026`, written in this repository, for an account that was also on
-the admin list. Set `SEED_DEMO_PASSWORD` if you want to sign in as it locally,
-and choose your own value.
+**There is no seed.** The Prisma seed script — prisma/seed.ts — is deleted and
+`package.json` no longer declares a `prisma.seed` command, so
+`prisma migrate dev` creates no rows. (The path is written plain rather than in
+a code span because `scripts/__tests__/docPaths.test.mjs` requires every
+backticked repository path in the docs to exist, and this one deliberately does
+not any more.)
+
+It used to create a demo user, a sample warband and a sample campaign, and
+every part of that was invented: a Lieutenant with a statline no catalogue
+prints (`Ranged +1`, `Melee +2`, `Armour "+2"`), a "Standard Issue Bolt-Action
+Rifle" with keywords the game does not have, a `Standard (1 Wound)` damage line
+in a game with no Wounds characteristic, an injury and an advancement nobody
+rolled, and four territories carrying mechanical perks — `+5 Ducats supply
+bonus per round`, `+2 Glory on Victory when defending` — presented in the
+campaign hub beside rules the pipeline derives. Every statline, cost, keyword
+and rule in this app is derived from `data-sources/`; a seed that types them by
+hand is the first rule of `CLAUDE.md` broken in the one file a new contributor
+is most likely to copy from.
+
+A developer who wants data locally registers an account and builds a warband,
+which exercises the real paths and produces real derived data.
+
+The demo user had already been defanged twice — it carried `trenchline2026`,
+written in this public repository, for an account that was also on the admin
+list, and was later seeded with no password at all. `SEED_DEMO_PASSWORD` is
+gone with the rest of it.
 
 ## Testing against a real database
 

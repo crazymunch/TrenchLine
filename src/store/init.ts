@@ -10,7 +10,7 @@ import type { Campaign } from '../types/campaign';
 import type { UnitProfile, WeaponProfile, RulesetVersion } from '../types/rules';
 import type { PlaceholderOpponent } from '../types/opponent';
 import { storage } from '../services/storage';
-import { DEFAULT_WORLD_THEATERS, defaultFreshCampaign } from './seed';
+import { emptyCampaign } from './seed';
 
 export interface InitialState {
   warbands: Warband[];
@@ -46,7 +46,7 @@ export function emptyInitialState(): InitialState {
     activeWarbandId: null,
     customUnits: [],
     customWeapons: [],
-    campaign: { ...defaultFreshCampaign, territories: DEFAULT_WORLD_THEATERS },
+    campaign: emptyCampaign(),
     theme: 'iron-sanctum',
     ruleset: '1.0.2',
   };
@@ -79,12 +79,26 @@ export function readInitialState(): InitialState {
   const activeWarbandId = storage.getActiveWarbandId() || warbands[0]?.id || null;
   const customUnits = storage.getCustomUnits();
   const customWeapons = storage.getCustomWeapons();
-  const rawCampaign = storage.getCampaign() || defaultFreshCampaign;
-  const territories = (rawCampaign.territories && rawCampaign.territories.length >= 6 && rawCampaign.territories[0].x !== undefined)
-    ? rawCampaign.territories
-    : DEFAULT_WORLD_THEATERS;
+  /*
+    The stored campaign, with the map it was saved with.
 
-  const storedCampaign: Campaign = { ...rawCampaign, territories };
+    This used to overwrite that map whenever it failed a shape test —
+
+      territories.length >= 6 && territories[0].x !== undefined
+
+    — and substitute the app's twelve world theatres. Both halves were wrong.
+    Carcass Front zones carry no `x` at all (`carcassFrontTerritories` builds
+    them from the published map, which has no pin coordinates), so a Carcass
+    Front campaign failed the test on EVERY read and was reseated on the
+    classic theatres, losing its 32 zones and the Outpost Bonuses the book
+    prints. And a campaign with five territories or fewer failed on the count,
+    including one whose organiser had set a house-rule perk on a zone.
+
+    A campaign's map is the campaign's. Where there is none, there is none:
+    `createCampaign` supplies one from the framework at the moment of creation,
+    which is the only place that knows which framework was chosen.
+  */
+  const storedCampaign: Campaign = storage.getCampaign() || emptyCampaign();
   const initialTheme = storage.getTheme();
   const initialRuleset = (storage.getRulesetVersion() as RulesetVersion) || '1.0.2';
 
