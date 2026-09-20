@@ -411,6 +411,20 @@ Two conventions make it checkable rather than trusted:
 
 - **Every op addresses its target by id.** Two units are named *Combat Medic*;
   `findTarget` refuses an ambiguous name outright rather than picking one.
+
+> **A correction.** This layer first shipped without the Sister's `MERCENARY`
+> keyword, on the reasoning that no source stated it for her — the book's
+> Keywords rows in that section print only the model's own, because the heading
+> already says *Mercenaries*. That reasoning was wrong about the sources: the
+> **Dispatch** reprints her entry and prints both (`Replace the Keywords with:
+> MERCENARY NEGATE FEAR`, L654-655), and that reprint had no op. It has one
+> now, in `dispatch-01`, which supersedes the book's `addKeyword` here — the
+> two sources agree on NEGATE FEAR, and only the Dispatch states MERCENARY.
+>
+> Worth the note because the failure was in the survey, not the reasoning: I
+> checked the book's Mercenary section and the Dispatch's *nine* transcribed
+> keyword reprints, and never asked whether the Dispatch had a reprint with no
+> op at all. It had two — hers, and the Desecrated Saint's.
 - **Every op carries `_src`**, one or more `L<a>-<b>` spans into the extract.
   `scripts/lib/__tests__/layerTranscription.test.mjs` reads every span and
   fails unless the transcribed value appears in the lines it cites, so a line
@@ -1311,6 +1325,51 @@ the wrong Warbands (rule 2). `rules-build.mjs` fails the build if a unit's
 `allowedAlignment` matches no faction at all, so a typo cannot ship as "nobody
 may recruit this".
 
+### A Mercenary may have no Battlekit but its own
+
+> *"A Mercenaries' Battlekit cannot be removed or lost over the course of the
+> campaign for any reason, and they cannot have any other Battlekit."*
+> — Warbands L9751-9752
+
+That is a **total** gate, not a weapons gate. The Digital Rulebook's BATTLEKIT
+LIMITS (L3810-3818) defines Battlekit as weapons, grenades, armour, shields and
+equipment alike, so the default for a Mercenary is nothing at all. The app had
+been selling them gear the game does not let them carry.
+
+Three things decide it, and each is a deliberate choice:
+
+**Keyed on the Mercenary ROLE, not the MERCENARY keyword.** Four of the
+fourteen Mercenaries do not carry that keyword — the Witch Coven Matriarch,
+Pairika, the Trench Dog and the Disciple of St. Roch. All fourteen carry the
+role, so the role is what the gate reads.
+
+**The one exception is a field, not a name.** The Scripture Guardian "must have
+either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon" bought "from
+your Faction Armoury Tables at their normal Cost" (Dispatch L748-753). That is
+`UnitProfile.mercenaryMayBuy`, set by a cited layer op. `equipGate.ts` exists
+*because* the modal used to decide this with regexes over model names, and one
+more of those would undo the point of the file. `'Melee'` means a weapon whose
+`range` is exactly `Melee` — a Pistol's `Melee/16"` is a Ranged weapon usable
+in melee, not a Melee Weapon.
+
+**A Mercenary whose Battlekit the app does not hold is NOT refused.** The rule
+forbids any *other* Battlekit, and where the entry's own kit has not been
+modelled the app cannot say what "other" means. The Mamluk Faris is the live
+case: the book (L10055-10063) gives it Reinforced Armour, a Combat Helmet, a
+Jezzail with Alchemical Ammunition *from the Iron Sultanate list*, and a
+three-way loadout choice that changes its Armour Characteristic — and the
+dataset has none of it. Refusing everything would leave it permanently
+unarmed, which is worse than the over-permissive sheet it has today. Failing
+loudly is the rule; asserting a fact the data does not support is not.
+
+Both halves read the same field, so a greyed-out button and a legality error
+can never disagree: `equipGate.ts`'s `mercenaryRefusal` stops the player
+reaching it from the equip sheet, and `validate.ts`'s `checkMercenaryKit`
+catches a roster that already has it — an import, a cloud pull, or a Warband
+built before the gate shipped. A Guardian with neither two 1-Handed nor one
+2-Handed Melee weapon is a **warning**, not an error: unfinished is not
+illegal, and refusing the roster would stop a player saving mid-build.
+
 ### A Deed an ability brings with it
 
 Battlefield Vivisection reads *"add the Gather Knowledge Glorious Deed to those
@@ -1323,10 +1382,19 @@ grantsDeed?: { name: string; description: string };
 ```
 
 The field carries the Deed with the ability that grants it, so nothing has to
-hand-maintain a second list that could disagree. **The reader is not written
-yet** — Play Mode still shows the scenario's own deeds only; wiring it up is
-FD-11c. The field is documented here because the data is now in the dataset,
-not because the feature is finished.
+hand-maintain a second list that could disagree. Play Mode's deed list is the
+scenario's printed Deeds plus these, across **every** participating Warband —
+the Deeds available in a game are what the game offers, and each side claims
+from the same list.
+
+**Read from the dataset, not from the roster's `profileSnapshot`.** A snapshot
+is frozen at recruitment and `recruitable.ts`'s `abilityOf` copies only `id`,
+`name` and `description`, so no roster in existence carries `grantsDeed` and
+one recruited before this shipped never would. Which Deeds an entry grants is a
+rules fact about the entry, not a stat the model was hired with — so
+`rosterDeeds` looks it up live, matching on `entryId || id` because that is
+what the hydrated profile's `id` is. A Warband saved months ago gets the Deed
+too.
 
 ## 7d. Loadout bundles
 

@@ -1547,6 +1547,32 @@
       "field": "battlekitNote",
       "value": "A Witchburner always has Reinforced Armour, a Combat Helmet, and a Gavel of Justice.",
       "_src": "trench-dispatch-01-april-2026.txt L834"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "field": "mercenaryMayBuy",
+      "value": [
+        "Melee"
+      ],
+      "_why": "A Mercenary may have no Battlekit but its own (Warbands L9751-9752). The Scripture Guardian is the one entry that states an exception, and it is narrow: Melee Weapons only, bought from the host Warband's own Armoury Tables at full cost, obeying each row's stipulations. The verbatim sentence is in `battlekitNote`; this is what `equipGate.ts` reads, so the permission is a field rather than a model name the engine recognises.",
+      "_src": "trench-dispatch-01-april-2026.txt L748-753 — 'it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon. You must purchase the Melee Weapons from your Faction Armoury Tables at their normal Cost'"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "keywords": [
+        "MERCENARY",
+        "NEGATE FEAR"
+      ],
+      "_why": "The Sister's catalogue entry carries NO keywords at all — she was the one model in the game with none. The Warbands book's row prints only NEGATE FEAR (L10393), because that section's rows omit MERCENARY where the heading already says it; the Dispatch reprints the entry and prints both. This is the Dispatch's row, so it supersedes the book's `addKeyword` in warbands-book — which stays, correct and cited, as the record that both sources agree on NEGATE FEAR.",
+      "_src": "trench-dispatch-01-april-2026.txt L654-655 — 'Replace the Keywords with: MERCENARY NEGATE FEAR'"
     }
   ]
 }

@@ -287,6 +287,9 @@ export function recruitable(
         it twice.
       */
       battlekitNote: u.battlekitNote,
+      /* What this Mercenary may buy despite the glossary's blanket refusal.
+         See `UnitProfile.mercenaryMayBuy` and `equipGate.ts`. */
+      mercenaryMayBuy: u.mercenaryMayBuy,
       innateAbilities: u.abilities
         .filter((a) => a.name.trim().toLowerCase() !== 'third party')
         .map(abilityOf),

@@ -8,6 +8,7 @@ import { toRoster } from '../fromWarband';
 import { diffDatasets, diffAffecting } from '../diff';
 import { parseRestrictions, satisfiesOnlyFor } from '../restrictions';
 import { rosterCost, budgetState, unitCost, formatCost, type Roster } from '../costs';
+import type { Cost } from '@/types/catalogue';
 import type { Dataset, UnitProfile } from '@/types/catalogue';
 
 /* ------------------------------------------------------------------ fixtures */
@@ -531,5 +532,113 @@ describe('diffDatasets', () => {
     for (const noise of ['id', 'sourceFile', 'entryId', 'modifiers']) {
       expect(fields.has(noise)).toBe(false);
     }
+  });
+});
+
+/**
+ * A Mercenary's Battlekit is the whole of what it carries.
+ *
+ * "A Mercenaries' Battlekit cannot be removed or lost over the course of the
+ * campaign for any reason, and they cannot have any other Battlekit"
+ * (Warbands L9751-9752). `equipGate.ts` stops a player reaching this from the
+ * equip sheet; these cover the roster that already has it — an import, a cloud
+ * pull, or a Warband built before the gate shipped.
+ */
+/* Fixture items carry a cost because `unitCost` scales it. */
+const ZERO = { ducats: 0, glory: 0 };
+
+describe('a Mercenary carrying what it may not', () => {
+  const merc = (over: Partial<UnitProfile> = {}) => profile({
+    id: 'm1', name: 'Test Mercenary', roles: ['Mercenary'],
+    battlekit: [{ id: 'k1', linkId: 'k1', name: 'Reinforced Armour', quantity: 1,
+                  keywords: [], cost: { ducats: 0, glory: 0 } }],
+    ...over,
+  });
+  const weapons = [
+    { id: 'w-sword', name: 'Sword', range: 'Melee', type: '1-Handed' },
+    { id: 'w-great', name: 'Greatsword', range: 'Melee', type: '2-Handed' },
+    { id: 'w-rifle', name: 'Rifle', range: '24"', type: '2-Handed' },
+    { id: 'k1', name: 'Reinforced Armour', range: '', type: 'Armour' },
+  ];
+  const check = (p: UnitProfile, items: { weaponId?: string; name?: string;
+                                          grantedBy?: string; cost: Cost }[]) =>
+    validateRoster(roster({ units: [unit(p.id, { items })] }), dataset([p], weapons));
+
+  it('is an error, naming the item', () => {
+    const v = check(merc(), [{ weaponId: 'w-rifle', cost: ZERO }]);
+    const found = v.violations.find((x) => x.code === 'mercenary-extra-battlekit')!;
+    expect(found.severity).toBe('error');
+    expect(found.message).toContain('Rifle');
+    expect(found.rule).toContain('cannot have any other Battlekit');
+  });
+
+  it("does not fire on the model's own Battlekit", () => {
+    expect(check(merc(), [{ weaponId: 'k1', cost: ZERO }]).violations
+      .filter((x) => x.code === 'mercenary-extra-battlekit')).toEqual([]);
+  });
+
+  it('does not fire on gear a Variant granted', () => {
+    expect(check(merc(), [{ weaponId: 'w-rifle', cost: ZERO, grantedBy: 'some-variant' }]).violations
+      .filter((x) => x.code === 'mercenary-extra-battlekit')).toEqual([]);
+  });
+
+  it("stays silent where the entry's own Battlekit is not modelled", () => {
+    /* The Mamluk Faris case — see `mercenaryRefusal`. The rule forbids any
+       OTHER Battlekit, and the app cannot say what is "other" when it does not
+       hold the kit. */
+    expect(check(merc({ battlekit: [] }), [{ weaponId: 'w-rifle', cost: ZERO }]).violations
+      .filter((x) => x.code === 'mercenary-extra-battlekit')).toEqual([]);
+  });
+
+  it('says nothing about a model that is not a Mercenary', () => {
+    expect(check(profile({ id: 'm1', roles: ['Troop'] }), [{ weaponId: 'w-rifle', cost: ZERO }])
+      .violations.filter((x) => x.code === 'mercenary-extra-battlekit')).toEqual([]);
+  });
+});
+
+describe("the Scripture Guardian's melee weapons", () => {
+  const guardian = (over: Partial<UnitProfile> = {}) => profile({
+    id: 'sg', name: 'Scripture Guardian', roles: ['Mercenary'],
+    mercenaryMayBuy: ['Melee'],
+    battlekit: [{ id: 'k1', linkId: 'k1', name: 'Reinforced Armour', quantity: 1,
+                  keywords: [], cost: { ducats: 0, glory: 0 } }],
+    ...over,
+  });
+  const weapons = [
+    { id: 'w-sword', name: 'Sword', range: 'Melee', type: '1-Handed' },
+    { id: 'w-great', name: 'Greatsword', range: 'Melee', type: '2-Handed' },
+    { id: 'w-rifle', name: 'Rifle', range: '24"', type: '2-Handed' },
+    { id: 'k1', name: 'Reinforced Armour', range: '', type: 'Armour' },
+  ];
+  const check = (items: { weaponId: string; cost: Cost }[]) =>
+    validateRoster(roster({ units: [unit('sg', { items })] }), dataset([guardian()], weapons));
+
+  it('accepts two 1-Handed', () => {
+    const v = check([{ weaponId: 'w-sword', cost: ZERO }, { weaponId: 'w-sword', cost: ZERO }]);
+    expect(v.violations.filter((x) => x.code.startsWith('mercenary-'))).toEqual([]);
+  });
+
+  it('accepts one 2-Handed', () => {
+    expect(check([{ weaponId: 'w-great', cost: ZERO }]).violations
+      .filter((x) => x.code.startsWith('mercenary-'))).toEqual([]);
+  });
+
+  it('warns, not errors, when it has neither', () => {
+    const v = check([]);
+    const found = v.violations.find((x) => x.code === 'mercenary-melee-required')!;
+    expect(found.severity).toBe('warning');
+    expect(found.message).toContain('two 1-Handed Melee Weapons or one 2-Handed');
+    /* Unfinished is not illegal: a player must be able to save mid-build. */
+    expect(v.errors.filter((e) => e.code.startsWith('mercenary-'))).toEqual([]);
+  });
+
+  it('warns when it has only one 1-Handed', () => {
+    expect(check([{ weaponId: 'w-sword', cost: ZERO }]).violations
+      .some((x) => x.code === 'mercenary-melee-required')).toBe(true);
+  });
+
+  it('still refuses it a Ranged weapon', () => {
+    const v = check([{ weaponId: 'w-great', cost: ZERO }, { weaponId: 'w-rifle', cost: ZERO }]);
+    expect(v.violations.some((x) => x.code === 'mercenary-extra-battlekit')).toBe(true);
   });
 });

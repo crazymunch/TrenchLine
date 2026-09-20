@@ -23,6 +23,15 @@ describe('Trench Dispatch #1 — Mercenaries', () => {
       'Combat Biologist', 'Communicant Anti-Tank Hunter', 'Mamluk Faris',
       'Mendelist Ammo Monk', 'Observer', 'Sin Eater', 'Scripture Guardian',
       'Goetic Warlock', 'Witchburner',
+      /*
+        The Sister was missing from this list, and missing an op. Her entry IS
+        reprinted — "Replace the Keywords with: MERCENARY NEGATE FEAR",
+        dispatch L654-655 — and the layer had no `setKeywords` for it, so she
+        shipped with the catalogue's empty keyword list. Every one of the eight
+        keyword reprints in the Dispatch now has an op; this list is nine of
+        them, the ninth being the Desecrated Saint, which is not a Mercenary.
+      */
+      'Sister of Saint Cosmas',
     ];
     const missing = names.filter((n) => !unit(n).keywords.includes('MERCENARY'));
     expect(missing, 'entries the Dispatch made MERCENARY').toEqual([]);
