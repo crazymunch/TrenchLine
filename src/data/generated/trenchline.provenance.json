@@ -6121,6 +6121,10 @@
     "battlekitNote": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "mercenaryMayBuy": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:1a28-719d-fbd0-5bf0": {

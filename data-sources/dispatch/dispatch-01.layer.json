@@ -1547,6 +1547,19 @@
       "field": "battlekitNote",
       "value": "A Witchburner always has Reinforced Armour, a Combat Helmet, and a Gavel of Justice.",
       "_src": "trench-dispatch-01-april-2026.txt L834"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "field": "mercenaryMayBuy",
+      "value": [
+        "Melee"
+      ],
+      "_why": "A Mercenary may have no Battlekit but its own (Warbands L9751-9752). The Scripture Guardian is the one entry that states an exception, and it is narrow: Melee Weapons only, bought from the host Warband's own Armoury Tables at full cost, obeying each row's stipulations. The verbatim sentence is in `battlekitNote`; this is what `equipGate.ts` reads, so the permission is a field rather than a model name the engine recognises.",
+      "_src": "trench-dispatch-01-april-2026.txt L748-753 — 'it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon. You must purchase the Melee Weapons from your Faction Armoury Tables at their normal Cost'"
     }
   ]
 }

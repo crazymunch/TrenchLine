@@ -20808,7 +20808,10 @@ export const DATASET: Dataset = {
       ],
       "sourceFile": "Mercenaries.cat",
       "allowedFactions": null,
-      "battlekitNote": "A Scripture Guardian always has Reinforced Armour, Combat Helmet, and a Vengeful Scripture. In addition, it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon. You must purchase the Melee Weapons from your Faction Armoury Tables at their normal Cost, and you must obey any stipulations that apply to the weapons you choose (e.g. ELITE only, Limit: 1 etc.). Vengeful Scripture and the weapons you choose cannot be removed or lost over the course of the campaign for any reason."
+      "battlekitNote": "A Scripture Guardian always has Reinforced Armour, Combat Helmet, and a Vengeful Scripture. In addition, it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon. You must purchase the Melee Weapons from your Faction Armoury Tables at their normal Cost, and you must obey any stipulations that apply to the weapons you choose (e.g. ELITE only, Limit: 1 etc.). Vengeful Scripture and the weapons you choose cannot be removed or lost over the course of the campaign for any reason.",
+      "mercenaryMayBuy": [
+        "Melee"
+      ]
     },
     {
       "id": "1a28-719d-fbd0-5bf0",

@@ -101,3 +101,91 @@ describe('an item already over a limit for another reason', () => {
     }).allowed).toBe(true);
   });
 });
+
+/**
+ * A Mercenary may have no Battlekit but its own.
+ *
+ * "A Mercenaries' Battlekit cannot be removed or lost over the course of the
+ * campaign for any reason, and they cannot have any other Battlekit"
+ * (Warbands L9751-9752) — and BATTLEKIT LIMITS (Digital Rulebook L3810-3818)
+ * makes Battlekit mean weapons, grenades, armour, shields and equipment alike.
+ * The app had been selling them gear the game does not let them carry.
+ */
+describe('a Mercenary and the gear it may not have', () => {
+  const unitNamed = (name: string) => {
+    const u = d.units.find((x) => x.name === name)!;
+    return {
+      name: u.name,
+      keywords: u.keywords,
+      roles: u.roles,
+      battlekit: u.battlekit ?? [],
+      mercenaryMayBuy: u.mercenaryMayBuy,
+    };
+  };
+  const antioch = armouryFor(d, 'new-antioch');
+  const ask = (item: string, unit: ReturnType<typeof unitNamed>, armoury = antioch) =>
+    canEquip({ name: item }, { dataset: d, armoury, carried: [], unit });
+
+  it('refuses a Witchburner an Armoury weapon', () => {
+    const v = ask('Sword/Axe', unitNamed('Witchburner'));
+    expect(v.allowed).toBe(false);
+    expect(v.reason).toContain('cannot have any other Battlekit');
+  });
+
+  it('refuses one without the MERCENARY keyword, on its role', () => {
+    /*
+      Five of the fourteen Mercenaries carry no MERCENARY keyword. The Sister
+      of Saint Cosmas carries none at all — her catalogue entry gives her none
+      and no source states one, which #80 documents. A keyword gate would have
+      let her buy anything.
+    */
+    const sister = unitNamed('Sister of Saint Cosmas');
+    expect(sister.keywords).not.toContain('MERCENARY');
+    expect(sister.roles).toContain('Mercenary');
+    expect(ask('Sword/Axe', sister).allowed).toBe(false);
+  });
+
+  it('offers the Scripture Guardian a Melee Weapon, and nothing else', () => {
+    // Dispatch L748-753: "either two 1-Handed Melee Weapons or one 2-Handed
+    // Melee Weapon … purchase … from your Faction Armoury Tables".
+    const sg = unitNamed('Scripture Guardian');
+    expect(sg.mercenaryMayBuy).toEqual(['Melee']);
+    expect(ask('Sword/Axe', sg).allowed).toBe(true);
+
+    const ranged = ask('Rifle', sg);
+    expect(ranged.allowed).toBe(false);
+    expect(ranged.reason).toContain('Melee Weapons only');
+  });
+
+  it('does not count a Pistol as a Melee Weapon', () => {
+    /*
+      A Pistol's range reads `Melee/16"` — a Ranged weapon usable in melee, not
+      one of the "two 1-Handed Melee Weapons" the entry may buy.
+    */
+    const pistol = d.weapons.find((w) => /\//.test(w.range ?? '') && /melee/i.test(w.range ?? ''));
+    expect(pistol, 'a dual-purpose weapon to test with').toBeTruthy();
+    expect(ask(pistol!.name, unitNamed('Scripture Guardian')).allowed).toBe(false);
+  });
+
+  it('leaves a Mercenary whose Battlekit is unmodelled alone', () => {
+    /*
+      The rule forbids any OTHER Battlekit, and where the entry's own kit is
+      not in the dataset the app does not know what "other" means. The Mamluk
+      Faris is the live case: the book gives it armour, a helmet, a Jezzail and
+      a three-way loadout choice (Warbands L10055-10063) and the dataset has
+      none of it, so refusing everything would leave it permanently unarmed.
+    */
+    const faris = unitNamed('Mamluk Faris');
+    expect(faris.battlekit).toEqual([]);
+    expect(ask('Sword/Axe', faris, armouryFor(d, 'iron-sultanate')).allowed).toBe(true);
+  });
+
+  it('says nothing about a model that is not a Mercenary', () => {
+    const trooper = d.units.find(
+      (u) => !(u.roles ?? []).some((r) => /mercenary/i.test(r)) && u.factionId === 'New Antioch')!;
+    expect(ask('Sword/Axe', {
+      name: trooper.name, keywords: trooper.keywords, roles: trooper.roles,
+      battlekit: trooper.battlekit ?? [], mercenaryMayBuy: undefined,
+    }).allowed).toBe(true);
+  });
+});

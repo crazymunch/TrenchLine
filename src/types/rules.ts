@@ -179,6 +179,12 @@ export interface UnitProfile {
    * `UnitProfile.battlekitNote` in types/catalogue.ts.
    */
   battlekitNote?: string;
+  /**
+   * Gear this Mercenary may buy, against the rule that otherwise forbids all
+   * of it. See `UnitProfile.mercenaryMayBuy` in `types/catalogue.ts` for the
+   * sources; `equipGate.ts` is the reader.
+   */
+  mercenaryMayBuy?: 'Melee'[];
   innateAbilities?: Ability[];
   /**
    * Gear the model always has, from the catalogue's `min="1"` entryLinks.

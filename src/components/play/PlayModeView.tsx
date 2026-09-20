@@ -30,7 +30,7 @@ const SCENARIO_BOOKS: { source: string; label: string }[] = [
   { source: 'carcass-front', label: 'Carcass Front' },
   { source: 'all-out-war', label: 'All Out War' },
 ];
-import { parseDeeds } from './deeds';
+import { parseDeeds, rosterDeeds } from './deeds';
 import { parseUnforeseenEvents } from '../../rules/unforeseen';
 import { rollWeatherForAll, whoChooses, type WeatherRoll } from '../../rules/weather';
 import { campaignVictoryPoints } from '../../rules/campaign';
@@ -644,7 +644,20 @@ export const PlayModeView: React.FC = () => {
     incrementTurn();
   };
 
-  const scenarioDeeds = parseDeeds(sectionOf(selectedScenario, 'GLORIOUS DEEDS'));
+  /*
+    The scenario's Deeds, plus any a model on the field brings with it.
+
+    "Whenever a Combat Biologist is part of your Warband, add the Gather
+    Knowledge Glorious Deed to those normally available in each scenario you
+    play" — so the list is not the scenario's alone. Every participating
+    Warband is read, not just the one being viewed: the Deeds available in the
+    game are what the game offers, and each side claims from the same list.
+  */
+  const printedDeeds = parseDeeds(sectionOf(selectedScenario, 'GLORIOUS DEEDS'));
+  const scenarioDeeds = [
+    ...printedDeeds,
+    ...rosterDeeds(matchWarbandIds.map(side), playDataset?.units, printedDeeds),
+  ];
   const unforeseenEvents = parseUnforeseenEvents(sectionOf(selectedScenario, 'UNFORESEEN EVENTS'));
 
   return (

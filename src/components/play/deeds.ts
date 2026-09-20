@@ -40,3 +40,75 @@ export function parseDeeds(section: string | null | undefined): Deed[] {
     })
     .filter((deed) => deed.title.length > 0);
 }
+
+/**
+ * Deeds a model on the roster brings with it.
+ *
+ * The Combat Biologist's Battlefield Vivisection reads *"Whenever a Combat
+ * Biologist is part of your Warband, add the Gather Knowledge Glorious Deed to
+ * those normally available in each scenario you play"* (Warbands L9804-9806).
+ *
+ * So that Deed is not a property of the scenario, it is a property of having
+ * the model — and the layer carries it on the ability that grants it, as
+ * `grantsDeed`. This is the reader. Without it the field was data nothing
+ * looked at, which is the antipattern this codebase keeps finding: machinery
+ * written, tested, never wired up.
+ *
+ * **Read from the DATASET, not from the roster's `profileSnapshot`.** A
+ * snapshot is frozen at recruitment and `recruitable.ts`'s `abilityOf` copies
+ * only `id`, `name` and `description` — so no roster in existence carries
+ * `grantsDeed`, and one recruited before this shipped never would. Which Deeds
+ * an entry grants is a rules fact about the entry, not a stat the model was
+ * hired with, so it is looked up live and a Warband saved months ago gets it
+ * too.
+ *
+ * Matched on `entryId || id`, because that is what the hydrated profile's `id`
+ * is (see `recruitable.ts`) — the roster holds the catalogue ENTRY's id, which
+ * is not the dataset unit's own.
+ *
+ * Reads the whole roster, not the deployed models: the rule says "part of your
+ * Warband", and a benched Biologist is still part of it.
+ *
+ * De-duplicated by title, because two Biologists grant the same Deed once —
+ * and against `already`, so a scenario that happens to print a Deed of the
+ * same name keeps its own wording rather than gaining a near-duplicate.
+ */
+export function rosterDeeds(
+  warbands: readonly ({ units?: readonly RosterUnit[] } | null | undefined)[],
+  datasetUnits: readonly DatasetUnit[] | null | undefined,
+  already: readonly Deed[] = [],
+): Deed[] {
+  if (!datasetUnits?.length) return [];
+  const byEntry = new Map<string, DatasetUnit>();
+  for (const u of datasetUnits) {
+    const key = u?.entryId || u?.id;
+    if (key) byEntry.set(key, u);
+  }
+
+  const seen = new Set(already.map((d) => d.title.toLowerCase()));
+  const out: Deed[] = [];
+  for (const wb of warbands) {
+    for (const unit of wb?.units ?? []) {
+      const entry = unit?.profileSnapshot?.id
+        ? byEntry.get(unit.profileSnapshot.id)
+        : undefined;
+      for (const ability of entry?.abilities ?? []) {
+        const deed = ability?.grantsDeed;
+        if (!deed?.name) continue;
+        const key = deed.name.toLowerCase();
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({ title: deed.name, desc: deed.description ?? '' });
+      }
+    }
+  }
+  return out;
+}
+
+/* The shapes `rosterDeeds` needs, so it depends on neither whole type. */
+type RosterUnit = { profileSnapshot?: { id?: string } } | null | undefined;
+type DatasetUnit = {
+  id?: string;
+  entryId?: string;
+  abilities?: readonly { grantsDeed?: { name: string; description?: string } }[];
+} | null | undefined;

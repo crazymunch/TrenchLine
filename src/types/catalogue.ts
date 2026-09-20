@@ -442,6 +442,34 @@ export interface UnitProfile {
   allowedAlignment?: 'Faithful' | 'Fallen';
 
   /**
+   * Gear this Mercenary may buy, against a rule that otherwise forbids all of
+   * it.
+   *
+   * "A Mercenaries' Battlekit cannot be removed or lost over the course of the
+   * campaign for any reason, and they cannot have any other Battlekit"
+   * (Warbands L9751-9752), and the Digital Rulebook's BATTLEKIT LIMITS
+   * (L3810-3818) makes Battlekit mean weapons, grenades, armour, shields and
+   * equipment alike — so the default for a Mercenary is nothing at all.
+   *
+   * Exactly one entry states an exception. The Scripture Guardian "must have
+   * either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon", bought
+   * "from your Faction Armoury Tables at their normal Cost" (Dispatch
+   * L748-753).
+   *
+   * A field rather than a sentence the engine parses, and a field rather than
+   * a name the engine recognises: `equipGate.ts` exists because the modal used
+   * to decide this with regexes over model names, and one more of those is
+   * what this file is here to prevent. The verbatim sentence is in
+   * `battlekitNote`, which the transcription test checks against the page;
+   * this is the machine-readable summary of it.
+   *
+   * `'Melee'` means a weapon whose `range` is exactly `Melee` — not a Pistol,
+   * whose `Melee/16"` makes it a Ranged weapon usable in melee rather than a
+   * Melee Weapon.
+   */
+  mercenaryMayBuy?: 'Melee'[];
+
+  /**
    * The entry's Battlekit sentence, verbatim, where the source states one as
    * prose rather than as links.
    *
