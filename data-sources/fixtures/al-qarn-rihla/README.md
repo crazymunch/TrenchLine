@@ -9,8 +9,11 @@ saved state is discarded when the data is regenerated
 
 ## Roster history
 
-Four NewRecruit exports, oldest to newest. The newest is the current warband;
-the earlier three are the campaign history.
+Five NewRecruit exports, oldest to newest. `04` keeps its `CURRENT` suffix
+because it is the snapshot the app was loaded from and the tests name it;
+`05` is the newest, the same Warband after the game played the week of 14
+September 2026, and the diff between the two is described in
+[`../newrecruit/README.md`](../newrecruit/README.md).
 
 | File | Ducats | Glory | Entries |
 |---|---|---|---|
@@ -18,6 +21,7 @@ the earlier three are the campaign history.
 | `02-3-force-match-983d.json` | 983 / 1050 | 4 / 6 | 44 |
 | `03-july-gator-1000d.json` | 1000 / 1220 | 4 / 8 | 45 |
 | **`04-august-1320d-CURRENT.json`** | **1320 / 1320** | **6 / 9** | **58** |
+| `05-september-1330d.json` | 1330 / 1440 | 13 / 13 | 103 |
 
 ## Why these are the regression fixture
 

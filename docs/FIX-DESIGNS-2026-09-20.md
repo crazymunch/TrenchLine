@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | src/data/warbandLore.ts (deleted by #82), prisma/seed.ts (deleted by #83), the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 12:10 UTC on 20 September
+### Landed, as of 19:15 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -68,6 +68,17 @@ carry, and what these designs cover:
 | FD-11c (a Mercenary is offered no Battlekit but its own, keyed on the Mercenary role; the Scripture Guardian's Melee permission as a cited field; the validator's error and the Guardian's warning; Gather Knowledge reaches Play Mode's deed list from the dataset; the Sister's MERCENARY keyword from Dispatch L654–655) | #81 | merged; verified on `main`: the Sister carries MERCENARY and NEGATE FEAR, the Guardian's permission is `["Melee"]`. Two follow-ups filed by the developer: the Mamluk Faris's unmodelled kit, and the Desecrated Saint's keyword reprint that would drop LIMITED POTENTIAL |
 | FD-14 AI-1 (the lore file deleted, both injection sites removed, the test roster materialised as a fixture, `scratch/` untracked) | #82 | merged, after the owner confirmed the cleared row was another account's and the cleanup stands |
 | FD-14 AI-2 (the seed deleted and its hook removed; no starting territories from the campaigns API; a fresh device has no campaign; and a found bug fixed: the store replaced any stored map with fewer than six pins or without pin coordinates, which reseated every Carcass Front campaign on the twelve classic theatres) | #83 | merged, green on 8e90130 after two red runs, both recorded below. The owner ruled the inert seed user row stays |
+| The designs FD-12 to FD-15 and the FD-05e migration ruling; the Roster Sheet PDF | #78 | merged |
+| FD-05e (the founding allowance and the Strongbox are one pot; the never-played migration) | #84 | merged on a head with three holes, closed by #85 the same hour; two deviations from the ruling accepted, recorded under FD-05e |
+| FD-05e-2 (equips, the clone and removals book; `LedgerEntry.ref`; `strongbox-overdrawn`; the Papal Glory refinement) | #85 | merged; one hole left, closed by #86 |
+| FD-05f and FD-05e-3 (the Arsenal's Glory prices as `StashedItem.price`; a stashed item assigned without a second charge) | #86 | merged, with the count correction recorded under FD-05f |
+| FD-07 (the Exploration roll: per-die re-rolls, the seven Skills parsed, discoveries recorded, the Pot of Manna) | #87 | merged, with two corrections recorded under FD-07 |
+| FD-05g (Battlekit bought onto a model charged in its own currency) | #88 | merged |
+| FD-09a (the game counter's one writer, `currentTurn`; the derived auto-advance) | #89 | merged, with three corrections recorded under FD-09 |
+| FD-09b (a post-battle for every side, `BattleSide.campaignMatchId`; unresolved battles in the Hub) | #90 | merged |
+| FD-05h (a model hired for Glory is charged it; the validator names the overdrawn currency) | #91 | merged |
+| FD-06d (Bitter Lessons rolls its D3 and blocks the commit until rolled; War Stories as one switch) | #92 | merged |
+| WIZ-2 (the end-to-end mock game spec; `docs/READY-FOR-TESTING.md`) | #93 | merged; READY FOR TESTING at 19:01 UTC |
 
 ## FD-00. PR #59 as it stands
 
@@ -582,6 +593,22 @@ never played loads holding 80, twice; a played Warband holding 30 loads
 holding 30 and gains no entry; 740 on 700 loads at minus 40 and refuses a
 hire; a new muster on 700 holds 700 less its cost.
 
+**Landed, in five PRs, with two deviations accepted.** #84 shipped the pot
+and the migration; #85 the rest of what spends it (equips, the clone,
+removals that reverse a same-game purchase through `LedgerEntry.ref` and
+`undoPurchases`, and `strongbox-overdrawn` in `src/rules/validate.ts`);
+#86 the stashed item assigned without a second charge; #88 Battlekit
+charged in its own currency; #91 the hire and the clone charged their
+Glory, with the validator naming whichever currency is under. The
+developer's two deviations stand: the "has it played?" question is asked of
+the record as it arrived, because `openLedger` replaces the ledger and with
+it the evidence; and a Warband is migrated only with no trace of a campaign
+at all, which the committed v0 fixture proved necessary, with Glory counting
+as evidence only above the founding entry's own. One ruling corrected on the
+way: the builder never refuses a purchase at charge time; a muster may run
+negative while the player rearranges, and the validator's error is what
+keeps it out of a game.
+
 ### FD-05f. A Glory-priced item in the Arsenal is free
 
 From PR #75's addendum, verified: `ArmoryStashModal` renders every row
@@ -599,6 +626,15 @@ rows come from `armouryFor` with the row's `Cost`, and `BuyRow` prints
 whichever currencies the price has. Test: a 4-Glory item debits 4 Glory
 and no Ducats; a 30-Ducat item debits no Glory; an item with both debits
 both; an old stash entry marked `glory` sells back in Glory.
+
+**Corrected by #86.** The dataset carries 32 Glory-priced Armoury rows
+across 16 items in 8 armouries, not 113: the larger number counted weapon
+profiles and unit entries the Arsenal does not shop from. And the modal's
+rows already were the Armoury rows, built by `recruitable` from
+`armouryFor`; what was dropped was the second cost field, restored as
+`StashedItem.price`. No published row is priced in both currencies today;
+the shape is tested anyway. The refusal sentence above is superseded by
+the FD-05e ruling: nothing is refused at charge time.
 
 ## FD-06. RR-05: the Promotions and Experience Step
 
@@ -725,6 +761,16 @@ handover from a record with a model on a Deed awards that model 2.
 Promotions and Experience, `docs/ROSTER-FILE.md` (`promotionMisses`, the deed
 `unitId`), `docs/CHRONICLE.md` (`DeedClaim.unitId`).
 
+**FD-06d landed in #92.** Bitter Lessons and War Stories are matched on the
+row's text, not the roll or the name, in `src/rules/extraExperience.ts`.
+Bitter Lessons owes a D3 and the commit is refused until it is rolled, with
+the button carrying the rule's own name. War Stories is derived from the
+roster on every render, never stored, and offered as one switch across the
+roster, on by default because it is bookkeeping the app does in full view;
+two holders, which the book forbids, exclude both and pay one point. Head
+Wound still beats both, and `cappedExperience` stays the one place that
+knows about LIMITED POTENTIAL.
+
 ## FD-07. RR-10: the Exploration roll
 
 ### Root cause
@@ -769,6 +815,20 @@ dataset's `lootPerPoint` plus ten; a Location that grants a Skill leaves it in
 
 `docs/ROSTER-FILE.md` for the new field, `docs/FEATURES.md` for Exploration,
 and the RR-10 entry in the review marked with what landed.
+
+**Corrected by #87, on the book's own wording.** The design split the seven
+Exploration Skills into arithmetic (Extra Dice, Re-roll, Lucky) and listed
+(Duplicate, Set Dice, Seek, Circle Back). Lucky is not arithmetic, and Seek
+and Circle Back are plain plus or minus one; but page 113 says the player
+"can use" a Skill, so using one is a choice, and a Circle Back applied unasked
+would take a point off a roll the player never chose to modify. The split
+that survives is what the app may do unasked (Extra dice, Re-roll) against
+what needs the player (the other five, shown with their text). RR-10's count
+was also wrong: four Locations grant a named Skill, the Fruit from the Tree
+grants "one Skill of your choice" and so nothing the app may pick, the Pot
+of Manna grants standing loot, and the two Wildcard Skills are derived from
+the Roster on every render rather than stored, so a dead Scavenger stops
+rolling. `explorationDiscoveries` had no writer at all; it has one now.
 
 ## FD-08. DA-01 and DA-02: abilities a Variant reveals, and a second Unit profile
 
@@ -926,6 +986,21 @@ record and seed `satOutUnitIds`.
 `docs/CAMPAIGN-SYNC.md` (the counter's single writer and op),
 `docs/CHRONICLE.md` (`campaignMatchIds`, `deployedUnitIds`, the unresolved
 list), `docs/FEATURES.md`.
+
+**Corrected by #89 and #90, on the schema.** The design named the counter
+`currentGame`; `model Campaign` has no such column, and the settings op
+spreads its data straight into the update, so the first op to carry it would
+have thrown a 500. The column, the authority table's field and the store's
+fallback are all `currentTurn`, and that is the one writer now, the
+organiser's. The `autoAdvance` setting is derived rather than stored, for
+the same reason: a one-member campaign advances itself when its member's
+post-battle is committed, read from the snapshot's `campaignGame`. The
+per-side link is `BattleSide.campaignMatchId` in `src/types/battle.ts`,
+with `deployedUnitIds` beside it, rather than a map on the battle: the
+sides are a JSON column, so the fact syncs with the record it belongs to and
+needs no migration, and the battles API's strict schema names both. The
+match id gained a random suffix, because one battle now mints a record per
+side inside one millisecond.
 
 ## FD-10. RR-13, RR-14 and RR-09: what the Quartermaster Step still lacks
 
@@ -1358,6 +1433,45 @@ review of every exploration reward and skill a warband holds and how each
 was earned, and the Experience track drawn on the model the way the book
 draws it.
 
+**The acceptance case is real, and committed.** The owner supplied two
+NewRecruit exports of Al-Qarn Rihla: August, the roster the app was loaded
+from, already at `data-sources/fixtures/newrecruit/al-qarn-rihla-august.json`,
+and September, the same Warband after the game played the week of 14
+September, now at `data-sources/fixtures/newrecruit/al-qarn-rihla-september.json`
+and as `data-sources/fixtures/al-qarn-rihla/05-september-1330d.json` (the
+owner revised the export once more at 22:00 UTC; that revision is the one
+committed, and it came as JSON only). The difference between August and
+September is exactly what this design has to represent, and NewRecruit
+represents it as upgrades on the model:
+
+- Experience moves, per model: Kasim 4 to 6, Zayd 0 to 2, the Bull 3 to 4,
+  Idris 3 to 4, the Takwin 1 to 2.
+- Five Skills arrive, each with the roll that gave it in brackets: Point
+  Blank [9], Sharp Eyes [6], Melee Proficiency [7], Dodge [11], Champion
+  [11]. The August roster already carried Ranged Proficiency [7], Assassinate
+  [4], Strength of Samson [8], Skill & Expertise [7], and the injuries Leg
+  Wound [31] and Lost Arm [26], in the same shape. The bracket is the
+  provenance this design asks for, and the importer must keep it: a Skill
+  imported from NewRecruit is `source: 'import'` with its roll, not a bare
+  name.
+- Kasim's Leg Wound is gone, and Curative Fluids arrived; the export's
+  Campaign Rules say why: a new Exploration result, Ransacked Alchemist
+  Workshop, "remove one Battle Scar from any model", spent.
+- Kasim's Automatic Rifle became a Machine Gun, and a Scripture Guardian
+  was hired for 7 Glory; the Ducat limit moved from 1320 to 1440, the
+  roster from 1320 to 1330, and Glory from 6 to 13.
+- The export's `Campaign Rules > Enabled` subtree is the review the owner
+  asked for: Book of Golems, Ransacked Alchemist Workshop and Reroll are the
+  Exploration rewards held; Sublime Gate is the Patron; Unleveraged Glory is
+  NewRecruit's Glory counter. The importer reads that subtree into the
+  Warband's rewards and Patron, each `source: 'import'`, and the sheet's
+  bio and exploration notes list them with their source.
+
+FD-12's tests therefore include: importing the August export and then the
+September one produces a second snapshot whose diff is the list above; each
+imported Skill carries its roll; the Patron is Sublime Gate; the three
+rewards appear with their text; and the campaign table gains one row.
+
 ### The change
 
 1. **An `ExperienceTrack` component**, used in three places: the unit card
@@ -1498,6 +1612,55 @@ the app has handled both. The sources:
   Strength +1 DICE Melee) are stated on the entry, and `src/rules/modifiers.ts`
   is the evaluator; whether the card applies option-conditioned modifiers
   is to be verified first, and if it does not, that is item 3.
+
+### Verified against the owner's exports
+
+The two Homunculi as NewRecruit records them, in both the August and the
+September export (paths under FD-12):
+
+- **Al-Masyukh, Hunter of Hunters**, a Favoured Takwin Homunculus (ELITE by
+  Promotion, Experience 1 then 2, Champion [11] in September): Massive
+  Size, Human Hands, Inhuman Strength, Additional Arm, Two Heads, Hawk
+  Eyes, Hypnotic Eyes, Gargantuan Size; and Siege Jezzail (2-Handed
+  Ranged, HEAVY), Titan Zulfiqar (1-Handed Melee, HEAVY), Great Sword/Axe
+  (2-Handed Melee, HEAVY), Fire Shield.
+- **Al-Mudawwan, the Inscribed**, a Homunculus at Troop, no Promotion, no
+  Experience: Enslaved Mind, Human Hands, Inhuman Strength, Additional Arm,
+  Hawk Eyes. That is Human Hands plus fifty Ducats of Formulas, exactly the
+  Book of Golems grant at L6902 to L6912, on a model NewRecruit prices at 40
+  plus 60. The export's Campaign Rules carry "Book of Golems" as a held
+  reward, which is how the importer knows which Homunculus is the Golem;
+  the owner confirmed the reading and a total value of about 100 Ducats.
+
+Three rulings from that, each on the page:
+
+1. **The allowance sentence is the book's, not the catalogue's.** Warbands
+   L5385 to L5388: "three 1-Handed Melee Weapons or one 1-Handed Melee
+   Weapon and one 2-Handed Melee Weapon", and the same for Ranged. The
+   community catalogue's Human Hands text, which the export reproduces,
+   says "two 1-Handed Melee Weapons and one 2-Handed Melee Weapon", which
+   is four hands on three arms. The dataset's `carryAllowances` reads the
+   book; the card must print the book's sentence, and if the catalogue's
+   ability text reaches the card, a layer op replaces it, cited.
+2. **Al-Masyukh's loadout is legal, and a third 2-Handed Melee Weapon is
+   not.** STRONG converts the Great Sword to 1-Handed (rulebook L3247 to
+   L3249), Titan Zulfiqar is 1-Handed, and the Fire Shield replaces the
+   third Melee slot; the Siege Jezzail is the one 2-Handed Ranged Weapon.
+   HEAVY's "cannot be equipped with more than one piece of Battlekit with
+   this Keyword" (L3121) is part of HEAVY's Effect, and STRONG's NEGATE
+   HEAVY (L3247) negates the Effect, so three HEAVY items on a STRONG model
+   are legal; the commentaries' Battlekit Q2 reads STRONG the same way. The
+   engine and the validator read it so, with the sentences cited.
+3. **The Golem's rules text comes from the rulebook.** The catalogue's Book
+   of Golems entry says "a Homunculus of up to 100 ducats of value (40
+   ducats base cost)"; the rulebook says Human Hands plus up to fifty
+   Ducats of Formulas, free, GOLEM, the host's keyword, own Armoury, never
+   Promoted, no further Formulas. Both value the model at about 100; the
+   app derives from the rulebook, per rule 1, and records the reading in
+   `data-sources/resolutions.json`.
+
+The question this design asked the owner, for their roster file, is
+answered by the fixtures above; the Golem's price by the owner's message.
 
 ### The change, two PRs
 
@@ -1770,6 +1933,98 @@ ones are, and parse them if not. Test: a Patron Skill result on a Warband
 with a Patron offers that Patron's Skills; with none, the step asks and
 then offers; a Skill already held falls to the next lowest per line 6039.
 
+## FD-16. Weapon Collections: the House of Wisdom's two picks
+
+The owner, 21:55 UTC: "Under house of wisdom, you get the ability to choose
+one piece of battlekit from new antioch and one from trench pilgrims and add
+it to your existing warband. The selections I would actually like to have
+for this are the Anti-Tank Hammer for Trench Pilgrims, and Machine Armour
+for New Antioch - Newrecruit doesn't allow armour, but the interpretation my
+group of friends have is it can be weapons or armour, so I want to be able
+to properly select these as my selections."
+
+### The book
+
+- Warbands L5303 to L5308, the House of Wisdom's Weapon Collections: "When
+  you create your starting Warband, you can purchase 1 piece of Battlekit
+  from the New Antioch Armoury, and 1 piece of Battlekit from the Trench
+  Pilgrims Armoury. Any stipulations that apply to it are followed (so there
+  is little point in taking Battlekit that can only be used by models from
+  the other Warbands). You can repurchase the Battlekit later during the
+  campaign if it is lost for any reason."
+- Rulebook L3810 to L3818, BATTLEKIT LIMITS: Battlekit is Ranged Weapons,
+  Melee Weapons, Grenades, Armour, Shields, Equipment and Special Battlekit.
+  So "1 piece of Battlekit" includes armour; the group's reading is the
+  book's definition, and NewRecruit's weapons-only group (Iron Sultanate.cat
+  line 5883) is the catalogue's narrowing, not the rule.
+- Rules Commentaries 1.0.2 L258, MISC Q4, in `dataset.faq`: one of each
+  piece chosen, never multiple copies.
+- The rows. New Antioch, Warbands L1350 to L1351 and L1412: Machine Armour,
+  50 Ducats, "ELITE & Mechanized Heavy Infantry only, Limit: 1 excluding
+  Mechanized Heavy Infantry". Trench Pilgrims, L2794: Anti-Tank Hammer, 35
+  Ducats, "ELITE only, Limit: 3". Both picks are therefore legal for an
+  ELITE model of a House of Wisdom Warband, and Machine Armour is limited
+  to one such model. No house rule is needed for what the owner asked.
+
+### Where the app stands
+
+- `src/rules/variantArmoury.ts` reads the two grants and their limit of one
+  from the rule's sentence, and `checkVariantGrants` in
+  `src/rules/validate.ts` counts them, attributing each grant-only item to
+  a grant that stocks it. That half is right.
+- Nothing offers a granted armoury's rows. `AddEquipmentModal` line 288
+  gates on `armouryFor(dataset, factionId)` alone, the Arsenal's lists are
+  the faction's own, and the Warband records no choice. A House of Wisdom
+  player cannot take the pick in the app at all.
+- The New Antioch armoury in the dataset has no Machine Armour and no
+  Reinforced Armour rows: the catalogue holds both as hidden entryLinks
+  under the armoury (New Antioch.cat line 1934), revealed by a modifier for
+  Mechanized Heavy Infantry, and the parser drops hidden links. The book
+  prints both rows with their stipulations. Until the data has the row, the
+  pick cannot be offered.
+
+### The change, one PR after FD-13b
+
+1. **The data.** The New Antioch armoury gains Machine Armour (50, "ELITE &
+   Mechanized Heavy Infantry only, Limit: 1 excluding Mechanized Heavy
+   Infantry") and Reinforced Armour (40, "ELITE & Mechanized Heavy Infantry
+   only"), derived: either the parser emits a hidden entryLink under an
+   armoury as a row carrying the catalogue's own condition as its
+   stipulation, or the `warbands-book` layer adds the two rows cited to
+   L1350 to L1352. Rule 1 either way; `rules:check` reports the change.
+2. **The Warband records its Collections.** `collections` on the Warband:
+   one entry per grant the Variant states, `{ factionId, rowName, source }`,
+   where `source` is `'founding'` when chosen in the founding flow, which
+   offers the granted armouries when the Variant has grants, or
+   `'manual-pre-app'` when set on an existing Warband through a "Weapon
+   Collections" action in the builder, the owner's case. Cited to the
+   rule's sentence in the UI.
+3. **The pick is offered.** The equip sheet and the Arsenal offer the chosen
+   row to every model, priced at that armoury's cost, booked through the
+   Strongbox like any purchase, and gated by the row's own stipulations
+   read as printed (ELITE only, the Limit, Mechanized Heavy Infantry only,
+   Shield Combo), the same gate the faction's rows get, with the
+   stipulation as the reason a row is refused. A second copy is refused
+   while one is on the roster or in the Arsenal (MISC Q4); once none is,
+   the row is offered again, which is the repurchase sentence.
+4. **The validator** already counts; it must count armour and equipment
+   rows as it counts weapons, and name the collection in its message.
+5. **Import.** Where a NewRecruit roster carries the catalogue's Weapon
+   Collections group, the importer reads it into `collections` with
+   `source: 'import'`; the owner's export carries none, so the manual
+   action is their path.
+
+Tests, against the September fixture as a House of Wisdom Warband: setting
+the Trench Pilgrims pick to the Anti-Tank Hammer and the New Antioch pick to
+Machine Armour; the Hammer equips on an ELITE model at 35 Ducats and is
+refused on a Kavass with "ELITE only" as the reason; Machine Armour equips
+on one ELITE model at 50 and a second is refused with the Limit sentence; a
+second Hammer is refused while the first is held; after the model carrying
+the Hammer is removed to `fallen`, the Hammer is offered again; a Warband
+without the Variant sees neither row; a Warband whose Variant states no
+grant records no collections; the New Antioch armoury carries the two rows
+with the book's stipulations.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -1788,3 +2043,7 @@ then offers; a Skill already held falls to the next lowest per line 6039.
    FD-12, then FD-14's AI-3 and AI-5, then FD-08 and FD-10, then FD-14's
    AI-4. The Experience track component in FD-12 item 1 is small and
    phone-visible, so it may ride with WIZ-2 if the developer judges it fits.
+10. After READY FOR TESTING (#93, 19:01 UTC): the owner's next batch, in
+    this order, one PR each, against the September fixture: FD-13a, FD-13b,
+    FD-16, FD-12, FD-15. Then AI-3 and AI-5, FD-08, FD-10, AI-4 as item 9
+    says.
