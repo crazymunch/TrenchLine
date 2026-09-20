@@ -36,7 +36,7 @@ carry, and what these designs cover:
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 | FD-11 | the April 2026 Mercenaries review | `scripts/lib/parse-battlescribe.mjs`, `scripts/lib/layers.mjs`, the Dispatch layer and a Warbands-book layer, `AddEquipmentModal`, `validate.ts` |
 
-### Landed, as of 06:00 UTC on 20 September
+### Landed, as of 06:20 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -55,7 +55,7 @@ carry, and what these designs cover:
 | FD-05a (a dead model leaves the Roster) | #71 | merged |
 | FD-05b (the Threshold caps the Force; the builder measures it) | #72 | merged |
 | GUARD-1 (the case-collision guard dedupes what a conflicted merge lists per stage) | #74 | merged |
-| FD-05c, first half (a purchase over the balance refused; a sale rounds up; a Glory item debits Glory) | #73 | reviewed, correct; `check` still running at 05:55 UTC; merge when green. The ledger half is FD-05d, below |
+| FD-05c, first half (a purchase over the balance refused; a sale rounds up; a Glory item debits Glory) | #73 | merged. The ledger half is FD-05d, in progress on the developer's branch at 06:16 UTC; FD-11 follows it |
 
 ## FD-00. PR #59 as it stands
 
