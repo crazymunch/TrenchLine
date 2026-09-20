@@ -128,6 +128,7 @@ All five committed:
 | `changelog-1.0.2.pdf` | 15 | **Official errata table** (`Page \| Location \| Errata`) — a record of what changed from 1.0.1, **not** a delta to apply. The digital rulebook above is already 1.0.2 and carries every rewrite it lists, so nothing transcribes it to a layer. Kept as evidence: it is where the Keyword completeness check reads the expected list from. |
 | `rules-commentaries-1.0.2.pdf` | 8 | **Official FAQ**, 51 entries. Not layer material: it answers questions about the rules rather than changing them. Parsed by `scripts/lib/parse-commentaries.mjs` into `dataset.commentaries` and shown in the Codex under **Rules FAQ**. |
 | `all-out-war.pdf` | 23 | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
+| `warband-roster-sheet.pdf` | 3 | **The official paper Warband Roster Sheet**, supplied by the owner on 20 September 2026. The layout FD-12 in `FIX-DESIGNS-2026-09-20.md` mirrors in the app: the campaign table (its Threshold and Field Strength rows equal `campaign.thresholds`), the Experience track (eighteen boxes, circles at `campaign.experience.advancementAt`), the Scars boxes and the unit card sections. Text at `extracted/warband-roster-sheet.txt`; the box pattern is graphical and was read from the page. |
 
 ### The Warbands book is parseable, not just searchable
 

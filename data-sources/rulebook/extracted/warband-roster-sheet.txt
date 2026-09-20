@@ -1,0 +1,81 @@
+Warband roster sheet
+WARBAND NAME: 	PLAYER:
+WARBAND: 	PATRON:
+CAMPAIGN BATTLE: 	FACTION:
+STRONGBOX
+👑  TOTAL: 	👑  UNSPENT:
+TOTAL: 	UNSPENT:
+WARBAND BIO & EXPLORATION NOTES:
+HERALDRY
+ARSENAL:
+GAME 	THRESHOLD 	FIELD STRENGTH 	SCENARIO NAME 	RESULT (W/L/D) 	CAMPAIGN VPS
+1 	700 	10
+2 	800 	11
+3 	900 	12
+4 	1000 	13
+5 	1100 	14
+6 	1200 	15
+7 	1300 	16
+8 	1400 	17
+9 	1500 	18
+10 	1600 	19
+11 	1700 	20
+12 	1800 	22
+TOTAL CAMPAIGN VICTORY POINTS
+
+-- 1 of 3 --
+
+Movement 	Ranged 	Melee 	Armour 	Base
+Movement 	Ranged 	Melee 	Armour 	Base
+Battlekit
+Abilities, Skills & Injuries
+Keywords
+Battlekit
+Abilities, Skills & Injuries
+Keywords
+EXPERIENCE
+EXPERIENCE
+SCARS
+SCARS
+NAME
+MODEL NAME 	COST
+NAME
+MODEL NAME 	COST
+
+-- 2 of 3 --
+
+NAME
+MODEL NAME 	COST
+Battlekit
+Abilities, Skills & Injuries
+Keywords
+Movement 	Ranged 	Melee 	Armour 	Base
+EXPERIENCE
+SCARS
+NAME
+MODEL NAME 	COST
+Battlekit
+Abilities, Skills & Injuries
+Keywords
+Movement 	Ranged 	Melee 	Armour 	Base
+EXPERIENCE
+SCARS
+NAME
+MODEL NAME 	COST
+Battlekit
+Abilities, Skills & Injuries
+Keywords
+Movement 	Ranged 	Melee 	Armour 	Base
+EXPERIENCE
+SCARS
+NAME
+MODEL NAME 	COST
+Battlekit
+Abilities, Skills & Injuries
+Keywords
+Movement 	Ranged 	Melee 	Armour 	Base
+EXPERIENCE
+SCARS
+
+-- 3 of 3 --
+

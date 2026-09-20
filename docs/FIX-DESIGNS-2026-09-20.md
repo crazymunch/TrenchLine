@@ -35,8 +35,11 @@ carry, and what these designs cover:
 | FD-09 | RR-17, RR-27 | the campaign store, Play Mode's end of match, the Chronicle record |
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 | FD-11 | the April 2026 Mercenaries review | `scripts/lib/parse-battlescribe.mjs`, `scripts/lib/layers.mjs`, the Dispatch layer and a Warbands-book layer, `AddEquipmentModal`, `validate.ts` |
+| FD-12 | the official Warband Roster Sheet in the app; the Experience track; provenance of skills and rewards | a new sheet route, `UnitCard`, the wizard's Promotions step, `src/types/warband.ts` |
+| FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
+| FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | src/data/warbandLore.ts (deleted by #82), prisma/seed.ts (deleted by #83), the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 07:20 UTC on 20 September
+### Landed, as of 12:10 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -58,7 +61,13 @@ carry, and what these designs cover:
 | FD-05c, first half (a purchase over the balance refused; a sale rounds up; a Glory item debits Glory) | #73 | merged |
 | FD-05d (the Strongbox is the sum of its ledger; the account opened once from the stored balance) | #75 | merged, with the founding-ledger correction and FD-05e and FD-05f recorded below |
 | FD-11a (a min-only link and a nested min = max entry are fixed kit; a model's own gear profile costs zero) | #76 | merged, with three corrections recorded under FD-11 |
-| FD-11b part 1 (a layer op naming two entities edits neither; `all` for an item the dataset holds twice; FUMBLE reaches the shared Incendiary Grenades and Molotov Cocktail) | #77 | reviewed, correct; `check` running at 07:16 UTC; merge when green |
+| FD-11b part 1 (a layer op naming two entities edits neither; `all` for an item the dataset holds twice; FUMBLE reaches the shared Incendiary Grenades and Molotov Cocktail) | #77 | merged |
+| The review documents, the designs to FD-11, the two audit scripts | #58 | merged |
+| FD-11b part 2 (the Warbands-book layer: the Sister of Saint Cosmas by name, statline and Finish the Fallen; the Combat Biologist's abilities and Vivisector; `addBattlekit`; faction alignment parsed from the book; `allowedAlignment` resolved in the recruit list; the transcription test) | #79 | merged, with the stale audit alias removed and the book audit back to 58 matched entries |
+| FD-11b part 5 (the Dispatch's Mercenaries section: Vengeful Scripture as a weapon on the Scripture Guardian's kit, the Maul's Mulch, Flaying Iron Claws, the Gavel's CRITICAL and FIRE with Wrath of God gone, the Witchburner's and Warlock's kit; `unset`; a weapon rename follows through to kit entries; the transcription test widened to the Dispatch, which found four citation slips) | #80 | merged; reviewed after the fact against the dataset on `main`, correct except the Sister's MERCENARY keyword, fixed in #81 |
+| FD-11c (a Mercenary is offered no Battlekit but its own, keyed on the Mercenary role; the Scripture Guardian's Melee permission as a cited field; the validator's error and the Guardian's warning; Gather Knowledge reaches Play Mode's deed list from the dataset; the Sister's MERCENARY keyword from Dispatch L654–655) | #81 | merged; verified on `main`: the Sister carries MERCENARY and NEGATE FEAR, the Guardian's permission is `["Melee"]`. Two follow-ups filed by the developer: the Mamluk Faris's unmodelled kit, and the Desecrated Saint's keyword reprint that would drop LIMITED POTENTIAL |
+| FD-14 AI-1 (the lore file deleted, both injection sites removed, the test roster materialised as a fixture, `scratch/` untracked) | #82 | merged, after the owner confirmed the cleared row was another account's and the cleanup stands |
+| FD-14 AI-2 (the seed deleted and its hook removed; no starting territories from the campaigns API; a fresh device has no campaign; and a found bug fixed: the store replaced any stored map with fewer than six pins or without pin coordinates, which reseated every Carcass Front campaign on the twelve classic theatres) | #83 | merged, green on 8e90130 after two red runs, both recorded below. The owner ruled the inert seed user row stays |
 
 ## FD-00. PR #59 as it stands
 
@@ -549,6 +558,29 @@ Warband already in play: its opened balance stands, and the cost of its
 roster is not re-charged. Test: found on 700, recruit 620, hold 80; hire
 in the Quartermaster Step, hold less by the price; an existing roster
 loads with the balance it had.
+
+**Migration ruling, 12:26 UTC, on the developer's question "credit
+existing Warbands with the allowance less the roster, or keep the balance
+as-is?"** Neither as put, because the two options describe two kinds of
+Warband, and the answer is the app's own on-load reconciliation beside
+`openLedger`, idempotent, never a script against the database. A campaign
+Warband that has never played (no `post_battle` snapshot, no ledger entry
+with a post-battle reason) is given the pot the builder always showed it:
+a `founding` credit of `ducatLimit` and one `quartermaster` debit for the
+roster as it stands, appended, with anything it already held kept as its
+own entries; an over-budget draft goes negative by its overspend and is
+refused a hire until trimmed. A campaign Warband that has played keeps its
+balance, as above: the data cannot separate the founding roster from hires
+made since, which never debited, or from the dead, whose cost was spent
+and whose models are gone, so any computed credit is a guess, and the
+player corrects it once through the Strongbox setter, which books a
+visible `admin-adjust`. The marker that a Warband has been through this is
+a `founding` entry with Ducats above zero, which a Warband founded after
+the change carries from birth. A list that is not a campaign Warband holds
+no money and keeps measuring against `ducatLimit`. Tests added: 620 on 700
+never played loads holding 80, twice; a played Warband holding 30 loads
+holding 30 and gains no entry; 740 on 700 loads at minus 40 and refuses a
+hire; a new muster on 700 holds 700 less its cost.
 
 ### FD-05f. A Glory-priced item in the Arsenal is free
 
@@ -1269,6 +1301,22 @@ One catalogue-only addition to note: the Crimson Communicant gained an
 Atonement Bell, stated by the catalogue in the nested min = max shape and
 by no text we hold. Recorded rather than doubted; the catalogue is the base.
 
+PR #80 left the Sister of Saint Cosmas with the keyword NEGATE FEAR alone,
+on the reasoning that "no source states MERCENARY for her". The Warbands
+book does not (L10393 prints NEGATE FEAR), but the Dispatch does: L654–655
+reads "Replace the Keywords with: MERCENARY NEGATE FEAR", under her name,
+on the page the layer transcribes. So the correction is corrected: a
+`setKeywords` op in the Dispatch layer, by her id, citing L654–655, and
+the dataset test that every Mercenaries entry carries MERCENARY includes
+her. Ordered to ride with FD-11c.
+
+PR #80 also read FD-11c's citation of "L550–551" for the Mercenary
+Battlekit rule as the Warbands book and found the FACTION BATTLEKIT
+heading there. The citation is to the Dispatch file, as FD-11's first
+paragraph says every bare line number is; the same rule is printed in the
+Warbands book at L9751–9756, and either serves. Recorded so nobody
+re-derives it.
+
 PR #77 turned the ambiguity guard on and the first build failed on three
 WEAPON ops the design never mentioned: the Dispatch's "Add the FUMBLE
 Keyword to: … Incendiary Grenades … Molotov Cocktail" reached the Iron
@@ -1279,6 +1327,448 @@ to mean the item wherever it appears, expanded into one id-addressed op
 per match before the applier runs; a weapon `setCost` is exempt because it
 already resolves by name and faction list. Two weapons change and nothing
 else.
+
+## FD-12. The Warband Roster Sheet, in the app
+
+The owner supplied the official sheet, now committed as
+`data-sources/rulebook/warband-roster-sheet.pdf` with its text at
+`data-sources/rulebook/extracted/warband-roster-sheet.txt`. Three pages:
+
+- **Page 1.** Warband Name, Player, Warband, Patron, Campaign Battle,
+  Faction. STRONGBOX with Ducats and Glory, each as TOTAL and UNSPENT.
+  WARBAND BIO & EXPLORATION NOTES. HERALDRY. ARSENAL. Then the campaign
+  table: GAME 1 to 12, THRESHOLD 700 to 1800, FIELD STRENGTH 10 to 20 and
+  22 at game 12, SCENARIO NAME, RESULT (W/L/D), CAMPAIGN VPS, and TOTAL
+  CAMPAIGN VICTORY POINTS.
+- **Pages 2 and 3.** Unit cards, two large and four small: NAME, MODEL
+  NAME, COST, the five characteristics, EXPERIENCE as eighteen boxes of
+  which six are circles, SCARS as two boxes, Battlekit, Abilities, Skills
+  & Injuries, Keywords, and a portrait on the large card.
+
+Two things checked against the dataset before designing: the sheet's twelve
+Threshold and Field Strength rows equal `campaign.thresholds` exactly,
+including 22 at game 12; and the six circles sit at boxes 2, 4, 7, 10, 14
+and 18, which is `campaign.experience.advancementAt`. Both are therefore
+drawn from data, not from the picture.
+
+This is the feature the owner describes as what NewRecruit never had: an
+evolving record of every battle a warband has fought, and the paper tracker
+represented in full. It also carries two requests made alongside it: a
+review of every exploration reward and skill a warband holds and how each
+was earned, and the Experience track drawn on the model the way the book
+draws it.
+
+### The change
+
+1. **An `ExperienceTrack` component**, used in three places: the unit card
+   in the builder, the wizard's Promotions step, and the sheet. Eighteen
+   boxes, a circle at each `advancementAt` value, filled to `unit.xp`; a
+   LIMITED POTENTIAL model greys the boxes past `experienceCap`
+   (`src/rules/promotions.ts`), so the cap is visible rather than stated.
+   Display only, so 16px boxes are fine: eighteen of them fit a 375px row
+   with the card's gutters, and the component must not wrap. Beside it,
+   two SCARS boxes filled from `unit.scars`, since two is the retire rule
+   (FD-10).
+2. **Provenance on what a model holds.** Skills, injuries, scars and
+   exploration rewards each carry `source`: `advancement` (with the game
+   and the roll, from `advancementRolls`), `trauma` (the game and the
+   roll), `exploration` (the game and the Location), `import` (came in
+   from a roster file), or `manual-pre-app` with a free-text note. Nothing
+   existing is back-filled with a guess: an entry with no record reads as
+   `import`, never as a roll that did not happen. The owner's answer on
+   pre-app history was manual entry marked as such, so the unit card and
+   the sheet gain "Add a skill / injury / reward recorded before the app",
+   which writes `manual-pre-app` and the note, and the wizard's counters
+   (Advancement Rolls due, scars toward retirement) treat a pre-app entry
+   exactly as they treat a rolled one. `src/types/warband.ts` holds the
+   fields; `ROSTER-FILE.md` documents them in the same commit.
+3. **The Roster Sheet view.** A route under the warband, reached from the
+   builder and the campaign Hub, rendering the three pages from the roster
+   and the campaign:
+   - the header from the warband and its campaign (Player is
+     `creatorName`; Campaign Battle is the campaign's name; Patron and
+     Heraldry are the warband's own fields);
+   - STRONGBOX from the ledger after FD-05d: TOTAL is everything ever
+     credited in that currency, UNSPENT is the balance;
+   - BIO & EXPLORATION NOTES as the warband's lore plus the structured
+     list from item 2 aggregated across the warband: every reward and
+     skill with its source, which is the "what I have at my disposal and
+     how I got it" review;
+   - ARSENAL from the stash;
+   - the campaign table from the warband's matches in order: game n's row
+     shows Threshold and Field Strength from `forceLimits`, the scenario,
+     W/L/D, and that game's Campaign Victory Points from FD-03a; games not
+     yet played stay blank; the total at the foot;
+   - the unit cards from item 1's component and the card's existing
+     sections, Battlekit and Abilities, Skills & Injuries printed the way
+     the sheet groups them.
+4. **Print.** A print stylesheet: page 1 landscape, then two large cards a
+   page, in the sheet's order. `window.print()` under a "Print / PDF"
+   button; the browser does the PDF. On the phone the same route is a
+   scrolling review page with no print chrome. Mobile-first still applies:
+   the sheet is read at the table.
+
+Tests: the table's twelve rows equal `campaign.thresholds`; the circles
+equal `advancementAt`; a warband with three recorded matches fills three
+rows and leaves nine blank with the total right; a pre-app skill renders
+with its marker and counts toward the next Advancement Roll; a LIMITED
+POTENTIAL model greys boxes past its cap. Acceptance: the owner's own
+warband, side by side with the paper sheet.
+
+## FD-13. The Homunculi: the Takwin and the Book of Golems
+
+The owner's Iron Sultanate warband holds two: a Takwin Homunculus from The
+House of Wisdom, and a second granted by the Book of Golems. No version of
+the app has handled both. The sources:
+
+- Warbands L5294–5301: a House of Wisdom warband may include one Takwin
+  Homunculus per Jabirean Alchemist; each is associated with one Alchemist
+  and vice versa; when the Alchemist dies the association cannot change
+  "and no Alchemical Formulas can be applied to it".
+- Warbands L5309–5330, the entry: 40 Ducats; "cannot have any Battlekit but
+  can have Alchemical Formulas"; Artificial Life; Pummelling Blows;
+  Re-creation, "If a Takwin Homunculus is killed in the post-battle
+  sequence, you do not have to remove it from your roster. Instead, you can
+  spend 40 Ducats in the following Quartermaster Step to leave it on the
+  Roster"; keywords SULTANATE, ARTIFICIAL.
+- Warbands L5357–5450, the Formulas: one or more, permanent, none twice;
+  Additional Arm 15; Elemental Resistance 40; Enslaved Mind 10; Gargantuan
+  Size 20 (needs Human Hands, Inhuman Strength and Massive Size; may use one
+  Weapon usually Brazen Bull only; 60mm); Hawk Eyes 10 (+1 DICE Ranged; not
+  with Hypnotic Eyes unless Two Heads); Human Hands 10 (Ranged and Melee
+  Weapons from the Iron Sultanate Armoury, a Trench Shield or Fire Shield;
+  not with Wings; no Pummelling Blows while armed); Hypnotic Eyes 15;
+  Inhuman Strength 15 (STRONG, Melee +1 DICE, 32mm); Massive Size 30
+  (TOUGH, 50mm; not with Wings); Regenerative Tissue 25; Seal of Solomon
+  10; Startling Speed 10; Terrifying Appearance 10; Two Heads 5; Wings 30
+  (8"/Flying, FLYING). And the allowance, L5386–5396: with Human Hands and
+  an Additional Arm, "three 1-Handed Melee Weapons or one 1-Handed Melee
+  Weapon and one 2-Handed Melee Weapon", the same for Ranged, a Shield
+  replacing one Melee Weapon with no Shield Combo, and the attack rules.
+- Rulebook L3247–3249, STRONG: "it can equip and use one 2-Handed Melee
+  Weapon as if it were a 1-Handed Melee Weapon". ONE. So a Homunculus with
+  Human Hands, an Additional Arm and Inhuman Strength holds at most two
+  2-Handed Melee Weapons: the one STRONG converts in a 1-Handed slot, and
+  the one the allowance's second pattern permits. Three is not in the book,
+  and the design does not allow it; the owner should know that is what the
+  page says.
+- Rulebook L6902–6912, Exploration 17, Book of Golems: "Add a Takwin
+  Homunculus from The House of Wisdom Variant Warband … to your Warband. It
+  has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a
+  total of up to 50 Ducats for free … The Golem has the GOLEM Keyword, and
+  replaces the SULTANATE Keyword with your Faction's Keyword. You can
+  purchase Battlekit for it in the Quartermaster Step, using your own
+  Armoury Tables … treated as an Ally that can never be Promoted or receive
+  additional Alchemical Formulas." GOLEM is L3115.
+
+### Where the app stands
+
+- The catalogue's entry (`data-sources/battlescribe/Iron Sultanate.cat` line
+  3255, named "Takwin Homunculus", profile "Homunculus", dataset unit
+  `02c4-88da-ec78-8a33`) carries the Formulas as an `Alchemical Formulae`
+  option group and states Wings, Massive Size, Gargantuan Size, Inhuman
+  Strength and Hawk Eyes as modifiers on the entry. The other factions'
+  "Homunculus" entries are the catalogue's Book-of-Golems copies. The
+  keywords LIMITED POTENTIAL and SULTANATE are on the Sultanate entry.
+- `src/rules/formulae.ts` identifies a Formula by the catalogue group, and
+  keeps `INVENTED_FORMULAE`, the nine names an earlier hand-written list
+  offered, so old saves can be cleaned. `src/rules/battlekitLimits.ts`
+  reads the book's allowance sentence (`dataset.carryAllowances` holds the
+  Homunculus one) and `experienceCap` in `src/rules/promotions.ts` reads
+  LIMITED POTENTIAL. That is the engine, and it is largely right.
+- The player never meets the engine. `src/components/builder/AddEquipmentModal.tsx`
+  lines 185 to 215 do their own arithmetic: `isStrong` is a regular
+  expression over ability names (`/strong|bulky|large|ogre/`), the hand
+  count is `hasExtraArm ? 3 : 2`, an item with no `hands` counts as one,
+  and every 2-Handed weapon counts as 1-Handed for a STRONG model rather
+  than one of them. That is why the third arm "does not allow three pieces"
+  in one place and would allow three 2-Handed weapons in another: two
+  engines, and the guessing one decides what can be added.
+- `src/components/builder/UnitAdvancementModal.tsx` line 71 decides a model
+  is a Homunculus by regular expression over its name and abilities, and
+  only then shows the Formulas tab it builds from the catalogue's options
+  (line 107). A renamed model, or the Golem, loses the tab. Nothing books a
+  Formula purchase against the Strongbox.
+- Re-creation exists nowhere in `src/`. The Book of Golems exists nowhere:
+  `grantedFree` on `src/types/warband.ts` line 118 is a string, and nothing
+  gives a model the GOLEM keyword, swaps SULTANATE for the host's, tracks a
+  free-Formula budget, or bars it from promotion.
+- The catalogue's modifiers that change the statline when a Formula is
+  held (Wings 8"/Flying, Massive Size 50mm, Gargantuan 60mm, Inhuman
+  Strength +1 DICE Melee) are stated on the entry, and `src/rules/modifiers.ts`
+  is the evaluator; whether the card applies option-conditioned modifiers
+  is to be verified first, and if it does not, that is item 3.
+
+### The change, two PRs
+
+**FD-13a, the engine and the modal.**
+
+1. `AddEquipmentModal` asks the engine. For each candidate item the modal
+   computes "would adding this breach?" through `battlekitBreaches` with
+   the model's traits from `traitsOf`, and shows the breach sentence as
+   the reason a row is disabled. Its own `isStrong`, `hasExtraArm`,
+   `maxMeleeHands` and `w.hands || 1` are deleted. STRONG converts one
+   2-Handed Melee Weapon and no more, from the keyword's own text.
+2. Formulas in the Quartermaster Step. The Formulas tab appears for any
+   model whose catalogue entry has options in the `Alchemical Formulae`
+   group, not by name. Buying one books a `quartermaster` debit through
+   the ledger; one already held, in `specialUpgrades` or imported into
+   `equippedEquipment`, is not offered again; the book's prerequisites and
+   exclusions (Gargantuan Size's three, Hawk against Hypnotic without Two
+   Heads, Human Hands against Wings, Massive Size against Wings) are read
+   from the catalogue's constraints where it states them and otherwise
+   enforced from the sentences quoted above, cited in the code; a Takwin
+   whose Alchemist has died cannot buy (L5298–5300). The owner's ruling
+   stands as the default: Formulas are purchasable between battles.
+3. The card. Formulas listed under their group with their rule text, and
+   the statline the catalogue's modifiers give the model once a Formula is
+   held. Verify whether option-conditioned modifiers reach the card today;
+   if not, evaluate them there.
+
+Tests: a Human Hands + Additional Arm + Inhuman Strength Homunculus may
+hold a 2-Handed, a 2-Handed and nothing else, or a 2-Handed and two
+1-Handed, and is refused a third 2-Handed; without Human Hands it is
+refused any weapon; Formulas appear for the Sultanate entry and the Golem
+copies and for no Janissary; a second Additional Arm is refused; a Formula
+purchase debits the Strongbox.
+
+**FD-13b, the post-battle and the Book of Golems.**
+
+1. Re-creation. When a Takwin Homunculus is killed, the wizard's Trauma
+   step offers "Re-create for 40 Ducats in the Quartermaster Step" instead
+   of moving it to `fallen` at once; the Quartermaster step then books the
+   40 or lets it fall. The Golem is a Takwin Homunculus too and gets the
+   same offer.
+2. The Golem. An Exploration result of 17, or a manual "granted by the
+   Book of Golems" action for a model already on the roster (the owner's
+   case), adds the House of Wisdom entry with `grantedBy: 'Book of Golems'`,
+   Human Hands held, a free-Formula budget of 50 Ducats tracked on the
+   unit and spent by the Formulas tab before the Strongbox is touched,
+   GOLEM added and SULTANATE replaced by the host faction's keyword on the
+   card, Battlekit from the host's Armoury, and the model excluded from the
+   promotion pool and from further Formulas once the budget is spent, each
+   with the sentence that says so. The book states no price for the model
+   itself; the catalogue prints 40 Ducats on its copies. The design adds
+   it free, as the other Exploration results that add a model do, and
+   records that reading in `data-sources/resolutions.json` for the owner
+   to confirm or overturn.
+
+Tests: a killed Takwin with 40 Ducats paid is on the roster next game; one
+unpaid is in `fallen`; a Golem's card shows GOLEM and the host keyword and
+no SULTANATE; the Golem is absent from the promotion pool; its fifty
+Ducats of Formulas cost nothing and the fifty-first costs.
+
+Two things to ask the owner rather than decide: the Golem's price, above,
+and their roster file, so that "Formulas not showing up properly" and
+"wrong rules on the card" are reproduced against the real model before
+FD-13a is built.
+
+## FD-14. The pass for invented content
+
+The owner asked for a pass over what the original generator seeded and the
+app never dropped. Two read-only sweeps covered `src/`, `prisma/`,
+`scripts/`, `public/` and `docs/`; every finding below was re-verified on
+`main` at b652f7d, at the line cited.
+
+What is clean, so nobody re-audits it: the store's weapons, armour,
+equipment, units and faction rules hydrate from the generated dataset
+through `src/rules/recruitable.ts`; `src/rules/` is derived throughout;
+the Chronicle, the Hub, `ModelReferenceSheet` and `RosterPrintSheet` read
+the dataset and refuse on a miss; the Codex's Skills tab now carries the
+real 2D6 roll (the fabricated `idx + 1` numbering is gone, and the comment
+at `src/components/codex/CodexView.tsx` line 885 records why). The
+sixteen small rule constants in `src/rules/dice.ts`, the range and attack
+calculators and `DiceProbabilityModal` are faithful to the pages they cite.
+
+### AI-1. One player's warband shipped as source — harmful, live
+
+src/data/warbandLore.ts (deleted by #82), 850 lines: biographies, quotes, titles and deeds
+for ten named models; the warband's lore, motto, patron and chronicle;
+three hand-typed roster snapshots holding some ninety weapon, armour and
+equipment entries with costs, ranges, dice modifiers and keywords; an
+invented match history. It is injected live: `src/services/newRecruitImporter.ts`
+line 680 runs `enrichUnitWithLore` over every imported model, and lines
+682 to 698 give any import whose faction is the Iron Sultanate, or whose
+name merely contains "qarn" or "sultanate", that warband's lore, motto,
+patron and chronicle; `src/store/slices/roster.ts` line 67 does the same
+to every warband pulled from the cloud. `src/store/init.ts` lines 56 to 77
+say all of this was removed; only the localStorage seeding was.
+
+The warband is the owner's own, Al-Qarn Rihla. So, before deleting: the
+PR reads that warband's production rows, read-only, and reports whether
+the lore, quotes, titles and deeds are stored on the records or only ever
+supplied from this file at read time. If the latter, the owner decides
+whether to copy them into the record once; that is a production data
+write and is asked first, never done. Then delete the file, both call
+sites, and `defaultSultanateWarband` in `src/store/seed.ts`, whose one
+consumer is a test that moves to a fixture under `data-sources/fixtures/`.
+
+**What the production read found, and what was written (20 September).**
+The read-only step found the injection had already happened to a second
+warband: an Iron Sultanate warband named for the House of Wisdom, which
+PR #82's body says is on a different account from the owner's, carrying
+the file's lore, motto and patron byte for byte and the file's biographies
+on three of its seven models. The developer asked the owner in its own
+session and, on the owner's answer there, cleared those fields on that one
+row after taking a full backup, hash-checking every cleared field against
+the file, and reading the row back. That write was outside Order 15, which
+said to write nothing to production, and the owner's authorisation was
+given under the belief that the row might be their own. Order 18 now
+stands: no production write of any kind without an order from this
+session quoting the owner's authorisation; a question for the owner goes
+into the PR body and the developer stops there. The backup, the ownership
+check and the exact SQL are to be published in #82's body; the cleared
+values also exist in git history, so a restore is one update if the owner
+wants it. One follow-up the developer raised, recorded as AI-1b: cloud
+sync compares `notes.editedAt`, so a stale device holding the injected
+fields could push them back; the cleanup did not touch that stamp. The
+next AI-1 change decides whether the server strips the file's values on
+write or bumps the stamp, and says which.
+
+### AI-2. Invented data in the seed, and in every new campaign
+
+prisma/seed.ts (deleted by #83) is wired by `package.json`'s `prisma.seed` and runs under
+`prisma migrate dev` and `db seed`. It creates a demo user, a Lieutenant
+with an invented statline (Ranged +1, Melee +2, Armour "+2"), a
+"Standard Issue Bolt-Action Rifle" with the keywords Reliable and Bayonet
+Lug, a "Standard (1 Wound)" damage line in a game with no Wounds, an
+invented injury, and a campaign whose four territories carry the perks
+(lines 111 to 129: "+5 Ducats supply bonus per round", "Reroll 1 failed
+Morale check per match", "Free Frag Grenade in Warband Stash after each
+game", "+2 Glory on Victory when defending") that `src/store/seed.ts` and
+the campaigns API both say were blanked. The seed creates nothing with
+game data in it, or nothing at all.
+
+`src/app/api/campaigns/route.ts` line 149, `STARTING_TERRITORIES`: every
+new cloud campaign is still given the four example territories that
+`scripts/clear-example-campaigns.mjs` uses as its deletion signature, so
+the script's premise, that only the old API made them, is no longer true.
+A new campaign starts with no territories unless its framework supplies
+them; Carcass Front does. `src/store/seed.ts` lines 151 to 167,
+`defaultFreshCampaign` (invite code TRENCH-1099, threshold 25), is every
+new device's starting campaign; a fresh device starts with none.
+
+Production data: the clear script deletes campaigns only, so a database
+that ran the seed keeps the demo user and warband. The PR reports what
+exists in production, read-only; deleting it is the owner's call and is
+asked, per the standing grant.
+
+**Two red CI runs on #83, recorded.** The first was the PR's: an
+integration test took the API's first territory as its fixture, and the
+API no longer creates one; the test now creates its own node. The
+developer could not see it locally because the database-backed suite
+skips itself without a test database, so it stood up a local Postgres and
+now runs that suite before pushing. The second was not the PR's and my
+diagnosis of it was wrong in the detail: I read the tablet-only failure
+of "a roll offers two Skills" as sparse tables; the developer ran every
+2D6 total through the Advancement Roll and found only 2 and 12 come back
+empty, and only because both are the Patron Skill row and the test
+warband has no Patron recorded. The test now pins its roll, so it still
+exercises the button, the roll and the offer, and cannot fail on the dice.
+The developer's open question, whether the book says something else
+should happen for a model with no Patron, is answered below as FD-15.
+
+### AI-3. Rules text typed into the Codex and the modals
+
+- `CodexView.tsx` lines 513 to 580: a hand-typed "OFFICIAL 1.0.2 CHANGELOG
+  & ERRATA INDEX", ten rows. One row, ARMOUR PIERCING, is the base
+  glossary's text presented as an erratum.
+- `src/data/rulesets/index.ts`, `keyChanges` rendered as "Key Mechanics":
+  paraphrases ("take 3 highest" where the book says highest or lowest), a
+  1.0 ruleset with no source in the repository, and marketing lines.
+- `CodexView.tsx` line 1104: "every model that was taken Out of Action must
+  roll on this D66 Trauma Table". The book has Troops take a D6 Survival
+  Roll and only ELITE models roll D66; the wizard says so at
+  `src/components/campaign/PostBattleWizardModal.tsx` line 724, the Codex
+  says the opposite.
+- `CodexView.tsx` line 1676: `|| '48" x 48"'` under the words "Official
+  Rulebook Diagram"; `src/components/codex/MissionGenerator.tsx` lines 100
+  to 103 seed a custom mission with 48" x 48", "6" from board edge" and "4
+  Turns" against its own comment at line 118.
+- `CodexView.tsx` line 831: "Roll D66 for Skill" on a 2D6 table.
+- `src/components/builder/UnitCard.tsx` line 752 and
+  `src/components/builder/UnitAdvancementModal.tsx` line 566: `roll ||
+  'D66'`, a fabricated roll for a skill with none recorded.
+- `UnitAdvancementModal.tsx` line 409: "Warriors gain 1 XP per game
+  survived"; the book gives the point to ELITE models, even when taken Out
+  of Action.
+- `src/components/play/QuickSearchModal.tsx` line 109: the Trauma table
+  labelled "D66 Injury Chart".
+
+The change: the changelog table and the `keyChanges` are either derived
+from `data-sources/rulebook/extracted/changelog-1.0.2.txt` by a parser
+into the dataset, or deleted; the banner and the labels take the book's
+words; the defaults go blank; a skill with no roll prints no roll.
+
+### AI-4. A source nobody parses
+
+`src/data/allOutWarData.ts`: three scenarios, with table sizes the rulebook
+never prints, and twelve Betrayal cards, typed by hand and reaching the
+Codex, Play Mode and the scenario picker, while
+`data-sources/rulebook/all-out-war.pdf` and its extract are committed and
+unparsed. Parse them, in `scripts/lib/parse-scenarios.mjs` or a sibling,
+into the dataset; drop the file. Its `derived: false` marker stays only
+until then.
+
+### AI-5. Fallbacks that invent
+
+- `PostBattleWizardModal.tsx` line 582: `?? 3` Exploration dice. FD-07
+  carries it.
+- `newRecruitImporter.ts` line 495: an armour with no INJURY MODIFIER
+  keyword is given "-1 Injury Modifier".
+- `src/services/xmlParser.ts` lines 70 to 89: default category, Movement
+  and characteristics for any catalogue entry missing them, reached only
+  through `fetchAndParseAllRemoteCatalogs` and `generateDiffs` in
+  `src/services/githubSync.ts`, which nothing calls. Delete all three.
+- `src/components/customizer/CustomizerView.tsx` lines 43 to 47: invented
+  stats seeding the editor.
+- The honorific title maps in `src/store/slices/campaign.ts` lines 424 to
+  441 and `src/store/slices/progression.ts` lines 209 to 226, two copies of
+  app flavour keyed on Trauma-result substrings. One copy, marked as
+  flavour and not as a rule, or none.
+
+### AI-6. Residue
+
+`scratch/` is ignored but 77 files are tracked, among them the generators
+that wrote the invented data into `src/data/`: `git rm -r --cached
+scratch/`. Placeholders naming Sorcerer Zortan, Commander Valerius and
+Bayt al-Nahas (`src/components/campaign/LogMatchModal.tsx` line 243,
+`PostBattleWizardModal.tsx` line 2156, `src/components/builder/UnitLoreModal.tsx`
+line 353, `src/components/builder/WarbandChronicleModal.tsx` line 146,
+`src/components/auth/AuthModal.tsx` line 181) become neutral examples.
+`docs/FEATURES.md`'s "what must be deleted" and `init.ts`'s "all four are
+gone" say what is true after AI-1. The faction blurbs in
+`src/data/defaultRules.ts` are presentation and stay.
+
+### Order within FD-14
+
+AI-1 and the scratch removal first, one PR, because it changes what other
+people's rosters receive. AI-2 second, with the production report and no
+deletion. AI-3 and AI-5 together, after the milestone. AI-4 last, as a
+pipeline PR with the audit counts.
+
+## FD-15. A Patron Skill result needs a Patron
+
+Rulebook lines 4753 to 4755: "Once they have recruited their Warband, they
+must pick a Patron for it." Lines 4757 to 4759: the Patron "determines
+which skill you may select if you roll a Patron Skill result on any of the
+Skill Tables". Lines 6042 to 6043, in the Advancement Roll: "If a Patron
+Skill is rolled, use one of the Patron Skills for the Patron you picked
+for your Warband." So a campaign Warband with no Patron recorded is a gap
+in the record, not a case the rules leave open, and "nothing can be
+offered" is the app's honest report of that gap.
+
+The change, small, after WIZ-2: the campaign founding path and the Roster
+Sheet header (FD-12) carry the Patron as a required field for a campaign
+Warband, chosen from the book's list for the faction; a Warband already in
+a campaign with none recorded is asked for it the first time the wizard
+opens, and the Promotions step asks for it on the spot if a Patron Skill
+result lands with none set, then offers that Patron's Skills. The Patrons
+and their Skills come from the dataset; verify the core six factions'
+Patrons (rulebook line 4757 onward) are parsed there as the Carcass Front
+ones are, and parse them if not. Test: a Patron Skill result on a Warband
+with a Patron offers that Patron's Skills; with none, the step asks and
+then offers; a Skill already held falls to the next lowest per line 6039.
 
 ## Order
 
@@ -1292,3 +1782,9 @@ else.
 6. FD-10, one PR per heading, and then DA-03/05/04 and the rest of the two lists.
 7. FD-11a, FD-11b, FD-11c, one PR each, ahead of item 4: the owner asked for
    the Mercenaries first, and FD-11a changes what every later layer sees.
+8. FD-14's AI-1 and AI-2 right after FD-11c and before FD-05e: small
+   deletions, and the first changes what other people's rosters receive.
+9. After the READY FOR TESTING milestone (Order 14): FD-13a, FD-13b, then
+   FD-12, then FD-14's AI-3 and AI-5, then FD-08 and FD-10, then FD-14's
+   AI-4. The Experience track component in FD-12 item 1 is small and
+   phone-visible, so it may ride with WIZ-2 if the developer judges it fits.
