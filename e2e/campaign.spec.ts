@@ -7,9 +7,12 @@
  * the group writes their own, and the app says whose rule it is.
  */
 import { test, expect } from '@playwright/test';
-import { openApp, goTo } from './helpers';
+import { openApp, goTo, seedCampaign } from './helpers';
 
 test('a campaign writes its own territory house rule, labelled as theirs', async ({ page }) => {
+  // A campaign to hold the theatre, supplied by the harness rather than by the
+  // app — see `TEST_CAMPAIGN`. Before `openApp`, so it lands before app code.
+  await seedCampaign(page);
   await openApp(page);
   await goTo(page, 'Crusade');
 
@@ -79,6 +82,7 @@ test('a campaign writes its own territory house rule, labelled as theirs', async
  * have all three, and nothing outside `Sheet` had adopted it.
  */
 test('a territory opens, and closes, from the keyboard alone', async ({ page }) => {
+  await seedCampaign(page);
   await openApp(page);
   await goTo(page, 'Crusade');
   await page.getByRole('button', { name: 'CAMPAIGN WORLD MAP' }).click();
