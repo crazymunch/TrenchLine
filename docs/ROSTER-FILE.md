@@ -232,6 +232,13 @@ meant by it.
 So no migration has to touch an existing Arsenal, and an item bought before
 `price` existed still sells back into the Strongbox it came out of.
 
+**Battlekit that comes OFF a model carries its price too** (FD-05g). The equip
+charges the Armoury row's whole `Cost` — `charge` takes a `Cost`, not a number
+— so a Glory-priced item is debited in Glory, and when a played game settles the
+purchase the item goes to the Arsenal priced as it was bought. The two halves
+had to land together: writing `price` at the removal sites while the equip still
+debited Ducats only would have **created** Glory, half of it, on every sale.
+
 ## `explorationEffects` — the Exploration Skills a Warband has gained
 
 Page 115 prints seven Exploration Skills, and `Warband` had nowhere to put one.

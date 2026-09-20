@@ -11,6 +11,8 @@ import { persistWarbands } from '../persist';
 import { book, undoPurchases } from '../../rules/ledger';
 import { campaignGameOf } from '../../rules/campaign';
 import type { Warband, StashedItem } from '../../types/warband';
+import type { Cost } from '../../types/catalogue';
+import { profileCost, isZero } from '../../rules/costs';
 
 /*
   Every purchase in the builder goes through these two, and both are no-ops on
@@ -24,11 +26,33 @@ import type { Warband, StashedItem } from '../../types/warband';
   for free. `duplicateUnit` was a free hire for the same reason.
 */
 
-/** Charge a campaign Warband for something, tagged so removal can undo it. */
-const charge = (w: Warband, ducats: number, ref: string, note: string, game: number): Warband =>
-  (w.forceMode === 'unrestricted' || ducats <= 0)
+/**
+ * Charge a campaign Warband for something, tagged so removal can undo it.
+ *
+ * A `Cost`, both currencies, because an Armoury Table row is both (FD-05g).
+ * This took a single number and spent it as Ducats, and every Glory-priced row
+ * in the dataset is ZERO Ducats — so a Takwin Anqā Bird, 2 Glory on the Iron
+ * Sultanate's table, was bought for nothing the moment it went onto a model.
+ * The Arsenal had already been fixed for exactly this (FD-05f); the model's
+ * own Battlekit had not.
+ *
+ * Nothing is refused here, and that is FD-05e-2's decision rather than an
+ * omission: a muster may run the balance negative while a player rearranges —
+ * "users can make any variations from the end of one game to the start of the
+ * next" — and `strongbox-overdrawn` in `rules/validate.ts` is what stops it
+ * reaching a game.
+ */
+const charge = (w: Warband, price: Cost, ref: string, note: string, game: number): Warband =>
+  (w.forceMode === 'unrestricted' || isZero(price) || (price.ducats <= 0 && price.glory <= 0))
     ? w
-    : book(w, { reason: 'quartermaster', ducats: -ducats, ref, note, game }, w.updatedAt);
+    : book(w, {
+        reason: 'quartermaster',
+        ...(price.ducats > 0 ? { ducats: -price.ducats } : {}),
+        ...(price.glory > 0 ? { glory: -price.glory } : {}),
+        ref,
+        note,
+        game,
+      }, w.updatedAt);
 
 /**
  * Take back what was paid for `refs`, where the player may still take it back.
@@ -144,7 +168,17 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
           */
           /* `charge`, so the entry carries the `ref` and `game` that let
              removal undo it — see the helper at the top of this file. */
-          return charge(updatedWb, newUnit.totalCost, newUnit.id,
+          /*
+            Ducats only, deliberately. 17 model entries carry a Glory cost and
+            this does not charge it — `startingGlory` is a Papal States
+            allowance and Glory otherwise arrives one point per Glorious Deed,
+            so charging a hire against it would take a Warband negative in a
+            currency `strongbox-overdrawn` does not yet check. That is the next
+            piece of this, not a line to slip in here. A model's Glory IS shown
+            — `unitGlory` reads it off the snapshot — so nothing about the hire
+            is hidden, only uncharged.
+          */
+          return charge(updatedWb, { ducats: newUnit.totalCost, glory: 0 }, newUnit.id,
             `Recruited ${newUnit.customName}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
@@ -198,7 +232,8 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             updatedAt: new Date().toISOString()
           };
           /* A copy is a hire and costs what the model costs. */
-          return charge(updatedWb, clonedUnit.totalCost, clonedUnit.id,
+          /* Ducats only, for the reason given in `addUnitToWarband`. */
+          return charge(updatedWb, { ducats: clonedUnit.totalCost, glory: 0 }, clonedUnit.id,
             `Recruited ${clonedUnit.customName}.`, game);
         });
         updated = persistWarbands(updated, s.warbands);
@@ -379,7 +414,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
              item the Warband owns onto a model, and charging there took the
              price a second time (FD-05e-3). */
           if (settled) return updatedWb;
-          return charge(updatedWb, equipped.cost, equipped.instanceId,
+          return charge(updatedWb, profileCost(equipped), equipped.instanceId,
             `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
@@ -423,7 +458,10 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             ? stash.map((i) => (i.id === target.id ? { ...i, quantity: i.quantity + 1 } : i))
             : [...stash, {
                 id: target.id, name: target.name, type: 'Weapon' as const,
-                cost: target.cost, quantity: 1,
+                /* The price it was bought at, both currencies, so selling it
+                   out of the Arsenal returns half of each (FD-05g). `cost`
+                   stays the Ducat number, as every reader has meant it. */
+                cost: target.cost, price: profileCost(target), quantity: 1,
               }];
           return { ...back.warband, armoryStash: stashed };
         });
@@ -463,7 +501,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
              item the Warband owns onto a model, and charging there took the
              price a second time (FD-05e-3). */
           if (settled) return updatedWb;
-          return charge(updatedWb, equipped.cost, equipped.instanceId,
+          return charge(updatedWb, profileCost(equipped), equipped.instanceId,
             `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
@@ -507,7 +545,10 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             ? stash.map((i) => (i.id === target.id ? { ...i, quantity: i.quantity + 1 } : i))
             : [...stash, {
                 id: target.id, name: target.name, type: 'Armour' as const,
-                cost: target.cost, quantity: 1,
+                /* The price it was bought at, both currencies, so selling it
+                   out of the Arsenal returns half of each (FD-05g). `cost`
+                   stays the Ducat number, as every reader has meant it. */
+                cost: target.cost, price: profileCost(target), quantity: 1,
               }];
           return { ...back.warband, armoryStash: stashed };
         });
@@ -547,7 +588,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
              item the Warband owns onto a model, and charging there took the
              price a second time (FD-05e-3). */
           if (settled) return updatedWb;
-          return charge(updatedWb, equipped.cost, equipped.instanceId,
+          return charge(updatedWb, profileCost(equipped), equipped.instanceId,
             `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
@@ -591,7 +632,10 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             ? stash.map((i) => (i.id === target.id ? { ...i, quantity: i.quantity + 1 } : i))
             : [...stash, {
                 id: target.id, name: target.name, type: 'Equipment' as const,
-                cost: target.cost, quantity: 1,
+                /* The price it was bought at, both currencies, so selling it
+                   out of the Arsenal returns half of each (FD-05g). `cost`
+                   stays the Ducat number, as every reader has meant it. */
+                cost: target.cost, price: profileCost(target), quantity: 1,
               }];
           return { ...back.warband, armoryStash: stashed };
         });
