@@ -205,7 +205,8 @@ type LayerOp =
   | { op: 'replaceAbility'; target: Ref; name: string; ability: Ability }
   | { op: 'setCost';       target: Ref; currency: 'ducats' | 'glory'; value: number
                          ; factions?: string[] }          // faction slugs; REQUIRED on a weapon
-  | { op: 'addBattlekit';  target: Ref; weapon: string }; // weapon BY NAME, unresolved unless exactly one
+  | { op: 'addBattlekit';  target: Ref; weapon: string }  // weapon BY NAME, unresolved unless exactly one
+  | { op: 'unset';         target: Ref; field: string };  // DELETE the key — not `set` to ''
 
 interface Layer {
   id: string;              // 'dispatch-01'
@@ -225,6 +226,34 @@ already written in. Compare the source text to the ops it compiles to:
 
 > *"Change the Cost of Incendiary Grenades to 10 Ducats in the following Armoury Tables: New Antioch, Trench Pilgrims, Iron Sultanate, Heretic Legions, The Court"*
 > → one `setCost` op naming those five in `factions`.
+
+### `unset` is not `set` to an empty string
+
+A weapon with no special rule carries **no `rules` key at all** — 69 of the 658
+do — and the app tests the field's presence. Writing `""` would give it a rules
+section containing nothing, which reads as *"this weapon has a rule and we lost
+it"*. Deleting the key says what the printed entry says: there is no rule here.
+
+It exists because the Dispatch **reprints** entries. The Gavel of Justice comes
+back with Type, Range and Keywords and no rule, and the catalogue's `Wrath of
+God` on it is what the Witchburner's new `Found Guilty` ability replaced — on
+different terms, so keeping both would place the extra BLOOD MARKER twice.
+
+### A weapon's name is one fact, stored twice
+
+Forced kit carries the name the catalogue's `selectionEntry` used; the profile
+it points at carries its own. Across the whole dataset these agreed everywhere
+but one place: the Goetic Warlock's kit said `Iron-Clawed Hands` while its
+profile said `Reaping Claws`, and the Dispatch calls the weapon `Flaying Iron
+Claws`. Three names, one weapon — and a card printing one while the rules popup
+printed the other.
+
+So a `set name` on a weapon **follows through** to every kit entry pointing at
+it, and `rules-build.mjs` then asserts the two agree. The assertion fails the
+build on a ruleset that carries corrections; on `github-latest`, which promises
+the catalogues exactly as published, it reports instead — the disagreement is
+what the catalogues publish, and correcting it there would break the one thing
+that ruleset is for.
 
 **A weapon `setCost` must name its Armoury Tables, and is unresolved without
 them.** A weapon is priced per table, and the app charges from the armoury
@@ -386,6 +415,37 @@ Two conventions make it checkable rather than trusted:
   `scripts/lib/__tests__/layerTranscription.test.mjs` reads every span and
   fails unless the transcribed value appears in the lines it cites, so a line
   that drifts breaks the suite instead of shipping.
+
+That test also reads `dispatch-01`, for the ops that cite lines — the older
+ones cite pages (*"p.6 The Cult of the Black Grail Glory Items"*), which it
+cannot read back, and those are left alone. Turning it on found three
+citations that had drifted off their sentence and one keyword transcribed
+without the `▶` the page prints; the drift had been invisible because nothing
+had ever read a citation back.
+
+It forgives exactly two things, both written down in the file: the `✥` bullet,
+which marks where a named rule starts and carries no meaning, and the kerning
+artefact that prints `+2DICE` in the second statline column only.
+
+### The Dispatch's Mercenaries section
+
+Pages 13–16 of Trench Dispatch #1 say *"Replace the Scripture Guardian, Goetic
+Warlock and Witchburner Mercenary Entries with the following"* and reprint the
+Tenderiser Maul. **No op had ever been written for any of it.** The app was
+showing the catalogue's pre-Dispatch versions, and in four places that is not
+merely out of date:
+
+| What the app showed | What the Dispatch prints |
+|---|---|
+| Scripture Guardian with an **empty Battlekit** and Vengeful Scripture as an *ability* whose text ignores armour outright and works in Melee | three items it always has, and a Special / 18" weapon whose IGNORE ARMOUR is conditional on a Critical Success |
+| Tenderiser Maul with **Swinging Blow only** | **Mulch**, of which Swinging Blow is one of two choices — the other, Crushing Blow, is a +2 INJURY MODIFIER |
+| Gavel of Justice with **CRITICAL** and the old `Wrath of God` | **CRITICAL, FIRE**, and no rule: `Found Guilty` on the Witchburner replaced it |
+| Witchburner **not carrying** the Gavel that `Found Guilty` triggers off | *"always has Reinforced Armour, a Combat Helmet, and a Gavel of Justice"* |
+
+A forced weapon also now shows its profile on the card. The row used to be a
+name and its Keyword chips — the whole of Reinforced Armour, and almost none of
+Vengeful Scripture — so the model that always carries a weapon saw less of it
+than the model that paid for one.
 
 ### Adding a brand-new faction (the Carcass Front case)
 

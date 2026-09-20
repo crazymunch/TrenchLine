@@ -526,11 +526,11 @@
       },
       "keywords": [
         "MERCENARY",
-        "FIRETEAM (see Sworn Brethren)",
+        "FIRETEAM (▶ see Sworn Brethren)",
         "IGNORE OFF-HAND WEAPON"
       ],
       "_src": "trench-dispatch-01-april-2026.txt L588-589 — 'Replace the Keywords with: MERCENARY FIRETEAM (see Sworn Brethren) IGNORE OFF-HAND WEAPON'",
-      "_note": "The row wraps: \"FIRETEAM (▶ see Sworn Brethren)\" ends L588 and \"IGNORE OFF-HAND WEAPON\" is L589. The ▶ is the book’s cross-reference glyph, dropped here."
+      "_note": "The printed row is 'FIRETEAM (▶ see Sworn Brethren)'. The cross-reference glyph was dropped when this op was first written; restored so the keyword matches the page, and so it reads the same as every other '(▶ see …)' in the dataset."
     },
     {
       "op": "setKeywords",
@@ -621,8 +621,8 @@
       },
       "currency": "glory",
       "value": 5,
-      "_src": "trench-dispatch-01-april-2026.txt L641-641 — 'Replace an Observer’s Cost with 5'",
-      "_note": "Was 3 Glory in the catalogue.",
+      "_src": "trench-dispatch-01-april-2026.txt L639-639 — 'Replace an Observer’s Cost with 5'",
+      "_note": "The citation read L641, where the quoted sentence is not: it is at L639. Re-anchored to the line that holds it. The drift went unnoticed until layerTranscription began reading citations back.",
       "_costCurrencyDerived": "Derived, not assumed. The Dispatch prints a bare number; the catalogue prices every Mercenary in this section in Glory, and the Dispatch’s unchanged Scripture Guardian (7) and Goetic Warlock (4) match the catalogue’s Glory values exactly."
     },
     {
@@ -633,8 +633,8 @@
       },
       "currency": "glory",
       "value": 6,
-      "_src": "trench-dispatch-01-april-2026.txt L822-822 — '0-1 Witchburner - Cost: 6'",
-      "_note": "Was 5 Glory in the catalogue.",
+      "_src": "trench-dispatch-01-april-2026.txt L821-821 — '0-1 Witchburner - Cost: 6'",
+      "_note": "The citation read L822, where the quoted sentence is not: it is at L821. Re-anchored to the line that holds it. The drift went unnoticed until layerTranscription began reading citations back.",
       "_costCurrencyDerived": "Same derivation as the Observer op above."
     },
     {
@@ -645,8 +645,8 @@
       },
       "field": "stats.ranged",
       "value": "+2 DICE",
-      "_src": "trench-dispatch-01-april-2026.txt L741-741 — '6”/Infantry +2 DICE +1DICE -2 40mm'",
-      "_note": "Was +1 Dice. Movement, Melee, Armour and Base already match."
+      "_src": "trench-dispatch-01-april-2026.txt L744-744 — '6”/Infantry +2 DICE +1DICE -2 40mm'",
+      "_note": "The citation read L741, where the quoted sentence is not: it is at L744. Re-anchored to the line that holds it. The drift went unnoticed until layerTranscription began reading citations back."
     },
     {
       "op": "set",
@@ -912,10 +912,10 @@
         "range": "-",
         "keywords": [],
         "rules": "Favoured Strain: At the start of each game, choose 1 Strain. Friendly models that have the chosen Strain gain the additional Favoured effects listed below for the rest of the game. Bolgias Gut Favoured: Burst ACTIONS taken by model with the Bolgias Gut Strain do not have the -1 INJURY DICE Keyword. Hellfly Host Favoured: A model with the Hellfly Host Strain gains the Undead Fortitude ability. Leech Grip Favoured: Place D3 BLOOD MARKERS next to any enemy model that takes a Retreat ACTION while within 1” of a model with the Leech Grip Strain instead of 1 BLOOD MARKER. Tapeworm Throng Favoured: The Long Range modifier for Ranged Attacks that target a model with the Tapeworm Throng Strain is -2 DICE instead of -1 DICE.",
-        "description": "To face the Black Grail is to fight against both entropy and evolution. Left unchecked, the myriad Strains of Beelzebub’s plaguecraft fester, strengthening their grip on even the lowliest of thralls. On rare occasions, tenacious members of the Order of the Fly prove their worth to the Prince of Decay enough that he offers his foetid blessing, advancing these Strains faster than otherwise possible."
+        "lore": "To face the Black Grail is to fight against both entropy and evolution. Left unchecked, the myriad Strains of Beelzebub’s plaguecraft fester, strengthening their grip on even the lowliest of thralls. On rare occasions, tenacious members of the Order of the Fly prove their worth to the Prince of Decay enough that he offers his foetid blessing, advancing these Strains faster than otherwise possible."
       },
       "_src": "p.6 The Cult of the Black Grail Glory Items — 'Add the following Glory Item:' Blessings of Beelzebub",
-      "_note": "The extracted text prints one bullet as 'Leech Grip Favourede'. Transcribed as 'Leech Grip Favoured' to match the other three bullets and the Strain's own name; the trailing 'e' is an extraction artefact, not a different rule."
+      "_note": "The extracted text prints one bullet as 'Leech Grip Favourede'. Transcribed as 'Leech Grip Favoured' to match the other three bullets and the Strain's own name; the trailing 'e' is an extraction artefact, not a different rule. `lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
     },
     {
       "op": "addArmouryRow",
@@ -947,9 +947,10 @@
           "LEADER"
         ],
         "rules": "Brotherhood of the Spoon: Do not count friendly Janissaries that are Down or have been taken Out of Action in the Morale Phase whilst there is a friendly Janissary with a Regimental Kaşık on the battlefield. In addition, this counts as a Musical Instrument for the purposes of the Mehterân ability.",
-        "description": "Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık."
+        "lore": "Though it may appear to others as an unassuming copper pot, the Kazan symbolises the fraternity and brotherhood of the Sultan’s elite. Each Janissary carries with them their own ceremonial spoon known as a kaşık, with which they take great honour in using as they share their communal meals. The more experienced or storied amongst the Janissaries also bear the honorific of çorbacı, or “soup cook”, which they represent by carrying a larger Regimental Kaşık."
       },
-      "_src": "p.8 The Sultanate of the Iron Wall Glory Items — 'Add the following Glory Item:' Regimental Kaşık"
+      "_src": "p.8 The Sultanate of the Iron Wall Glory Items — 'Add the following Glory Item:' Regimental Kaşık",
+      "_note": "`lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
     },
     {
       "op": "addArmouryRow",
@@ -1024,10 +1025,10 @@
           "CLEAVE 3"
         ],
         "rules": "✥ Putrid Spray: ACTION: Melee Attacks made with a Gluttonous Arsenal have the INFECTION MARKERS Keyword.",
-        "description": "The Amalgam absorbs the remnants of battle, consuming, digesting, and readopting fallen arms into a vile armoury of cascading violence."
+        "lore": "The Amalgam absorbs the remnants of battle, consuming, digesting, and readopting fallen arms into a vile armoury of cascading violence."
       },
       "_src": "p.5 — Amalgam > Gluttonous Arsenal (D:249-255)",
-      "_note": "RC-10. Bombardment Horde's option text already referred to this weapon ('replace the AUTOMATIC 3 Keyword with BLAST 3” and SCATTER'), so the app sent a player to a profile it did not have."
+      "_note": "RC-10. Bombardment Horde's option text already referred to this weapon ('replace the AUTOMATIC 3 Keyword with BLAST 3” and SCATTER'), so the app sent a player to a profile it did not have. `lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
     },
     {
       "op": "set",
@@ -1050,10 +1051,10 @@
         "range": "-",
         "keywords": [],
         "rules": "✥ 'Ilm al-Mīzān ACTION: A model with an Al-inbīq Kit can take an 'Ilm al-Mīzān ACTION if it is not within 1” of any enemy models. If it does so, make a Risky Success Roll for the model. If the roll is a Failure, nothing happens and the model’s Activation ends. If the roll is a Success or a Critical Success, pick 1 friendly model with the ARTIFICIAL Keyword within 6” and in Line of Sight of the Jabirean Alchemist. The model you pick can stand back up at no cost to their movement, and you can remove up to D3 BLOOD MARKERS and/or INFECTION MARKERS from the model.",
-        "description": "Were a Takwin to become seriously damaged on the front lines, a Jabirean Alchemist often comes prepared with a field repair kit consisting of talisman-engraved alembics. Such is the potency of this blessed process perfected by Jabir ibn Hayyan himself that the mere scent of the distilled vapors can cause the artificial flesh of the Takwin creature to rapidly re-knit."
+        "lore": "Were a Takwin to become seriously damaged on the front lines, a Jabirean Alchemist often comes prepared with a field repair kit consisting of talisman-engraved alembics. Such is the potency of this blessed process perfected by Jabir ibn Hayyan himself that the mere scent of the distilled vapors can cause the artificial flesh of the Takwin creature to rapidly re-knit."
       },
       "_src": "p.6 — Iron Sultanate Battlekit (D:331-343)",
-      "_note": "RC-11."
+      "_note": "RC-11. `lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
     },
     {
       "op": "addArmouryRow",
@@ -1082,10 +1083,10 @@
         "range": "-",
         "keywords": [],
         "rules": "✥ Unfettered Flame: Injury Rolls caused by Ranged Attacks made by a model with Alchemical Fire are unaffected by the NEGATE FIRE Keyword.",
-        "description": "So hot and pure does this green fire used by the House of Wisdom burn that neither infernal flesh nor orichalcum plate can deter its destructive heat."
+        "lore": "So hot and pure does this green fire used by the House of Wisdom burn that neither infernal flesh nor orichalcum plate can deter its destructive heat."
       },
       "_src": "p.6 — Iron Sultanate Battlekit (D:357-364)",
-      "_note": "RC-11. Distinct from the existing Alchemical Ammunition, and from the Flame Cannon lore that mentions alchemical fire in passing."
+      "_note": "RC-11. Distinct from the existing Alchemical Ammunition, and from the Flame Cannon lore that mentions alchemical fire in passing. `lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
     },
     {
       "op": "addArmouryRow",
@@ -1116,10 +1117,10 @@
           "AMMUNITION (ARMOUR PIERCING)"
         ],
         "rules": "✥ Volatile Concoction: Corrosive Ammunition can only be used with an Alaybozan, Halberd-Gun, Jezzail, or Siege Jezzail (even though the Alaybozan has the SHRAPNEL Keyword). In a campaign, you cannot reallocate Corrosive Ammunition to another model.",
-        "description": "The rate at which the forges of Jahannam advanced their armour-craft forced those associated with the Iron Wall to explore equally advanced corrosive ammunition. The alchemagi of the House of Wisdom often use catabolic sigils wrought to command the Elements to part, whereas the mystics of the Fida’i are known to use secret acids, Djinn-blood curses, or slugs etched with time-bending talismans that rapidly rust and rot enemy armour."
+        "lore": "The rate at which the forges of Jahannam advanced their armour-craft forced those associated with the Iron Wall to explore equally advanced corrosive ammunition. The alchemagi of the House of Wisdom often use catabolic sigils wrought to command the Elements to part, whereas the mystics of the Fida’i are known to use secret acids, Djinn-blood curses, or slugs etched with time-bending talismans that rapidly rust and rot enemy armour."
       },
       "_src": "p.6 — Iron Sultanate Battlekit (D:365-375)",
-      "_note": "RC-11."
+      "_note": "RC-11. `lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
     },
     {
       "op": "addArmouryRow",
@@ -1339,6 +1340,213 @@
       "_costCurrencyDerived": "Same paragraph, same settled glyph as the Strains: the catalogue prices Bolgias Gut at 10 and Leech Grip at 7 DUCATS, which are the amounts this glyph prints alongside. The free recruit costs nothing in either currency, so no currency is asserted for it.",
       "_targetNote": "The rule says \"Grail Thralls\"; the catalogue entry is named `Thrall`, which is what `spends.profileName` has to match.",
       "_note": "RC-08. The ability text was already derived and displayed; nothing consumed it. The Amalgam's base max of 1 is correct as a BASE bound and is unchanged — raising it to 2 outright would contradict the condition."
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "weapon",
+        "id": "c63d-fe53-a980-4a2a"
+      },
+      "field": "name",
+      "value": "Tenderiser Maul",
+      "_why": "The catalogue spells it 'Tenderizer'; the Dispatch heading, and the catalogue's own rules text, spell it 'Tenderiser'. The rename follows through to the Sin Eater's Battlekit entry.",
+      "_src": "trench-dispatch-01-april-2026.txt L702"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "weapon",
+        "id": "c63d-fe53-a980-4a2a"
+      },
+      "field": "rules",
+      "value": "Mulch: When a model armed with a Tenderiser Maul takes a Fight ACTION, you must choose if the model takes a Crushing Blow or a Swinging Blow: Crushing Blow: Injury Rolls for an attack made with a Crushing Blow have the +2 INJURY MODIFIER Keyword instead of the +1 INJURY MODIFIER Keyword. Swinging Blow: Make 1 Melee Attack against each enemy model within 1” of the attacking model. Resolve each Melee Attack one at a time in the order of your choice.",
+      "_why": "The catalogue carries only Swinging Blow, and the older wording of it. Mulch makes Swinging Blow one of two choices; the other, Crushing Blow, is a +2 INJURY MODIFIER the app never offered because the rule it belongs to was not there.",
+      "_src": "trench-dispatch-01-april-2026.txt L701 ('Replace the Tenderiser Maul Battlekit with:'), the rule at L708-714"
+    },
+    {
+      "op": "add",
+      "collection": "weapons",
+      "entity": {
+        "id": "dispatch01-weapon-vengeful-scripture",
+        "name": "Vengeful Scripture",
+        "type": "Special",
+        "range": "18”",
+        "keywords": [
+          "ASSAULT",
+          "IGNORE COVER"
+        ],
+        "rules": "Unmaking: Add +1 INJURY MODIFIER for each BLOOD MARKER the enemy has (in addition to any benefits you receive if you spend them to affect the Injury Roll). If the Success Roll for a Ranged Attack made with Vengeful Scripture is a Critical Success, make an Injury Roll for the enemy model with IGNORE ARMOUR, add +1 INJURY DICE, and a +1 INJURY MODIFIER for each BLOOD MARKER the enemy model has. Spoken: A model may make a Ranged Attack with Vengeful Scripture even if it is within 1” of an enemy model.",
+        "cost": {
+          "ducats": 0,
+          "glory": 0
+        },
+        "lore": "The Scripture Guardian reads words from the holy (or unholy) text it carries, unmaking foes with words of primordial power."
+      },
+      "_why": "The Dispatch prints Vengeful Scripture as a Weapon profile. The app had it only as an ABILITY on the Scripture Guardian, carrying the pre-Dispatch text — which says the attack ignores armour and may be made in Melee, neither of which the Dispatch's profile says.",
+      "_src": "trench-dispatch-01-april-2026.txt L757 (name), L759 (flavour), L761 (type, range, keywords), L762-765 and L768 (rules)",
+      "_note": "The extracted flavour line ends 'words of primordial power.t'. The trailing 't' is an extraction artefact — the sentence ends at the full stop — and is dropped. No other character is changed. `lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
+    },
+    {
+      "op": "removeAbility",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "name": "Vengeful Scripture",
+      "_why": "It is a weapon, added above, not an ability. The catalogue's ability text is the superseded version and contradicts the Dispatch's profile in three places, so leaving it beside the weapon would print both readings.",
+      "_src": "trench-dispatch-01-april-2026.txt L723 ('Replace the Scripture Guardian, Goetic Warlock and Witchburner Mercenary Entries with the following:'), L757-768"
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "name": "Slow",
+      "ability": {
+        "id": "dispatch01-scripture-guardian-slow",
+        "name": "Slow",
+        "description": "Treat a Scripture Guardian as having a Movement Characteristic of 3”/Infantry when it takes a Dash ACTION."
+      },
+      "_why": "The catalogue says 'half Dash distance'. The Dispatch states a Movement Characteristic for the Dash, which is what other rules that modify Movement then read.",
+      "_src": "trench-dispatch-01-april-2026.txt L754-755"
+    },
+    {
+      "op": "addBattlekit",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "weapon": "Reinforced Armour",
+      "_why": "The Scripture Guardian's Battlekit was EMPTY. The Dispatch states three items it always has.",
+      "_src": "trench-dispatch-01-april-2026.txt L748"
+    },
+    {
+      "op": "addBattlekit",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "weapon": "Combat Helmet",
+      "_why": "The Scripture Guardian's Battlekit was EMPTY. The Dispatch states three items it always has.",
+      "_src": "trench-dispatch-01-april-2026.txt L748"
+    },
+    {
+      "op": "addBattlekit",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "weapon": "Vengeful Scripture",
+      "_why": "The Scripture Guardian's Battlekit was EMPTY. The Dispatch states three items it always has.",
+      "_src": "trench-dispatch-01-april-2026.txt L748"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "3fe9-1530-6fcd-1855"
+      },
+      "field": "battlekitNote",
+      "value": "A Scripture Guardian always has Reinforced Armour, Combat Helmet, and a Vengeful Scripture. In addition, it must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon. You must purchase the Melee Weapons from your Faction Armoury Tables at their normal Cost, and you must obey any stipulations that apply to the weapons you choose (e.g. ELITE only, Limit: 1 etc.). Vengeful Scripture and the weapons you choose cannot be removed or lost over the course of the campaign for any reason.",
+      "_why": "The melee-weapon stipulation is a purchase rule the builder has to state: two 1-Handed or one 2-Handed, bought from the Warband's own Armoury at full price, and unremovable thereafter.",
+      "_src": "trench-dispatch-01-april-2026.txt L748-753"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "weapon",
+        "id": "e8d8-c2a3-9a3e-b3b8"
+      },
+      "field": "name",
+      "value": "Flaying Iron Claws",
+      "_why": "Three names for one weapon: the Warlock's Battlekit said 'Iron-Clawed Hands', its profile said 'Reaping Claws', and the Dispatch calls it 'Flaying Iron Claws'. The rename follows through to the Battlekit entry.",
+      "_src": "trench-dispatch-01-april-2026.txt L797"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "weapon",
+        "id": "e8d8-c2a3-9a3e-b3b8"
+      },
+      "field": "type",
+      "value": "2-Handed",
+      "_why": "The catalogue types it 'Special' because it modelled the claws as a Melee attack the Warlock may make without a weapon. The Dispatch makes them a weapon, and a 2-Handed one.",
+      "_src": "trench-dispatch-01-april-2026.txt L799"
+    },
+    {
+      "op": "unset",
+      "target": {
+        "kind": "weapon",
+        "id": "e8d8-c2a3-9a3e-b3b8"
+      },
+      "field": "rules",
+      "_why": "The catalogue's rule is the workaround for the weapon not existing — 'can make a Melee Attack … even though it does not have a Melee Weapon'. It now does have one, so the sentence is false. The Dispatch's reprint states Type, Range and Keywords and no rule.",
+      "_src": "trench-dispatch-01-april-2026.txt L797-799"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "1a28-719d-fbd0-5bf0"
+      },
+      "field": "battlekitNote",
+      "value": "A Goetic Warlock always has Reinforced Armour and Flaying Iron Claws. These pieces of Battlekit can never be removed or lost.",
+      "_src": "trench-dispatch-01-april-2026.txt L785-786"
+    },
+    {
+      "op": "setKeywords",
+      "target": {
+        "kind": "weapon",
+        "id": "ddce-0973-220d-51e0"
+      },
+      "keywords": [
+        "CRITICAL",
+        "FIRE"
+      ],
+      "_why": "The catalogue has CRITICAL only. The Dispatch's reprint adds FIRE, which matters against everything with NEGATE FIRE.",
+      "_src": "trench-dispatch-01-april-2026.txt L863"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "weapon",
+        "id": "ddce-0973-220d-51e0"
+      },
+      "field": "lore",
+      "value": "The staff of a Witchburner is both a mark of their office and a weapon imbued with the wrath of God against those who have broken divine law. It dooms the souls of those found guilty to burn in flames for all eternity.",
+      "_src": "trench-dispatch-01-april-2026.txt L860-861",
+      "_note": "`lore` is the flavour field WeaponProfile declares. These ops wrote `description`, which the type does not have, so six items carried their flavour text in a field nothing renders while fifteen pipeline-derived items carried it in `lore`. One field, so one reader can find it."
+    },
+    {
+      "op": "unset",
+      "target": {
+        "kind": "weapon",
+        "id": "ddce-0973-220d-51e0"
+      },
+      "field": "rules",
+      "_why": "The catalogue's 'Wrath of God' on the Gavel places an extra BLOOD MARKER. The Dispatch replaces the Witchburner entry and moves that effect to the 'Found Guilty' ability, on different terms — a Fallen Warband rather than BLACK GRAIL, DEMONIC or HERETIC. Keeping both would place the marker twice.",
+      "_src": "trench-dispatch-01-april-2026.txt L723, L853-855 ('Found Guilty'), L858-863 (the Gavel as reprinted)"
+    },
+    {
+      "op": "addBattlekit",
+      "target": {
+        "kind": "unit",
+        "id": "b5ac-1a57-c1d4-3f4c"
+      },
+      "weapon": "Gavel of Justice",
+      "_why": "The Witchburner's Battlekit had the armour and the helmet but not the Gavel, so the model that the 'Found Guilty' ability is written around was not armed with the weapon that triggers it.",
+      "_src": "trench-dispatch-01-april-2026.txt L834"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "b5ac-1a57-c1d4-3f4c"
+      },
+      "field": "battlekitNote",
+      "value": "A Witchburner always has Reinforced Armour, a Combat Helmet, and a Gavel of Justice.",
+      "_src": "trench-dispatch-01-april-2026.txt L834"
     }
   ]
 }
