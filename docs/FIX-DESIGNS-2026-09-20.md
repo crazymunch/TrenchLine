@@ -1438,9 +1438,11 @@ NewRecruit exports of Al-Qarn Rihla: August, the roster the app was loaded
 from, already at `data-sources/fixtures/newrecruit/al-qarn-rihla-august.json`,
 and September, the same Warband after the game played the week of 14
 September, now at `data-sources/fixtures/newrecruit/al-qarn-rihla-september.json`
-with its `.ros`, and as `data-sources/fixtures/al-qarn-rihla/05-september-1436d.json`.
-The difference between the two is exactly what this design has to
-represent, and NewRecruit represents it as upgrades on the model:
+and as `data-sources/fixtures/al-qarn-rihla/05-september-1330d.json` (the
+owner revised the export once more at 22:00 UTC; that revision is the one
+committed, and it came as JSON only). The difference between August and
+September is exactly what this design has to represent, and NewRecruit
+represents it as upgrades on the model:
 
 - Experience moves, per model: Kasim 4 to 6, Zayd 0 to 2, the Bull 3 to 4,
   Idris 3 to 4, the Takwin 1 to 2.
@@ -1455,8 +1457,9 @@ represent, and NewRecruit represents it as upgrades on the model:
 - Kasim's Leg Wound is gone, and Curative Fluids arrived; the export's
   Campaign Rules say why: a new Exploration result, Ransacked Alchemist
   Workshop, "remove one Battle Scar from any model", spent.
-- Three Kavass and a Scripture Guardian were hired; the Ducat limit moved
-  from 1320 to 1440 and Glory from 6 to 13.
+- Kasim's Automatic Rifle became a Machine Gun, and a Scripture Guardian
+  was hired for 7 Glory; the Ducat limit moved from 1320 to 1440, the
+  roster from 1320 to 1330, and Glory from 6 to 13.
 - The export's `Campaign Rules > Enabled` subtree is the review the owner
   asked for: Book of Golems, Ransacked Alchemist Workshop and Reroll are the
   Exploration rewards held; Sublime Gate is the Patron; Unleveraged Glory is
@@ -1930,6 +1933,98 @@ ones are, and parse them if not. Test: a Patron Skill result on a Warband
 with a Patron offers that Patron's Skills; with none, the step asks and
 then offers; a Skill already held falls to the next lowest per line 6039.
 
+## FD-16. Weapon Collections: the House of Wisdom's two picks
+
+The owner, 21:55 UTC: "Under house of wisdom, you get the ability to choose
+one piece of battlekit from new antioch and one from trench pilgrims and add
+it to your existing warband. The selections I would actually like to have
+for this are the Anti-Tank Hammer for Trench Pilgrims, and Machine Armour
+for New Antioch - Newrecruit doesn't allow armour, but the interpretation my
+group of friends have is it can be weapons or armour, so I want to be able
+to properly select these as my selections."
+
+### The book
+
+- Warbands L5303 to L5308, the House of Wisdom's Weapon Collections: "When
+  you create your starting Warband, you can purchase 1 piece of Battlekit
+  from the New Antioch Armoury, and 1 piece of Battlekit from the Trench
+  Pilgrims Armoury. Any stipulations that apply to it are followed (so there
+  is little point in taking Battlekit that can only be used by models from
+  the other Warbands). You can repurchase the Battlekit later during the
+  campaign if it is lost for any reason."
+- Rulebook L3810 to L3818, BATTLEKIT LIMITS: Battlekit is Ranged Weapons,
+  Melee Weapons, Grenades, Armour, Shields, Equipment and Special Battlekit.
+  So "1 piece of Battlekit" includes armour; the group's reading is the
+  book's definition, and NewRecruit's weapons-only group (Iron Sultanate.cat
+  line 5883) is the catalogue's narrowing, not the rule.
+- Rules Commentaries 1.0.2 L258, MISC Q4, in `dataset.faq`: one of each
+  piece chosen, never multiple copies.
+- The rows. New Antioch, Warbands L1350 to L1351 and L1412: Machine Armour,
+  50 Ducats, "ELITE & Mechanized Heavy Infantry only, Limit: 1 excluding
+  Mechanized Heavy Infantry". Trench Pilgrims, L2794: Anti-Tank Hammer, 35
+  Ducats, "ELITE only, Limit: 3". Both picks are therefore legal for an
+  ELITE model of a House of Wisdom Warband, and Machine Armour is limited
+  to one such model. No house rule is needed for what the owner asked.
+
+### Where the app stands
+
+- `src/rules/variantArmoury.ts` reads the two grants and their limit of one
+  from the rule's sentence, and `checkVariantGrants` in
+  `src/rules/validate.ts` counts them, attributing each grant-only item to
+  a grant that stocks it. That half is right.
+- Nothing offers a granted armoury's rows. `AddEquipmentModal` line 288
+  gates on `armouryFor(dataset, factionId)` alone, the Arsenal's lists are
+  the faction's own, and the Warband records no choice. A House of Wisdom
+  player cannot take the pick in the app at all.
+- The New Antioch armoury in the dataset has no Machine Armour and no
+  Reinforced Armour rows: the catalogue holds both as hidden entryLinks
+  under the armoury (New Antioch.cat line 1934), revealed by a modifier for
+  Mechanized Heavy Infantry, and the parser drops hidden links. The book
+  prints both rows with their stipulations. Until the data has the row, the
+  pick cannot be offered.
+
+### The change, one PR after FD-13b
+
+1. **The data.** The New Antioch armoury gains Machine Armour (50, "ELITE &
+   Mechanized Heavy Infantry only, Limit: 1 excluding Mechanized Heavy
+   Infantry") and Reinforced Armour (40, "ELITE & Mechanized Heavy Infantry
+   only"), derived: either the parser emits a hidden entryLink under an
+   armoury as a row carrying the catalogue's own condition as its
+   stipulation, or the `warbands-book` layer adds the two rows cited to
+   L1350 to L1352. Rule 1 either way; `rules:check` reports the change.
+2. **The Warband records its Collections.** `collections` on the Warband:
+   one entry per grant the Variant states, `{ factionId, rowName, source }`,
+   where `source` is `'founding'` when chosen in the founding flow, which
+   offers the granted armouries when the Variant has grants, or
+   `'manual-pre-app'` when set on an existing Warband through a "Weapon
+   Collections" action in the builder, the owner's case. Cited to the
+   rule's sentence in the UI.
+3. **The pick is offered.** The equip sheet and the Arsenal offer the chosen
+   row to every model, priced at that armoury's cost, booked through the
+   Strongbox like any purchase, and gated by the row's own stipulations
+   read as printed (ELITE only, the Limit, Mechanized Heavy Infantry only,
+   Shield Combo), the same gate the faction's rows get, with the
+   stipulation as the reason a row is refused. A second copy is refused
+   while one is on the roster or in the Arsenal (MISC Q4); once none is,
+   the row is offered again, which is the repurchase sentence.
+4. **The validator** already counts; it must count armour and equipment
+   rows as it counts weapons, and name the collection in its message.
+5. **Import.** Where a NewRecruit roster carries the catalogue's Weapon
+   Collections group, the importer reads it into `collections` with
+   `source: 'import'`; the owner's export carries none, so the manual
+   action is their path.
+
+Tests, against the September fixture as a House of Wisdom Warband: setting
+the Trench Pilgrims pick to the Anti-Tank Hammer and the New Antioch pick to
+Machine Armour; the Hammer equips on an ELITE model at 35 Ducats and is
+refused on a Kavass with "ELITE only" as the reason; Machine Armour equips
+on one ELITE model at 50 and a second is refused with the Limit sentence; a
+second Hammer is refused while the first is held; after the model carrying
+the Hammer is removed to `fallen`, the Hammer is offered again; a Warband
+without the Variant sees neither row; a Warband whose Variant states no
+grant records no collections; the New Antioch armoury carries the two rows
+with the book's stipulations.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -1950,4 +2045,5 @@ then offers; a Skill already held falls to the next lowest per line 6039.
    phone-visible, so it may ride with WIZ-2 if the developer judges it fits.
 10. After READY FOR TESTING (#93, 19:01 UTC): the owner's next batch, in
     this order, one PR each, against the September fixture: FD-13a, FD-13b,
-    FD-12, FD-15. Then AI-3 and AI-5, FD-08, FD-10, AI-4 as item 9 says.
+    FD-16, FD-12, FD-15. Then AI-3 and AI-5, FD-08, FD-10, AI-4 as item 9
+    says.

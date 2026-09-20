@@ -11,8 +11,7 @@ rather than from inference.
 | `al-qarn-rihla-august.ros` | The XML, extracted for diffing and grepping |
 | `al-qarn-rihla-august.json` | NewRecruit's JSON export — the same tree under a `roster` key |
 | `al-qarn-rihla-august-print.pdf` | Its "Pretty" print output, the reference for our own pretty mode |
-| `al-qarn-rihla-september.json` | The same Warband after the game played the week of 14 September 2026: 1436 / 1440 Ducats, 13 / 13 Glory, 114 selections. Supplied 20 September |
-| `al-qarn-rihla-september.ros` | Its XML |
+| `al-qarn-rihla-september.json` | The same Warband after the game played the week of 14 September 2026: 1330 / 1440 Ducats, 13 / 13 Glory, 103 selections. Supplied 20 September and revised by the owner the same evening; the revision came as JSON only, so there is no September `.ros` |
 
 ## What these settled
 
@@ -76,8 +75,8 @@ Homunculi (FD-13):
   the August injuries use (`Leg Wound [31]`, `Lost Arm [26]`).
 - Kasim's Leg Wound is gone and `Curative Fluids` arrived; the
   `Campaign Rules > Enabled` subtree gains `Ransacked Alchemist Workshop`,
-  whose text says why.
-- Three Kavass and a Scripture Guardian (7 Glory) were hired.
+  whose text says why. His Automatic Rifle became a Machine Gun.
+- A Scripture Guardian (7 Glory) was hired.
 - `Campaign Rules > Enabled` also carries `Book of Golems`, `Sublime Gate`
   (the Patron), `Reroll` (an Exploration Skill) and `Unleveraged Glory`
   (NewRecruit's Glory counter): the rewards a Warband holds, which the

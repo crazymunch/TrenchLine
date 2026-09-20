@@ -21,7 +21,7 @@ September 2026, and the diff between the two is described in
 | `02-3-force-match-983d.json` | 983 / 1050 | 4 / 6 | 44 |
 | `03-july-gator-1000d.json` | 1000 / 1220 | 4 / 8 | 45 |
 | **`04-august-1320d-CURRENT.json`** | **1320 / 1320** | **6 / 9** | **58** |
-| `05-september-1436d.json` | 1436 / 1440 | 13 / 13 | 114 |
+| `05-september-1330d.json` | 1330 / 1440 | 13 / 13 | 103 |
 
 ## Why these are the regression fixture
 
