@@ -204,7 +204,7 @@ type LayerOp =
   | { op: 'addAbility';    target: Ref; ability: Ability }
   | { op: 'replaceAbility'; target: Ref; name: string; ability: Ability }
   | { op: 'setCost';       target: Ref; currency: 'ducats' | 'glory'; value: number
-                         ; scope?: Ref[] };               // e.g. per-faction armoury tables
+                         ; factions?: string[] };         // faction slugs; REQUIRED on a weapon
 
 interface Layer {
   id: string;              // 'dispatch-01'
@@ -223,7 +223,25 @@ already written in. Compare the source text to the ops it compiles to:
 > → seven `addKeyword` ops.
 
 > *"Change the Cost of Incendiary Grenades to 10 Ducats in the following Armoury Tables: New Antioch, Trench Pilgrims, Iron Sultanate, Heretic Legions, The Court"*
-> → one `setCost` op with a five-faction `scope`.
+> → one `setCost` op naming those five in `factions`.
+
+**A weapon `setCost` must name its Armoury Tables, and is unresolved without
+them.** A weapon is priced per table, and the app charges from the armoury
+ROW — `priceOf` reads the row, not the profile.
+
+This paragraph is new, and the field above used to read `scope?: Ref[]` with
+the comment *"e.g. per-faction armoury tables"*. The example below it has said
+"a five-faction scope" since the model was written. **Neither was ever
+implemented**: the Dispatch layer omitted the field, and `applyLayer` wrote
+`target.cost` on the one weapon profile the name resolved to first and touched
+no armoury row at all. The result shipped for as long as the Dispatch has:
+seven rows reading 15, one profile reading 10, and the number a player saw
+depending on which screen asked. A field that is documented, never written and
+never read is indistinguishable from one that does not exist — see DA-07.
+
+A **unit** `setCost` takes no faction list: a unit is a single entry priced
+from `unit.cost`. The two are deliberately different, and the op says which it
+is through `target.kind`.
 
 > *"Change the Profile of a Combat Engineer to: Movement 6"/Infantry, Ranged +1 DICE, Melee +0 DICE, Armour -2, Base 25mm"*
 > → one `replace` op.

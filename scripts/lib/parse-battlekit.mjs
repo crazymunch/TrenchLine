@@ -126,7 +126,20 @@ function chapterLines(src) {
       if (last !== '' && !SIDEBAR.has(last)) break;
       page.pop();
     }
-    for (const l of page) if (l.trim() !== '') out.push(l);
+    /*
+      A stray page mark, printed alone on its line between a profile row and
+      the sidebar strip. `PW` appears three times in this chapter (extract
+      lines 4051, 4146 and 4354) and is not an abbreviation the book uses
+      anywhere else — the Keywords chapter has no two-letter entries at all.
+
+      It matters because `readRow` appends any bare-capitals line to the row's
+      keywords, which is exactly right for a wrapped keyword run and exactly
+      wrong for this: the Shotgun shipped carrying `SHOTGUN PW` and the
+      Bayonet `CUMBERSOME PW`, a keyword nothing can ever match. Stripped here
+      the way `parseExploration` strips its own one-off `VM`, rather than in
+      `readRow`, because it is page furniture and not a keyword decision.
+    */
+    for (const l of page) if (l.trim() !== '' && l.trim() !== 'PW') out.push(l);
   }
   return out;
 }
@@ -744,8 +757,42 @@ export function parseWarbandsBattlekit(src = WARBANDS_TXT) {
       .replace(/\s+/g, ' ')
       .trim();
 
-    // The row, then its rules, up to the next entry's name.
-    const row = splitRow((lines[h + 1] ?? '').replace(/\s+/g, ' ').trim());
+    /*
+      The row, plus however many lines its keywords wrapped onto.
+
+      This read `lines[h + 1]` alone and began everything after it at `h + 2`.
+      When a row's keywords wrap, the book prints the continuation as a bare
+      capitals line — and `WB_BANNER` matches a bare capitals line, so the stop
+      scan below halted on the entry's own keywords and the rules underneath
+      were never read at all. Eight items shipped with half their keywords and
+      none of their rules; the Punt Gun's `SHOTGUN, SHRAPNEL` and its whole
+      Overcharge rule were on the far side of that line.
+
+      What separates a continuation from a banner is in the source and is not
+      a guess: a wrapped row always ends its first line with a COMMA, and a
+      banner never follows one.
+
+          2-Handed <TAB>18'' +1 DICE, +1 INJURY DICE, HEAVY,
+          SHOTGUN, SHRAPNEL
+
+      `parseBattlekit` already reads the rulebook's chapter this way (see
+      `readRow`); this is the same idea with the comma as the gate, because
+      the Warbands book prints section banners in the middle of entries and
+      the rulebook's chapter does not.
+    */
+    const rowParts = [(lines[h + 1] ?? '')];
+    let rowEnd = h + 2;
+    while (
+      rowEnd < lines.length
+      && /,$/.test(rowParts[rowParts.length - 1].trim())
+      && isKeywordRun(lines[rowEnd].trim())
+      && !WB_SIDEBAR.has(lines[rowEnd].trim())
+      && !WB_PAGE.test(lines[rowEnd].trim())
+    ) {
+      rowParts.push(lines[rowEnd]);
+      rowEnd++;
+    }
+    const row = splitRow(rowParts.join(' ').replace(/\s+/g, ' ').trim());
     /*
       Stop at the NEXT PRICED ENTRY, not at the next profile header.
 
@@ -756,7 +803,7 @@ export function parseWarbandsBattlekit(src = WARBANDS_TXT) {
       diagram is worse than no rule: it reads as though the book says it.
     */
     let stop = k + 1 < headers.length ? headers[k + 1] : lines.length;
-    for (let i = h + 2; i < stop; i++) {
+    for (let i = rowEnd; i < stop; i++) {
       const l = lines[i].trim();
       // The next priced entry, a Warband entry ("1 Yüzbaşı - Cost: 70 👑"),
       // a section banner, or the chapter strip the book prints down the edge
@@ -766,7 +813,7 @@ export function parseWarbandsBattlekit(src = WARBANDS_TXT) {
           || WB_SIDEBAR.has(l) || WB_PAGE.test(l)) { stop = i; break; }
     }
     const rules = [];
-    for (let i = h + 2; i < stop; i++) {
+    for (let i = rowEnd; i < stop; i++) {
       const l = lines[i].trim();
       if (!l) continue;
       if (BULLET.test(l)) rules.push(l.replace(BULLET, '').trim());

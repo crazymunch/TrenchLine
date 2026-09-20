@@ -400,11 +400,60 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
         break;
       }
 
-      case 'setCost':
+      case 'setCost': {
+        /*
+          A weapon price is set per Armoury Table, not once.
+
+          The Dispatch says "Change the Cost of Incendiary Grenades to 10 in
+          the following Armoury Tables: New Antioch, Trench Pilgrims, Iron
+          Sultanate, Heretic Legions, The Court". This wrote `target.cost` on
+          the single weapon profile the name resolved to first and touched no
+          armoury row at all — and `priceOf` reads the ROW. So the published
+          change reached nothing a player was charged: all seven rows still
+          said 15, while one profile said 10, and which number you saw
+          depended on which screen asked (DA-07 / FD-02).
+
+          A weapon `setCost` must therefore name its factions, and is
+          unresolved without them: setting one unnamed copy is the defect, not
+          a lesser version of the fix. A UNIT `setCost` is unaffected — a unit
+          is a single entry priced from `unit.cost`.
+        */
+        if (op.target?.kind === 'weapon') {
+          if (!Array.isArray(op.factions) || op.factions.length === 0) {
+            unresolved.push({
+              op,
+              why: 'weapon setCost without a `factions` list: a weapon is priced per '
+                 + 'Armoury Table, and setting one unnamed copy is what this rule exists '
+                 + 'to prevent',
+            });
+            break;
+          }
+
+          /*
+            Profiles first, where any are faction-scoped. Not every listed
+            faction has its own profile — most share a generic one — so a
+            faction with no profile is not an error here. The armoury rows
+            below are what the Dispatch actually names, and those must all
+            exist.
+          */
+          for (const w of dataset.weapons ?? []) {
+            if (w.name !== op.target.id) continue;
+            if (!op.factions.some((f) => sameFaction(w.factionId, f))) continue;
+            w.cost ??= { ducats: 0, glory: 0 };
+            w.cost[op.currency] = op.value;
+            stamp(op.target, `cost.${op.currency}`, w);
+          }
+
+          /* And the rows, once the armouries exist. */
+          deferred.push({ op, layer: layer.id, source });
+          break;
+        }
+
         target.cost ??= { ducats: 0, glory: 0 };
         target.cost[op.currency] = op.value;
         stamp(op.target, `cost.${op.currency}`, target);
         break;
+      }
 
       default:
         unresolved.push({ op, why: `unknown op ${op.op}` });
@@ -413,6 +462,19 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
 
   return unresolved;
 }
+
+/**
+ * Does this faction label name the same faction as this slug?
+ *
+ * The dataset spells a faction two ways. An armoury is keyed by slug
+ * (`iron-sultanate`); a weapon profile carries `factionId` as the printed
+ * name (`Iron Sultanate`), and some profiles are not faction-scoped at all
+ * (`Ranged Weapons`, a section heading). A `factions` list written in slugs
+ * and compared naively against profiles matches nothing — silently, which is
+ * the same class of fault as the one this exists to fix.
+ */
+const slug = (s) => String(s ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const sameFaction = (label, wanted) => slug(label) === slug(wanted);
 
 /** Apply an ordered list of layers, honouring the ruleset's beta preference. */
 export function applyLayers(dataset, layers, provenance, { includeBeta = true, deferred = [], removals = [] } = {}) {
@@ -452,9 +514,65 @@ export function applyArmouryRowOps(dataset, deferred) {
   const notes = [];
   let applied = 0;
 
-  for (const { op } of deferred) {
+  for (const { op, layer: layerId } of deferred) {
+    if (op && layerId && op.__layerId === undefined) op.__layerId = layerId;
     /* Variant ops share this pass; they are handled by `applyVariantOps`. */
     if (op.target?.kind === 'variant') continue;
+    /*
+      A weapon price the Dispatch set per Armoury Table.
+
+      `priceOf` reads the armoury ROW, so this is the pass that decides what a
+      player is charged. Deferred here because the armouries are assembled
+      after the layers run — the same reason `addArmouryRow` is.
+
+      Every faction the op names must stock the item: the Dispatch is naming
+      tables it expects to find, and one that is missing means the row moved
+      or the name changed, which is an errata pointing at something that is no
+      longer there. A faction NOT named keeps its own price, which is why the
+      Procession and the Naval Raiders still pay 15.
+    */
+    if (op.op === 'setCost' && op.target?.kind === 'weapon') {
+      /*
+        One op, one account. The caller reconciles deferred ops against
+        applied + unresolved + notes, so an op that touches five rows must
+        still count once — and a partly-applied op is a failure, not a
+        success with a footnote: the Dispatch named five tables and five is
+        what it means.
+      */
+      const missing = [];
+      const rows = [];
+      for (const factionId of op.factions ?? []) {
+        const armoury = (dataset.armouries ?? []).find((a) => sameFaction(a.factionId, factionId));
+        if (!armoury) { missing.push(`${factionId}: no armoury`); continue; }
+        const row = (armoury.rows ?? []).find(
+          (r) => r.name?.toLowerCase() === String(op.target.id).toLowerCase());
+        if (!row) { missing.push(`${factionId}: does not stock ${op.target.id}`); continue; }
+        rows.push(row);
+      }
+
+      if (missing.length) {
+        unresolved.push({
+          op,
+          why: `setCost ${op.target.id}: the layer names Armoury Tables that do not `
+             + `stock it — ${missing.join('; ')}. An errata pointing at a row that has `
+             + 'moved is worse than one that fails.',
+        });
+        continue;
+      }
+
+      for (const row of rows) {
+        row.cost ??= { ducats: 0, glory: 0 };
+        row.cost[op.currency] = op.value;
+        /* Rows carry no provenance of their own — `findMissingProvenance`
+           does not walk them — so the layer that set the price says so on the
+           row, and the audit can report "set by dispatch-01" rather than
+           reporting it as drift from the catalogue. */
+        if (op.__layerId) row.source = op.__layerId;
+      }
+      applied++;
+      continue;
+    }
+
     if (op.op !== 'addArmouryRow') {
       unresolved.push({ op, why: `deferred op ${op.op} has no second-pass handler` });
       continue;
