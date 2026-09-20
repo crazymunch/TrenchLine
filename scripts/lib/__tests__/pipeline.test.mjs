@@ -614,13 +614,74 @@ describe('forced Battlekit', () => {
   });
 
   /*
-    A `min` that is not also the `max` is a choice, not a fixture — "a Mamluk
-    Faris always has either a Greatsword, or a ..." — and belongs with options.
+    A `min` on a GROUP is a choice, not a fixture — "a Mamluk Faris always has
+    either a Greatsword, or a ..." — and belongs with options.
+
+    This used to say the same of a `min` without a `max` on a LINK, and that
+    was wrong: the Combat Biologist's Gas Grenades, Gas Mask and Standard
+    Armour are each stated that way (Mercenaries.cat L861–875) and the book
+    says the model always has all three. The group rule is what keeps the
+    either/or out, and it is untouched.
   */
   it('never reads an either/or group as forced kit', () => {
     for (const u of ds.units) {
       for (const b of u.battlekit) expect(b.quantity, `${u.name}: ${b.name}`).toBe(1);
     }
+  });
+
+  /*
+    Shape 2: an entryLink with a `min` and no `max`.
+
+    "At least one, and you may take more" is still "always has" for the one.
+    Requiring a `max` skipped all three of the Combat Biologist's items and
+    left the model with no Battlekit at all.
+  */
+  it('reads a min-only link as forced kit', () => {
+    // "A Combat Biologist always has Gas Grenades, Standard Armour, a Gas
+    // Mask, and a Vivisector" — warbands-of-trench-crusade L9802.
+    // The Vivisector is a profile on the model itself and is stated from the
+    // book in FD-11b; see the note in `forcedKitOf` for why not here.
+    expect(kitOf('Combat Biologist', 'Mercenaries').sort())
+      .toEqual(['Gas Grenades', 'Gas Mask', 'Standard Armour']);
+  });
+
+  /*
+    Shape 3: a selectionEntry nested inside the model, min = max, carrying a
+    Weapon profile of its own. No link to resolve — the entry simply sits
+    inside the model.
+  */
+  it('reads a nested min=max selectionEntry as forced kit', () => {
+    // "Sin Eater always has Reinforced Armour, a Combat Helmet, and a
+    // Tenderiser Maul" — warbands-of-trench-crusade L10281.
+    expect(kitOf('Sin Eater', 'Mercenaries').sort())
+      .toEqual(['Combat Helmet', 'Reinforced Armour', 'Tenderizer Maul']);
+  });
+
+  it('carries the nested entry’s own profile, so the weapon can be shown', () => {
+    const maul = unit('Sin Eater', 'Mercenaries').battlekit
+      .find((b) => b.name === 'Tenderizer Maul');
+    expect(maul.profileId).toBe('c63d-fe53-a980-4a2a');
+    expect(maul.cost).toEqual({ ducats: 0, glory: 0 });
+  });
+
+  /*
+    A gear profile on a MODEL node was emitted into `weapons` at the model's
+    own price: the Gavel of Justice at the Witchburner's 6 Glory, the
+    Vivisector at the Combat Biologist's 3. Nothing sells them — neither has
+    an Armoury row — but `fromWarband` falls back to this cost for an item
+    that has no row, so it is a price waiting for a caller.
+  */
+  it('prices a model’s own gear profile at zero, not at the model’s cost', () => {
+    const w = (name) => ds.weapons.find((x) => x.name === name);
+    expect(w('Gavel of Justice').cost).toEqual({ ducats: 0, glory: 0 });
+    expect(w('Vivisector').cost).toEqual({ ducats: 0, glory: 0 });
+    expect(w('Infernal Bomb').cost).toEqual({ ducats: 0, glory: 0 });
+  });
+
+  it('leaves an ordinary armoury weapon’s own cost alone', () => {
+    /* The node IS the weapon there, so its cost is the weapon's. */
+    const priced = ds.weapons.filter((w) => w.cost.ducats > 0 || w.cost.glory > 0);
+    expect(priced.length).toBeGreaterThan(100);
   });
 });
 
