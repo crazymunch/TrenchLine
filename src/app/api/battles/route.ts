@@ -71,11 +71,25 @@ const Side = z.object({
   turnScores: z.record(z.string(), z.number().int().min(-999).max(9999)),
 }).strict();
 
+/*
+  A Deed, as the Chronicle syncs it.
+
+  `turn` is `text(8)` because a turn number is at most a few characters — and
+  that ceiling is how a defect on the client reached the server: the client
+  wrote the performer's NAME into `turn`, so a Deed performed by anyone whose
+  name runs past eight characters failed validation here, and `.strict()`
+  meant the whole battle was rejected rather than the one field. `Entire
+  Warband`, the performer picker's own default, is fourteen. The client writes
+  the model to `unitId`/`unitName` now; the ceiling stays where it is, because
+  it is right for what the field holds.
+*/
 const Deed = z.object({
   title: text(200),
   description: text(4000),
   sideId: id(),
   sideName: text(120),
+  unitId: id().optional(),
+  unitName: text(120).optional(),
   turn: text(8).optional(),
 }).strict();
 

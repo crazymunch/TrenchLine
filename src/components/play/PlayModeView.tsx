@@ -65,7 +65,7 @@ import {
 import { useOverlay } from '../ui/useOverlay';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
-import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch } from '@/rules/matchState';
+import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch, type SideScore } from '@/rules/matchState';
 import { battleFromMatch } from '@/rules/battleFromMatch';
 import {
   COALITIONS, COALITION_NAME, coalitionScore, hasCoalitions, leader,
@@ -137,12 +137,16 @@ export const PlayModeView: React.FC = () => {
   // Scenario & Scoring State
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>('claim-no-mans-land');
   
-  // Multi-player progressive scoring: { [warbandId]: { vp: number; completedDeeds: Record<string, string>; turnScores: Record<number, number> } }
-  const [warbandScores, setWarbandScores] = useState<Record<string, { 
-    vp: number; 
-    completedDeeds: Record<string, string>; 
-    turnScores: Record<number, number>;
-  }>>({});
+  /*
+    Multi-player progressive scoring, keyed by warband or opponent id.
+
+    `SideScore` is imported rather than restated. The shape was written out
+    again here, and it drifted: `matchState` moved a Deed's claim from a bare
+    string to `DeedMark` and this copy stayed a string, which typechecks on
+    both sides of the save and loses the model in between. `matchState`'s own
+    header says the same thing about the weather roll.
+  */
+  const [warbandScores, setWarbandScores] = useState<Record<string, SideScore>>({});
   
   // Squad / Sub-list Deployment Filter
   /* Which side fights for which coalition. Empty in a free-for-all, which is
@@ -524,7 +528,7 @@ export const PlayModeView: React.FC = () => {
     matchWarbandIds.find((id) => warbandScores[id]?.completedDeeds[deedTitle] !== undefined);
 
   // Toggle Glorious Deed checkbox
-  const handleToggleDeed = (deedTitle: string, defaultPerformer: string = 'Squad') => {
+  const handleToggleDeed = (deedTitle: string) => {
     // Someone else got there first. The roll-off the book calls for is a
     // conversation at the table, not something the app can adjudicate — so it
     // holds the first claim and leaves them to un-tick it if the roll went the
@@ -538,7 +542,11 @@ export const PlayModeView: React.FC = () => {
       if (nextDeeds[deedTitle]) {
         delete nextDeeds[deedTitle];
       } else {
-        nextDeeds[deedTitle] = defaultPerformer;
+        /* Claimed, with nobody named yet. An empty mark is the side's claim:
+           the book lets a Deed be the Warband's, and a model the player has
+           not picked is not the first model on the list. Guessing one here
+           would hand it the second Experience Point (p.105) it never earned. */
+        nextDeeds[deedTitle] = {};
       }
       return {
         ...prev,
@@ -550,8 +558,21 @@ export const PlayModeView: React.FC = () => {
     });
   };
 
-  // Set performer for a deed WITHOUT toggling or unselecting
-  const handleSetDeedPerformer = (deedTitle: string, performerName: string) => {
+  /*
+    Name the model that performed a Deed, without toggling the claim.
+
+    The id is what is stored, and the name is copied beside it. This used to
+    store the `customName` alone, which cost three things: a rename between
+    the game and the post-battle step lost the attribution, the Chronicle
+    printed the name as if it were a turn number, and the battles API — whose
+    `turn` accepts eight characters — rejected the whole record for anyone
+    called more than that, `Entire Warband` included.
+
+    An empty `unitId` is *Entire Warband*: the side claimed it and no model
+    takes the second Experience Point.
+  */
+  const handleSetDeedPerformer = (deedTitle: string, unitId: string) => {
+    const named = deployedUnits.find((u) => u.id === unitId);
     setWarbandScores((prev) => {
       const cur = prev[viewingWarband.id] || { vp: 0, completedDeeds: {}, turnScores: {} };
       return {
@@ -560,7 +581,9 @@ export const PlayModeView: React.FC = () => {
           ...cur,
           completedDeeds: {
             ...cur.completedDeeds,
-            [deedTitle]: performerName
+            [deedTitle]: named
+              ? { ...cur.completedDeeds[deedTitle], unitId: named.id, unitName: named.customName }
+              : { turn: cur.completedDeeds[deedTitle]?.turn }
           }
         }
       };
@@ -1667,8 +1690,8 @@ export const PlayModeView: React.FC = () => {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {scenarioDeeds.map((deed, idx) => {
-                      const isChecked = !!currentScoreObj.completedDeeds[deed.title];
-                      const performer = currentScoreObj.completedDeeds[deed.title] || '';
+                      const isChecked = deed.title in currentScoreObj.completedDeeds;
+                      const performer = currentScoreObj.completedDeeds[deed.title]?.unitId ?? '';
                       // Claimed by somebody else: the glory is gone, and this
                       // side cannot score it. See handleToggleDeed.
                       const holderId = deedClaimedBy(deed.title);
@@ -1695,7 +1718,7 @@ export const PlayModeView: React.FC = () => {
                                 type="checkbox"
                                 checked={isChecked}
                                 disabled={Boolean(takenBy)}
-                                onChange={() => handleToggleDeed(deed.title, deployedUnits[0]?.customName || 'Squad')}
+                                onChange={() => handleToggleDeed(deed.title)}
                                 className="mt-0.5 rounded border-theme-border text-theme-primary focus:ring-0 disabled:opacity-50"
                               />
                               <div>
@@ -1723,9 +1746,13 @@ export const PlayModeView: React.FC = () => {
                                 onChange={(e) => handleSetDeedPerformer(deed.title, e.target.value)}
                                 className="bg-theme-base border border-theme-border rounded px-2 py-1 text-xs text-theme-primary focus:outline-none focus:border-theme-primary"
                               >
-                                <option value="Entire Warband">Entire Warband</option>
+                                {/* The empty value is the side's own claim, and
+                                    it is the default: the book lets a Deed
+                                    belong to the Warband, and a model nobody
+                                    named must not collect the Experience. */}
+                                <option value="">Entire Warband</option>
                                 {deployedUnits.map((u) => (
-                                  <option key={u.id} value={u.customName}>
+                                  <option key={u.id} value={u.id}>
                                     {u.customName} ({u.profileSnapshot.name})
                                   </option>
                                 ))}

@@ -62,6 +62,24 @@ generated dataset, and that is rebuilt from upstream catalogues. A record
 holding only a title would silently re-describe a past battle whenever the
 wording changed upstream. What the players read on the night is what it keeps.
 
+**A Deed names the model that performed it — `unitId`, with `unitName` beside
+it.** The id is what the rules read: the book gives a model that performed at
+least one Glorious Deed a second Experience Point (p.105), and `MatchHandover`
+carries the ids so the post-battle step can award it without asking the player
+to retype what the app watched them do. The name is what a person reads, and
+it is copied for the same reason the description is — a model deleted from a
+roster next season would otherwise leave an id that resolves to nothing. A
+Deed with neither is the side's own, which the book allows.
+
+**`turn` never held a turn.** `SideScore.completedDeeds` was a bare string,
+its comment said it was the turn, and its only writer — Play Mode's performer
+picker — wrote the model's name. `battleFromMatch` believed the comment, so
+every record this app has written carries a name in `turn`, the Chronicle
+printed *"— Bayt al-Nahas, turn Yüzbaşı Demir"*, and the battles API, whose
+`turn` accepts eight characters, rejected any record naming somebody longer —
+`Entire Warband`, the picker's own default, among them. `parseBattle` now
+reads a non-numeric `turn` back into `unitName`, which is what it always was.
+
 **No result is stored.** `victors()` derives it from the scores when something
 needs to show it. A stored "win" would assert an outcome the table may have
 reached on other grounds, and would be wrong forever once written. It returns

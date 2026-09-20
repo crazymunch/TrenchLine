@@ -331,3 +331,101 @@ test('the post-battle wizard is usable one-handed on a phone', async ({ page }, 
   await expectNoZoomingInputs(page);
 });
 
+
+/**
+ * A Glorious Deed knows which model performed it, all the way through.
+ *
+ * FD-06c. Play Mode has had a performer picker all along, and it stored the
+ * model's `customName` in a field three modules read three different ways:
+ * `SideScore.completedDeeds` was a bare string whose comment said *"the turn
+ * it was claimed on"*, `battleFromMatch` believed the comment and wrote the
+ * name into `DeedClaim.turn`, and the Chronicle printed *"— …, turn Yüzbaşı
+ * Demir"*. The battles API's `turn` accepts eight characters, so a record
+ * naming anybody longer was rejected outright.
+ *
+ * The unit tests cover each shape. Only driving the app proves the picker,
+ * the writer, the record and the post-battle award agree — which is the whole
+ * point, since every one of them typechecked while disagreeing.
+ */
+test('a Glorious Deed carries its model into the record and the Experience step', async ({ page }) => {
+  await seedWarband(page, WARBAND);
+  await page.goto('/play');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /ENTER TABLETOP COMBAT/ }).click();
+  await page.waitForTimeout(1500);
+
+  // Claim a Deed by name, the way a player finds it on the checklist.
+  await expect(page.getByText(/Glorious Deeds Checklist/)).toBeVisible();
+  await page.locator('label').filter({ hasText: 'Bloodletting' })
+    .locator('input[type="checkbox"]').check();
+  await page.waitForTimeout(400);
+
+  const picker = page.locator('select').filter({
+    has: page.locator('option', { hasText: 'Entire Warband' }),
+  }).first();
+  await expect(picker, 'no performer picker appeared for a claimed Deed').toBeVisible();
+
+  /*
+    The option's value is the model's ID. That is the fix: a picker keyed by
+    `customName` puts a name where an id belongs, and a rename between the
+    game and the post-battle step then loses the attribution that decides the
+    model's second Experience Point.
+  */
+  const elite = picker.locator('option').filter({ hasText: 'Yüzbaşı Demir' });
+  await expect(elite).toHaveAttribute('value', 'u-elite');
+
+  await picker.selectOption('u-elite');
+  await page.waitForTimeout(300);
+
+  await page.getByRole('button', { name: /END MATCH/i }).first().click();
+  await page.waitForTimeout(1500);
+
+  /*
+    The award: 1 for surviving, 1 for the Deed (p.105). The ELITE model that
+    took it reads 3 → 5; the Troop, which took none and is not on the
+    Experience track at all, still reads no gain.
+  */
+  await toPromotionsStep(page);
+  const w = wizard(page);
+  await expect(w.getByText('3 → 5 XP')).toBeVisible();
+  await expect(w.getByText(/\+1 for surviving, \+1 for a Glorious Deed/)).toBeVisible();
+  await expect(w.getByText(/9 XP · no gain/)).toBeVisible();
+});
+
+/**
+ * And the record itself says who, not "turn who".
+ *
+ * Separate from the award because they fail separately: the Chronicle reads
+ * `DeedClaim`, the wizard reads `MatchHandover`, and the bug put the name in a
+ * field that only the Chronicle rendered.
+ */
+test('the Chronicle names the model that took a Deed, and calls it no turn', async ({ page }) => {
+  await seedWarband(page, WARBAND);
+  await page.goto('/play');
+  await page.waitForLoadState('networkidle');
+
+  await page.getByRole('button', { name: /ENTER TABLETOP COMBAT/ }).click();
+  await page.waitForTimeout(1500);
+  await page.locator('label').filter({ hasText: 'Bloodletting' })
+    .locator('input[type="checkbox"]').check();
+  await page.waitForTimeout(400);
+  await page.locator('select').filter({
+    has: page.locator('option', { hasText: 'Entire Warband' }),
+  }).first().selectOption('u-elite');
+  await page.waitForTimeout(300);
+  await page.getByRole('button', { name: /END MATCH/i }).first().click();
+  await page.waitForTimeout(1500);
+
+  await page.goto('/chronicle');
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(800);
+
+  const card = page.locator('article').first();
+  await expect(card.getByText('Bloodletting')).toBeVisible();
+
+  const text = await card.innerText();
+  expect(text, 'the Deed lost the model that performed it').toContain('Yüzbaşı Demir');
+  expect(text, 'the performer is still being printed as a turn number')
+    .not.toMatch(/turn\s+Yüzbaşı/i);
+});

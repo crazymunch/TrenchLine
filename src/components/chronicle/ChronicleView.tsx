@@ -191,7 +191,7 @@ const BattleCard: React.FC<CardProps> =
               <div key={`${d.title}-${i}`} className="text-xs">
                 <span className="font-bold text-theme-text">{d.title}</span>
                 <span className="text-theme-muted">
-                  {' — '}{d.sideName}{d.turn ? `, turn ${d.turn}` : ''}
+                  {' — '}{d.sideName}{d.unitName ? `, ${d.unitName}` : ''}{d.turn ? `, turn ${d.turn}` : ''}
                 </span>
               </div>
             ))}
@@ -415,7 +415,7 @@ export const ChronicleView: React.FC = () => {
                 </span>
               </div>
               <span className="block text-xs text-theme-primary">
-                {d.sideName}{d.turn ? ` · turn ${d.turn}` : ''}
+                {d.sideName}{d.unitName ? ` · ${d.unitName}` : ''}{d.turn ? ` · turn ${d.turn}` : ''}
               </span>
               {/* The text as it read on the night, copied into the record —
                   the dataset is rebuilt from upstream, and a Deed described

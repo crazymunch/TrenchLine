@@ -60,7 +60,27 @@ export interface DeedClaim {
   /** The side that claimed it. */
   sideId: string;
   sideName: string;
-  /** The turn it was claimed on, where the tracker recorded one. */
+  /**
+   * The model that performed it, where the players named one.
+   *
+   * The book gives a model that performed at least one Glorious Deed a second
+   * Experience Point (p.105), so this is what the post-battle step reads. A
+   * Deed with no model is the whole side's, which the book allows.
+   */
+  unitId?: string;
+  /** That model's name as it read on the night, copied in beside the id. */
+  unitName?: string;
+  /**
+   * The turn it was claimed on, where the tracker recorded one.
+   *
+   * **It never was.** `battleFromMatch` was the only writer, and it put the
+   * performer's name here, because `SideScore.completedDeeds` was a bare
+   * string whose comment said "turn" and whose writer wrote a name. So every
+   * record this app has produced carries a name in this field, and the
+   * Chronicle printed *"…, turn Brother Aldric"*. The reader below moves such
+   * a value to `unitName`, where it belongs; a value that really is a turn
+   * stays one.
+   */
   turn?: string;
 }
 
@@ -100,14 +120,31 @@ const side = (v: unknown): BattleSide | null => {
   };
 };
 
+/**
+ * A turn is a number. Anything else in `turn` is a performer's name.
+ *
+ * Every record written before the `unitId` field existed carries the
+ * performer there — see `DeedClaim.turn`. Rather than drop those or keep
+ * printing them as turns, they are read back into `unitName`, which is what
+ * the writer meant and what a reader of the Chronicle needs. The test is the
+ * shape of the value, not a version flag, because the records are already out
+ * there and carry no flag.
+ */
+const TURN_NUMBER = /^\d{1,3}$/;
+
 const deed = (v: unknown): DeedClaim | null => {
   if (!isRecord(v) || typeof v.title !== 'string' || typeof v.sideId !== 'string') return null;
+  const rawTurn = typeof v.turn === 'string' && v.turn ? v.turn : undefined;
+  const misfiledName = rawTurn && !TURN_NUMBER.test(rawTurn) ? rawTurn : undefined;
+  const unitName = typeof v.unitName === 'string' && v.unitName ? v.unitName : misfiledName;
   return {
     title: v.title,
     description: typeof v.description === 'string' ? v.description : '',
     sideId: v.sideId,
     sideName: typeof v.sideName === 'string' ? v.sideName : v.sideId,
-    turn: typeof v.turn === 'string' ? v.turn : undefined,
+    ...(typeof v.unitId === 'string' && v.unitId ? { unitId: v.unitId } : {}),
+    ...(unitName ? { unitName } : {}),
+    turn: misfiledName ? undefined : rawTurn,
   };
 };
 

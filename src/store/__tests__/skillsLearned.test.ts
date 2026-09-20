@@ -175,7 +175,7 @@ describe('what a Promotion writes onto the model', () => {
     ...over,
   } as never);
 
-  const promote = (ids: string[], misses = 0, experience: { unitId: string; earns: boolean }[] = []) =>
+  const promote = (ids: string[], misses = 0, experience: { unitId: string; earns: boolean; points?: number }[] = []) =>
     useStore.getState().applyPostBattleResults(
       'sc-1', 'Bridgehead', 'Victory', 0, 0,
       [], [], { unitIds: ids, misses }, experience as never, false, 'narrative',
@@ -208,7 +208,7 @@ describe('what a Promotion writes onto the model', () => {
       two years. Adding its survival point to that would hand a brand-new
       ELITE model three Advancement Rolls on the spot.
     */
-    promote(['u2'], 0, [{ unitId: 'u2', earns: true }]);
+    promote(['u2'], 0, [{ unitId: 'u2', earns: true, points: 1 }]);
     expect(unitAfter('u2').xp).toBe(1);
   });
 
@@ -248,5 +248,59 @@ describe('what a Promotion writes onto the model', () => {
     const summary = useStore.getState().warbands
       .find((w) => w.id === WB)!.snapshots!.at(-1)!.changesSummary;
     expect(summary.some((l) => l.includes('Promotion: Janissary Kerem'))).toBe(true);
+  });
+});
+
+/*
+  The Experience award is a NUMBER, not a flag.
+
+  The slice read `experience.some((x) => x.unitId === u.id && x.earns) ? 1 : 0`,
+  so the second point for a Glorious Deed (p.105) had nowhere to land however
+  the wizard decided it, and a LIMITED POTENTIAL model with room for one of
+  two points would have taken both. The wizard decides how many, because that
+  is where the match and the cap are both in hand; the slice writes what it is
+  given.
+*/
+describe('how many Experience Points the award carries', () => {
+  const award = (experience: { unitId: string; earns: boolean; points: number }[]) =>
+    useStore.getState().applyPostBattleResults(
+      'sc-1', 'Bridgehead', 'Victory', 0, 0,
+      [], [], { unitIds: [], misses: 0 }, experience as never, false, 'narrative',
+    );
+
+  beforeEach(() => {
+    useStore.setState({ warbands: [seed([unit()])], activeWarbandId: WB });
+  });
+
+  it('writes two where the model also performed a Glorious Deed', () => {
+    const before = unitAfter().xp;
+    award([{ unitId: 'u1', earns: true, points: 2 }]);
+    expect(unitAfter().xp).toBe(before + 2);
+  });
+
+  it('writes one for a survivor with no Deed', () => {
+    const before = unitAfter().xp;
+    award([{ unitId: 'u1', earns: true, points: 1 }]);
+    expect(unitAfter().xp).toBe(before + 1);
+  });
+
+  it('writes the trimmed number where a cap left room for one of two', () => {
+    const before = unitAfter().xp;
+    award([{ unitId: 'u1', earns: true, points: 1, forDeed: true } as never]);
+    expect(unitAfter().xp).toBe(before + 1);
+  });
+
+  it('writes nothing for a model that earns nothing, whatever points says', () => {
+    /* `earns: false` is the verdict; `points` is how much. A row that says
+       no must not pay out because a number was left on it. */
+    const before = unitAfter().xp;
+    award([{ unitId: 'u1', earns: false, points: 2 }]);
+    expect(unitAfter().xp).toBe(before);
+  });
+
+  it('writes nothing for a model with no row at all', () => {
+    const before = unitAfter().xp;
+    award([]);
+    expect(unitAfter().xp).toBe(before);
   });
 });

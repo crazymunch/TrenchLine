@@ -10,7 +10,7 @@ import { describe, it, expect } from 'vitest';
 
 import { battleFromMatch, type SideInfo } from '../battleFromMatch';
 import { victors, parseBattle, BATTLE_VERSION } from '@/types/battle';
-import type { SideScore } from '../matchState';
+import type { SideScore, DeedMark } from '../matchState';
 import type { CoalitionMap } from '../coalitions';
 
 const NOW = new Date('2026-09-19T21:30:00.000Z');
@@ -25,7 +25,7 @@ const IDS = Object.keys(INFO);
 const PAIRED: CoalitionMap = {
   'wb-sultanate': 'A', 'opp-crusade': 'A', 'opp-zortan': 'B', 'opp-heretic': 'B',
 };
-const score = (vp: number, deeds: Record<string, string> = {}, turns = {}): SideScore =>
+const score = (vp: number, deeds: Record<string, DeedMark> = {}, turns = {}): SideScore =>
   ({ vp, completedDeeds: deeds, turnScores: turns });
 
 const DEEDS = [
@@ -37,9 +37,9 @@ const build = (over: Partial<Parameters<typeof battleFromMatch>[0]> = {}) => bat
   matchWarbandIds: IDS,
   sideInfo: (id) => INFO[id],
   scores: {
-    'wb-sultanate': score(6, { 'First Blood': '2' }, { 1: 2, 2: 4 }),
+    'wb-sultanate': score(6, { 'First Blood': { turn: '2' } }, { 1: 2, 2: 4 }),
     'opp-crusade': score(4),
-    'opp-zortan': score(5, { 'Hold the Line': '3' }),
+    'opp-zortan': score(5, { 'Hold the Line': { turn: '3' } }),
     'opp-heretic': score(2),
   },
   coalitions: PAIRED,
@@ -194,5 +194,87 @@ describe('reading a damaged record', () => {
     expect(b.sides).toHaveLength(4);
     expect(b.weather).toBeUndefined();
     expect(b.deeds).toEqual([]);
+  });
+});
+
+/*
+  The Deed's model, end to end, and the records written before it had one.
+
+  `SideScore.completedDeeds` was a bare string whose comment said "turn" and
+  whose writer — Play Mode's performer picker — wrote the model's name. This
+  loop believed the comment, so every battle record the app has produced
+  carries a name in `DeedClaim.turn`: the Chronicle printed "turn Brother
+  Aldric", and the battles API, whose `turn` accepts eight characters, rejected
+  the whole record for anyone called more than that.
+*/
+describe('a Glorious Deed carries the model that performed it', () => {
+  const one = (mark: DeedMark) => battleFromMatch({
+    matchWarbandIds: ['wb-sultanate'],
+    sideInfo: (id) => INFO[id],
+    scores: { 'wb-sultanate': score(3, { 'First Blood': mark }) },
+    coalitions: {},
+    scenarioId: 'brothers-in-arms',
+    scenarioName: 'Brothers in Arms',
+    scenarioDeeds: DEEDS,
+    playTurn: 4,
+    now: NOW,
+  })!.deeds[0];
+
+  it('writes the model to its own field, and leaves the turn alone', () => {
+    const d = one({ unitId: 'u1', unitName: 'Brother Aldric', turn: '2' });
+    expect(d.unitId).toBe('u1');
+    expect(d.unitName).toBe('Brother Aldric');
+    expect(d.turn).toBe('2');
+  });
+
+  it('records a side-wide claim with no model, rather than picking one', () => {
+    const d = one({ turn: '3' });
+    expect(d.unitId).toBeUndefined();
+    expect(d.unitName).toBeUndefined();
+    expect(d.turn).toBe('3');
+  });
+
+  it('never puts a name in the turn field again', () => {
+    expect(one({ unitId: 'u1', unitName: 'Brother Aldric' }).turn).toBeUndefined();
+  });
+});
+
+describe('a battle record written before a Deed had a model', () => {
+  const stored = (turn: string) => parseBattle({
+    version: 1,
+    id: 'btl-old',
+    endedAt: NOW.toISOString(),
+    scenarioId: 'brothers-in-arms',
+    scenarioName: 'Brothers in Arms',
+    turns: 4,
+    sides: [{ id: 'wb-sultanate', name: 'Bayt al-Nahas', factionId: 'iron-sultanate', vp: 3 }],
+    deeds: [{
+      title: 'First Blood',
+      description: 'Take the first model out of action.',
+      sideId: 'wb-sultanate',
+      sideName: 'Bayt al-Nahas',
+      turn,
+    }],
+  })!.deeds[0];
+
+  it('moves the performer out of the turn field it was filed under', () => {
+    const d = stored('Brother Aldric');
+    expect(d.unitName).toBe('Brother Aldric');
+    expect(d.turn).toBeUndefined();
+  });
+
+  it('claims no unit id it was never told', () => {
+    expect(stored('Brother Aldric').unitId).toBeUndefined();
+  });
+
+  it('leaves a turn that really is one where it is', () => {
+    const d = stored('2');
+    expect(d.turn).toBe('2');
+    expect(d.unitName).toBeUndefined();
+  });
+
+  it('recovers the picker’s side-wide option too', () => {
+    // 14 characters, so this is the record the server used to reject outright.
+    expect(stored('Entire Warband').unitName).toBe('Entire Warband');
   });
 });

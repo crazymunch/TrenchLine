@@ -30,7 +30,7 @@ const whole = (over: Record<string, unknown> = {}) => ({
   selectedScenarioId: 'brothers-in-arms',
   playTurn: 3,
   scores: {
-    'wb-1': { vp: 6, completedDeeds: { 'First Blood': '2' }, turnScores: { 1: 2, 2: 4 } },
+    'wb-1': { vp: 6, completedDeeds: { 'First Blood': { unitId: 'u1', unitName: 'Brother Aldric' } }, turnScores: { 1: 2, 2: 4 } },
     'opp-1': { vp: 4, completedDeeds: {}, turnScores: { 2: 4 } },
   },
   deployedUnitIds: { 'wb-1': ['u1', 'u2'] },
@@ -46,7 +46,9 @@ describe('restoring a match', () => {
     expect(m.matchWarbandIds).toEqual(['wb-1', 'opp-1']);
     expect(m.playTurn).toBe(3);
     expect(m.scores['wb-1'].vp).toBe(6);
-    expect(m.scores['wb-1'].completedDeeds).toEqual({ 'First Blood': '2' });
+    expect(m.scores['wb-1'].completedDeeds).toEqual({
+      'First Blood': { unitId: 'u1', unitName: 'Brother Aldric' },
+    });
     expect(m.scores['wb-1'].turnScores).toEqual({ 1: 2, 2: 4 });
     expect(m.deployedUnitIds['wb-1']).toEqual(['u1', 'u2']);
     expect(m.weatherRolls[0].dice).toEqual([3, 4]);
@@ -167,5 +169,45 @@ describe('saying how old a resumed match is', () => {
     // A clock that moved, or a file copied between devices.
     expect(savedAgo(at('2026-09-20T18:00:00.000Z'), now)).toBe('just now');
     expect(savedAgo(at('not a date'), now)).toBe('just now');
+  });
+});
+
+/*
+  A save written before a Deed's claim became a `DeedMark`.
+
+  Those hold a bare string, and the string is the PERFORMER'S NAME — that is
+  what Play Mode's picker wrote, whatever `SideScore`'s comment claimed it
+  was. Restoring one must not throw the name away, and must not pretend to
+  know an id it was never given.
+*/
+describe('a match saved before a Deed carried its model', () => {
+  const legacy = (v: unknown) => parseSavedMatch(whole({
+    scores: { 'wb-1': { vp: 3, completedDeeds: { 'First Blood': v }, turnScores: {} } },
+  }))!.scores['wb-1'].completedDeeds['First Blood'];
+
+  it('reads the bare string back as the performer, not as a turn', () => {
+    expect(legacy('Brother Aldric')).toEqual({ unitName: 'Brother Aldric' });
+  });
+
+  it('invents no unit id from the name', () => {
+    expect(legacy('Brother Aldric').unitId).toBeUndefined();
+  });
+
+  it('reads the side-wide claim the picker wrote as a name', () => {
+    // `Entire Warband` was a performer option, so it arrives as one.
+    expect(legacy('Entire Warband')).toEqual({ unitName: 'Entire Warband' });
+  });
+
+  it('reads an empty string as a claim with nothing known about it', () => {
+    expect(legacy('')).toEqual({});
+  });
+
+  it('still reads the shape written today', () => {
+    expect(legacy({ unitId: 'u1', unitName: 'Kadir', turn: '2' }))
+      .toEqual({ unitId: 'u1', unitName: 'Kadir', turn: '2' });
+  });
+
+  it('drops a field of the wrong type rather than carrying it', () => {
+    expect(legacy({ unitId: 7, unitName: null, turn: '2' })).toEqual({ turn: '2' });
   });
 });
