@@ -14,6 +14,12 @@ file:line at `41c0442`.
 
 Nothing was fixed here. This is a findings list for whoever implements them.
 
+**Status, 20 September.** PR #57 (`bdf0bd8`, on `main`) landed the Play Mode
+reference sheet (RR-21) and the local-only test database guard (RR-16); each
+finding below carries a note saying what was checked at that revision. PR #59
+(open, head `f008151`) carries RR-01, RR-06 and RR-07. Everything else stands
+as written. Code citations elsewhere in this document remain at `41c0442`.
+
 ## Result in one paragraph
 
 The derived campaign tables are right. The Threshold table, the starting
@@ -415,6 +421,13 @@ not implemented. A guard that refuses any host that is not localhost or a
 `*_TEST` URL belongs in the shared integration setup before anything else in
 this list.
 
+**Landed in #57.** `src/lib/integrationDb.ts` on `main` at `bdf0bd8`: the
+integration suites (11 importers) read `TRENCHLINE_TEST_DATABASE_URL` through
+`integrationDbUrl()`, which skips the suite when it is unset and throws
+`RemoteTestDatabaseError` for any host outside a local allowlist. No test reads
+`DATABASE_URL` any more. Checked by reading the file and its importers, not by
+running the suites against a local database.
+
 ### RR-17. The turn counter has two writers, no sync and a reset
 
 Covered under RR-06. The `docs/CAMPAIGN-SYNC.md` authority table (line 339)
@@ -481,6 +494,15 @@ every activation.
 
 Two smaller things on the same card: `SAVE` is not a term the game uses (the
 characteristic is Armour and it is an INJURY MODIFIER), and `WOUNDS` is RR-19.
+
+**Landed in #57, with two gaps.** `src/components/play/ModelReferenceSheet.tsx`
+on `main` at `bdf0bd8` opens from the card ("Rules, Keywords & Skills",
+`PlayModeView.tsx` line 1864) and renders the statline with injuries applied,
+keywords as tappable chips, innate abilities, skills, advancements, weapons
+and armour with their keywords and rules, and injuries and scars. That is the
+finding as written. Still missing: the Carrying section lists
+`equippedWeapons` and `equippedArmour` and never `equippedEquipment`, and the
+label is still `SAVE` (line 81 of the sheet).
 
 ### Ending the match
 
