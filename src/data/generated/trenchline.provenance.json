@@ -4638,8 +4638,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "warbands-book",
-      "source": "warbands-book:Warbands of Trench Crusade"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",

@@ -18874,6 +18874,7 @@ export const DATASET: Dataset = {
         "Mercenary"
       ],
       "keywords": [
+        "MERCENARY",
         "NEGATE FEAR"
       ],
       "stats": {

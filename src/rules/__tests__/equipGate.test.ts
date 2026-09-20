@@ -134,15 +134,37 @@ describe('a Mercenary and the gear it may not have', () => {
 
   it('refuses one without the MERCENARY keyword, on its role', () => {
     /*
-      Five of the fourteen Mercenaries carry no MERCENARY keyword. The Sister
-      of Saint Cosmas carries none at all — her catalogue entry gives her none
-      and no source states one, which #80 documents. A keyword gate would have
-      let her buy anything.
+      FOUR of the fourteen Mercenaries carry no MERCENARY keyword — the Witch
+      Coven Matriarch, Pairika, the Trench Dog and the Disciple of St. Roch —
+      so a keyword gate would let them buy anything. All fourteen carry the
+      role, which is why the gate reads that.
+
+      It was five until the Sister of Saint Cosmas got hers. #80 withheld it on
+      the reasoning that no source stated it for her; the Warbands book does
+      not, but the DISPATCH reprints her entry and does (L654-655). That was my
+      error, corrected here.
     */
-    const sister = unitNamed('Sister of Saint Cosmas');
-    expect(sister.keywords).not.toContain('MERCENARY');
-    expect(sister.roles).toContain('Mercenary');
-    expect(ask('Sword/Axe', sister).allowed).toBe(false);
+    const bare = d.units.filter((u) => (u.roles ?? []).some((r) => /mercenary/i.test(r))
+      && !(u.keywords ?? []).includes('MERCENARY'));
+    expect(bare.length, 'Mercenaries with no MERCENARY keyword').toBeGreaterThan(0);
+    expect(bare.map((u) => u.name)).not.toContain('Sister of Saint Cosmas');
+
+    /*
+      Of those, only the ones whose Battlekit the dataset HOLDS are refused —
+      the other rule still applies, and Pairika and the Trench Dog have none.
+      Asserting both at once is what caught that: the first draft of this test
+      expected every keywordless Mercenary to be refused and Pairika was not.
+    */
+    const gated = bare.filter((u) => (u.battlekit ?? []).length);
+    expect(gated.length, 'keywordless Mercenaries that do have a kit').toBeGreaterThan(0);
+    for (const u of gated) {
+      expect(ask('Sword/Axe', unitNamed(u.name)).allowed,
+        `${u.name} is gated on its role, not its keyword`).toBe(false);
+    }
+    for (const u of bare.filter((x) => !(x.battlekit ?? []).length)) {
+      expect(ask('Sword/Axe', unitNamed(u.name)).allowed,
+        `${u.name} has no kit modelled, so nothing is "other"`).toBe(true);
+    }
   });
 
   it('offers the Scripture Guardian a Melee Weapon, and nothing else', () => {

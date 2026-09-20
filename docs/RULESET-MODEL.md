@@ -411,6 +411,20 @@ Two conventions make it checkable rather than trusted:
 
 - **Every op addresses its target by id.** Two units are named *Combat Medic*;
   `findTarget` refuses an ambiguous name outright rather than picking one.
+
+> **A correction.** This layer first shipped without the Sister's `MERCENARY`
+> keyword, on the reasoning that no source stated it for her — the book's
+> Keywords rows in that section print only the model's own, because the heading
+> already says *Mercenaries*. That reasoning was wrong about the sources: the
+> **Dispatch** reprints her entry and prints both (`Replace the Keywords with:
+> MERCENARY NEGATE FEAR`, L654-655), and that reprint had no op. It has one
+> now, in `dispatch-01`, which supersedes the book's `addKeyword` here — the
+> two sources agree on NEGATE FEAR, and only the Dispatch states MERCENARY.
+>
+> Worth the note because the failure was in the survey, not the reasoning: I
+> checked the book's Mercenary section and the Dispatch's *nine* transcribed
+> keyword reprints, and never asked whether the Dispatch had a reprint with no
+> op at all. It had two — hers, and the Desecrated Saint's.
 - **Every op carries `_src`**, one or more `L<a>-<b>` spans into the extract.
   `scripts/lib/__tests__/layerTranscription.test.mjs` reads every span and
   fails unless the transcribed value appears in the lines it cites, so a line
@@ -1324,10 +1338,10 @@ been selling them gear the game does not let them carry.
 
 Three things decide it, and each is a deliberate choice:
 
-**Keyed on the Mercenary ROLE, not the MERCENARY keyword.** Five of the
-fourteen Mercenaries do not carry that keyword — among them the Sister of Saint
-Cosmas, whose catalogue entry gives her no keywords at all and for whom no
-source states one. All fourteen carry the role.
+**Keyed on the Mercenary ROLE, not the MERCENARY keyword.** Four of the
+fourteen Mercenaries do not carry that keyword — the Witch Coven Matriarch,
+Pairika, the Trench Dog and the Disciple of St. Roch. All fourteen carry the
+role, so the role is what the gate reads.
 
 **The one exception is a field, not a name.** The Scripture Guardian "must have
 either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon" bought "from
