@@ -218,6 +218,43 @@ test('a Troop is offered no Advancement Roll, however much Experience it carries
   await expect(wizard(page).getByRole('button', { name: /Roll 2D6 on both/i })).toHaveCount(1);
 });
 
+test('the standout model can be any roster’s, or a name off it', async ({ page }) => {
+  /*
+    It offered the active Warband's models and nothing else. The model that
+    decided a game is frequently on the other side of the table, so the note
+    could not say what it was for.
+  */
+  await endAMatch(page);
+  await toPromotionsStep(page);
+
+  // It is on the last step, with the battle report.
+  for (let i = 0; i < 4; i += 1) {
+    if (await wizard(page).getByLabel(/Standout model/i).count()) break;
+    await wizard(page).getByRole('button', { name: /Next Step/i }).first().click();
+    await page.waitForTimeout(600);
+  }
+
+  const field = wizard(page).getByLabel(/Standout model/i);
+  await expect(field).toBeVisible();
+
+  /*
+    A free-text field with a datalist, not a select: a model on a roster this
+    device does not hold — an opponent in a hosted match, or a placeholder,
+    which has no roster at all — must still be nameable.
+  */
+  await expect(field).toHaveAttribute('list', 'standout-model-options');
+  await field.fill('Someone Else’s Champion');
+  await expect(field).toHaveValue('Someone Else’s Champion');
+
+  // And the local rosters are offered, with the model's profile to tell two
+  // models of the same name apart.
+  const options = await page.locator('#standout-model-options option').allTextContents();
+  const values = await page.locator('#standout-model-options option')
+    .evaluateAll((els) => els.map((e) => (e as HTMLOptionElement).value));
+  expect(values).toContain('Yüzbaşı Demir');
+  expect(options.join(' ')).toContain('Advancement Test Warband');
+});
+
 test('the post-battle wizard is usable one-handed on a phone', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'desktop', 'the floors stop at 1024px');
 
