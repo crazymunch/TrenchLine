@@ -9,9 +9,9 @@
  * Everything here is a pure function over a Roster and a Dataset, so the rules
  * can be tested without rendering anything.
  */
-import type { Dataset, UnitProfile, WarbandVariant, FactionSpecialRule, LayerOp } from '@/types/catalogue';
+import type { Cost, Dataset, UnitProfile, WarbandVariant, FactionSpecialRule, LayerOp } from '@/types/catalogue';
 import type { Roster } from './costs';
-import { budgetState, unitCost } from './costs';
+import { budgetState, unitCost, formatCost, isZero } from './costs';
 import { parseRestrictions, onlyForVerdict, type Restriction } from './restrictions';
 import { armouryFor, offersOf, restrictionsFor, sectionsOf, stocks, type Armoury } from './armoury';
 import { nameKey } from './names';
@@ -607,12 +607,26 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
     rearrange is the worse failure — but a roster that is still overdrawn must
     not reach a game or the post-battle wizard, because every number those
     produce would be built on Ducats the Warband does not have.
+
+    **Both currencies (FD-05h).** This read `strongbox.ducats` alone, which was
+    the whole reason a Glory-priced hire went uncharged: charging one would
+    have driven a Warband negative in a currency nothing checked, so the hire
+    charged nothing instead and the model was free. A Strongbox is a `Cost`,
+    and either half of it can go under. The message names the currency because
+    a player told only that they are "overdrawn by 5" would go looking through
+    a Ducat balance that is fine.
+
+    One violation, not one per currency: a muster that is short of both is one
+    roster to trim, and `formatCost` already spells a two-currency shortfall.
   */
-  const overdrawn = -(roster.strongbox?.ducats ?? 0);
-  if (overdrawn > 0) {
+  const short: Cost = {
+    ducats: Math.max(0, -(roster.strongbox?.ducats ?? 0)),
+    glory: Math.max(0, -(roster.strongbox?.glory ?? 0)),
+  };
+  if (!isZero(short)) {
     violations.push(err({
       code: 'strongbox-overdrawn',
-      message: `Strongbox overdrawn by ${overdrawn} Ducats.`,
+      message: `Strongbox overdrawn by ${formatCost(short)}.`,
     }));
   }
 
