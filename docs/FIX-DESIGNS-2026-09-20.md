@@ -559,6 +559,29 @@ roster is not re-charged. Test: found on 700, recruit 620, hold 80; hire
 in the Quartermaster Step, hold less by the price; an existing roster
 loads with the balance it had.
 
+**Migration ruling, 12:26 UTC, on the developer's question "credit
+existing Warbands with the allowance less the roster, or keep the balance
+as-is?"** Neither as put, because the two options describe two kinds of
+Warband, and the answer is the app's own on-load reconciliation beside
+`openLedger`, idempotent, never a script against the database. A campaign
+Warband that has never played (no `post_battle` snapshot, no ledger entry
+with a post-battle reason) is given the pot the builder always showed it:
+a `founding` credit of `ducatLimit` and one `quartermaster` debit for the
+roster as it stands, appended, with anything it already held kept as its
+own entries; an over-budget draft goes negative by its overspend and is
+refused a hire until trimmed. A campaign Warband that has played keeps its
+balance, as above: the data cannot separate the founding roster from hires
+made since, which never debited, or from the dead, whose cost was spent
+and whose models are gone, so any computed credit is a guess, and the
+player corrects it once through the Strongbox setter, which books a
+visible `admin-adjust`. The marker that a Warband has been through this is
+a `founding` entry with Ducats above zero, which a Warband founded after
+the change carries from birth. A list that is not a campaign Warband holds
+no money and keeps measuring against `ducatLimit`. Tests added: 620 on 700
+never played loads holding 80, twice; a played Warband holding 30 loads
+holding 30 and gains no entry; 740 on 700 loads at minus 40 and refuses a
+hire; a new muster on 700 holds 700 less its cost.
+
 ### FD-05f. A Glory-priced item in the Arsenal is free
 
 From PR #75's addendum, verified: `ArmoryStashModal` renders every row
