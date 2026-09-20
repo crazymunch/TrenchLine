@@ -315,7 +315,8 @@ export type LedgerReason =
   | 'ransom'          // paid or received
   | 'admin-grant'     // a campaign admin's catch-up allotment
   | 'admin-adjust'    // any other admin correction
-  | 'reinforcements'; // the Strongbox zeroed by Calling for Reinforcements
+  | 'reinforcements'  // the Strongbox zeroed by Calling for Reinforcements
+  | 'reconciliation'; // the opening balance, where no history was recorded
 
 export interface LedgerEntry {
   id: string;

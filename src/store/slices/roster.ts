@@ -14,6 +14,7 @@ import type { CampaignMember } from '../../types/campaign';
 import type { InitialState } from '../init';
 import { persistWarbands, mergeWarbands } from '../persist';
 import { outbox } from '../../services/sync';
+import { book, strongbox } from '../../rules/ledger';
 
 export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'setWarbandAllowThirdParty' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
 
@@ -124,6 +125,17 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       The caller resolves it with `musterBudget`, never by typing a number.
     */
     createWarband: (name, factionId, ducatLimit = 700, forceMode = 'campaign', founding) => {
+      /*
+        The published starting Glory: 0 for every Variant but the Papal States
+        Intervention Force, whose Specialist Force rule musters it on 11 ☼.
+        Resolved once, because it is now needed in three places and the two
+        copies of this expression were how the Warband ended up holding
+        double — see the founding booking below.
+      */
+      const startingGlory = forceMode === 'unrestricted'
+        ? (founding?.gloryPoints ?? 0)
+        : (founding?.startingGlory ?? 0);
+
       const foundingSnapshot: WarbandSnapshot = {
         id: `snap-${Date.now()}`,
         timestamp: new Date().toISOString(),
@@ -134,9 +146,7 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         // The founding snapshot records the Warband as it was founded, so a
         // starting Glory balance belongs in it — restoring to the founding
         // state otherwise silently zeroed it.
-        gloryPoints: forceMode === 'unrestricted'
-          ? (founding?.gloryPoints ?? 0)
-          : (founding?.startingGlory ?? 0),
+        gloryPoints: startingGlory,
         unitCount: 0,
         units: [],
         armoryStash: [],
@@ -151,28 +161,40 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         forceMode,
         variantId: founding?.variantId,
         allowThirdParty: founding?.allowThirdParty ?? false,
-        // A campaign warband opens its ledger with the founding allowance, so
-        // the Strongbox is the sum of a history from the first Ducat rather than
-        // a number that was set and is later edited.
-        ledger: forceMode === 'campaign'
-          ? [{
-              id: `led-${Date.now()}`,
-              at: now,
-              reason: 'founding' as const,
-              ducats: ducatLimit,
-              glory: founding?.startingGlory ?? 0,
-              game: 1,
-              note: 'Starting allowance.',
-            }]
-          : [],
+        /*
+          The ledger opens on what the Strongbox actually holds.
+
+          It used to open on the founding ALLOWANCE — `ducats: ducatLimit` —
+          while `treasuryDucats: 0` was written eight lines below, on the same
+          object, by this same function. Nothing debited the entry when a
+          model was recruited, so the two disagreed by the whole allowance
+          from the moment of founding and never converged. Nothing read the
+          ledger, so nobody saw it.
+
+          The allowance is not Strongbox money in this app yet: the builder
+          measures recruitment against `ducatLimit` on its own, and unspent
+          Ducats go nowhere. The book says they should —
+
+            "Any unspent 👑 are put into your Warband's Strongbox (to
+             represent your in-game treasury)"  — Warbands, p.10
+
+          — and routing them there is FD-05e, which changes what a Warband
+          holds. This change does not: it makes the record agree with the
+          balance that is already there. So the allowance is named in the
+          note, where it is a fact about the muster, rather than credited as
+          Ducats the Warband does not have.
+        */
+        ledger: [],
         ducatLimit,
+        /*
+          Both zero here, and both set by the founding booking below. Carrying
+          a balance on the object AND booking it credits the Warband twice —
+          `book` opens the account on what it finds before appending, so a
+          Papal States muster arrived holding 22 Glory instead of 11. Money
+          enters this Warband through exactly one door, and it is `book`.
+        */
         treasuryDucats: 0,
-        // A campaign Warband's starting Glory is published, not the player's to
-        // set: 0 for every Variant but the Papal States Intervention Force,
-        // whose Specialist Force rule musters it on 11 ☼.
-        gloryPoints: forceMode === 'unrestricted'
-          ? (founding?.gloryPoints ?? 0)
-          : (founding?.startingGlory ?? 0),
+        gloryPoints: 0,
         units: [],
         armoryStash: [],
         snapshots: [foundingSnapshot],
@@ -180,14 +202,29 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         updatedAt: now
       };
 
+      /*
+        Booked after the object is built so it reads the totals set above
+        rather than restating them, and so a Warband is reconciled from birth
+        — `openLedger` at the roster doors then finds nothing to do for it.
+      */
+      const founded = book(newWarband, {
+        reason: 'founding',
+        ducats: 0,
+        glory: startingGlory,
+        game: 1,
+        note: forceMode === 'campaign'
+          ? `Founded on an allowance of ${ducatLimit} Ducats, spent at the muster.`
+          : 'Founded.',
+      }, now);
+
       set((state) => {
-        let updated = [...state.warbands, newWarband];
+        let updated = [...state.warbands, founded];
         updated = persistWarbands(updated, state.warbands);
-        storage.setActiveWarbandId(newWarband.id);
-        return { warbands: updated, activeWarbandId: newWarband.id };
+        storage.setActiveWarbandId(founded.id);
+        return { warbands: updated, activeWarbandId: founded.id };
       });
 
-      return newWarband;
+      return founded;
     },
 
     importWarband: (newWarband: Warband) => {
@@ -429,16 +466,30 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       });
     },
 
+    /*
+      Setting the Strongbox by hand, which stays possible and becomes visible.
+
+      The player types a total; the ledger records the MOVEMENT that total
+      implies. Typing 400 over a balance of 340 is a credit of 60, and the
+      entry says so — otherwise a corrected balance is indistinguishable from
+      a purchase that never happened, which is the whole complaint this
+      change exists to answer.
+
+      `admin-adjust` rather than `admin-grant`: a grant is a campaign
+      decision with someone's name on it, and this is whoever holds the
+      phone. `reversible` treats neither as a player's to undo.
+    */
     updateWarbandTreasury: (warbandId, treasuryDucats) => {
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          const updatedWb: Warband = {
-            ...w,
-            treasuryDucats: Math.max(0, Number(treasuryDucats) || 0),
-            updatedAt: new Date().toISOString()
-          };
-          return updatedWb;
+          const target = Math.max(0, Number(treasuryDucats) || 0);
+          const delta = target - strongbox(w).ducats;
+          return { ...book(w, {
+            reason: 'admin-adjust',
+            ducats: delta,
+            note: `Strongbox set to ${target} Ducats.`,
+          }), updatedAt: new Date().toISOString() };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
@@ -449,12 +500,13 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          const updatedWb: Warband = {
-            ...w,
-            gloryPoints: Math.max(0, Number(gloryPoints) || 0),
-            updatedAt: new Date().toISOString()
-          };
-          return updatedWb;
+          const target = Math.max(0, Number(gloryPoints) || 0);
+          const delta = target - strongbox(w).glory;
+          return { ...book(w, {
+            reason: 'admin-adjust',
+            glory: delta,
+            note: `Glory set to ${target}.`,
+          }), updatedAt: new Date().toISOString() };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
@@ -633,13 +685,13 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
               quantity: 1,
             }];
           }
-          return {
-            ...w,
-            armoryStash: newStash,
-            ...(currency === 'glory'
-              ? { gloryPoints: (w.gloryPoints ?? 0) - item.cost }
-              : { treasuryDucats: (w.treasuryDucats ?? 0) - item.cost }),
-          };
+          /* Booked, not assigned. `book` re-derives both totals from the
+             whole ledger, so the balance and its history cannot disagree. */
+          return book({ ...w, armoryStash: newStash }, {
+            reason: 'quartermaster',
+            ...(currency === 'glory' ? { glory: -item.cost } : { ducats: -item.cost }),
+            note: `Bought ${item.name}.`,
+          });
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
@@ -678,13 +730,11 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             newStash = w.armoryStash.filter((i) => i.id !== stashItemId);
           }
 
-          return {
-            ...w,
-            armoryStash: newStash,
-            ...(currency === 'glory'
-              ? { gloryPoints: (w.gloryPoints ?? 0) + sellValue }
-              : { treasuryDucats: (w.treasuryDucats ?? 0) + sellValue }),
-          };
+          return book({ ...w, armoryStash: newStash }, {
+            reason: 'sold',
+            ...(currency === 'glory' ? { glory: sellValue } : { ducats: sellValue }),
+            note: `Sold ${item.name} for ${sellValue}.`,
+          });
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };

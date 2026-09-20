@@ -81,6 +81,26 @@ notices until they need the file.
 state and is not. A model removed by the Trauma Step is gone from the campaign;
 a restore that quietly brought it back would be inventing a model.
 
+`ledger` is `durable`, and it is now the Strongbox itself rather than a note
+beside it. `treasuryDucats` and `gloryPoints` stay in the file — they are a
+column in the database and a number in two dozen places in the UI — but
+`rules/ledger.ts` is the only thing that writes them, deriving both from the
+whole ledger on every movement, so a file cannot carry a balance its own
+history contradicts.
+
+A file written before this can, and one written by this app always did: the
+founding entry credited the whole founding allowance while `treasuryDucats`
+was written `0` beside it. Such a file has its account **opened** on load, at
+both doors: one entry carrying the balance the roster actually holds, with the
+allowance kept in the note. **No money moves.** Where the entries and the total
+disagree, the total wins — it is what the player has been looking at, and a
+migration that hands someone 700 Ducats or takes 340 away is not a migration
+anybody wants.
+
+That is the right shape exactly once, because nothing had ever read these
+entries. Once the ledger is live, a correction is an appended entry and never a
+replacement; `rules/ledger.ts` says so where the code is.
+
 Snapshots are kept — they are the campaign's financial and roster history — and
 their model copies are projected the same way, so a file's history carries no
 battle state either.
