@@ -35,6 +35,8 @@ carry, and what these designs cover:
 | FD-09 | RR-17, RR-27 | the campaign store, Play Mode's end of match, the Chronicle record |
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 | FD-11 | the April 2026 Mercenaries review | `scripts/lib/parse-battlescribe.mjs`, `scripts/lib/layers.mjs`, the Dispatch layer and a Warbands-book layer, `AddEquipmentModal`, `validate.ts` |
+| FD-12 | the official Warband Roster Sheet in the app; the Experience track; provenance of skills and rewards | a new sheet route, `UnitCard`, the wizard's Promotions step, `src/types/warband.ts` |
+| FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 
 ### Landed, as of 07:20 UTC on 20 September
 
@@ -1280,6 +1282,241 @@ per match before the applier runs; a weapon `setCost` is exempt because it
 already resolves by name and faction list. Two weapons change and nothing
 else.
 
+## FD-12. The Warband Roster Sheet, in the app
+
+The owner supplied the official sheet, now committed as
+`data-sources/rulebook/warband-roster-sheet.pdf` with its text at
+`data-sources/rulebook/extracted/warband-roster-sheet.txt`. Three pages:
+
+- **Page 1.** Warband Name, Player, Warband, Patron, Campaign Battle,
+  Faction. STRONGBOX with Ducats and Glory, each as TOTAL and UNSPENT.
+  WARBAND BIO & EXPLORATION NOTES. HERALDRY. ARSENAL. Then the campaign
+  table: GAME 1 to 12, THRESHOLD 700 to 1800, FIELD STRENGTH 10 to 20 and
+  22 at game 12, SCENARIO NAME, RESULT (W/L/D), CAMPAIGN VPS, and TOTAL
+  CAMPAIGN VICTORY POINTS.
+- **Pages 2 and 3.** Unit cards, two large and four small: NAME, MODEL
+  NAME, COST, the five characteristics, EXPERIENCE as eighteen boxes of
+  which six are circles, SCARS as two boxes, Battlekit, Abilities, Skills
+  & Injuries, Keywords, and a portrait on the large card.
+
+Two things checked against the dataset before designing: the sheet's twelve
+Threshold and Field Strength rows equal `campaign.thresholds` exactly,
+including 22 at game 12; and the six circles sit at boxes 2, 4, 7, 10, 14
+and 18, which is `campaign.experience.advancementAt`. Both are therefore
+drawn from data, not from the picture.
+
+This is the feature the owner describes as what NewRecruit never had: an
+evolving record of every battle a warband has fought, and the paper tracker
+represented in full. It also carries two requests made alongside it: a
+review of every exploration reward and skill a warband holds and how each
+was earned, and the Experience track drawn on the model the way the book
+draws it.
+
+### The change
+
+1. **An `ExperienceTrack` component**, used in three places: the unit card
+   in the builder, the wizard's Promotions step, and the sheet. Eighteen
+   boxes, a circle at each `advancementAt` value, filled to `unit.xp`; a
+   LIMITED POTENTIAL model greys the boxes past `experienceCap`
+   (`src/rules/promotions.ts`), so the cap is visible rather than stated.
+   Display only, so 16px boxes are fine: eighteen of them fit a 375px row
+   with the card's gutters, and the component must not wrap. Beside it,
+   two SCARS boxes filled from `unit.scars`, since two is the retire rule
+   (FD-10).
+2. **Provenance on what a model holds.** Skills, injuries, scars and
+   exploration rewards each carry `source`: `advancement` (with the game
+   and the roll, from `advancementRolls`), `trauma` (the game and the
+   roll), `exploration` (the game and the Location), `import` (came in
+   from a roster file), or `manual-pre-app` with a free-text note. Nothing
+   existing is back-filled with a guess: an entry with no record reads as
+   `import`, never as a roll that did not happen. The owner's answer on
+   pre-app history was manual entry marked as such, so the unit card and
+   the sheet gain "Add a skill / injury / reward recorded before the app",
+   which writes `manual-pre-app` and the note, and the wizard's counters
+   (Advancement Rolls due, scars toward retirement) treat a pre-app entry
+   exactly as they treat a rolled one. `src/types/warband.ts` holds the
+   fields; `ROSTER-FILE.md` documents them in the same commit.
+3. **The Roster Sheet view.** A route under the warband, reached from the
+   builder and the campaign Hub, rendering the three pages from the roster
+   and the campaign:
+   - the header from the warband and its campaign (Player is
+     `creatorName`; Campaign Battle is the campaign's name; Patron and
+     Heraldry are the warband's own fields);
+   - STRONGBOX from the ledger after FD-05d: TOTAL is everything ever
+     credited in that currency, UNSPENT is the balance;
+   - BIO & EXPLORATION NOTES as the warband's lore plus the structured
+     list from item 2 aggregated across the warband: every reward and
+     skill with its source, which is the "what I have at my disposal and
+     how I got it" review;
+   - ARSENAL from the stash;
+   - the campaign table from the warband's matches in order: game n's row
+     shows Threshold and Field Strength from `forceLimits`, the scenario,
+     W/L/D, and that game's Campaign Victory Points from FD-03a; games not
+     yet played stay blank; the total at the foot;
+   - the unit cards from item 1's component and the card's existing
+     sections, Battlekit and Abilities, Skills & Injuries printed the way
+     the sheet groups them.
+4. **Print.** A print stylesheet: page 1 landscape, then two large cards a
+   page, in the sheet's order. `window.print()` under a "Print / PDF"
+   button; the browser does the PDF. On the phone the same route is a
+   scrolling review page with no print chrome. Mobile-first still applies:
+   the sheet is read at the table.
+
+Tests: the table's twelve rows equal `campaign.thresholds`; the circles
+equal `advancementAt`; a warband with three recorded matches fills three
+rows and leaves nine blank with the total right; a pre-app skill renders
+with its marker and counts toward the next Advancement Roll; a LIMITED
+POTENTIAL model greys boxes past its cap. Acceptance: the owner's own
+warband, side by side with the paper sheet.
+
+## FD-13. The Homunculi: the Takwin and the Book of Golems
+
+The owner's Iron Sultanate warband holds two: a Takwin Homunculus from The
+House of Wisdom, and a second granted by the Book of Golems. No version of
+the app has handled both. The sources:
+
+- Warbands L5294–5301: a House of Wisdom warband may include one Takwin
+  Homunculus per Jabirean Alchemist; each is associated with one Alchemist
+  and vice versa; when the Alchemist dies the association cannot change
+  "and no Alchemical Formulas can be applied to it".
+- Warbands L5309–5330, the entry: 40 Ducats; "cannot have any Battlekit but
+  can have Alchemical Formulas"; Artificial Life; Pummelling Blows;
+  Re-creation, "If a Takwin Homunculus is killed in the post-battle
+  sequence, you do not have to remove it from your roster. Instead, you can
+  spend 40 Ducats in the following Quartermaster Step to leave it on the
+  Roster"; keywords SULTANATE, ARTIFICIAL.
+- Warbands L5357–5450, the Formulas: one or more, permanent, none twice;
+  Additional Arm 15; Elemental Resistance 40; Enslaved Mind 10; Gargantuan
+  Size 20 (needs Human Hands, Inhuman Strength and Massive Size; may use one
+  Weapon usually Brazen Bull only; 60mm); Hawk Eyes 10 (+1 DICE Ranged; not
+  with Hypnotic Eyes unless Two Heads); Human Hands 10 (Ranged and Melee
+  Weapons from the Iron Sultanate Armoury, a Trench Shield or Fire Shield;
+  not with Wings; no Pummelling Blows while armed); Hypnotic Eyes 15;
+  Inhuman Strength 15 (STRONG, Melee +1 DICE, 32mm); Massive Size 30
+  (TOUGH, 50mm; not with Wings); Regenerative Tissue 25; Seal of Solomon
+  10; Startling Speed 10; Terrifying Appearance 10; Two Heads 5; Wings 30
+  (8"/Flying, FLYING). And the allowance, L5386–5396: with Human Hands and
+  an Additional Arm, "three 1-Handed Melee Weapons or one 1-Handed Melee
+  Weapon and one 2-Handed Melee Weapon", the same for Ranged, a Shield
+  replacing one Melee Weapon with no Shield Combo, and the attack rules.
+- Rulebook L3247–3249, STRONG: "it can equip and use one 2-Handed Melee
+  Weapon as if it were a 1-Handed Melee Weapon". ONE. So a Homunculus with
+  Human Hands, an Additional Arm and Inhuman Strength holds at most two
+  2-Handed Melee Weapons: the one STRONG converts in a 1-Handed slot, and
+  the one the allowance's second pattern permits. Three is not in the book,
+  and the design does not allow it; the owner should know that is what the
+  page says.
+- Rulebook L6902–6912, Exploration 17, Book of Golems: "Add a Takwin
+  Homunculus from The House of Wisdom Variant Warband … to your Warband. It
+  has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a
+  total of up to 50 Ducats for free … The Golem has the GOLEM Keyword, and
+  replaces the SULTANATE Keyword with your Faction's Keyword. You can
+  purchase Battlekit for it in the Quartermaster Step, using your own
+  Armoury Tables … treated as an Ally that can never be Promoted or receive
+  additional Alchemical Formulas." GOLEM is L3115.
+
+### Where the app stands
+
+- The catalogue's entry (`data-sources/battlescribe/Iron Sultanate.cat` line
+  3255, named "Takwin Homunculus", profile "Homunculus", dataset unit
+  `02c4-88da-ec78-8a33`) carries the Formulas as an `Alchemical Formulae`
+  option group and states Wings, Massive Size, Gargantuan Size, Inhuman
+  Strength and Hawk Eyes as modifiers on the entry. The other factions'
+  "Homunculus" entries are the catalogue's Book-of-Golems copies. The
+  keywords LIMITED POTENTIAL and SULTANATE are on the Sultanate entry.
+- `src/rules/formulae.ts` identifies a Formula by the catalogue group, and
+  keeps `INVENTED_FORMULAE`, the nine names an earlier hand-written list
+  offered, so old saves can be cleaned. `src/rules/battlekitLimits.ts`
+  reads the book's allowance sentence (`dataset.carryAllowances` holds the
+  Homunculus one) and `experienceCap` in `src/rules/promotions.ts` reads
+  LIMITED POTENTIAL. That is the engine, and it is largely right.
+- The player never meets the engine. `src/components/builder/AddEquipmentModal.tsx`
+  lines 185 to 215 do their own arithmetic: `isStrong` is a regular
+  expression over ability names (`/strong|bulky|large|ogre/`), the hand
+  count is `hasExtraArm ? 3 : 2`, an item with no `hands` counts as one,
+  and every 2-Handed weapon counts as 1-Handed for a STRONG model rather
+  than one of them. That is why the third arm "does not allow three pieces"
+  in one place and would allow three 2-Handed weapons in another: two
+  engines, and the guessing one decides what can be added.
+- `src/components/builder/UnitAdvancementModal.tsx` line 71 decides a model
+  is a Homunculus by regular expression over its name and abilities, and
+  only then shows the Formulas tab it builds from the catalogue's options
+  (line 107). A renamed model, or the Golem, loses the tab. Nothing books a
+  Formula purchase against the Strongbox.
+- Re-creation exists nowhere in `src/`. The Book of Golems exists nowhere:
+  `grantedFree` on `src/types/warband.ts` line 118 is a string, and nothing
+  gives a model the GOLEM keyword, swaps SULTANATE for the host's, tracks a
+  free-Formula budget, or bars it from promotion.
+- The catalogue's modifiers that change the statline when a Formula is
+  held (Wings 8"/Flying, Massive Size 50mm, Gargantuan 60mm, Inhuman
+  Strength +1 DICE Melee) are stated on the entry, and `src/rules/modifiers.ts`
+  is the evaluator; whether the card applies option-conditioned modifiers
+  is to be verified first, and if it does not, that is item 3.
+
+### The change, two PRs
+
+**FD-13a, the engine and the modal.**
+
+1. `AddEquipmentModal` asks the engine. For each candidate item the modal
+   computes "would adding this breach?" through `battlekitBreaches` with
+   the model's traits from `traitsOf`, and shows the breach sentence as
+   the reason a row is disabled. Its own `isStrong`, `hasExtraArm`,
+   `maxMeleeHands` and `w.hands || 1` are deleted. STRONG converts one
+   2-Handed Melee Weapon and no more, from the keyword's own text.
+2. Formulas in the Quartermaster Step. The Formulas tab appears for any
+   model whose catalogue entry has options in the `Alchemical Formulae`
+   group, not by name. Buying one books a `quartermaster` debit through
+   the ledger; one already held, in `specialUpgrades` or imported into
+   `equippedEquipment`, is not offered again; the book's prerequisites and
+   exclusions (Gargantuan Size's three, Hawk against Hypnotic without Two
+   Heads, Human Hands against Wings, Massive Size against Wings) are read
+   from the catalogue's constraints where it states them and otherwise
+   enforced from the sentences quoted above, cited in the code; a Takwin
+   whose Alchemist has died cannot buy (L5298–5300). The owner's ruling
+   stands as the default: Formulas are purchasable between battles.
+3. The card. Formulas listed under their group with their rule text, and
+   the statline the catalogue's modifiers give the model once a Formula is
+   held. Verify whether option-conditioned modifiers reach the card today;
+   if not, evaluate them there.
+
+Tests: a Human Hands + Additional Arm + Inhuman Strength Homunculus may
+hold a 2-Handed, a 2-Handed and nothing else, or a 2-Handed and two
+1-Handed, and is refused a third 2-Handed; without Human Hands it is
+refused any weapon; Formulas appear for the Sultanate entry and the Golem
+copies and for no Janissary; a second Additional Arm is refused; a Formula
+purchase debits the Strongbox.
+
+**FD-13b, the post-battle and the Book of Golems.**
+
+1. Re-creation. When a Takwin Homunculus is killed, the wizard's Trauma
+   step offers "Re-create for 40 Ducats in the Quartermaster Step" instead
+   of moving it to `fallen` at once; the Quartermaster step then books the
+   40 or lets it fall. The Golem is a Takwin Homunculus too and gets the
+   same offer.
+2. The Golem. An Exploration result of 17, or a manual "granted by the
+   Book of Golems" action for a model already on the roster (the owner's
+   case), adds the House of Wisdom entry with `grantedBy: 'Book of Golems'`,
+   Human Hands held, a free-Formula budget of 50 Ducats tracked on the
+   unit and spent by the Formulas tab before the Strongbox is touched,
+   GOLEM added and SULTANATE replaced by the host faction's keyword on the
+   card, Battlekit from the host's Armoury, and the model excluded from the
+   promotion pool and from further Formulas once the budget is spent, each
+   with the sentence that says so. The book states no price for the model
+   itself; the catalogue prints 40 Ducats on its copies. The design adds
+   it free, as the other Exploration results that add a model do, and
+   records that reading in `data-sources/resolutions.json` for the owner
+   to confirm or overturn.
+
+Tests: a killed Takwin with 40 Ducats paid is on the roster next game; one
+unpaid is in `fallen`; a Golem's card shows GOLEM and the host keyword and
+no SULTANATE; the Golem is absent from the promotion pool; its fifty
+Ducats of Formulas cost nothing and the fifty-first costs.
+
+Two things to ask the owner rather than decide: the Golem's price, above,
+and their roster file, so that "Formulas not showing up properly" and
+"wrong rules on the card" are reproduced against the real model before
+FD-13a is built.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -1292,3 +1529,7 @@ else.
 6. FD-10, one PR per heading, and then DA-03/05/04 and the rest of the two lists.
 7. FD-11a, FD-11b, FD-11c, one PR each, ahead of item 4: the owner asked for
    the Mercenaries first, and FD-11a changes what every later layer sees.
+8. After the READY FOR TESTING milestone (Order 14): FD-13a, FD-13b, then
+   FD-12, then FD-08 and FD-10. The Experience track component in FD-12 item
+   1 is small and phone-visible, so it may ride with WIZ-2 if the developer
+   judges it fits.
