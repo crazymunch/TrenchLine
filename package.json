@@ -29,7 +29,9 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:verify": "prisma migrate diff --from-migrations prisma/migrations --to-schema-datamodel prisma/schema.prisma --shadow-database-url \"$DATABASE_URL\" --exit-code",
-    "rules:newrecruit": "node scripts/newrecruit-spike.mjs"
+    "rules:newrecruit": "node scripts/newrecruit-spike.mjs",
+    "rules:audit:book": "node scripts/rules-audit-book.mjs",
+    "rules:audit:battlekit": "node scripts/rules-audit-battlekit.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
