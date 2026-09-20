@@ -27,6 +27,21 @@ export const scale = (c: Cost, n: number): Cost => ({
 
 export const isZero = (c: Cost) => c.ducats === 0 && c.glory === 0;
 
+/**
+ * The price an app catalogue profile carries, both currencies.
+ *
+ * `recruitable` builds the store's weapon, armour and equipment lists from the
+ * faction's Armoury Table and splits each row's `Cost` across two fields —
+ * `cost` for the Ducats, `gloryCost` for the Glory — because the legacy roster
+ * shape has one number. Putting them back together is not a conversion: it is
+ * the row's own Cost, and a reader that takes `cost` alone is reading a price
+ * that says nothing about the currency it is in. Every Glory-priced offer in
+ * the shipped dataset is zero Ducats, so `cost` alone reads every one of them
+ * as free.
+ */
+export const profileCost = (row: { cost: number; gloryCost?: number }): Cost =>
+  ({ ducats: row.cost, glory: row.gloryCost ?? 0 });
+
 /** `55 Ducats`, `2 Glory`, `55 Ducats + 2 Glory`, or `Free`. */
 export function formatCost(c: Cost): string {
   const parts: string[] = [];

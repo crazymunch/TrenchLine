@@ -1,5 +1,6 @@
 import type { EarnedClaim } from '@/rules/earnedRecruitment';
 import type { LedgerEntry } from '@/rules/campaign';
+import type { Cost } from './catalogue';
 
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from './rules';
 
@@ -167,6 +168,19 @@ export interface StashedItem {
    * every reader guessing.
    */
   currency?: 'ducats' | 'glory';
+  /**
+   * What the item cost, both currencies, exactly as the Armoury Table row
+   * prints it.
+   *
+   * `currency` is one discriminator and an Armoury row is not: the same row
+   * can carry Ducats and Glory together, and one label cannot say so. This
+   * carries the row's own `Cost`, which can.
+   *
+   * Optional, because a stash written before this has only the single number
+   * and its label. `stashPrice` reads both encodings in one place, so no
+   * caller has to know which one it is holding.
+   */
+  price?: Cost;
   quantity: number;
 }
 
@@ -179,6 +193,22 @@ export interface StashedItem {
  */
 export const stashCurrency = (item: Pick<StashedItem, 'currency'>): 'ducats' | 'glory' =>
   item.currency === 'glory' ? 'glory' : 'ducats';
+
+/**
+ * What a stashed item cost, whichever way it was written down.
+ *
+ * The recorded `price` where there is one; otherwise the single `cost` read
+ * in the currency its label names, which is all an older stash says. So a
+ * pre-`price` Glory item reads as zero Ducats and `cost` Glory, and a
+ * pre-`currency` item reads as `cost` Ducats — which is what the
+ * Quartermaster did with it at the time.
+ */
+export const stashPrice = (
+  item: Pick<StashedItem, 'cost' | 'currency' | 'price'>,
+): Cost => item.price
+  ?? (stashCurrency(item) === 'glory'
+    ? { ducats: 0, glory: item.cost }
+    : { ducats: item.cost, glory: 0 });
 
 export type StashItem = StashedItem;
 

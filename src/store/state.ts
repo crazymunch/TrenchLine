@@ -19,7 +19,7 @@ import type { PlaceholderOpponent } from '../types/opponent';
 import { Campaign, CampaignFramework, CampaignHouseRules, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
 import { RuleDiffItem } from '../types/diff';
-import type { Dataset, BattleMarker } from '../types/catalogue';
+import type { Cost, Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SkillLearned } from '../rules/advancement';
 import type { SyncState } from '../services/sync';
@@ -269,24 +269,35 @@ export interface AppState {
   setUnitBenched: (warbandId: string, unitId: string, benched: boolean) => void;
   setUnitAsLeader: (warbandId: string, unitId: string) => void;
   updateUnitLore: (warbandId: string, unitId: string, lore: string, quote?: string, titles?: string[], deeds?: string[]) => void;
-  equipWeapon: (warbandId: string, unitId: string, weaponId: string) => void;
+  /**
+   * Give a model a piece of Battlekit, and charge the Strongbox for it.
+   *
+   * `settled` says the Strongbox has already paid: the item came out of the
+   * Arsenal, which bought it. Without it, moving an item from the Arsenal onto
+   * a model charged for it a **second** time — `assignStashToUnit` calls these,
+   * and FD-05e-2 gave them a charge without telling it.
+   */
+  equipWeapon: (warbandId: string, unitId: string, weaponId: string, settled?: boolean) => void;
   removeWeapon: (warbandId: string, unitId: string, instanceId: string) => void;
-  equipArmour: (warbandId: string, unitId: string, armourId: string) => void;
+  equipArmour: (warbandId: string, unitId: string, armourId: string, settled?: boolean) => void;
   removeArmour: (warbandId: string, unitId: string, instanceId: string) => void;
-  equipEquipment: (warbandId: string, unitId: string, equipmentId: string) => void;
+  equipEquipment: (warbandId: string, unitId: string, equipmentId: string, settled?: boolean) => void;
   removeEquipment: (warbandId: string, unitId: string, instanceId: string) => void;
 
   // Warband Stash Management
   /**
    * Buy Battlekit into the Arsenal.
    *
-   * **Refuses** a purchase the Strongbox cannot cover, rather than taking
-   * whatever is there. `currency` says which Strongbox pays; omitted means
-   * Ducats, which is what every purchase before this was.
+   * **Refuses** a purchase either Strongbox cannot cover, rather than taking
+   * whatever is there. `price` is the Armoury row's own `Cost` and is what
+   * this spends when it is given: an item can be priced in both currencies at
+   * once, and a purchase is refused if either side is short. `cost` and
+   * `currency` remain for a caller that has only the single number — omitted
+   * `currency` means Ducats, which is what every purchase before this was.
    */
   buyToStash: (warbandId: string, item: {
     id: string; name: string; type: 'Weapon' | 'Armour' | 'Equipment';
-    cost: number; currency?: 'ducats' | 'glory';
+    cost: number; currency?: 'ducats' | 'glory'; price?: Cost;
   }) => void;
   sellFromStash: (warbandId: string, stashItemId: string) => void;
   assignStashToUnit: (warbandId: string, stashItemId: string, unitId: string) => void;

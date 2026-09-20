@@ -8,12 +8,13 @@ import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import { storage } from '../../services/storage';
 import type { Warband, ActiveUnit, StashedItem, WarbandSnapshot } from '../../types/warband';
-import { stashCurrency } from '../../types/warband';
+import { stashPrice } from '../../types/warband';
 import type { CampaignMember } from '../../types/campaign';
 import type { InitialState } from '../init';
 import { persistWarbands, mergeWarbands } from '../persist';
 import { outbox } from '../../services/sync';
 import { book, strongbox } from '../../rules/ledger';
+import { formatCost, isZero } from '../../rules/costs';
 
 export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'setWarbandAllowThirdParty' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
 
@@ -681,21 +682,26 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       a Glory Item cost Ducats and left the Glory alone: free in the currency
       it is priced in, paid for in one it is not.
 
-      A purchase over the balance is now REFUSED and the warband is returned
-      untouched. The caller checks first and disables the control; this is the
-      same refusal for anything that reaches the store another way.
+      The price is the Armoury row's own `Cost` — both currencies, because a
+      row can carry both — and both sides are debited. A purchase either
+      Strongbox cannot cover is REFUSED and the warband is returned untouched.
+      The caller checks first and disables the control; this is the same
+      refusal for anything that reaches the store another way.
     */
     buyToStash: (warbandId, item) => {
       set((state) => {
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
 
-          const currency = item.currency === 'glory' ? 'glory' : 'ducats';
-          const held = currency === 'glory' ? (w.gloryPoints ?? 0) : (w.treasuryDucats ?? 0);
-          /* Refused, not clamped. A player cannot spend what they do not
-             hold, and a Strongbox silently emptied is worse than a button
-             that will not press. */
-          if (item.cost > held) return w;
+          /* The row's Cost where the caller has one; otherwise the single
+             number under the label it came with, which is all an older
+             caller says. */
+          const price = stashPrice(item);
+          /* Refused, not clamped, and refused if EITHER side is short: an
+             item priced in both is not half-bought. A player cannot spend
+             what they do not hold, and a Strongbox silently emptied is worse
+             than a button that will not press. */
+          if (price.ducats > (w.treasuryDucats ?? 0) || price.glory > (w.gloryPoints ?? 0)) return w;
 
           const existing = w.armoryStash.find((i) => i.id === item.id);
           let newStash: StashedItem[];
@@ -703,10 +709,12 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
             newStash = w.armoryStash.map((i) => (i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i));
           } else {
             newStash = [...w.armoryStash, {
-              id: item.id, name: item.name, type: item.type, cost: item.cost,
-              /* Recorded at purchase, so selling it back knows which
-                 Strongbox to credit however long the item sits there. */
-              ...(currency === 'glory' ? { currency: 'glory' as const } : {}),
+              id: item.id, name: item.name, type: item.type,
+              /* `cost` stays the Ducat number, for the readers that have
+                 only ever meant Ducats by it. `price` is what was paid, and
+                 is recorded at purchase so selling it back knows which
+                 Strongboxes to credit however long the item sits there. */
+              cost: price.ducats, price,
               quantity: 1,
             }];
           }
@@ -714,7 +722,8 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
              whole ledger, so the balance and its history cannot disagree. */
           return book({ ...w, armoryStash: newStash }, {
             reason: 'quartermaster',
-            ...(currency === 'glory' ? { glory: -item.cost } : { ducats: -item.cost }),
+            ...(price.ducats ? { ducats: -price.ducats } : {}),
+            ...(price.glory ? { glory: -price.glory } : {}),
             note: `Bought ${item.name}.`,
           });
         });
@@ -737,7 +746,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
 
       And it credited Ducats whatever the item was priced in, so selling a
       Glory Item paid out in the wrong currency: the Glory was gone and the
-      Ducats went up.
+      Ducats went up. Half of each side of the price comes back, each rounded
+      up on its own — the book halves the Cost, and an item's Cost is what the
+      Armoury row prints, in both currencies where it prints both.
     */
     sellFromStash: (warbandId, stashItemId) => {
       set((state) => {
@@ -746,8 +757,8 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
           const item = w.armoryStash.find((i) => i.id === stashItemId);
           if (!item) return w;
 
-          const sellValue = Math.ceil(item.cost / 2);
-          const currency = stashCurrency(item);
+          const paid = stashPrice(item);
+          const back = { ducats: Math.ceil(paid.ducats / 2), glory: Math.ceil(paid.glory / 2) };
           let newStash: StashedItem[];
           if (item.quantity > 1) {
             newStash = w.armoryStash.map((i) => (i.id === stashItemId ? { ...i, quantity: i.quantity - 1 } : i));
@@ -757,8 +768,9 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
 
           return book({ ...w, armoryStash: newStash }, {
             reason: 'sold',
-            ...(currency === 'glory' ? { glory: sellValue } : { ducats: sellValue }),
-            note: `Sold ${item.name} for ${sellValue}.`,
+            ...(back.ducats ? { ducats: back.ducats } : {}),
+            ...(back.glory ? { glory: back.glory } : {}),
+            note: `Sold ${item.name} for ${isZero(back) ? 'nothing' : formatCost(back)}.`,
           });
         });
         updated = persistWarbands(updated, state.warbands);
@@ -773,12 +785,26 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       const stashItem = wb.armoryStash.find((i) => i.id === stashItemId);
       if (!stashItem) return;
 
+      /*
+        `settled`: the Arsenal bought this, so the Strongbox has already paid.
+
+        Without it the equip charged for the item a second time — a 40-Ducat
+        weapon bought into the Arsenal for 40 cost another 40 the moment it
+        was handed to a model. FD-05e-2 gave the equip actions a charge and
+        this call site, which is the one place the item is NOT a purchase, was
+        never told.
+
+        The second charge also carried the instance's `ref`, so taking the
+        item off in the same game reversed THAT charge and returned before the
+        branch that puts the item back in the Arsenal: the item vanished and
+        the first payment stood (FD-05e-3).
+      */
       if (stashItem.type === 'Weapon') {
-        state.equipWeapon(warbandId, unitId, stashItem.id);
+        state.equipWeapon(warbandId, unitId, stashItem.id, true);
       } else if (stashItem.type === 'Armour') {
-        state.equipArmour(warbandId, unitId, stashItem.id);
+        state.equipArmour(warbandId, unitId, stashItem.id, true);
       } else if (stashItem.type === 'Equipment') {
-        state.equipEquipment(warbandId, unitId, stashItem.id);
+        state.equipEquipment(warbandId, unitId, stashItem.id, true);
       }
 
       // Deduct from stash

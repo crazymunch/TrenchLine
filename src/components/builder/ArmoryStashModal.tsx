@@ -3,7 +3,10 @@
 import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
-import { Warband } from '../../types/warband';
+import { Warband, stashPrice } from '../../types/warband';
+import type { Cost } from '../../types/catalogue';
+import { formatUnitCost } from '../../rules/savedGlory';
+import { profileCost } from '../../rules/costs';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Package, 
@@ -22,45 +25,71 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
   const [selectedUnitId, setSelectedUnitId] = useState<string>(warband.units[0]?.id || '');
   const [buyCategory, setBuyCategory] = useState<'weapons' | 'armour' | 'equipment'>('weapons');
 
-  const handleBuy = (item: { id: string; name: string; type: 'Weapon' | 'Armour' | 'Equipment'; cost: number }) => {
-    buyToStash(warband.id, item);
+  const held: Cost = {
+    ducats: warband.treasuryDucats ?? 0,
+    glory: warband.gloryPoints ?? 0,
+  };
+
+  /*
+    The rows are the faction's Armoury Table: `recruitable` builds these three
+    lists from `armouryFor(dataset, factionId)`, one entry per row, and keeps
+    the row's Ducats in `cost` and its Glory in `gloryCost`.
+
+    This modal read only the first. Every Glory-priced offer in the dataset is
+    zero Ducats and some Glory — all 32 of them, across 8 factions — so each
+    one printed "0 D", passed an affordability test against a Strongbox it was
+    not spending from, and was bought for nothing. `profileCost` puts the row's
+    Cost back together.
+  */
+  const handleBuy = (item: {
+    id: string; name: string; type: 'Weapon' | 'Armour' | 'Equipment'; price: Cost;
+  }) => {
+    buyToStash(warband.id, { ...item, cost: item.price.ducats });
     soundEffects.playBladeClang();
   };
 
   /*
     One row, so the affordability rule is written once rather than three
-    times. The store refuses a purchase over the balance; this is what stops
-    the player reaching a refusal at all, and says why the button is dead
-    instead of leaving them to guess.
+    times. The store refuses a purchase either Strongbox cannot cover; this is
+    what stops the player reaching a refusal at all, and says which Strongbox
+    is short instead of leaving them to guess.
   */
   const BuyRow: React.FC<{
     /* Optional, because not every catalogue row carries one — an Armour
        entry with no modifier is a real entry, not a missing field. */
     id: string; name: string; detail?: string;
-    type: 'Weapon' | 'Armour' | 'Equipment'; cost: number;
-  }> = ({ id, name, detail, type, cost }) => {
-    const affordable = cost <= (warband.treasuryDucats ?? 0);
+    type: 'Weapon' | 'Armour' | 'Equipment'; price: Cost;
+  }> = ({ id, name, detail, type, price }) => {
+    const short: Cost = {
+      ducats: Math.max(0, price.ducats - held.ducats),
+      glory: Math.max(0, price.glory - held.glory),
+    };
+    const affordable = !short.ducats && !short.glory;
+    const label = formatUnitCost(price.ducats, price.glory);
     return (
-      <div className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between text-xs font-mono">
-        <div>
+      <div className="p-2.5 bg-theme-elevated rounded border border-theme-border flex items-center justify-between gap-2 text-xs font-mono">
+        <div className="min-w-0">
           <strong className="text-theme-text">{name}</strong>
           {detail && (
             <span className="text-xs sm:text-[10px] text-theme-muted block">{detail}</span>
           )}
         </div>
         <button
-          onClick={() => handleBuy({ id, name, type, cost })}
+          onClick={() => handleBuy({ id, name, type, price })}
           disabled={!affordable}
           title={affordable
             ? undefined
-            : `The Strongbox holds ${warband.treasuryDucats ?? 0} Ducats, and this costs ${cost}.`}
-          className={`px-3 py-1 rounded font-bold transition-colors border ${
+            : `The Strongbox holds ${formatUnitCost(held.ducats, held.glory)}, `
+              + `and this costs ${label}.`}
+          className={`px-3 py-1 rounded font-bold transition-colors border flex-shrink-0 ${
             affordable
               ? 'bg-theme-base hover:bg-theme-primary hover:text-theme-base text-theme-primary border-theme-primary/50'
               : 'bg-theme-base/50 text-theme-muted border-theme-border cursor-not-allowed'
           }`}
         >
-          {affordable ? `Buy (${cost} D)` : `${cost} D — short ${cost - (warband.treasuryDucats ?? 0)}`}
+          {affordable
+            ? `Buy (${label})`
+            : `${label} — short ${formatUnitCost(short.ducats, short.glory)}`}
         </button>
       </div>
     );
@@ -82,7 +111,12 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
       onClose={onClose}
       size="lg"
       title="WARBAND ARMORY STASH & MUNITIONS DEPOT"
-      subtitle={`${warband.name} | Treasury: <strong className="text-theme-primary">${warband.treasuryDucats} Ducats</strong>`}
+      /* Plainly, and with the Glory. This read `Treasury: <strong
+         className="text-theme-primary">700 Ducats</strong>` on screen — the
+         markup was inside a template string, so the player was shown the
+         tag. And the Arsenal spends Glory too, so a Strongbox line that
+         names only one currency cannot say whether a purchase is affordable. */
+      subtitle={`${warband.name} | Strongbox: ${held.ducats} Ducats, ${held.glory} Glory`}
     >
       {/* Tab Controls */}
       <div className="flex items-center space-x-2 px-6 py-3 border-b border-theme-border bg-theme-surface">
@@ -147,41 +181,51 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
               </div>
             ) : (
               <div className="space-y-2">
-                {warband.armoryStash.map((item) => (
-                  <div
-                    key={item.id}
-                    className="p-3 bg-theme-elevated border border-theme-border rounded-md flex items-center justify-between gap-3 text-xs font-mono"
-                  >
-                    <div className="flex items-center space-x-3 flex-1">
-                      <span className="font-bold px-2 py-0.5 rounded bg-theme-base text-theme-primary">
-                        x{item.quantity}
-                      </span>
-                      <div>
-                        <strong className="text-theme-text font-gothic text-sm">{item.name}</strong>
-                        <span className="text-xs sm:text-[10px] text-theme-muted block">Type: {item.type} | Value: {item.cost} D</span>
+                {warband.armoryStash.map((item) => {
+                  /* Whatever the price was written as: an item bought before
+                     `price` existed carries one number and a label. */
+                  const paid = stashPrice(item);
+                  return (
+                    <div
+                      key={item.id}
+                      className="p-3 bg-theme-elevated border border-theme-border rounded-md flex items-center justify-between gap-3 text-xs font-mono"
+                    >
+                      <div className="flex items-center space-x-3 flex-1">
+                        <span className="font-bold px-2 py-0.5 rounded bg-theme-base text-theme-primary">
+                          x{item.quantity}
+                        </span>
+                        <div>
+                          <strong className="text-theme-text font-gothic text-sm">{item.name}</strong>
+                          <span className="text-xs sm:text-[10px] text-theme-muted block">
+                            Type: {item.type} | Value: {formatUnitCost(paid.ducats, paid.glory)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <button
+                          onClick={() => handleAssign(item.id)}
+                          className="px-3 py-1.5 bg-status-legal hover:bg-status-legal text-white rounded font-bold uppercase text-xs sm:text-[10px] flex items-center space-x-1"
+                          title="Equip to selected warrior"
+                        >
+                          <UserCheck className="w-3.5 h-3.5" />
+                          <span>Equip</span>
+                        </button>
+
+                        <button
+                          onClick={() => handleSell(item.id)}
+                          className="px-3 py-1.5 bg-theme-surface hover:bg-theme-accent text-theme-text border border-theme-border rounded font-bold uppercase text-xs sm:text-[10px]"
+                          title="Sell for half the Cost, rounding up"
+                        >
+                          Sell (+{formatUnitCost(
+                            Math.ceil(paid.ducats / 2),
+                            Math.ceil(paid.glory / 2),
+                          )})
+                        </button>
                       </div>
                     </div>
-
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => handleAssign(item.id)}
-                        className="px-3 py-1.5 bg-status-legal hover:bg-status-legal text-white rounded font-bold uppercase text-xs sm:text-[10px] flex items-center space-x-1"
-                        title="Equip to selected warrior"
-                      >
-                        <UserCheck className="w-3.5 h-3.5" />
-                        <span>Equip</span>
-                      </button>
-
-                      <button
-                        onClick={() => handleSell(item.id)}
-                        className="px-3 py-1.5 bg-theme-surface hover:bg-theme-accent text-theme-text border border-theme-border rounded font-bold uppercase text-xs sm:text-[10px]"
-                        title="Sell for 50% Ducats"
-                      >
-                        Sell (+{Math.ceil(item.cost / 2)} D)
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 
@@ -218,7 +262,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   name={w.name}
                   detail={`${w.range} | ${w.damage}`}
                   type="Weapon"
-                  cost={w.cost}
+                  price={profileCost(w)}
                 />
               ))}
 
@@ -229,7 +273,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   name={a.name}
                   detail={a.armourModifier}
                   type="Armour"
-                  cost={a.cost}
+                  price={profileCost(a)}
                 />
               ))}
 
@@ -240,7 +284,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   name={e.name}
                   detail={e.effect}
                   type="Equipment"
-                  cost={e.cost}
+                  price={profileCost(e)}
                 />
               ))}
             </div>

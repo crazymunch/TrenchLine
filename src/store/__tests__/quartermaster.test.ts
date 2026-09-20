@@ -126,9 +126,11 @@ describe('an item priced in Glory', () => {
     expect(ducats()).toBe(100);
   });
 
-  it('records the currency, so a sale months later still knows', () => {
+  it('records the price, so a sale months later still knows', () => {
     useStore.getState().buyToStash(WB, item({ id: 'relic', name: 'Relic', cost: 4, currency: 'glory' }));
-    expect(stash()[0].currency).toBe('glory');
+    expect(stash()[0].price).toEqual({ ducats: 0, glory: 4 });
+    // And `cost` stays the Ducat number, which is what it has always meant.
+    expect(stash()[0].cost).toBe(0);
   });
 
   it('is refused against the GLORY balance, not the Ducats', () => {
@@ -167,5 +169,171 @@ describe('an item priced in Glory', () => {
     useStore.getState().sellFromStash(WB, 'old');
     expect(ducats()).toBe(15);
     expect(glory()).toBe(0);
+  });
+});
+
+/**
+ * FD-05f. `currency` is one discriminator and an Armoury Table row is not: a
+ * row carries a Ducat number and a Glory number, and can carry both at once.
+ * No row in the shipped dataset does today — all 32 Glory-priced offers are
+ * zero Ducats — but the shape the Arsenal buys from has two fields, so a price
+ * the app cannot represent is a price it will get wrong the day one appears.
+ */
+describe('a price given as the row\u2019s own Cost', () => {
+  const priced = (glory: number, ducats: number) =>
+    ({ id: 'relic', name: 'Relic', type: 'Weapon' as const, cost: ducats, price: { ducats, glory } });
+
+  it('debits the Glory and no Ducats', () => {
+    useStore.getState().buyToStash(WB, priced(4, 0));
+    expect(glory()).toBe(6);
+    expect(ducats()).toBe(100);
+  });
+
+  it('debits the Ducats and no Glory', () => {
+    useStore.getState().buyToStash(WB, priced(0, 30));
+    expect(ducats()).toBe(70);
+    expect(glory()).toBe(10);
+  });
+
+  it('debits both where the row prices both', () => {
+    useStore.getState().buyToStash(WB, priced(4, 30));
+    expect(ducats()).toBe(70);
+    expect(glory()).toBe(6);
+    expect(stash()[0].price).toEqual({ ducats: 30, glory: 4 });
+  });
+
+  it('is refused when either Strongbox is short, and half-buys nothing', () => {
+    // 100 Ducats and 10 Glory held. The Ducats cover it; the Glory does not.
+    useStore.getState().buyToStash(WB, priced(40, 30));
+    expect(stash()).toEqual([]);
+    expect(ducats()).toBe(100);
+    expect(glory()).toBe(10);
+  });
+
+  it('sells back half of each side, each rounded up', () => {
+    useStore.setState({ warbands: [seed({
+      armoryStash: [{
+        id: 'relic', name: 'Relic', type: 'Equipment',
+        cost: 45, price: { ducats: 45, glory: 5 }, quantity: 1,
+      }],
+      treasuryDucats: 0,
+      gloryPoints: 0,
+    })], activeWarbandId: WB });
+
+    useStore.getState().sellFromStash(WB, 'relic');
+    expect(ducats()).toBe(23);
+    expect(glory()).toBe(3);
+  });
+
+  it('reads an older stash marked `glory` as zero Ducats and its cost in Glory', () => {
+    useStore.setState({ warbands: [seed({
+      armoryStash: [{
+        id: 'old', name: 'Old Relic', type: 'Equipment',
+        cost: 5, currency: 'glory', quantity: 1,
+      }],
+      treasuryDucats: 0,
+      gloryPoints: 0,
+    })], activeWarbandId: WB });
+
+    useStore.getState().sellFromStash(WB, 'old');
+    expect(glory()).toBe(3);
+    expect(ducats()).toBe(0);
+  });
+});
+
+/**
+ * FD-05e-3. Moving an item from the Arsenal onto a model is not a purchase.
+ *
+ * FD-05e-2 gave `equipWeapon`, `equipArmour` and `equipEquipment` a charge
+ * against the Strongbox, because equipping added the cost to the model and
+ * charged nobody. `assignStashToUnit` calls all three — and it is the one
+ * caller where the Warband ALREADY OWNS the item, having bought it into the
+ * Arsenal. So a 40-Ducat weapon bought for 40 cost another 40 the moment it
+ * was handed to a model, out of a Strongbox that had already paid.
+ *
+ * And the second charge carried the instance's `ref`, so taking the item off
+ * in the same game reversed THAT charge and returned early — skipping the
+ * branch that puts the item back in the Arsenal. The item vanished, and the
+ * first payment stood: the Warband was out the price and had nothing.
+ */
+describe('equipping an item out of the Arsenal', () => {
+  const FLAIL = { id: 'flail', name: 'Flail', cost: 40, type: 'Melee', range: 'Melee', damage: '1', keywords: [] };
+
+  const withUnit = () => {
+    useStore.setState({
+      warbands: [seed({
+        forceMode: 'campaign',
+        treasuryDucats: 100,
+        armoryStash: [{
+          id: 'flail', name: 'Flail', type: 'Weapon',
+          cost: 40, price: { ducats: 40, glory: 0 }, quantity: 1,
+        }],
+        units: [{
+          id: 'u1', customName: 'Bob', totalCost: 50,
+          equippedWeapons: [], equippedArmour: [], equippedEquipment: [],
+          profileSnapshot: { category: 'Trooper', stats: {} },
+        }],
+      } as unknown as Partial<Warband>)],
+      activeWarbandId: WB,
+      weapons: [FLAIL] as never,
+    });
+  };
+
+  it('does not charge the Strongbox a second time', () => {
+    withUnit();
+    useStore.getState().assignStashToUnit(WB, 'flail', 'u1');
+    expect(ducats()).toBe(100);
+  });
+
+  it('still moves the item onto the model, and out of the Arsenal', () => {
+    withUnit();
+    useStore.getState().assignStashToUnit(WB, 'flail', 'u1');
+    expect(warband().units[0].equippedWeapons.map((w) => w.name)).toEqual(['Flail']);
+    expect(stash()).toEqual([]);
+  });
+
+  it('leaves the ledger with the one purchase the Arsenal made', () => {
+    withUnit();
+    // The fixture arrives with no ledger, so `book` opens the account: one
+    // reconciliation entry and nothing else should follow the assignment.
+    useStore.getState().assignStashToUnit(WB, 'flail', 'u1');
+    expect((warband().ledger ?? []).filter((e) => e.reason === 'quartermaster')).toEqual([]);
+  });
+
+  it('sends it back to the Arsenal when it comes off, rather than refunding it', () => {
+    withUnit();
+    useStore.getState().assignStashToUnit(WB, 'flail', 'u1');
+    const instanceId = warband().units[0].equippedWeapons[0].instanceId;
+    useStore.getState().removeWeapon(WB, 'u1', instanceId);
+
+    // Nothing to undo — the Arsenal bought it, not this equip — so the item
+    // returns to the Arsenal, which is where it came from.
+    expect(ducats()).toBe(100);
+    expect(stash().map((i) => [i.name, i.quantity])).toEqual([['Flail', 1]]);
+  });
+
+  it('still charges for a piece of Battlekit bought straight onto a model', () => {
+    withUnit();
+    useStore.getState().equipWeapon(WB, 'u1', 'flail');
+    expect(ducats()).toBe(60);
+  });
+
+  it('and refunds that one, without stashing it, when it comes off the same game', () => {
+    /*
+      The other half of the pair, and the reason the two cannot be told apart
+      by the removal: a purchase made in this muster is undone in full — "users
+      can make any variations from the end of one game to the start of the
+      next" — and there is nothing to put in the Arsenal, because the Arsenal
+      never owned it. Which is exactly NOT what should happen to the item
+      above, bought by the Arsenal.
+    */
+    withUnit();
+    useStore.getState().equipWeapon(WB, 'u1', 'flail');
+    const instanceId = warband().units[0].equippedWeapons[0].instanceId;
+    useStore.getState().removeWeapon(WB, 'u1', instanceId);
+
+    expect(ducats()).toBe(100);
+    // The Arsenal still holds only the one it bought.
+    expect(stash().map((i) => [i.name, i.quantity])).toEqual([['Flail', 1]]);
   });
 });
