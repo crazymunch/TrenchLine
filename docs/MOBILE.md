@@ -56,8 +56,15 @@ Add `viewport-fit=cover` to the viewport meta, or the insets always report `0`.
 ### 3. Touch targets — enforced in `globals.css`
 
 **44×44px minimum** for anything tappable. This is no longer a convention to
-remember: on the phone, `button:not(.tap)` has `min-height: 44px`, and form
-controls have `min-height: 44px` and `font-size: 16px !important`.
+remember: on the phone, `button:not(.tap)` has **`min-height: 44px` and
+`min-width: 44px`**, and form controls have `min-height: 44px` and
+`font-size: 16px !important`.
+
+Width was missing until 2026-09-20, and height alone was half the rule: a thumb
+is round, so a control 44px tall and 20px wide is as easy to miss as one 20px
+tall. What it left behind were the controls reached for most — the `+`/`-`
+steppers on every wound, Blood Marker and Blessing Marker row in Play Mode, at
+44×20, side by side, with dice in the other hand.
 
 Fixing 150 buttons one at a time fixes them once — the next toolbar button
 someone writes is 30px again, because nothing says otherwise. So the rule is in
@@ -76,10 +83,26 @@ a touch-target override is `lg:min-h-0`, never `sm:min-h-0`.
 
 ```jsx
 /* a control that can afford to grow */
-className="min-h-[44px] sm:min-h-0 sm:py-1.5"
+className="min-h-[44px] lg:min-h-0 lg:py-1.5"
 /* a control that cannot */
 className="tap p-1 text-theme-muted hover:text-status-error"
 ```
+
+> This example said `sm:min-h-0` until 2026-09-20 — contradicting the paragraph
+> directly above it — and ten controls across six files copied the example
+> rather than the rule. They released the floor at 640px, so the Dice Engine's
+> `Risky` and `Bloodbath` toggles were 34px on the 768px tablet this document
+> calls the common table device. A worked example that disagrees with its own
+> rule is worse than no example.
+
+**A checkbox is measured by its label.** A checkbox's own box is the one hit
+area you cannot grow without the result looking absurd, and you do not need to:
+the browser makes its `<label>` toggle it, so the label is what a thumb aims at.
+Give the label the floor (`min-h-[44px]`), not the box. `expectTouchTargets`
+measures it that way, and still fails a checkbox with no label at all — which
+is the case that really is unreachable. A box that is an *indicator* inside a
+clickable row, rather than a control, says so with `pointer-events-none` (and
+`readOnly`, `tabIndex={-1}`, `aria-hidden`), and is skipped.
 
 Both rules live **outside `@layer`**, for the reason the theme variables do:
 Tailwind drops `@layer base` rules whose selectors it cannot find in the content

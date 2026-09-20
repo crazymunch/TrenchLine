@@ -15,7 +15,9 @@
  */
 import { test, expect } from '@playwright/test';
 
-import { seedWarband, expectNoHorizontalScroll } from './helpers';
+import {
+  seedWarband, expectNoHorizontalScroll, expectTouchTargets, expectNoZoomingInputs,
+} from './helpers';
 
 /**
  * A warband with one ELITE model one point short of an Advancement Roll.
@@ -216,46 +218,25 @@ test('a Troop is offered no Advancement Roll, however much Experience it carries
   await expect(wizard(page).getByRole('button', { name: /Roll 2D6 on both/i })).toHaveCount(1);
 });
 
-test('the Advancement Roll is usable one-handed on a phone', async ({ page }, testInfo) => {
+test('the post-battle wizard is usable one-handed on a phone', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name === 'desktop', 'the floors stop at 1024px');
 
   await endAMatch(page);
   await toPromotionsStep(page);
 
-  await expectNoHorizontalScroll(page);
-
   /*
-    Scoped to the controls this step adds, not the whole wizard.
+    Asserted over the whole page, not scoped to this step.
 
-    `expectTouchTargets` and `expectNoZoomingInputs` over the whole page both
-    fail here, and every control they name predates this change: the `+`/`-`
-    Ducat and Glory steppers at 44x28, the `h-4 w-4` checkboxes at 16x16, and
-    a set of sub-16px inputs elsewhere in the wizard. That is real debt and it
-    is the whole wizard's, not this step's — fixing it here would widen the
-    change past what it is for. Raised as its own item.
+    It could not be, when this spec was written: the page reported 28 controls
+    under the 44px floor. Every one of them was either a button that met the
+    height floor and not the width one — the global rule set `min-height` and
+    stopped — or a checkbox measured by its own 13px box rather than by the
+    label that actually toggles it. Both are fixed at the source now, so this
+    is the plain check, and a control added to this wizard later has to meet
+    the floor too.
   */
-  const small = await page.evaluate(() => {
-    /* The INNERMOST div that holds the block: `find` returns the outermost
-       ancestor containing the text, which is most of the wizard. */
-    const block = [...document.querySelectorAll('div')]
-      .filter((d) => /Pick two Skill Tables and roll 2D6/i.test(d.textContent || '')
-        && d.querySelector('select'))
-      .at(-1);
-    if (!block) return ['the Advancement Roll block did not render'];
-
-    const bad: string[] = [];
-    for (const el of block.querySelectorAll('button,select,input')) {
-      const r = (el as HTMLElement).getBoundingClientRect();
-      if (!r.width || !r.height) continue;
-      if (r.height < 44) bad.push(`${Math.round(r.height)}px high: ${el.tagName}`);
-      /* 16px minimum on a form control, or iOS zooms the page when it is
-         focused and the player loses the layout mid-step. */
-      const size = parseFloat(getComputedStyle(el).fontSize);
-      if (el.tagName !== 'BUTTON' && size < 16) {
-        bad.push(`${size}px text: ${el.tagName}`);
-      }
-    }
-    return bad;
-  });
-  expect(small, 'Advancement Roll controls below the phone floors').toEqual([]);
+  await expectNoHorizontalScroll(page);
+  await expectTouchTargets(page);
+  await expectNoZoomingInputs(page);
 });
+

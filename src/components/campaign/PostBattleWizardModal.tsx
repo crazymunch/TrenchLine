@@ -1337,7 +1337,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                           type="checkbox"
                           checked={!!satOut[unit.id]}
                           onChange={(e) => setSatOut((p) => ({ ...p, [unit.id]: e.target.checked }))}
-                          className="h-4 w-4 accent-current"
+                          className="h-4 w-4 shrink-0 accent-current"
                         />
                         <span>Did not take part in this game</span>
                       </label>

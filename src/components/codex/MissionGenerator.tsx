@@ -417,7 +417,7 @@ export const MissionGenerator: React.FC = () => {
                 </ol>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-1">
-                  <label className="flex items-center gap-2 text-theme-text min-h-[44px] sm:min-h-0 cursor-pointer">
+                  <label className="flex items-center gap-2 text-theme-text min-h-[44px] lg:min-h-0 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={forCampaign}
@@ -630,7 +630,7 @@ export const MissionGenerator: React.FC = () => {
                     soundEffects.playDiceRoll();
                     setLastWeather(rollWeather(weather.events, 0));
                   }}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow min-h-[44px] sm:min-h-0"
+                  className="flex items-center gap-1.5 px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow min-h-[44px] lg:min-h-0"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   <span>Roll 2D6</span>

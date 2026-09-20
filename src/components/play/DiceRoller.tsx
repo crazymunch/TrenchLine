@@ -130,14 +130,14 @@ export const DiceRoller: React.FC = () => {
   const cappedModifier = capInjuryModifier(injuryModifier);
 
   const tabClass = (active: boolean) =>
-    `flex items-center gap-1.5 px-3 py-2 rounded uppercase font-bold transition-all min-h-[44px] sm:min-h-0 ${
+    `flex items-center gap-1.5 px-3 py-2 rounded uppercase font-bold transition-all min-h-[44px] lg:min-h-0 ${
       active
         ? 'bg-theme-primary text-theme-base shadow'
         : 'bg-theme-surface text-theme-muted hover:text-theme-text border border-theme-border'
     }`;
 
   const chipClass = (active: boolean) =>
-    `px-2.5 py-1.5 rounded font-bold transition-all min-h-[44px] sm:min-h-0 ${
+    `px-2.5 py-1.5 rounded font-bold transition-all min-h-[44px] lg:min-h-0 ${
       active
         ? 'bg-theme-primary text-theme-base font-extrabold shadow'
         : 'bg-theme-elevated text-theme-muted hover:text-theme-text border border-theme-border'
@@ -205,7 +205,7 @@ export const DiceRoller: React.FC = () => {
                   ))}
                 </div>
 
-                <label className="flex items-center gap-2 cursor-pointer bg-theme-elevated px-3 py-2 rounded border border-theme-border min-h-[44px] sm:min-h-0">
+                <label className="flex items-center gap-2 cursor-pointer bg-theme-elevated px-3 py-2 rounded border border-theme-border min-h-[44px] lg:min-h-0">
                   <input
                     type="checkbox"
                     checked={isRisky}
@@ -268,7 +268,7 @@ export const DiceRoller: React.FC = () => {
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
-                <label className="flex items-center gap-2 cursor-pointer bg-theme-elevated px-3 py-2 rounded border border-theme-border min-h-[44px] sm:min-h-0">
+                <label className="flex items-center gap-2 cursor-pointer bg-theme-elevated px-3 py-2 rounded border border-theme-border min-h-[44px] lg:min-h-0">
                   <input
                     type="checkbox"
                     checked={isBloodbath}
@@ -282,7 +282,7 @@ export const DiceRoller: React.FC = () => {
 
                 {/* DEADLY sits inside the book's Bloodbath paragraph, so it is
                     only offered once a Bloodbath is declared. */}
-                <label className={`flex items-center gap-2 px-3 py-2 rounded border border-theme-border min-h-[44px] sm:min-h-0 ${
+                <label className={`flex items-center gap-2 px-3 py-2 rounded border border-theme-border min-h-[44px] lg:min-h-0 ${
                   isBloodbath ? 'cursor-pointer bg-theme-elevated' : 'opacity-40 cursor-not-allowed bg-theme-base'
                 }`}>
                   <input
