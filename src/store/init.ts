@@ -71,9 +71,18 @@ export function readInitialState(): InitialState {
       SULTANATE_MATCH_HISTORY  every campaign with no matches of its own was
                             given that player's battle record
 
-    All four are gone. A visitor with no warbands has no warbands, and the
-    dashboard already says so — "Your command ledger is currently empty" —
-    which is both true and more useful than a stranger's roster.
+    This comment used to say "All four are gone". Only the first was: the
+    localStorage seeding. `enrichUnitWithLore` and the `isSultanate` branch
+    went on running in `newRecruitImporter.ts` and `store/slices/roster.ts`
+    until FD-14's AI-1, and they were not idle — a second player's warband
+    reached production carrying that player's lore, motto, patron and
+    chronicle, byte-identical to the source file's, and their biographies on
+    three of its models.
+
+    NOW all four are gone, the file with them. A visitor with no warbands has
+    no warbands, and the dashboard already says so — "Your command ledger is
+    currently empty" — which is both true and more useful than a stranger's
+    roster.
   */
   const warbands = storage.getWarbands();
   const activeWarbandId = storage.getActiveWarbandId() || warbands[0]?.id || null;

@@ -20,9 +20,8 @@
  * campaign's organiser agreeing a house rule for a theatre is a real thing to
  * want. What is not allowed is the app writing one and not saying so.
  */
-import { Warband } from '../types/warband';
+
 import { Campaign, TerritoryNode } from '../types/campaign';
-import { SULTANATE_WARBAND_LORE, SULTANATE_WARBAND_SNAPSHOTS } from '../data/warbandLore';
 
 export const DEFAULT_WORLD_THEATERS: TerritoryNode[] = [
   {
@@ -191,21 +190,3 @@ export function emptyCampaign(): Campaign {
 export function hasCampaign(campaign: Campaign | null | undefined): boolean {
   return Boolean(campaign?.id);
 }
-
-export const defaultSultanateWarband: Warband = {
-  id: 'wb-al-qarn-rihla',
-  name: 'Al-Qarn Rihla',
-  factionId: 'iron-sultanate',
-  ducatLimit: 1220,
-  treasuryDucats: 220,
-  gloryPoints: 4,
-  lore: SULTANATE_WARBAND_LORE.lore,
-  motto: SULTANATE_WARBAND_LORE.motto,
-  patron: SULTANATE_WARBAND_LORE.patron,
-  chronicleLog: SULTANATE_WARBAND_LORE.chronicleLog,
-  snapshots: SULTANATE_WARBAND_SNAPSHOTS,
-  units: SULTANATE_WARBAND_SNAPSHOTS[2].units,
-  armoryStash: [],
-  createdAt: '2026-06-01T10:00:00Z',
-  updatedAt: new Date().toISOString()
-};

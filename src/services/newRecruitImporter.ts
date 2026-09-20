@@ -1,7 +1,6 @@
 import { XMLParser } from 'fast-xml-parser';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
 import { UnitProfile } from '../types/rules';
-import { enrichUnitWithLore, SULTANATE_WARBAND_LORE } from '../data/warbandLore';
 
 /**
  * Import a NewRecruit / BattleScribe roster.
@@ -677,10 +676,16 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
     });
   });
 
-  const enrichedUnits = units.map(enrichUnitWithLore);
+  /*
+    An import is the player's roster and nothing else.
 
-  const isSultanate = factionId === 'iron-sultanate' || warbandName.toLowerCase().includes('qarn') || warbandName.toLowerCase().includes('sultanate');
-
+    This used to run `enrichUnitWithLore` over every model and, for any warband
+    whose faction was iron-sultanate or whose NAME merely contained "qarn" or
+    "sultanate", hand it one specific player's lore, motto, patron and
+    chronicle. It was not hypothetical: a second player's warband reached
+    production carrying all four, byte-identical to the file's, plus that
+    player's biographies on three of its models.
+  */
   return {
     warband: {
       id: `wb-${Date.now()}`,
@@ -690,12 +695,9 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
       ducatLimit: ducatsLimit,
       treasuryDucats: 0,
       gloryPoints,
-      units: enrichedUnits,
+      units,
       armoryStash,
-      lore: isSultanate ? SULTANATE_WARBAND_LORE.lore : undefined,
-      motto: isSultanate ? SULTANATE_WARBAND_LORE.motto : undefined,
-      patron: isSultanate ? SULTANATE_WARBAND_LORE.patron : undefined,
-      chronicleLog: isSultanate ? SULTANATE_WARBAND_LORE.chronicleLog : [],
+      chronicleLog: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },

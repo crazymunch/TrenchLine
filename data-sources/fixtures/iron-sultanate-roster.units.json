@@ -1,0 +1,889 @@
+[
+  {
+    "id": "snap3-u-kasim",
+    "customName": "Sultanate Leader",
+    "baseProfileId": "unit-jabirean-alchemist",
+    "profileSnapshot": {
+      "id": "unit-jabirean-alchemist",
+      "name": "Jabirean Alchemist",
+      "factionId": "iron-sultanate",
+      "category": "Leader",
+      "baseCost": 55,
+      "stats": {
+        "movement": "4\"",
+        "ranged": "+3 DICE",
+        "melee": "+1 DICE",
+        "armour": "-2",
+        "baseSize": "32mm"
+      },
+      "innateAbilities": [
+        {
+          "id": "ab-mastery",
+          "name": "Mastery of the Elements",
+          "description": "Deploy with FIRE, GAS, or SHRAPNEL on all weapons."
+        },
+        {
+          "id": "ab-elem-change",
+          "name": "Elemental Change",
+          "description": "ACTION: Change elemental keyword on all weapons."
+        },
+        {
+          "id": "ab-medicine",
+          "name": "School of Medicine",
+          "description": "ACTION: +1 DICE to heal 2 Blood Markers or stand up Downed friendly model."
+        }
+      ]
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-auto-rifle-1",
+        "id": "wep-automatic-rifle",
+        "name": "Automatic Rifle",
+        "factionId": "iron-sultanate",
+        "type": "Ranged",
+        "range": "24\"",
+        "modifiers": "+0 DICE",
+        "cost": 40,
+        "keywords": [
+          "ASSAULT",
+          "AUTOMATIC 2"
+        ],
+        "description": "Focused Fire"
+      },
+      {
+        "instanceId": "w-sword-1",
+        "id": "wep-sword-axe",
+        "name": "Sword/Axe",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+0 DICE",
+        "cost": 4,
+        "keywords": [
+          "CRITICAL"
+        ]
+      }
+    ],
+    "equippedArmour": [
+      {
+        "instanceId": "a-alch-armour-1",
+        "id": "arm-alchemist",
+        "name": "Alchemist Armour",
+        "factionId": "iron-sultanate",
+        "category": "Heavy",
+        "modifier": "-2 INJURY MODIFIER",
+        "cost": 50,
+        "keywords": [
+          "NEGATE FIRE",
+          "NEGATE GAS"
+        ],
+        "description": "Protection From Harm"
+      }
+    ],
+    "equippedEquipment": [
+      {
+        "instanceId": "eq-gasmask-1",
+        "id": "eq-gas-mask",
+        "name": "Gas Mask",
+        "cost": 5,
+        "effect": "NEGATE GAS",
+        "keywords": [
+          "NEGATE GAS"
+        ]
+      },
+      {
+        "instanceId": "eq-elixir-1",
+        "id": "eq-elixir-al-khidr",
+        "name": "Elixir of Al-Khidr",
+        "cost": 10,
+        "effect": "TOUGH for rest of game",
+        "keywords": [
+          "CONSUMABLE",
+          "TOUGH"
+        ]
+      }
+    ],
+    "xp": 4,
+    "advancements": [
+      "Ranged Proficiency [7] (+1 DICE Ranged, total +3 DICE)",
+      "Assassinate [4] (+1 DICE vs unactivated targets)",
+      "Secrets of Takwin (Harm redirection)"
+    ],
+    "injuries": [
+      "Leg Wound [31] (-2\" Move, -1 DICE to Dash)"
+    ],
+    "isDead": false,
+    "totalCost": 179,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-bull",
+    "customName": "Brazen Bull",
+    "baseProfileId": "unit-brazen-bull",
+    "profileSnapshot": {
+      "id": "unit-brazen-bull",
+      "name": "Favoured Brazen Bull",
+      "factionId": "iron-sultanate",
+      "category": "Elite",
+      "baseCost": 100,
+      "stats": {
+        "movement": "6\"",
+        "ranged": "+0 DICE",
+        "melee": "+2 DICE",
+        "armour": "-3",
+        "baseSize": "60mm"
+      },
+      "innateAbilities": [
+        {
+          "id": "ab-art-life",
+          "name": "Artificial Life",
+          "description": "-1 INJURY DICE to Injury Rolls for a Brazen Bull."
+        },
+        {
+          "id": "ab-trample",
+          "name": "Trample",
+          "description": "ACTION: Melee Attack vs Downed model ignoring armour."
+        }
+      ]
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-flame-cannon-1",
+        "id": "wep-flame-cannon",
+        "name": "Flame Cannon",
+        "factionId": "iron-sultanate",
+        "type": "Ranged",
+        "range": "12\"",
+        "modifiers": "+0 DICE",
+        "cost": 60,
+        "keywords": [
+          "FIRE",
+          "HEAVY",
+          "IGNORE ARMOUR"
+        ],
+        "description": "Greek Fire 12\" line attack"
+      },
+      {
+        "instanceId": "w-titan-zulfiqar-1",
+        "id": "wep-titan-zulfiqar",
+        "name": "Titan Zulfiqar",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+2 INJURY MODIFIER",
+        "cost": 30,
+        "keywords": [
+          "CRITICAL",
+          "HEAVY"
+        ]
+      },
+      {
+        "instanceId": "w-shield-bull-1",
+        "id": "arm-trench-shield",
+        "name": "Trench Shield",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "-1 INJURY MODIFIER",
+        "cost": 10,
+        "keywords": [
+          "SHIELD"
+        ]
+      }
+    ],
+    "equippedArmour": [
+      {
+        "instanceId": "a-reinf-bull-3",
+        "id": "arm-reinforced",
+        "name": "Reinforced Armour",
+        "factionId": "iron-sultanate",
+        "category": "Heavy",
+        "modifier": "-2 INJURY MODIFIER",
+        "cost": 40,
+        "keywords": []
+      }
+    ],
+    "equippedEquipment": [
+      {
+        "instanceId": "eq-wind-bull-1",
+        "id": "eq-wind-amulet",
+        "name": "Wind Amulet",
+        "cost": 10,
+        "effect": "+3\" Movement on activation",
+        "keywords": []
+      }
+    ],
+    "xp": 3,
+    "advancements": [
+      "Strength of Samson [8] (+1 INJURY DICE to Melee, STRONG)"
+    ],
+    "injuries": [
+      "Lost Arm [26] (Severed mechanical arm in ferocious close quarters)"
+    ],
+    "isDead": false,
+    "totalCost": 280,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-idris",
+    "customName": "Relic Hound",
+    "baseProfileId": "unit-azeb",
+    "profileSnapshot": {
+      "id": "unit-azeb",
+      "name": "Favoured Kavass",
+      "factionId": "iron-sultanate",
+      "category": "Elite",
+      "baseCost": 25,
+      "stats": {
+        "movement": "6\"",
+        "ranged": "+0 DICE",
+        "melee": "+0 DICE",
+        "armour": "-2",
+        "baseSize": "25mm"
+      },
+      "innateAbilities": [
+        {
+          "id": "ab-fireteam-idris",
+          "name": "Fireteam: Mamluk-Guarded",
+          "description": "Coordinated Engagement simultaneous activation with Mamluk Faris."
+        }
+      ]
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-jezzail-idris-1",
+        "id": "wep-jezzail",
+        "name": "Jezzail",
+        "factionId": "iron-sultanate",
+        "type": "Ranged",
+        "range": "18\"",
+        "modifiers": "+1 DICE",
+        "cost": 7,
+        "keywords": []
+      },
+      {
+        "instanceId": "w-club-idris-1",
+        "id": "wep-trench-club",
+        "name": "Trench Club",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+0 DICE",
+        "cost": 3,
+        "keywords": []
+      }
+    ],
+    "equippedArmour": [
+      {
+        "instanceId": "a-reinf-idris-2",
+        "id": "arm-reinforced",
+        "name": "Reinforced Armour",
+        "factionId": "iron-sultanate",
+        "category": "Heavy",
+        "modifier": "-2 INJURY MODIFIER",
+        "cost": 40,
+        "keywords": []
+      }
+    ],
+    "equippedEquipment": [
+      {
+        "instanceId": "eq-alch-ammo-idris-1",
+        "id": "eq-alchemical-ammo",
+        "name": "Alchemical Ammunition",
+        "cost": 3,
+        "effect": "+1 DICE to Jezzail",
+        "keywords": [
+          "AMMUNITION (+1 DICE)"
+        ]
+      },
+      {
+        "instanceId": "eq-alch-ammo-idris-loaded-1",
+        "id": "eq-alchemical-ammo-loaded",
+        "name": "Alchemical Ammunition (Loaded)",
+        "cost": 3,
+        "effect": "Loaded into Jezzail",
+        "keywords": [
+          "AMMUNITION (+1 DICE)"
+        ]
+      }
+    ],
+    "xp": 3,
+    "advancements": [
+      "Elite Promotion (Favoured Kavass)",
+      "Skill & Expertise [7]",
+      "Studied Blade (+1 DICE Melee)"
+    ],
+    "injuries": [],
+    "isDead": false,
+    "totalCost": 120,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-nasir",
+    "customName": "Sapper",
+    "baseProfileId": "unit-azeb",
+    "profileSnapshot": {
+      "id": "unit-azeb",
+      "name": "Kavass",
+      "factionId": "iron-sultanate",
+      "category": "Trooper",
+      "baseCost": 25,
+      "stats": {
+        "movement": "6\"",
+        "ranged": "+0 DICE",
+        "melee": "-1 DICE",
+        "armour": "0",
+        "baseSize": "25mm"
+      },
+      "innateAbilities": []
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-jezzail-nasir-1",
+        "id": "wep-jezzail",
+        "name": "Jezzail",
+        "factionId": "iron-sultanate",
+        "type": "Ranged",
+        "range": "18\"",
+        "modifiers": "+1 DICE",
+        "cost": 7,
+        "keywords": []
+      },
+      {
+        "instanceId": "w-club-nasir-1",
+        "id": "wep-trench-club",
+        "name": "Trench Club",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+0 DICE",
+        "cost": 3,
+        "keywords": []
+      }
+    ],
+    "equippedArmour": [
+      {
+        "instanceId": "a-std-nasir-3",
+        "id": "arm-standard",
+        "name": "Standard Armour",
+        "factionId": "iron-sultanate",
+        "category": "Medium",
+        "modifier": "-1 INJURY MODIFIER",
+        "cost": 15,
+        "keywords": []
+      }
+    ],
+    "equippedEquipment": [
+      {
+        "instanceId": "eq-alch-ammo-nasir-1",
+        "id": "eq-alchemical-ammo",
+        "name": "Alchemical Ammunition",
+        "cost": 3,
+        "effect": "+1 DICE to Jezzail",
+        "keywords": [
+          "AMMUNITION (+1 DICE)"
+        ]
+      },
+      {
+        "instanceId": "eq-alch-ammo-nasir-loaded-1",
+        "id": "eq-alchemical-ammo-loaded",
+        "name": "Alchemical Ammunition (Loaded)",
+        "cost": 3,
+        "effect": "Loaded into Jezzail",
+        "keywords": [
+          "AMMUNITION (+1 DICE)"
+        ]
+      }
+    ],
+    "xp": 0,
+    "advancements": [],
+    "injuries": [],
+    "isDead": false,
+    "totalCost": 56,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-rafiq",
+    "customName": "Incinerator",
+    "baseProfileId": "unit-azeb",
+    "profileSnapshot": {
+      "id": "unit-azeb",
+      "name": "Kavass",
+      "factionId": "iron-sultanate",
+      "category": "Trooper",
+      "baseCost": 25,
+      "stats": {
+        "movement": "6\"",
+        "ranged": "+0 DICE",
+        "melee": "-1 DICE",
+        "armour": "-1",
+        "baseSize": "25mm"
+      },
+      "innateAbilities": []
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-flame-rafiq-1",
+        "id": "wep-flamethrower",
+        "name": "Flamethrower",
+        "factionId": "iron-sultanate",
+        "type": "Ranged",
+        "range": "8\"",
+        "modifiers": "-1 INJURY DICE",
+        "cost": 30,
+        "keywords": [
+          "FIRE",
+          "FLAMETHROWER",
+          "IGNORE ARMOUR"
+        ]
+      },
+      {
+        "instanceId": "w-club-rafiq-1",
+        "id": "wep-trench-club",
+        "name": "Trench Club",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+0 DICE",
+        "cost": 3,
+        "keywords": []
+      }
+    ],
+    "equippedArmour": [
+      {
+        "instanceId": "a-std-rafiq-1",
+        "id": "arm-standard",
+        "name": "Standard Armour",
+        "factionId": "iron-sultanate",
+        "category": "Medium",
+        "modifier": "-1 INJURY MODIFIER",
+        "cost": 15,
+        "keywords": []
+      }
+    ],
+    "equippedEquipment": [],
+    "xp": 0,
+    "advancements": [],
+    "injuries": [],
+    "isDead": false,
+    "totalCost": 73,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-dhib",
+    "customName": "Scout",
+    "baseProfileId": "unit-lion-jabir",
+    "profileSnapshot": {
+      "id": "unit-lion-jabir",
+      "name": "Lion of Jabir",
+      "factionId": "iron-sultanate",
+      "category": "Trooper",
+      "baseCost": 60,
+      "stats": {
+        "movement": "8\"",
+        "ranged": "N/A",
+        "melee": "+1 DICE",
+        "armour": "-1",
+        "baseSize": "50mm"
+      },
+      "innateAbilities": [
+        {
+          "id": "ab-art-life-lion",
+          "name": "Artificial Life",
+          "description": "-1 INJURY DICE to Injury Rolls for Lion of Jabir."
+        },
+        {
+          "id": "ab-agile",
+          "name": "Agile",
+          "description": "+1 DICE to Risky Success Rolls for Climbing/Jumping/Dashing."
+        },
+        {
+          "id": "ab-pin",
+          "name": "Pin",
+          "description": "Enemy Downed models <=40mm base cannot stand up within 1\"."
+        },
+        {
+          "id": "ab-teeth",
+          "name": "Teeth and Claws",
+          "description": "Natural melee attack."
+        },
+        {
+          "id": "ab-fierce-lion",
+          "name": "Fierce Lion",
+          "description": "Gains the FEAR keyword."
+        }
+      ]
+    },
+    "equippedWeapons": [],
+    "equippedArmour": [
+      {
+        "instanceId": "a-std-dhib-1",
+        "id": "arm-standard",
+        "name": "Standard Armour",
+        "factionId": "iron-sultanate",
+        "category": "Medium",
+        "modifier": "-1 INJURY MODIFIER",
+        "cost": 15,
+        "keywords": []
+      }
+    ],
+    "equippedEquipment": [
+      {
+        "instanceId": "eq-wind-dhib-1",
+        "id": "eq-wind-amulet",
+        "name": "Wind Amulet",
+        "cost": 10,
+        "effect": "+3\" Movement on activation",
+        "keywords": []
+      }
+    ],
+    "xp": 0,
+    "advancements": [],
+    "injuries": [],
+    "isDead": false,
+    "totalCost": 90,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-needle",
+    "customName": "Iron Needle",
+    "baseProfileId": "unit-sultanate-sapper",
+    "profileSnapshot": {
+      "id": "unit-sultanate-sapper",
+      "name": "Sultanate Sapper",
+      "factionId": "iron-sultanate",
+      "category": "Trooper",
+      "baseCost": 50,
+      "stats": {
+        "movement": "6\"",
+        "ranged": "+1 DICE",
+        "melee": "0",
+        "armour": "0",
+        "baseSize": "25mm"
+      },
+      "innateAbilities": [
+        {
+          "id": "ab-set-mine",
+          "name": "Set Mine",
+          "description": "ACTION: +2 DICE Success Roll to mine a terrain piece."
+        },
+        {
+          "id": "ab-fortify",
+          "name": "Fortify",
+          "description": "ACTION: Risky Success Roll to gain COVER."
+        },
+        {
+          "id": "ab-defuse-mine",
+          "name": "Defuse Mine",
+          "description": "Risky Success Roll to defuse a mined terrain piece."
+        },
+        {
+          "id": "ab-fwd-pos",
+          "name": "Forward Positions",
+          "description": "Deploy up to 6\" forward in contact with terrain."
+        }
+      ]
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-siege-needle-3",
+        "id": "wep-siege-jezzail",
+        "name": "Siege Jezzail",
+        "factionId": "iron-sultanate",
+        "type": "Ranged",
+        "range": "30\"",
+        "modifiers": "+1 DICE, +1 INJURY DICE",
+        "cost": 30,
+        "keywords": [
+          "HEAVY"
+        ]
+      },
+      {
+        "instanceId": "w-club-needle-3",
+        "id": "wep-trench-club",
+        "name": "Trench Club",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+0 DICE",
+        "cost": 3,
+        "keywords": []
+      }
+    ],
+    "equippedArmour": [
+      {
+        "instanceId": "a-std-needle-1",
+        "id": "arm-standard",
+        "name": "Standard Armour",
+        "factionId": "iron-sultanate",
+        "category": "Medium",
+        "modifier": "-1 INJURY MODIFIER",
+        "cost": 15,
+        "keywords": []
+      }
+    ],
+    "equippedEquipment": [
+      {
+        "instanceId": "eq-alch-ammo-needle-1",
+        "id": "eq-alchemical-ammo",
+        "name": "Alchemical Ammunition",
+        "cost": 3,
+        "effect": "+1 DICE to Siege Jezzail",
+        "keywords": [
+          "AMMUNITION (+1 DICE)"
+        ]
+      },
+      {
+        "instanceId": "eq-shovel-needle-1",
+        "id": "eq-shovel",
+        "name": "Shovel",
+        "cost": 0,
+        "effect": "Dug In: COVER on Open terrain",
+        "keywords": []
+      }
+    ],
+    "xp": 0,
+    "advancements": [],
+    "injuries": [],
+    "isDead": false,
+    "totalCost": 101,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-homunculus",
+    "customName": "Takwin Homunculus",
+    "baseProfileId": "unit-takwin-homunculus",
+    "profileSnapshot": {
+      "id": "unit-takwin-homunculus",
+      "name": "Favoured Takwin Homunculus",
+      "factionId": "iron-sultanate",
+      "category": "Elite",
+      "baseCost": 40,
+      "stats": {
+        "movement": "6\"",
+        "ranged": "+0 DICE",
+        "melee": "+1 DICE",
+        "armour": "-1",
+        "baseSize": "50mm"
+      },
+      "innateAbilities": [
+        {
+          "id": "ab-massive-size",
+          "name": "Massive Size",
+          "description": "Base size 50mm, gains TOUGH."
+        },
+        {
+          "id": "ab-human-hands",
+          "name": "Human Hands",
+          "description": "Can wield weapons and shields."
+        },
+        {
+          "id": "ab-inhuman-strength",
+          "name": "Inhuman Strength",
+          "description": "Gains STRONG, +1 DICE Melee, 32mm."
+        },
+        {
+          "id": "ab-additional-arm",
+          "name": "Additional Arm",
+          "description": "CLEAVE 2 on Pummeling Blows."
+        }
+      ]
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-siege-hom-3",
+        "id": "wep-siege-jezzail",
+        "name": "Siege Jezzail",
+        "factionId": "iron-sultanate",
+        "type": "Ranged",
+        "range": "30\"",
+        "modifiers": "+1 DICE, +1 INJURY DICE",
+        "cost": 30,
+        "keywords": [
+          "HEAVY"
+        ]
+      },
+      {
+        "instanceId": "w-greatsword-hom-3",
+        "id": "wep-great-sword",
+        "name": "Great Sword/Axe",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+1 INJURY DICE",
+        "cost": 12,
+        "keywords": [
+          "CRITICAL",
+          "HEAVY"
+        ]
+      },
+      {
+        "instanceId": "w-sword-hom-3",
+        "id": "wep-sword-axe",
+        "name": "Sword/Axe",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "+0 DICE",
+        "cost": 4,
+        "keywords": [
+          "CRITICAL"
+        ]
+      },
+      {
+        "instanceId": "w-fireshield-hom-3",
+        "id": "arm-fire-shield",
+        "name": "Fire Shield",
+        "factionId": "iron-sultanate",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "-1 INJURY MODIFIER",
+        "cost": 20,
+        "keywords": [
+          "NEGATE FIRE"
+        ]
+      }
+    ],
+    "equippedArmour": [],
+    "equippedEquipment": [],
+    "xp": 3,
+    "advancements": [
+      "Elite Promotion (Favoured Takwin Homunculus)"
+    ],
+    "injuries": [],
+    "isDead": false,
+    "totalCost": 146,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  },
+  {
+    "id": "snap3-u-mamluk",
+    "customName": "Alchemist",
+    "baseProfileId": "unit-mamluk-faris",
+    "profileSnapshot": {
+      "id": "unit-mamluk-faris",
+      "name": "Mamluk Faris",
+      "factionId": "mercenaries",
+      "category": "Mercenary",
+      "baseCost": 0,
+      "stats": {
+        "movement": "6\"",
+        "ranged": "+1 DICE",
+        "melee": "+1 DICE",
+        "armour": "-3",
+        "baseSize": "32mm"
+      },
+      "innateAbilities": [
+        {
+          "id": "ab-sworn-brethren",
+          "name": "Sworn Brethren",
+          "description": "Forms a FIRETEAM with Idris the Relic Hound."
+        },
+        {
+          "id": "ab-martial-prowess",
+          "name": "Martial Prowess",
+          "description": "Greatsword is not Heavy; Jezzail has Assault & Shield Combo."
+        },
+        {
+          "id": "ab-automaton-destrier",
+          "name": "Automaton Destrier",
+          "description": "Deploy within 1\" of board edge and >8\" from enemies."
+        }
+      ]
+    },
+    "equippedWeapons": [
+      {
+        "instanceId": "w-polearm-mamluk-1",
+        "id": "wep-polearm-shield",
+        "name": "Polearm and Shield",
+        "factionId": "mercenaries",
+        "type": "Melee",
+        "range": "Melee",
+        "modifiers": "-1 INJURY MODIFIER",
+        "cost": 0,
+        "keywords": [
+          "BLOCK",
+          "CUMBERSOME"
+        ]
+      },
+      {
+        "instanceId": "w-jezzail-mamluk-1",
+        "id": "wep-alchemical-jezzail",
+        "name": "Alchemical Jezzail",
+        "factionId": "mercenaries",
+        "type": "Ranged",
+        "range": "18\"",
+        "modifiers": "+1 DICE",
+        "cost": 0,
+        "keywords": [
+          "ASSAULT"
+        ]
+      }
+    ],
+    "equippedArmour": [
+      {
+        "instanceId": "a-reinf-mamluk-1",
+        "id": "arm-reinforced",
+        "name": "Reinforced Armour",
+        "factionId": "mercenaries",
+        "category": "Heavy",
+        "modifier": "-2 INJURY MODIFIER",
+        "cost": 0,
+        "keywords": []
+      }
+    ],
+    "equippedEquipment": [
+      {
+        "instanceId": "eq-helmet-mamluk-1",
+        "id": "eq-combat-helmet",
+        "name": "Combat Helmet",
+        "cost": 0,
+        "effect": "NEGATE SHRAPNEL",
+        "keywords": [
+          "NEGATE SHRAPNEL"
+        ]
+      }
+    ],
+    "xp": 0,
+    "advancements": [],
+    "injuries": [],
+    "isDead": false,
+    "totalCost": 0,
+    "currentWounds": 1,
+    "maxWounds": 1,
+    "bloodMarkers": 0,
+    "status": "Active",
+    "hasActedThisTurn": false
+  }
+]
