@@ -1572,7 +1572,12 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Match MVP (Awards Heroic Deed):</label>
+                    {/* Was "Match MVP (Awards Heroic Deed)", and it did award
+                        one: a fabricated Deed on the model's roster entry,
+                        beside the real Glorious Deeds. The game has no MVP and
+                        no Heroic Deed, so this is a battle-report note and is
+                        now labelled as one (RR-24). */}
+                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Standout model (battle report only):</label>
                     <select
                       value={mvpUnitName}
                       onChange={(e) => setMvpUnitName(e.target.value)}

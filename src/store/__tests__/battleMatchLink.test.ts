@@ -66,11 +66,11 @@ const battle = (over: Partial<BattleRecord> = {}): BattleRecord => ({
   ...over,
 });
 
-const apply = (battleId?: string) =>
+const apply = (battleId?: string, mvpUnitName?: string) =>
   useStore.getState().applyPostBattleResults(
     'sc-1', 'Bridgehead', 'Victory', 0, 100,
     [], [], [], false, 'narrative',
-    undefined, undefined, undefined, undefined, battleId,
+    undefined, mvpUnitName, undefined, undefined, battleId,
   );
 
 const chronicle = () => storage.getBattles();
@@ -134,5 +134,61 @@ describe('when there is nothing to link', () => {
     expect(chronicle()).toHaveLength(1);
     expect(chronicle()[0].id).toBe('battle-99');
     expect(chronicle()[0].campaignMatchId).toBeUndefined();
+  });
+});
+
+describe('the Match MVP writes no Deed onto the model', () => {
+  /*
+    RR-24. "Match MVP (Awards Heroic Deed)" prepended
+    `Match MVP: <scenario> (<result>)` to the chosen model's Deeds. The game
+    has Glorious Deeds — taken from the scenario's own list and worth 1 Glory
+    each — and no MVP and no Heroic Deed. So a mechanic the game does not have
+    wrote a Deed the game does not have onto the roster, beside the real ones.
+
+    It matched by a two-way substring on the name, which is its own defect:
+    any two models whose names contain one another both matched.
+  */
+  const unit = (id: string, customName: string) => ({
+    id,
+    customName,
+    baseProfileId: 'p1',
+    profileSnapshot: { name: 'Trench Pilgrim', category: 'Elite', elite: true },
+    equippedWeapons: [], equippedArmour: [], equippedEquipment: [],
+    xp: 0, advancements: [], injuries: [], deeds: ['First Blood'], isDead: false,
+    totalCost: 40, currentWounds: 0, maxWounds: 1, bloodMarkers: 0,
+    status: 'Active', hasActedThisTurn: false,
+  });
+
+  const withUnits = () => {
+    useStore.setState({
+      warbands: [{ ...seed(), units: [unit('u1', 'Anselm'), unit('u2', 'Brother Anselm')] } as unknown as Warband],
+      activeWarbandId: WB,
+    });
+  };
+
+  const deedsOf = (id: string) => useStore.getState().warbands
+    .find((w) => w.id === WB)!.units.find((u) => u.id === id)!.deeds;
+
+  it('leaves the chosen model’s Deeds exactly as they were', () => {
+    withUnits();
+    apply(undefined, 'Anselm');
+    expect(deedsOf('u1')).toEqual(['First Blood']);
+  });
+
+  it('no longer writes the same fabricated Deed onto two models', () => {
+    /*
+      The substring match ran both ways, so "Anselm" matched "Brother Anselm"
+      and "Brother Anselm" matched "Anselm". Naming a model after another
+      earned the other one an MVP it was never given.
+    */
+    withUnits();
+    apply(undefined, 'Anselm');
+    expect(deedsOf('u2')).toEqual(['First Blood']);
+  });
+
+  it('still records the MVP on the match, where a narrative note belongs', () => {
+    withUnits();
+    apply(undefined, 'Anselm');
+    expect(useStore.getState().campaign.matches[0].mvpUnitName).toBe('Anselm');
   });
 });

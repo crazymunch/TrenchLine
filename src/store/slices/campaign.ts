@@ -490,10 +490,22 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           newAdvancements.push(adv.advancement);
         }
 
+        /*
+          Glorious Deeds only. "Match MVP" is not one (RR-24).
+
+          This used to prepend `Match MVP: <scenario> (<result>)` to the
+          chosen model's Deeds, so a mechanic the game does not have wrote a
+          Deed the game does not have onto the roster, sitting beside the real
+          ones that came off the scenario's own list. It also matched by a
+          two-way substring on the name, so "Anselm" and "Brother Anselm"
+          matched each other — and so did any two models whose names contained
+          one another.
+
+          The MVP is kept as what it always really was: a line in the battle
+          report, on the MatchRecord, where a narrative note belongs. Nothing
+          is written to the model.
+        */
         const newDeeds = u.deeds ? [...u.deeds] : [];
-        if (mvpUnitName && (u.customName.toLowerCase().includes(mvpUnitName.toLowerCase()) || mvpUnitName.toLowerCase().includes(u.customName.toLowerCase()))) {
-          newDeeds.unshift(`Match MVP: ${scenarioName} (${outcome})`);
-        }
 
         const activeTitles = currentRecords.filter(r => r.active).map(r => r.title);
 
