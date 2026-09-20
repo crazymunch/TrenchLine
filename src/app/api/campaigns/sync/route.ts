@@ -49,7 +49,19 @@ const SettingsOp = z.object({
   data: z.object({
     name: text(120).trim().min(1).optional(),
     currentTurn: count(10_000).optional(),
-    currentGame: count(10_000).optional(),
+    /*
+      No `currentGame`. It was accepted here and `op.data` is spread straight
+      into `tx.campaign.updateMany` — and `model Campaign` HAS NO SUCH COLUMN,
+      so the first op to carry it would have thrown inside the transaction and
+      returned a 500. Nothing ever sent one, which is why it never fired; FD-09
+      specified `advanceCampaignGame` sending exactly that field, which is what
+      would have found it.
+
+      `currentTurn` is the column, the field `docs/CAMPAIGN-SYNC.md`'s
+      authority table names, and the one `campaignGameOf` falls back to. A
+      schema that accepts what the database cannot store is a promise the
+      endpoint cannot keep.
+    */
     maxWarbandDucats: count(100_000).optional(),
     gloryVictoryThreshold: count(1_000).optional(),
     framework: z.enum(['classic', 'carcass-front']).optional(),

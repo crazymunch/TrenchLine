@@ -90,7 +90,7 @@ function queuedState(campaign: Campaign, current: CampaignSyncState): { campaign
   return count ? { campaignSync: { kind: 'pending', count } } : {};
 }
 
-export type CampaignSlice = Pick<AppState, 'campaignSync' | 'syncCampaignWithCloud' | 'discardCampaignConflicts' | 'publishCampaignToCloud' | 'adoptCampaignFromCloud' | 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'logCampaignMatch' | 'updateMatchNarrative'>;
+export type CampaignSlice = Pick<AppState, 'campaignSync' | 'syncCampaignWithCloud' | 'discardCampaignConflicts' | 'publishCampaignToCloud' | 'adoptCampaignFromCloud' | 'isPostBattleOpen' | 'setIsPostBattleOpen' | 'applyPostBattleResults' | 'campaign' | 'createCampaign' | 'claimTerritory' | 'setTerritoryPerk' | 'setCampaignHouseRule' | 'advanceCampaignGame' | 'everyMemberPlayedThisGame' | 'logCampaignMatch' | 'updateMatchNarrative'>;
 
 export const createCampaignSlice = (init: InitialState): StateCreator<AppState, [], [], CampaignSlice> =>
   (set, get) => ({
@@ -726,6 +726,9 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         label: `Post-Battle: ${scenarioName} (${outcome})`,
         type: 'post_battle',
         matchId,
+        /* Which game this was, so the campaign can tell whether everyone has
+           played it (FD-09a / RR-17). */
+        campaignGame: gameNumber,
         scenarioName,
         outcome,
         ducatCost: survivingUnits.reduce((s, u) => s + u.totalCost, 0),
@@ -855,15 +858,50 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         category: 'battle' as const
       };
 
+      /*
+        The game number is NOT moved here (FD-09a / RR-17).
+
+        This added one, and so did `logCampaignMatch`, and the turn number is
+        the ORGANISER'S — `docs/CAMPAIGN-SYNC.md`'s authority table says so,
+        and every Threshold and Exploration band in the app reads it through
+        `campaignGameOf`. So one member finishing their own post-battle moved
+        a campaign-wide number for everybody; two members each committing
+        game 1 left the counter reading 3; and neither writer queued a
+        `campaign.settings` op, so the value never reached the cloud and the
+        next adoption put it back. Three ways wrong, in one `+ 1`.
+
+        `advanceCampaignGame` is the only writer now.
+      */
       const updatedCampaign: Campaign = {
         ...state.campaign,
-        currentTurn: state.campaign.currentTurn + 1,
         members: updatedMembers,
         matches: [newMatch, ...state.campaign.matches],
         chronicleLogs: [newLog, ...state.campaign.chronicleLogs]
       };
 
       storage.saveCampaign(updatedCampaign);
+
+      /*
+        A campaign of ONE moves itself on.
+
+        FD-09 asked for an `autoAdvance` setting, on by default for a campaign
+        with one member. A stored setting cannot be had here: it would need a
+        `Campaign` column and the settings op cannot carry a field the table
+        does not have — which is the trap `currentGame` is already in (see the
+        op in `advanceCampaignGame`). So the case it was specified to default
+        to is DERIVED instead, and the multi-member case is the organiser's
+        button in the Hub.
+
+        Confined to one member on purpose, and not only for the setting: the
+        op is the organiser's, and a member's device queueing one would have
+        it refused by the server and left sitting in the outbox. With one
+        member there is nobody else to be, and nobody else to wait for.
+      */
+      if (updatedCampaign.id && updatedCampaign.members.length === 1) {
+        queueMicrotask(() => {
+          if (get().everyMemberPlayedThisGame()) get().advanceCampaignGame();
+        });
+      }
 
       /*
         Join the two records of this one game.
@@ -1123,6 +1161,83 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       return true;
     },
 
+    /*
+      Move the campaign on to its next game. The ONE writer of that number.
+
+      It had two — `applyPostBattleResults` and `logCampaignMatch`, each
+      adding one — and the number belongs to the organiser
+      (`docs/CAMPAIGN-SYNC.md`'s authority table). Every Threshold and
+      Exploration band in the app reads it through `campaignGameOf`, so a
+      member finishing their own post-battle moved everyone's campaign on, two
+      members committing game 1 left it reading 3, and neither writer queued a
+      `campaign.settings` op — so the value never reached the cloud and the
+      next adoption put the server's back.
+
+      Queued like `setTerritoryPerk` and `setCampaignHouseRule`: the client
+      sends, and the SERVER refuses a non-organiser (`role !== 'admin'` is a
+      403 in `/api/campaigns/sync`). The store is not a security boundary and
+      does not pretend to be one.
+
+      `currentTurn` and not `currentGame`: `currentTurn` is the column the
+      database actually has, the field the authority table names, and the one
+      `campaignGameOf` falls back to. See the op below.
+    */
+    advanceCampaignGame: () => {
+      const campaign = get().campaign;
+      if (!campaign?.id) return false;
+
+      set((state) => {
+        const next = Math.max(1, Math.floor(state.campaign.currentTurn || 1)) + 1;
+        const updatedCampaign: Campaign = {
+          ...state.campaign,
+          currentTurn: next,
+          chronicleLogs: [
+            {
+              id: `c-${Date.now()}`,
+              timestamp: 'Just now',
+              text: `Game ${next} begins. Thresholds and Exploration Dice move with it.`,
+              category: 'territory' as const,
+            },
+            ...state.campaign.chronicleLogs,
+          ],
+        };
+
+        const queued = queueOp(updatedCampaign, {
+          kind: 'campaign.settings',
+          opId: newOpId(),
+          baseVersion: state.campaign.version ?? 1,
+          data: { currentTurn: next },
+        });
+
+        storage.saveCampaign(queued);
+        return { campaign: queued, ...queuedState(queued, state.campaignSync) };
+      });
+      return true;
+    },
+
+    /*
+      Has everyone played the game the campaign is on?
+
+      Read from each member's warband snapshots rather than from a counter, so
+      a member who commits a post-battle twice does not count twice and one
+      who commits none holds the campaign where it is. A member whose warband
+      this device does not hold cannot be checked at all — which is why the
+      automatic advance below is confined to the case where there is only one.
+    */
+    everyMemberPlayedThisGame: () => {
+      const state = get();
+      const campaign = state.campaign;
+      if (!campaign?.id || !campaign.members.length) return false;
+      const game = Math.max(1, Math.floor(campaign.currentTurn || 1));
+
+      return campaign.members.every((m) => {
+        const wb = state.warbands.find((w) => w.id === m.warbandId);
+        if (!wb) return false;
+        return (wb.snapshots ?? []).some((snap) =>
+          snap.type === 'post_battle' && snap.campaignGame === game);
+      });
+    },
+
     logCampaignMatch: (
       p1WarbandId,
       p2WarbandId,
@@ -1198,9 +1313,10 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           category: 'battle' as const
         };
 
+        /* Not the game number's writer either — see `applyPostBattleResults`
+           and `advanceCampaignGame` (FD-09a / RR-17). */
         const updatedCampaign: Campaign = {
           ...state.campaign,
-          currentTurn: state.campaign.currentTurn + 1,
           members: updatedMembers,
           matches: [newMatch, ...state.campaign.matches],
           chronicleLogs: [newLog, ...state.campaign.chronicleLogs]

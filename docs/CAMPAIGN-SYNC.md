@@ -92,7 +92,7 @@ app actually performs today:
 
 | kind | who | writes |
 |---|---|---|
-| `campaign.settings` | organiser | name, turn, game, budgets, framework, house rules |
+| `campaign.settings` | organiser | name, turn, budgets, framework, house rules |
 | `territory.perk` | organiser | `perk` + `perkSource`, refused on a published one |
 | `territory.claim` | member | the controlling warband, named from the membership |
 
@@ -342,6 +342,41 @@ Both cases are covered now, and the fix is sabotage-proved: reverting the lookup
 to the primary key alone fails "resolves a territory by the id the DEVICE knows
 it by".
 
+## The game counter has one writer
+
+The turn number is the organiser's — the table below says so — and every
+Warband's Threshold Value and Exploration Dice band is read from it through
+`campaignGameOf`. It had **two** writers, both of them members':
+`applyPostBattleResults` and `logCampaignMatch`, each adding one.
+
+Three things went wrong in that `+ 1`:
+
+- a member finishing their own post-battle moved the campaign on **for
+  everybody**;
+- two members each committing game 1 left the counter reading **3**, so every
+  Threshold and Exploration band jumped two games;
+- neither writer queued a `campaign.settings` op, so the number **never reached
+  the cloud** — and the next adoption took the server's stale value back.
+
+`advanceCampaignGame` is the only writer now. It is an organiser action in the
+Hub ("Start game N+1"), it queues `campaign.settings` with `{ currentTurn }`,
+and the server refuses it from anyone else (`role !== 'admin'` is a 403) — the
+client sends, the server decides, as with every other organiser-owned field.
+
+**A campaign of one moves itself on.** FD-09 specified an `autoAdvance`
+setting defaulting to on for a single-member campaign; a stored setting would
+need a `Campaign` column, and the settings op cannot carry a field the table
+does not have — see `currentGame` in the table below. So that one case is
+derived instead: when the sole member commits a post-battle and
+`everyMemberPlayedThisGame()` is true, the campaign advances. It is confined
+to one member for a second reason as well — the op is the organiser's, and a
+member's device queueing one would have it refused and left in the outbox.
+
+`everyMemberPlayedThisGame` reads each member's warband snapshots for a
+`post_battle` carrying this game's number (`WarbandSnapshot.campaignGame`),
+not a count: a member who commits twice must not count twice, and one whose
+warband this device does not hold cannot be checked at all.
+
 ## Authority: who owns which field
 
 From SYNC-1, and unchanged by the above.
@@ -351,6 +386,7 @@ From SYNC-1, and unchanged by the above.
 | **server** | membership, `inviteCode`, `adminId`, user identity | A client that could write its own membership could join any campaign. |
 | **organiser** | campaign settings, territory house rules (`perk`, `perkSource: campaign`), turn number | One person decides the shape of the campaign; letting every member write it makes the last writer the organiser. |
 | **player** | their own warband, their own post-battle results | Nobody else's client may write a player's roster. |
+| **nobody, twice over** | `currentGame` | Not a wire field. The endpoint used to accept it and `op.data` is spread straight into `updateMany` — against a `Campaign` table with no such column, so the first op to carry one would have 500'd inside the transaction. Nothing ever sent one. `currentTurn` is the column, and `campaignGameOf` falls back to it. |
 | **nobody** | `perkSource: published` perks | The book states these. Not writable by anyone — enforced in the store today and would be enforced server-side too. |
 
 ## The protocol

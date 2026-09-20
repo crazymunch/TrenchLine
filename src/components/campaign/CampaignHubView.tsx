@@ -29,7 +29,10 @@ import {
 import { useOverlay } from '../ui/useOverlay';
 
 export const CampaignHubView: React.FC = () => {
-  const { campaign, factions, createCampaign, getActiveWarband, warbands } = useStore();
+  const {
+    campaign, factions, createCampaign, getActiveWarband, warbands,
+    advanceCampaignGame, everyMemberPlayedThisGame,
+  } = useStore();
   const activeWb = getActiveWarband();
   const syncCampaign = useStore((s) => s.syncCampaignWithCloud);
 
@@ -336,11 +339,38 @@ export const CampaignHubView: React.FC = () => {
         
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-1.5">
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary text-theme-base font-bold uppercase">
                 CRUSADE TURN {campaign.currentTurn}
               </span>
               <span className="text-xs font-mono text-theme-muted">Admin: {campaign.adminName}</span>
+              {/*
+                The one control that moves the campaign on (FD-09a / RR-17).
+
+                It used to move itself, twice over: a member's own post-battle
+                added one and so did a logged match, so two members committing
+                game 1 left the counter reading 3 — and the number decides
+                every Warband's Threshold and Exploration Dice. It is the
+                organiser's, which the server enforces; this is where they say
+                so. A campaign of one advances itself, having nobody to wait
+                for.
+              */}
+              {campaign.members.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => advanceCampaignGame()}
+                  title={everyMemberPlayedThisGame()
+                    ? 'Every member has committed a post-battle for this game.'
+                    : 'Not every member has committed a post-battle for this game yet.'}
+                  className={`min-h-[44px] lg:min-h-0 lg:py-1 px-3 rounded border font-mono text-xs font-bold uppercase transition-colors ${
+                    everyMemberPlayedThisGame()
+                      ? 'bg-theme-primary text-theme-base border-theme-primary'
+                      : 'bg-theme-base text-theme-primary border-theme-primary/50 hover:bg-theme-elevated'
+                  }`}
+                >
+                  Start game {campaign.currentTurn + 1}
+                </button>
+              )}
             </div>
             <h1 className="font-gothic font-bold text-2xl sm:text-3xl text-theme-text tracking-wide">
               {campaign.name}
