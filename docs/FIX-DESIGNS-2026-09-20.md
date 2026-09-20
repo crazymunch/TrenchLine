@@ -35,7 +35,7 @@ carry, and what these designs cover:
 | FD-09 | RR-17, RR-27 | the campaign store, Play Mode's end of match, the Chronicle record |
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 
-### Landed, as of 03:20 UTC on 20 September
+### Landed, as of 04:20 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -45,10 +45,11 @@ carry, and what these designs cover:
 | FD-04a | #62 | merged |
 | FD-06a (eligibility and the Experience cap) | #63 | merged, with five corrections recorded below |
 | Follow-ups from #60 and #61 | #64 | merged |
-| FD-04b | #65 | reviewed, green, to merge |
-| FD-03a (Campaign Victory Points, standings, the Weather chooser) | #66 | reviewed, green, needs `main` merged in |
-| WIZ-1 (the 44px rule's width, `sm:` to `lg:`, checkbox by label) | #67 | reviewed, stacked on #65 |
-| MVP-1 (the standout note names any roster's model) | #68 | reviewed, stacked on #67 |
+| FD-04b | #65 | merged |
+| FD-03a (Campaign Victory Points, standings, the Weather chooser) | #66 | reviewed; rebased on `main`, check running |
+| WIZ-1 (the 44px rule's width, `sm:` to `lg:`, checkbox by label) | #67 | merged |
+| MVP-1 (the standout note names any roster's model) | #68 | reviewed; rebased on `main`, check running |
+| FD-06b (the Promotion Dice Pool, the miss counter, the end of the switch) | #69 | reviewed; one rule to correct before merge, see FD-06 |
 
 ## FD-00. PR #59 as it stands
 
@@ -532,6 +533,16 @@ The book, page 104 to 106 and 111:
 The dataset carries LIMITED POTENTIAL as a keyword on six units; the book's
 list has seven. The Brazen Bull is the difference, and its entry was replaced
 by `dispatch-01`, so the Dispatch's own keyword row decides, not this page.
+
+**On the assignment rule, from the review of PR #69.** Page 104, lines 5967
+to 5971: "You cannot assign a 3rd dice to the same model until all Troop
+models in your Warband have at least 2 dice each, or assign a 4th dice until
+all Troop models have at least 3 dice each, and so on." The constraint starts
+at the third die: a model may hold k dice, for k of 3 or more, only when every
+eligible model holds at least k minus 1. A second die is unconstrained, so two
+dice on one Troop while another holds none is legal. A rule written as "the
+most may exceed the least by no more than one" forbids that legal case and is
+stricter than the book.
 
 **Corrected by PR #63, with evidence.** The catalogue gives all seven of the
 book's models LIMITED POTENTIAL and `dispatch-01` removes the Bull's, so this
