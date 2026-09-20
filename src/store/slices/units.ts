@@ -13,6 +13,7 @@ import { campaignGameOf } from '../../rules/campaign';
 import type { Warband, StashedItem } from '../../types/warband';
 import type { Cost } from '../../types/catalogue';
 import { profileCost, isZero } from '../../rules/costs';
+import { unitGlory } from '../../rules/savedGlory';
 
 /*
   Every purchase in the builder goes through these two, and both are no-ops on
@@ -169,17 +170,29 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
           /* `charge`, so the entry carries the `ref` and `game` that let
              removal undo it — see the helper at the top of this file. */
           /*
-            Ducats only, deliberately. 17 model entries carry a Glory cost and
-            this does not charge it — `startingGlory` is a Papal States
-            allowance and Glory otherwise arrives one point per Glorious Deed,
-            so charging a hire against it would take a Warband negative in a
-            currency `strongbox-overdrawn` does not yet check. That is the next
-            piece of this, not a line to slip in here. A model's Glory IS shown
-            — `unitGlory` reads it off the snapshot — so nothing about the hire
-            is hidden, only uncharged.
+            Both currencies (FD-05h).
+
+            This passed `glory: 0`, on the reasoning that charging Glory would
+            drive a Warband negative in a currency `strongbox-overdrawn` did
+            not check. That check now reads both, so the reason is gone — and
+            what it was protecting was worse than the risk: **all 17 unit
+            entries that carry a Glory cost are priced ZERO Ducats**, every one
+            a Mercenary, from a 1 Glory Guard Dog to a 7 Glory Pairika. So
+            `totalCost` was 0, `charge` short-circuited on `isZero`, and hiring
+            one booked **no ledger entry at all**. Not undercharged: free, and
+            invisible in the Strongbox's own record of where the money went.
+            The same defect FD-05g fixed for an equipped item, one layer up.
+
+            `unitGlory` rather than the snapshot's own `gloryCost`, to stay the
+            exact parallel of `totalCost` — which is `baseCost + gearCost`, so
+            the hire pays for the model AND whatever it is constructed holding.
+            `recruitable` returns `defaultWeapons: undefined` today, so the two
+            are the same number on the shipped dataset; they stop being the
+            same the day a starting loadout carries a Glory-priced item, and
+            the one that is still right then is this one.
           */
-          return charge(updatedWb, { ducats: newUnit.totalCost, glory: 0 }, newUnit.id,
-            `Recruited ${newUnit.customName}.`, campaignGameOf(w, s.campaign));
+          return charge(updatedWb, { ducats: newUnit.totalCost, glory: unitGlory(newUnit) },
+            newUnit.id, `Recruited ${newUnit.customName}.`, campaignGameOf(w, s.campaign));
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
@@ -232,9 +245,14 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             updatedAt: new Date().toISOString()
           };
           /* A copy is a hire and costs what the model costs. */
-          /* Ducats only, for the reason given in `addUnitToWarband`. */
-          return charge(updatedWb, { ducats: clonedUnit.totalCost, glory: 0 }, clonedUnit.id,
-            `Recruited ${clonedUnit.customName}.`, game);
+          /*
+            Both currencies, for the reason given in `addUnitToWarband` — and
+            `unitGlory` of the COPY, which carries the original's gear: the
+            Ducat side already charges that gear again, because a copy is a
+            second model holding a second set of it.
+          */
+          return charge(updatedWb, { ducats: clonedUnit.totalCost, glory: unitGlory(clonedUnit) },
+            clonedUnit.id, `Recruited ${clonedUnit.customName}.`, game);
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
