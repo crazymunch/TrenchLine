@@ -13,6 +13,7 @@ no design documentation at all.
 
 | Document | What it covers |
 |---|---|
+| [`READY-FOR-TESTING.md`](READY-FOR-TESTING.md) | **Start here to play a game against it.** Every campaign rule a mock game exercises, where each one is decided and what it cites — and the honest list of what is implemented but not driven, what is not implemented at all, and the known rough edges. |
 | [`AUDIT.md`](AUDIT.md) | What is wrong with the codebase today, with evidence. Start here — everything else is a response to it. |
 | [`RULESET-MODEL.md`](RULESET-MODEL.md) | **The centrepiece.** How game data is sourced, layered, versioned and verified. Defines the "Latest GitHub" vs "TrenchLine" rulesets. |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Current and target application architecture. |
