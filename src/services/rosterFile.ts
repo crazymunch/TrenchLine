@@ -37,6 +37,7 @@ import type {
 } from '../types/warband';
 import type { Dataset } from '../types/catalogue';
 import { migrateFallen } from '../rules/fallen';
+import { openLedger } from '../rules/ledger';
 
 export const ROSTER_FILE_FORMAT = 'trenchline.roster';
 export const ROSTER_SCHEMA_VERSION = 1;
@@ -470,7 +471,9 @@ function readRoster(value: Record<string, unknown>, warnings: string[]): RosterR
     than one that explains itself.
   */
   const before = (out.fallen ?? []).length;
-  const migrated = migrateFallen(out as unknown as Warband) as unknown as DurableWarband;
+  const migrated = openLedger(
+    migrateFallen(out as unknown as Warband),
+  ) as unknown as DurableWarband;
   const moved = (migrated.fallen ?? []).length - before;
   if (moved > 0) {
     warnings.push(`${moved} model(s) marked dead were moved off the active roster. `

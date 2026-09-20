@@ -76,7 +76,20 @@ const warband = (over: Partial<Warband> = {}): Warband => ({
   patron: 'Saint Methodius',
   chronicleLog: ['Won at the bridgehead'],
   notes: 'organiser notes',
-  ledger: [{ kind: 'loot', ducats: 100 }],
+  /*
+    A real ledger entry, and one that AGREES with the balance above.
+
+    This used to read `{ kind: 'loot', ducats: 100 }` — a field name the type
+    does not have, and 100 Ducats against a Strongbox of 420. Nothing noticed,
+    because nothing read the ledger. `openLedger` reads it now: a roster whose
+    entries do not add up to what it holds has its account opened on the
+    balance, which is right for a real roster and would silently rewrite this
+    fixture out from under the round trip.
+  */
+  ledger: [{
+    id: 'led-1', at: '2026-01-01T00:00:00Z', reason: 'reconciliation' as const,
+    ducats: 420, glory: 3, game: 1, note: 'Opening balance.',
+  }],
   explorationDiscoveries: ['Warband Strongbox'],
   earnedRecruitment: [],
   forceMode: 'campaign',

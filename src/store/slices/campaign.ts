@@ -15,6 +15,8 @@ import {
   type CampaignOp, type CampaignSyncState,
 } from '../../services/campaignSync';
 import { removeFromRoster } from '../../rules/fallen';
+import { bookAll, bookReinforcements, strongbox } from '../../rules/ledger';
+import { campaignGameOf } from '../../rules/campaign';
 
 /* `Omit` over a union collapses it to the keys they share, which would lose
    `entityId` from the two territory operations. Distributed, it does not. */
@@ -666,9 +668,43 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       const ransomsPaid = Math.min(ransomsAgreed, activeWb.treasuryDucats);
 
       const reinforcementsTaken = tookReinforcements;
-      const strongboxAfter = reinforcementsTaken
-        ? 0
-        : Math.max(0, activeWb.treasuryDucats + ducatsGained - ransomsPaid);
+
+      /*
+        The post-battle money, booked rather than assigned.
+
+        Three movements out of one confirmation, in the order the step
+        resolves them: the loot and Glory earned, the ransoms paid away, and
+        — where Reinforcements were called — the Strongbox emptied to pay for
+        the new recruits. All carry the same `game`, so `reversible` releases
+        the turn as a unit rather than one entry at a time.
+
+        This used to be a single expression whose Reinforcements branch was
+        the literal `0`, which reached the right balance by a route that left
+        no record: a player looking at where 140 Ducats went would find a
+        total that had simply changed. Emptying the box is now a debit of
+        what was in it.
+
+        `book` ignores a movement of nothing, so a quiet battle — no loot, no
+        Glory, no ransom — books nothing at all rather than three empty rows.
+      */
+      /* The campaign's game, not the Warband's own count of games played —
+         `campaignGameOf` is the one derivation of that, already used to
+         resolve the Threshold, and a second rule here would be a second
+         answer. It ties this turn's entries together for `reversible`. */
+      const gameNumber = campaignGameOf(activeWb, get().campaign);
+
+      const moneyAfter = bookAll(activeWb, [
+        { reason: 'exploration', ducats: ducatsGained, glory: gloryGained,
+          game: gameNumber, note: `Spoils of ${scenarioName}.` },
+        { reason: 'ransom', ducats: -ransomsPaid,
+          game: gameNumber, note: 'Ransom paid to the opponent.' },
+      ]);
+      const moneyFinal = reinforcementsTaken
+        ? bookReinforcements(moneyAfter, { game: gameNumber })
+        : moneyAfter;
+
+      const strongboxAfter = strongbox(moneyFinal).ducats;
+      const gloryAfter = strongbox(moneyFinal).glory;
       const stashAfter = reinforcementsTaken ? [] : activeWb.armoryStash;
 
       if (ransomsPaid > 0) {
@@ -698,7 +734,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           have. Computed below and referenced here.
         */
         treasuryDucats: strongboxAfter,
-        gloryPoints: activeWb.gloryPoints + gloryGained,
+        gloryPoints: gloryAfter,
         /* The dead are out of `units` now, so this is a plain count. It used
            to filter, which is how the shape of the old bug looked from here. */
         unitCount: survivingUnits.length,
@@ -711,7 +747,10 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       const existingSnapshots = activeWb.snapshots || [];
       const updatedWarband: Warband = {
         ...activeWb,
-        gloryPoints: activeWb.gloryPoints + gloryGained,
+        /* Totals and ledger both come from the booking, so they agree by
+           construction rather than by two expressions matching. */
+        ledger: moneyFinal.ledger,
+        gloryPoints: gloryAfter,
         treasuryDucats: strongboxAfter,
         armoryStash: stashAfter,
         /*

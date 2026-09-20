@@ -1,6 +1,7 @@
 import { Warband } from '../types/warband';
 import { repairInventedFormulae } from './repairSavedRosters';
 import { migrateFallen } from '../rules/fallen';
+import { openLedger } from '../rules/ledger';
 import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
 import { parseCampaign } from './campaignFromCloud';
@@ -135,7 +136,17 @@ export const storage = {
         the evidence and a version number is a claim an older writer may not
         have made. Idempotent, so a second read finds nothing to move.
       */
-      const warbands = repaired.map(migrateFallen);
+      /*
+        Two migrations at this door, in order: the dead leave the roster, and
+        then every Warband gets a Strongbox ledger that agrees with its
+        balance. Both are idempotent and both are driven by the data rather
+        than by a version number.
+
+        `openLedger` moves no money — it opens the account on whatever the
+        Warband already holds. See `rules/ledger.ts` for why opening rather
+        than correcting is the right shape exactly once.
+      */
+      const warbands = repaired.map(migrateFallen).map((w) => openLedger(w));
       const moved = warbands.reduce(
         (n, w, i) => n + Math.max(0, (w.fallen?.length ?? 0) - (repaired[i].fallen?.length ?? 0)), 0);
       if (moved) {
