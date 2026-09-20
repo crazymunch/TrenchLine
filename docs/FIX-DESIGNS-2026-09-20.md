@@ -37,7 +37,7 @@ carry, and what these designs cover:
 | FD-11 | the April 2026 Mercenaries review | `scripts/lib/parse-battlescribe.mjs`, `scripts/lib/layers.mjs`, the Dispatch layer and a Warbands-book layer, `AddEquipmentModal`, `validate.ts` |
 | FD-12 | the official Warband Roster Sheet in the app; the Experience track; provenance of skills and rewards | a new sheet route, `UnitCard`, the wizard's Promotions step, `src/types/warband.ts` |
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
-| FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | `src/data/warbandLore.ts`, `prisma/seed.ts`, the campaigns API, `CodexView`, the importer |
+| FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | src/data/warbandLore.ts (deleted by #82), prisma/seed.ts (deleted by #83), the campaigns API, `CodexView`, the importer |
 
 ### Landed, as of 11:10 UTC on 20 September
 
@@ -1559,7 +1559,7 @@ calculators and `DiceProbabilityModal` are faithful to the pages they cite.
 
 ### AI-1. One player's warband shipped as source — harmful, live
 
-`src/data/warbandLore.ts`, 850 lines: biographies, quotes, titles and deeds
+src/data/warbandLore.ts (deleted by #82), 850 lines: biographies, quotes, titles and deeds
 for ten named models; the warband's lore, motto, patron and chronicle;
 three hand-typed roster snapshots holding some ninety weapon, armour and
 equipment entries with costs, ranges, dice modifiers and keywords; an
@@ -1604,7 +1604,7 @@ write or bumps the stamp, and says which.
 
 ### AI-2. Invented data in the seed, and in every new campaign
 
-`prisma/seed.ts` is wired by `package.json`'s `prisma.seed` and runs under
+prisma/seed.ts (deleted by #83) is wired by `package.json`'s `prisma.seed` and runs under
 `prisma migrate dev` and `db seed`. It creates a demo user, a Lieutenant
 with an invented statline (Ranged +1, Melee +2, Armour "+2"), a
 "Standard Issue Bolt-Action Rifle" with the keywords Reliable and Bayonet
