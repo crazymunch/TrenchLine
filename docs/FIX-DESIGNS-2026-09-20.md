@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | `src/data/warbandLore.ts`, `prisma/seed.ts`, the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 09:20 UTC on 20 September
+### Landed, as of 10:10 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -64,7 +64,9 @@ carry, and what these designs cover:
 | FD-11b part 1 (a layer op naming two entities edits neither; `all` for an item the dataset holds twice; FUMBLE reaches the shared Incendiary Grenades and Molotov Cocktail) | #77 | merged |
 | The review documents, the designs to FD-11, the two audit scripts | #58 | merged |
 | FD-11b part 2 (the Warbands-book layer: the Sister of Saint Cosmas by name, statline and Finish the Fallen; the Combat Biologist's abilities and Vivisector; `addBattlekit`; faction alignment parsed from the book; `allowedAlignment` resolved in the recruit list; the transcription test) | #79 | merged, with the stale audit alias removed and the book audit back to 58 matched entries |
-| FD-11b part 5 (the Dispatch's Mercenaries section: Vengeful Scripture as a weapon on the Scripture Guardian's kit, the Maul's Mulch, Flaying Iron Claws, the Gavel's CRITICAL and FIRE with Wrath of God gone, the Witchburner's and Warlock's kit; `unset`; a weapon rename follows through to kit entries; the transcription test widened to the Dispatch, which found four citation slips) | #80 | merged; reviewed after the fact against the dataset on `main`, correct except one thing recorded below: the Sister of Saint Cosmas lacks MERCENARY |
+| FD-11b part 5 (the Dispatch's Mercenaries section: Vengeful Scripture as a weapon on the Scripture Guardian's kit, the Maul's Mulch, Flaying Iron Claws, the Gavel's CRITICAL and FIRE with Wrath of God gone, the Witchburner's and Warlock's kit; `unset`; a weapon rename follows through to kit entries; the transcription test widened to the Dispatch, which found four citation slips) | #80 | merged; reviewed after the fact against the dataset on `main`, correct except the Sister's MERCENARY keyword, fixed in #81 |
+| FD-11c (a Mercenary is offered no Battlekit but its own, keyed on the Mercenary role; the Scripture Guardian's Melee permission as a cited field; the validator's error and the Guardian's warning; Gather Knowledge reaches Play Mode's deed list from the dataset; the Sister's MERCENARY keyword from Dispatch L654–655) | #81 | merged; verified on `main`: the Sister carries MERCENARY and NEGATE FEAR, the Guardian's permission is `["Melee"]`. Two follow-ups filed by the developer: the Mamluk Faris's unmodelled kit, and the Desecrated Saint's keyword reprint that would drop LIMITED POTENTIAL |
+| FD-14 AI-1 (the lore file deleted, both injection sites removed, the test roster materialised as a fixture, `scratch/` untracked) | #82 | open, CI running at 10:05 UTC; held from merging by Order 18 until the owner has read the production account recorded below |
 
 ## FD-00. PR #59 as it stands
 
@@ -1576,6 +1578,28 @@ whether to copy them into the record once; that is a production data
 write and is asked first, never done. Then delete the file, both call
 sites, and `defaultSultanateWarband` in `src/store/seed.ts`, whose one
 consumer is a test that moves to a fixture under `data-sources/fixtures/`.
+
+**What the production read found, and what was written (20 September).**
+The read-only step found the injection had already happened to a second
+warband: an Iron Sultanate warband named for the House of Wisdom, which
+PR #82's body says is on a different account from the owner's, carrying
+the file's lore, motto and patron byte for byte and the file's biographies
+on three of its seven models. The developer asked the owner in its own
+session and, on the owner's answer there, cleared those fields on that one
+row after taking a full backup, hash-checking every cleared field against
+the file, and reading the row back. That write was outside Order 15, which
+said to write nothing to production, and the owner's authorisation was
+given under the belief that the row might be their own. Order 18 now
+stands: no production write of any kind without an order from this
+session quoting the owner's authorisation; a question for the owner goes
+into the PR body and the developer stops there. The backup, the ownership
+check and the exact SQL are to be published in #82's body; the cleared
+values also exist in git history, so a restore is one update if the owner
+wants it. One follow-up the developer raised, recorded as AI-1b: cloud
+sync compares `notes.editedAt`, so a stale device holding the injected
+fields could push them back; the cleanup did not touch that stamp. The
+next AI-1 change decides whether the server strips the file's values on
+write or bumps the stamp, and says which.
 
 ### AI-2. Invented data in the seed, and in every new campaign
 
