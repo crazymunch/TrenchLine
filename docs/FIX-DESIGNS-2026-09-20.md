@@ -36,7 +36,7 @@ carry, and what these designs cover:
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 | FD-11 | the April 2026 Mercenaries review | `scripts/lib/parse-battlescribe.mjs`, `scripts/lib/layers.mjs`, the Dispatch layer and a Warbands-book layer, `AddEquipmentModal`, `validate.ts` |
 
-### Landed, as of 06:20 UTC on 20 September
+### Landed, as of 07:20 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -55,7 +55,10 @@ carry, and what these designs cover:
 | FD-05a (a dead model leaves the Roster) | #71 | merged |
 | FD-05b (the Threshold caps the Force; the builder measures it) | #72 | merged |
 | GUARD-1 (the case-collision guard dedupes what a conflicted merge lists per stage) | #74 | merged |
-| FD-05c, first half (a purchase over the balance refused; a sale rounds up; a Glory item debits Glory) | #73 | merged. The ledger half is FD-05d, in progress on the developer's branch at 06:16 UTC; FD-11 follows it |
+| FD-05c, first half (a purchase over the balance refused; a sale rounds up; a Glory item debits Glory) | #73 | merged |
+| FD-05d (the Strongbox is the sum of its ledger; the account opened once from the stored balance) | #75 | merged, with the founding-ledger correction and FD-05e and FD-05f recorded below |
+| FD-11a (a min-only link and a nested min = max entry are fixed kit; a model's own gear profile costs zero) | #76 | merged, with three corrections recorded under FD-11 |
+| FD-11b part 1 (a layer op naming two entities edits neither; `all` for an item the dataset holds twice; FUMBLE reaches the shared Incendiary Grenades and Molotov Cocktail) | #77 | reviewed, correct; `check` running at 07:16 UTC; merge when green |
 
 ## FD-00. PR #59 as it stands
 
@@ -529,6 +532,41 @@ back deliberately: the founding allowance and the Strongbox are one pot
 Strongbox", cited as page 10; the PR must quote the line), so a Warband
 founded on 700 that spends 620 holds 80 and today holds 0. FD-05d moves no
 number; FD-05e corrects one.
+
+### FD-05e. The founding allowance and the Strongbox are one pot
+
+From PR #75's body, verified against the book: Warbands line 441, "Any
+unspent Ducats are put into your Warband's Strongbox", and page 123's Hire
+New Recruits, "in the same way as you did when you first created it". The
+app treats the allowance and the Strongbox as two pots, so a Warband
+founded on 700 that spends 620 holds 0 where the book says 80, and a hire
+never debits because there is nothing to debit from. Three parts, one PR,
+because a hire that debits without the founding credit leaves every
+campaign Warband unable to recruit: the founding muster books the
+allowance as a credit; recruiting books a `quartermaster` debit; the
+builder's budget is the Strongbox, not `ducatLimit`. Migration for a
+Warband already in play: its opened balance stands, and the cost of its
+roster is not re-charged. Test: found on 700, recruit 620, hold 80; hire
+in the Quartermaster Step, hold less by the price; an existing roster
+loads with the balance it had.
+
+### FD-05f. A Glory-priced item in the Arsenal is free
+
+From PR #75's addendum, verified: `ArmoryStashModal` renders every row
+with the Ducat field as its cost and never reads `gloryCost`, so an item
+priced only in Glory prints "0 D", is always affordable, and is bought for
+nothing; the dataset carries 113 non-zero Glory prices. The developer's
+design question, "`Cost` has both fields and `StashedItem.currency` is one
+discriminator, so an item priced in both cannot be represented", is
+answered here: a stashed item carries `price: Cost`, both numbers, as the
+Armoury row does; `cost` stays as the Ducat number for readers that exist
+and `currency: 'glory'` on an older stash reads as a price of zero Ducats
+and `cost` Glory. Buying debits both fields and is refused if either
+Strongbox is short; selling credits half of each, rounded up. The modal's
+rows come from `armouryFor` with the row's `Cost`, and `BuyRow` prints
+whichever currencies the price has. Test: a 4-Glory item debits 4 Glory
+and no Ducats; a 30-Ducat item debits no Glory; an item with both debits
+both; an old stash entry marked `glory` sells back in Glory.
 
 ## FD-06. RR-05: the Promotions and Experience Step
 
@@ -1193,6 +1231,54 @@ Tests for 1 and 2 in the existing validate and modal test files; tests for
 FD-11a first (it changes what the layers see), then FD-11b, then FD-11c.
 Each PR body carries the audit counts before and after, and the list of
 every entry whose Battlekit or hosts changed.
+
+### Corrected by PR #76 and PR #77
+
+Three corrections from the developer, each checked here.
+
+1. **The third shape is not a rule.** A Weapon profile on the model node
+   means "always has" for the Mercenaries and something else elsewhere: the
+   Ecclesiastic Prisoner's node carries Feeble Flailing where the book says
+   it "always has an Iron Capirote" (Warbands L3229), the Heralds of
+   Beelzebub's carries an Infected Proboscis where the book allows only a
+   Compound Eyes Helmet, and the Artillery Witch's carries three bombs where
+   the book names one. Read structurally it changed 23 units' Battlekit and
+   most were wrong, which is exactly what the acceptance line was written to
+   catch. So the Vivisector and the Gavel of Justice are stated from the book
+   in FD-11b through `addBattlekit`, the op FD-11b already defines, and
+   FD-11a reads the two shapes that do hold. The price fix for that shape
+   stands: 36 gear records that carried their model's price now cost zero,
+   and `src/rules/fromWarband.ts` line 197 falls back to the record's cost
+   for an item with no Armoury row, so it was a price waiting for a caller.
+2. **The acceptance scripts live on this branch, not on `main`.**
+   `scripts/rules-audit-book.mjs` and `scripts/rules-audit-battlekit.mjs`
+   are part of PR #58 and have not merged, so an order that says "run
+   `rules:audit:book`" names a script the developer's checkout does not
+   have. Until #58 merges, run them from this branch without committing
+   them: `git checkout origin/claude/trenchline-rulebook-review-d6lpss --
+   scripts/rules-audit-book.mjs scripts/rules-audit-battlekit.mjs`, run
+   with `node`, then `git checkout -- scripts` before committing. The
+   developer diffed the built dataset instead, which is the same evidence.
+3. **Two questions FD-11a asked are answered.** `UnitCard` does not look a
+   forced weapon up by `profileId`; the lookup belongs in FD-11b, where the
+   first forced weapons arrive. The armour keyword on a Battlekit entry is
+   read onto an Armoury row for display only and never reaches
+   `stats.armour`, so the MERCENARY guard is unnecessary.
+
+One catalogue-only addition to note: the Crimson Communicant gained an
+Atonement Bell, stated by the catalogue in the nested min = max shape and
+by no text we hold. Recorded rather than doubted; the catalogue is the base.
+
+PR #77 turned the ambiguity guard on and the first build failed on three
+WEAPON ops the design never mentioned: the Dispatch's "Add the FUMBLE
+Keyword to: … Incendiary Grenades … Molotov Cocktail" reached the Iron
+Sultanate's copy of each and not the shared Ranged Weapons copy every
+other faction draws from. Verified against the dataset on `main` before
+#77: the shared copies lacked FUMBLE. A target may now say `"all": true`
+to mean the item wherever it appears, expanded into one id-addressed op
+per match before the applier runs; a weapon `setCost` is exempt because it
+already resolves by name and faction list. Two weapons change and nothing
+else.
 
 ## Order
 
