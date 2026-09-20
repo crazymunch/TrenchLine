@@ -60029,6 +60029,7 @@ export const DATASET: Dataset = {
           "description": "A New Antioch Warband can include up to 2 Fireteams. Each Fireteam consists of any two models from the Warband. All of the models in the Fireteams are given the FIRETEAM Keyword at no additional cost in 👑 . Fireteams in a New Antioch Warband have the Concentrated Attack ability: * Concentrated Attack: If a model from a Fireteam hits a target that had been hit by an attack made by the other member of their Fireteam earlier in the same joint Activation, then you can spend 3 BLOOD MARKERS to convert the Injury Roll for the second attack to a Bloodbath Roll, even if the target is not Down."
         }
       ],
+      "alignment": "Faithful",
       "noSpecialRules": false
     },
     {
@@ -60039,6 +60040,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "specialRules": [],
+      "alignment": "Faithful",
       "noSpecialRules": true
     },
     {
@@ -60049,6 +60051,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "specialRules": [],
+      "alignment": "Faithful",
       "noSpecialRules": true
     },
     {
@@ -60059,6 +60062,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "specialRules": [],
+      "alignment": "Fallen",
       "noSpecialRules": true
     },
     {
@@ -60078,6 +60082,7 @@ export const DATASET: Dataset = {
           "description": "Fighting against the Cult of the Black Grail is a terrifying prospect. Your opponent must add -1 DICE to all Morale Checks unless their Warband is of either the Court of the Seven-Headed Serpent or the Cult of the Black Grail."
         }
       ],
+      "alignment": "Fallen",
       "noSpecialRules": false
     },
     {
@@ -60088,6 +60093,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "specialRules": [],
+      "alignment": "Fallen",
       "noSpecialRules": false
     }
   ],

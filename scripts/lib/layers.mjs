@@ -344,6 +344,59 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
         stamp(op.target, 'keywords', target);
         break;
 
+      /*
+        Battlekit the source says a model always has, where the catalogue links
+        nothing for it to be read from.
+
+        `forcedKitOf` reads four shapes out of the catalogue, and a fifth
+        exists only on the page: the Scripture Guardian's entry links no
+        Battlekit at all, and the Combat Biologist's Vivisector and the
+        Witchburner's Gavel are profiles on the model that the parser will not
+        read as kit, because that shape means two different things (see the
+        note in `forcedKitOf`). The book says what they have; this op is how
+        the book says it.
+
+        The weapon is resolved BY NAME in `dataset.weapons`, and unresolved
+        when the name matches none or more than one — the same rule part 1's
+        guard applies to a target, for the same reason. A `linkId` is minted
+        rather than invented from the catalogue, because there is no link:
+        `<layer>:<unit id>:<slug>` says where it came from.
+
+        Cost zero, as every forced link is: the model is priced to include
+        what it always has.
+      */
+      case 'addBattlekit': {
+        const want = String(op.weapon ?? '').toLowerCase();
+        const hits = (dataset.weapons ?? []).filter(
+          (w) => w.name?.toLowerCase() === want);
+        if (hits.length !== 1) {
+          unresolved.push({
+            op,
+            why: hits.length
+              ? `addBattlekit '${op.weapon}' on ${target.name}: names ${hits.length} `
+                + `weapons (${hits.map((w) => w.id).join(', ')}) — the layer must `
+                + 'name one the dataset holds once'
+              : `addBattlekit '${op.weapon}' on ${target.name}: no weapon of that name`,
+          });
+          break;
+        }
+        const w = hits[0];
+        target.battlekit ??= [];
+        const slug = String(op.weapon).toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        if (!target.battlekit.some((b) => b.profileId === w.id)) {
+          target.battlekit.push({
+            id: w.entryId || w.id,
+            linkId: `${layer.id}:${target.id}:${slug}`,
+            name: w.name,
+            quantity: 1,
+            keywords: [...(w.keywords ?? [])],
+            cost: { ducats: 0, glory: 0 },
+            profileId: w.id,
+          });
+        }
+        break;
+      }
+
       case 'addAbility': {
         target.abilities ??= [];
         const i = target.abilities.findIndex(

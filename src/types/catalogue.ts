@@ -164,6 +164,16 @@ export interface Ability {
   id: string;
   name: string;
   description: string;
+  /**
+   * A Glorious Deed this ability adds to the ones a scenario offers.
+   *
+   * "Whenever a Combat Biologist is part of your Warband, add the Gather
+   * Knowledge Glorious Deed to those normally available in each scenario you
+   * play" (Warbands L9804-9806). The deed belongs to the MODEL, not to the
+   * scenario, so it travels with the ability that grants it and Play Mode
+   * reads it off the roster rather than off the scenario list.
+   */
+  grantsDeed?: { name: string; description: string };
 }
 
 export interface Keyword {
@@ -415,6 +425,21 @@ export interface UnitProfile {
    * op in `dispatch-01.layer.json`.
    */
   allowedFactions?: string[];
+  /**
+   * A host rule the source states by ALIGNMENT rather than by name.
+   *
+   * The Sin Eater's is "Fallen Warbands" (Warbands L10273), not a list, and
+   * writing out the Fallen factions here would be a list that goes stale the
+   * moment a Fallen Warband is added — which is how the Heretic Naval Raiders
+   * came to be missed by hand-written host lists before.
+   *
+   * Resolved in `recruitable.ts` against each faction's own `alignment`, which
+   * is read from the book's "… are Faithful." / "… are Fallen." sentence. The
+   * build fails if a unit states one and no faction carries an alignment: a
+   * filter that matches nothing is a hire nobody can make, and it would look
+   * exactly like a model the game does not have.
+   */
+  allowedAlignment?: 'Faithful' | 'Fallen';
 
   /**
    * The entry's Battlekit sentence, verbatim, where the source states one as

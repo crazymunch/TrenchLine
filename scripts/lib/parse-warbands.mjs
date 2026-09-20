@@ -238,6 +238,37 @@ export function parseFactionRules(src = WARBANDS_TXT) {
     }
     if (!faction) continue;
 
+    /*
+      The faction's alignment, from the sentence that closes the paragraph.
+
+      "New Antioch Warbands are Faithful." (L1241), "The Heretic Legions are
+      Fallen." (L5994), and four more — one per Warband Creation block, always
+      within a line or two of the budget sentence, and the Court's wraps
+      across two lines (L8379-8380), so the window is joined before matching.
+
+      Load-bearing rather than decorative: a Mercenary's hosts are stated by
+      alignment ("any Faithful Mercenaries that can be taken by Trench Pilgrim
+      Warbands"), and until now only the Carcass Front lists carried one.
+
+      Read, never defaulted. A block that states no alignment throws, because
+      the alternative is a filter that quietly matches the wrong Warbands —
+      and `carcass-front-layer.mjs` already warns that inventing an alignment
+      "is the failure this pipeline exists to prevent". All six blocks state
+      one; if a future edition drops the sentence, that is worth stopping for.
+    */
+    const window = lines.slice(i + 1, Math.min(i + 10, lines.length))
+      .map(clean).join(' ');
+    const align = window.match(/\bare\s+(Faithful|Fallen)\s*\./i);
+    if (!align) {
+      throw new Error(
+        `parse-warbands: the "${faction}" Warband Creation block states no `
+        + 'alignment ("… are Faithful." / "… are Fallen."). Mercenary hosts are '
+        + 'stated by alignment, so guessing one would offer models to the wrong '
+        + 'Warbands. Check the extract around the budget sentence.',
+      );
+    }
+    const alignment = align[1][0].toUpperCase() + align[1].slice(1).toLowerCase();
+
     // Then the special-rule bullets, up to the next major heading.
     const rules = [];
     let current = null;
@@ -265,7 +296,7 @@ export function parseFactionRules(src = WARBANDS_TXT) {
     for (let j = i + 1; j < Math.min(i + 20, lines.length); j++) {
       if (/^No special rules apply/i.test(clean(lines[j]))) { explicitlyNone = true; break; }
     }
-    out.push({ faction, budget, specialRules: rules, explicitlyNone });
+    out.push({ faction, budget, alignment, specialRules: rules, explicitlyNone });
   }
 
   // A faction is described once; later repeats are page furniture.

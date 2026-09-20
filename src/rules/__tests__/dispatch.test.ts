@@ -229,12 +229,18 @@ describe('FD-11a: forced Battlekit that the parser used to miss', () => {
       .map((b) => b.name).sort();
 
   it('gives the Combat Biologist the items stated by a min-only link', () => {
-    // "A Combat Biologist always has Gas Grenades, Standard Armour, a Gas
-    // Mask, and a Vivisector" — warbands-of-trench-crusade L9802.
-    // The Vivisector is a profile on the model itself; the catalogue uses that
-    // shape for reference statlines too, so it is stated from the book in
-    // FD-11b rather than guessed here. See `forcedKitOf`.
-    expect(kit('Combat Biologist')).toEqual(['Gas Grenades', 'Gas Mask', 'Standard Armour']);
+    /*
+      "A Combat Biologist always has Gas Grenades, Standard Armour, a Gas
+      Mask, and a Vivisector" — warbands-of-trench-crusade L9802.
+
+      Three of the four come from the min-only links this change reads. The
+      VIVISECTOR is a Weapon profile on the model itself, which the parser
+      will not read as forced kit because the catalogue uses that shape for
+      reference statlines too (see `forcedKitOf`) — it arrives from the book
+      through FD-11b's `addBattlekit`, which is why all four are here now.
+    */
+    expect(kit('Combat Biologist'))
+      .toEqual(['Gas Grenades', 'Gas Mask', 'Standard Armour', 'Vivisector']);
   });
 
   it('gives the Sin Eater the Maul stated by a nested min=max entry', () => {
@@ -288,5 +294,98 @@ describe('FD-11b: an errata line that names one item and finds two', () => {
   it('gives FUMBLE to both copies of the Molotov Cocktail', () => {
     expect(weapon('b16a-e1fa-433f-efc0').keywords).toContain('FUMBLE'); // Iron Sultanate
     expect(weapon('414f-af63-666d-59d1').keywords).toContain('FUMBLE'); // shared list
+  });
+});
+
+/**
+ * What the Warbands book states and the catalogues lack.
+ *
+ * FD-11b. The precedence in `data-sources/resolutions.json` is Dispatch over
+ * rulebook over catalogue, but the rulebook rung was only ever applied through
+ * a *resolution* — and a resolution is for a CONFLICT. An empty catalogue field
+ * is a gap, and no gap was filled from the book until `warbands-book.layer.json`.
+ */
+describe('FD-11b: the Warbands book reaches the dataset', () => {
+  it('gives the Sister of Saint Cosmas her printed name', () => {
+    // Warbands L10366. The catalogue kept "Combat Medic", which is also a New
+    // Antioch Troop — the ambiguity #77's guard now refuses outright.
+    const sister = DATASET.units.find((u: { id: string }) => u.id === 'aa7f-02df-a12f-1ed3')!;
+    expect(sister.name).toBe('Sister of Saint Cosmas');
+    expect(sister.factionId).toBe('Mercenaries');
+  });
+
+  it('prints her statline the way every other statline is written', () => {
+    // Warbands L10381. The catalogue carries a bare "0".
+    const sister = DATASET.units.find((u: { id: string }) => u.id === 'aa7f-02df-a12f-1ed3')!;
+    expect(sister.stats.ranged).toBe('+0 DICE');
+    expect(sister.stats.melee).toBe('+0 DICE');
+  });
+
+  it('gives Finish the Fallen the INJURY DICE the book prints', () => {
+    /*
+      The catalogue says "+1 DICE" and the book says "+1 INJURY DICE"
+      (L10387-10392). Those are different rolls, and the catalogue's reading
+      makes the Sister markedly worse at the thing her rule is about.
+    */
+    const sister = DATASET.units.find((u: { id: string }) => u.id === 'aa7f-02df-a12f-1ed3')!;
+    const ability = (sister.abilities ?? [])
+      .find((a: { name: string }) => a.name === 'Finish the Fallen')!;
+    expect(ability.description).toContain('+1 INJURY DICE');
+  });
+
+  it('gives the Combat Biologist the two abilities the catalogue omits', () => {
+    // Warbands L9804-9813. The catalogue gives it none at all.
+    const bio = DATASET.units.find((u: { id: string }) => u.id === '02df-b4d5-3ca5-9a2b')!;
+    expect((bio.abilities ?? []).map((a: { name: string }) => a.name))
+      .toEqual(['Battlefield Vivisection', 'Prize Specimens']);
+  });
+
+  it('carries Gather Knowledge on the ability that grants it', () => {
+    /*
+      "add the Gather Knowledge Glorious Deed to those normally available in
+      each scenario you play" — so the deed travels with the ability rather
+      than being a scenario's, and Play Mode reads it off the roster.
+    */
+    const bio = DATASET.units.find((u: { id: string }) => u.id === '02df-b4d5-3ca5-9a2b')!;
+    const ability = (bio.abilities ?? [])
+      .find((a: { name: string }) => a.name === 'Battlefield Vivisection')!;
+    expect(ability.grantsDeed?.name).toBe('Gather Knowledge');
+    expect(ability.grantsDeed?.description).toContain('3 or');
+  });
+
+  it('gives the Biologist the Vivisector from the book, at no cost', () => {
+    /*
+      The parser will not read a model-node Weapon profile as forced kit (see
+      `forcedKitOf`), so this comes through `addBattlekit` from the book's own
+      "always has" line, L9802.
+    */
+    const bio = DATASET.units.find((u: { id: string }) => u.id === '02df-b4d5-3ca5-9a2b')!;
+    const kit = (bio.battlekit ?? []).find((b: { name: string }) => b.name === 'Vivisector')!;
+    expect(kit).toBeTruthy();
+    expect(kit.cost).toEqual({ ducats: 0, glory: 0 });
+    expect(kit.profileId).toBe('6dbf-5d41-0a93-b558');
+  });
+
+  it('states the Sin Eater’s hosts by alignment, not by a list', () => {
+    /*
+      "A Sin Eater is Fallen and can be recruited as a Mercenary by Fallen
+      Warbands" (L10273). A written-out list of Fallen factions goes stale the
+      moment one is added, which is how the Heretic Naval Raiders were missed.
+    */
+    const sin = DATASET.units.find((u: { id: string }) => u.id === '2d21-7af1-0770-da4c')!;
+    expect(sin.allowedAlignment).toBe('Fallen');
+  });
+
+  it('reads an alignment onto all six core factions, from the book', () => {
+    // L1241, L2744, L4100, L5994, L7254, L8379-8380.
+    const by = (id: string) => DATASET.factions.find((f: { id: string }) => f.id === id)?.alignment;
+    expect(by('new-antioch')).toBe('Faithful');
+    expect(by('trench-pilgrims')).toBe('Faithful');
+    expect(by('iron-sultanate')).toBe('Faithful');
+    expect(by('heretic-legions')).toBe('Fallen');
+    expect(by('cult-of-the-black-grail')).toBe('Fallen');
+    expect(by('court-of-the-seven-headed-serpent')).toBe('Fallen');
+    // Every faction carries one, so an alignment filter can never match nobody.
+    expect(DATASET.factions.every((f: { alignment?: string }) => f.alignment)).toBe(true);
   });
 });
