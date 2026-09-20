@@ -183,3 +183,62 @@ export function advancementRoll(
     offerFor(dataset, tables[1], rolls[1], held, patronSkills),
   ];
 }
+
+/**
+ * One Skill a model learned, and how.
+ *
+ * Replaces the `{ unitId, advancement: string }` the wizard used to submit. A
+ * free-text string could say `+1 Melee` — which is not a thing the game has —
+ * and there was no way to tell a Skill a model rolled for from one somebody
+ * typed. This carries the table and the 2D6 total that produced it, so the
+ * Chronicle can show its working and the roster records a real Skill.
+ */
+export interface SkillLearned {
+  unitId: string;
+  name: string;
+  /** The table it came from, or `'patron'` for a Patron Skill on a roll of 2. */
+  table: SkillsTableName | 'patron';
+  /** The 2D6 total rolled on that table. */
+  roll: number;
+  /** Why the Skill differs from the row the dice landed on, if it does. */
+  substitution: Substitution;
+  description: string;
+}
+
+/**
+ * The Patron's own Skill list, for the roll of 2.
+ *
+ * `warband.patron` is free text — a player typed it before the Patrons were
+ * derived — so it is matched against the dataset's Patron names rather than
+ * assumed to be an id. No match returns an empty list, and `offerFor` then
+ * offers nothing rather than falling back to the table, which would hand out a
+ * Skill the Patron does not grant.
+ */
+export function patronSkillsFor(
+  dataset: Dataset | null | undefined,
+  patron: string | null | undefined,
+): SkillRow[] {
+  const wanted = String(patron ?? '').trim().toLowerCase();
+  if (!wanted) return [];
+
+  const hit = (dataset?.patrons ?? []).find((p) => p.name.trim().toLowerCase() === wanted);
+  if (!hit) return [];
+
+  /*
+    A Patron Skill has no roll of its own — the book sends you to the list and
+    you pick one — so `roll` is 0 and the caller must not sort or look up by
+    it. It is present because `SkillRow` requires it.
+  */
+  return hit.skills.map((s) => ({ roll: 0, name: s.name, description: s.description } as SkillRow));
+}
+
+/** Every table a player may pick from, in the order the book prints them. */
+export const SKILL_TABLES: SkillsTableName[] = ['melee', 'ranged', 'stealth', 'wildcard'];
+
+/** The book's own label for a table, from the dataset rather than retyped. */
+export const SKILL_TABLE_LABEL: Record<SkillsTableName, string> = {
+  melee: 'Melee & Strength',
+  ranged: 'Marksmanship',
+  stealth: 'Stealth & Speed',
+  wildcard: 'Wildcard',
+};

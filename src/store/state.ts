@@ -21,6 +21,7 @@ import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, Rule
 import { RuleDiffItem } from '../types/diff';
 import type { Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
+import type { SkillLearned } from '../rules/advancement';
 import type { SyncState } from '../services/sync';
 import type { CampaignSyncState } from '../services/campaignSync';
 
@@ -295,7 +296,21 @@ export interface AppState {
     gloryGained: number,
     ducatsGained: number,
     casualties: CasualtyRecord[],
-    advancements: { unitId: string; advancement: string }[],
+    /**
+     * The Skills models learned from their Advancement Rolls.
+     *
+     * Was `{ unitId, advancement: string }[]`, filled from a grid of eight
+     * buttons offering `+1 Melee`, `+1 Ranged`, `+1 Armour`, `+1" Move` and
+     * four named Skills. Trench Crusade has no characteristic advances at all,
+     * and three of those Skills do not exist — so this parameter's whole
+     * vocabulary was invented, and a free-text string could not tell a Skill a
+     * model rolled for from one somebody typed.
+     *
+     * Each entry now carries the table and the 2D6 total that produced it, and
+     * lands on `unit.skills` rather than on the legacy `unit.advancements`.
+     * See `rules/advancement.ts` and RULES-COVERAGE-AUDIT RR-03/RR-04.
+     */
+    skillsLearned: SkillLearned[],
     /**
      * Which models earn their Experience Point, decided by the caller.
      *

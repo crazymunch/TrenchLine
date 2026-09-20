@@ -34,8 +34,29 @@ export interface ActiveUnit {
   // Progression & Campaign
   xp: number;
   isElite?: boolean;
+  /**
+   * Legacy free-text progression notes.
+   *
+   * The post-battle wizard used to write the chosen button's label here —
+   * `+1 Melee`, `Eagle Eye (Skill)` — so existing rosters carry strings for
+   * advances the game does not have and Skills that do not exist. Nothing
+   * writes to it any more; a Skill learned from an Advancement Roll goes to
+   * `skills`, which records the table and the roll that produced it.
+   *
+   * Kept, and still displayed, because it is the player's own record of what
+   * they did. Clearing it would be a data change, not a fix.
+   */
   advancements: string[];
   skills?: { name: string; category: string; roll?: string; effect?: string }[];
+  /**
+   * How many Advancement Rolls this model has taken.
+   *
+   * Its own field rather than `skills.length`, because a model can gain a
+   * Skill without an Advancement Roll: a Patron grants them, so do some Glory
+   * Items and the `65 Bitter Lessons` Trauma result. Counting Skills would
+   * quietly cancel a roll the model had earned. See `advancementRollsDue`.
+   */
+  advancementRolls?: number;
   injuries: string[];
   scars?: { name: string; roll?: string; effect?: string }[];
   isDead: boolean;
