@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '@/rules/useDataset';
+import { campaignVictoryPoints, byCampaignVictoryPoints } from '@/rules/campaign';
 import {
   FRAMEWORKS, carcassFrontTerritories, frameworkOf, frameworkNamed,
 } from '@/rules/campaignFramework';
@@ -98,7 +99,26 @@ export const CampaignHubView: React.FC = () => {
   };
 
   // Sort leaderboard by Glory points descending
-  const sortedMembers = [...campaign.members].sort((a, b) => b.glory - a.glory);
+  /*
+    The standings, ordered the way the book decides a campaign.
+
+    This sorted on `glory` — a currency members spend in the Quartermaster
+    Step, so a player who banked theirs led a table they were losing — and
+    showed a `rating` that appears nowhere in the rulebook. Page 95 settles it:
+    15 Campaign Victory Points for a win, 7 for a loss, 10 each for a draw, and
+    "the player with the most Campaign Victory Points is the winner".
+
+    Derived from the win/loss/draw record the campaign already keeps, so there
+    is no new number to sync and nothing that can drift from the results it is
+    computed from. See `campaignVictoryPoints`.
+  */
+  const sortedMembers = byCampaignVictoryPoints(dataset, campaign.members);
+  const cvpOf = (m: (typeof campaign.members)[number]) => campaignVictoryPoints(dataset, m);
+  /* "In the case of a tie, all tied players are joint winners." */
+  const leaders = sortedMembers.length
+    ? sortedMembers.filter((m) => cvpOf(m) !== null && cvpOf(m) === cvpOf(sortedMembers[0]))
+    : [];
+  const jointLead = leaders.length > 1;
   const leadingMember = sortedMembers[0];
   /* Which rules this campaign is played under — see the banner and the gauge. */
   const onCarcassFrontCampaign = frameworkOf(campaign) === 'carcass-front';
@@ -277,7 +297,8 @@ export const CampaignHubView: React.FC = () => {
                 <th className="p-4">Warband &amp; Commander</th>
                 <th className="p-4">Faction</th>
                 <th className="p-4 text-center">Record (W-L-D)</th>
-                <th className="p-4 text-center">Rating</th>
+                {/* The column the campaign is actually won on. */}
+                <th className="p-4 text-center">Campaign VP</th>
                 <th className="p-4 text-center">Treasury</th>
                 <th className="p-4 text-right">Glory</th>
               </tr>
@@ -295,13 +316,20 @@ export const CampaignHubView: React.FC = () => {
                     }`}
                   >
                     <td className="p-4 font-bold text-sm">
-                      {idx === 0 ? (
+                      {/*
+                        A tie at the top is a real result — "In the case of a
+                        tie, all tied players are joint winners" — so it is
+                        shown as one rather than resolved by sort order.
+                      */}
+                      {idx === 0 || (jointLead && leaders.includes(member)) ? (
                         <span className="text-theme-primary flex items-center space-x-1">
                           <Trophy className="w-4 h-4" />
-                          <span>1st</span>
+                          <span>{jointLead ? 'Joint 1st' : '1st'}</span>
                         </span>
                       ) : (
-                        <span className="text-theme-muted">#{idx + 1}</span>
+                        <span className="text-theme-muted">
+                          #{jointLead ? idx + 1 - (leaders.length - 1) : idx + 1}
+                        </span>
                       )}
                     </td>
 
@@ -325,7 +353,13 @@ export const CampaignHubView: React.FC = () => {
                     </td>
 
                     <td className="p-4 text-center font-bold text-theme-text">
-                      {member.rating} pts
+                      {/*
+                        `null` where the ruleset carries no scale — which is
+                        not the same as nought, and must not render as it.
+                      */}
+                      {cvpOf(member) === null
+                        ? <span className="text-theme-muted">—</span>
+                        : <span className="text-theme-primary">{cvpOf(member)} CVP</span>}
                     </td>
 
                     <td className="p-4 text-center text-theme-primary font-bold">

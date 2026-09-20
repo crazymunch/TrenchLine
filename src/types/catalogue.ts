@@ -1485,6 +1485,15 @@ export interface Dataset {
      * "Reinforcements costs nothing". The app charged nothing for two years.
      */
     reinforcements?: ReinforcementsSequence;
+    /**
+     * The scale a campaign is won on (p.95): 15 for a win, 7 for a loss, 10
+     * each for a draw.
+     *
+     * Optional for the same reason as `traumaProcedure`: a ruleset built
+     * before this existed states nothing, and "no scale" must stay
+     * distinguishable from "everyone on zero". See `campaignVictoryPoints`.
+     */
+    victoryPoints?: { win: number; loss: number; draw: number };
   };
   meta: {
     rulesetId: string;

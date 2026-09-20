@@ -23,7 +23,7 @@ import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRul
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable, parseExperienceTrack,
          parseCampaignPhaseSteps, parseTraumaProcedure,
-         parseReinforcementsSequence } from './lib/parse-campaign.mjs';
+         parseReinforcementsSequence, parseCampaignVictoryPoints } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseMarkers } from './lib/parse-markers.mjs';
@@ -724,6 +724,15 @@ for (const ruleset of RULESETS) {
     campaign: {
       thresholds: parseThresholdTable(),
       startingBudget: startingBudget.ducats,
+      /**
+       * The scale a campaign is actually won on (p.95).
+       *
+       * The Campaign Hub ranked members on `glory` and `rating` — neither of
+       * which is how the game says a season is decided — so the standings
+       * answered a question the rules do not ask, and the one they do ask had
+       * no answer anywhere in the app.
+       */
+      victoryPoints: parseCampaignVictoryPoints(),
       // The Exploration Step, which is the Strongbox's only income: loot is the
       // Exploration Roll times 10. The app's hand-written version of this was
       // fabricated end to end (AUDIT §1.13).

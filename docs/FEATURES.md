@@ -113,7 +113,7 @@ none either, rather than falling back to a number the code remembers.
 
 | Feature | Status | Notes |
 |---|---|---|
-| Multi-player campaign hub | ✅ | |
+| Multi-player campaign hub | ✅ | **The standings now rank on the scale the campaign is won on.** They sorted on `glory` — a currency members spend in the Quartermaster Step, so a player who banked theirs led a table they were losing — and showed a `rating` that appears in no rulebook. Page 95 settles it: 15 Campaign Victory Points for a win, 7 for a loss, 10 each for a draw, and *"the player with the most Campaign Victory Points is the winner"*. The scale is derived (`campaign.victoryPoints`); the total is derived too, from the win/loss/draw record the campaign already keeps, so nothing new syncs and nothing can drift. A tie at the top shows as **Joint 1st**, because *"in the case of a tie, all tied players are joint winners"* is a result and not something to break with a sort. Two Exploration results move points outside the per-game scale (`16 Treasure of the Holies`, `23 Patron's Visit`); neither is derivable from a record, so both wait on an adjustments ledger and the function says so (RR-02) |
 | Glory / Ducats / W-L leaderboard | ✅ | |
 | Shared campaign invite codes | ✅ | |
 | Territory map with node claiming | ✅ | |

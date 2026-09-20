@@ -68208,6 +68208,11 @@ export const DATASET: Dataset = {
       }
     ],
     "startingBudget": 700,
+    "victoryPoints": {
+      "win": 15,
+      "loss": 7,
+      "draw": 10
+    },
     "exploration": {
       "dice": [
         {
