@@ -70,6 +70,8 @@ PR that touches the same file.
    (`store/slices/campaign.ts` lines 480 to 483) are named in the commit as
    not fixed. FD-03 removes them with the CVP change, since both touch the
    same record.
+   **Superseded:** fixed in `5f473af`, after this note was written, and on
+   `main` via #59. FD-03 no longer needs to touch it.
 7. **Stop stacking on #59.** Six findings on one branch means one red check
    holds six fixes, and the review of each is the review of all. Merge #59
    when green; every design below is its own PR.
@@ -176,6 +178,17 @@ depends on which screen asks.
 The armouries are assembled after the layers run (`scripts/rules-build.mjs`
 lines 803 to 815 and 881 to 919), which is why `addArmouryRow` is deferred to
 `applyArmouryRowOps` in `layers.mjs`. `setCost` never was.
+
+**Corrected by PR #61, measured through the app's own accessors.** Two weapon
+profiles carry the exact name, not seven: the Iron Sultanate's and a `Ranged
+Weapons` section entry. The seven are armoury rows, and all seven read 15
+before the change, the Iron Sultanate's included, so the Dispatch price
+reached nothing a player was charged. Armouries are keyed by slug and weapon
+profiles carry the printed faction name, so the match normalises both sides.
+The rule is that every named Armoury Table must stock the item, not that every
+named faction must own a profile; and the op accounts for itself once in the
+deferred pass however many rows it sets. The change below stands with those
+four readings.
 
 ### The change
 

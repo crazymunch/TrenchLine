@@ -569,6 +569,10 @@ Glorious Deeds, which Play Mode already records per model; there is no MVP and
 no "Heroic Deed". It is a hand-written mechanic that writes a hand-written
 deed onto the roster, beside the real ones.
 
+**Correction, 20 September:** "which Play Mode already records per model" is
+wrong. Play Mode records a Deed against a side, not a model (see the RR-05
+correction). The MVP removal itself landed in #59.
+
 ### After the commit
 
 **RR-25. A dead model stays on the roster as a live one.** The commit sets
