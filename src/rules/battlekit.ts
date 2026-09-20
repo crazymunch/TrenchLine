@@ -79,3 +79,39 @@ export function battlekitCost(profile: HasBattlekit) {
     { ducats: 0, glory: 0 },
   );
 }
+
+/** What a kit entry's weapon profile says, beyond its name and keywords. */
+export interface BattlekitProfile {
+  /** '1-Handed', '2-Handed', 'Special' … */
+  type?: string;
+  /** 'Melee', '18"' … */
+  range?: string;
+  /** The named rule, where the profile carries one. */
+  rules?: string;
+}
+
+/**
+ * The profile behind a forced kit entry.
+ *
+ * The card listed forced kit as a name and its Keyword chips, and stopped
+ * there — which is fine for Reinforced Armour and wrong for a weapon. The
+ * Scripture Guardian's Vengeful Scripture is Special, 18", and carries two
+ * rules (Unmaking and Spoken) that decide how it is used; none of that reached
+ * the player, while the same weapon BOUGHT from an Armoury Table showed its
+ * whole row. The model that always carries a thing saw less of it than the one
+ * that paid for it.
+ *
+ * Takes the weapon list rather than importing the dataset, so it stays pure
+ * and the caller decides which ruleset is in play.
+ *
+ * Returns undefined when the entry names no profile, or names one this ruleset
+ * does not have: the card then renders exactly what it rendered before, rather
+ * than a half-filled row.
+ */
+export function battlekitProfile(
+  kit: { profileId?: string },
+  weapons: readonly (BattlekitProfile & { id: string })[],
+): BattlekitProfile | undefined {
+  if (!kit.profileId) return undefined;
+  return weapons.find((w) => w.id === kit.profileId);
+}

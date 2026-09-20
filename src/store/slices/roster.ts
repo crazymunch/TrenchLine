@@ -7,7 +7,6 @@
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import { storage } from '../../services/storage';
-import { enrichUnitWithLore } from '../../data/warbandLore';
 import type { Warband, ActiveUnit, StashedItem, WarbandSnapshot } from '../../types/warband';
 import { stashCurrency } from '../../types/warband';
 import type { CampaignMember } from '../../types/campaign';
@@ -66,7 +65,10 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       const named = fetched.data.map((cw) => ({
         ...cw,
         creatorName: cw.creatorName || userName || 'Crusade Commander',
-        units: (cw.units ?? []).map(enrichUnitWithLore),
+        /* The cloud's units, as the cloud holds them. This used to map
+           `enrichUnitWithLore` over every model on every pull, which is how one
+           player's biographies reached another player's roster. */
+        units: cw.units ?? [],
       }));
 
       // Deliberately not through persistWarbands: taking a warband from the

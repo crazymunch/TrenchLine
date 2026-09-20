@@ -4622,8 +4622,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "name": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "entryName": {
       "layer": "base",
@@ -4638,8 +4638,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "stats.movement": {
       "layer": "base",
@@ -4654,28 +4654,34 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "stats.ranged": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.melee": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.armour": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.base": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "min": {
       "layer": "base",
@@ -4686,8 +4692,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "options": {
       "layer": "base",
@@ -4704,6 +4710,14 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "battlekitNote": {
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
+    },
+    "allowedFactions": {
+      "layer": "derived",
+      "source": "Procession of the Sacred Affliction faction special rule 'Mercenaries' — delegates to Trench Pilgrim"
     }
   },
   "unit:05fe-9537-b2ad-0782": {
@@ -5013,6 +5027,10 @@
     "allowedFactions": {
       "layer": "derived",
       "source": "Procession of the Sacred Affliction faction special rule 'Mercenaries' — delegates to Trench Pilgrim"
+    },
+    "battlekitNote": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:2d21-7af1-0770-da4c": {
@@ -5113,6 +5131,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedAlignment": {
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     }
   },
   "unit:031a-a689-a059-6278": {
@@ -5769,8 +5791,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "options": {
       "layer": "base",
@@ -5787,6 +5809,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "battlekitNote": {
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "allowedFactions": {
       "layer": "dispatch-01",
@@ -6069,8 +6095,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "options": {
       "layer": "base",
@@ -6089,6 +6115,14 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "allowedFactions": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "battlekitNote": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "mercenaryMayBuy": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
@@ -6195,6 +6229,10 @@
     "allowedFactions": {
       "layer": "derived",
       "source": "Heretic Naval Raiders faction special rule 'Mercenaries' — delegates to Heretic Legion"
+    },
+    "battlekitNote": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "unit:bc90-d206-2b0d-b743": {
@@ -37154,12 +37192,12 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.ducats": {
       "layer": "base",
@@ -37184,6 +37222,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "lore": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "weapon:c63d-fe53-a980-4a2a": {
@@ -37200,8 +37242,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "name": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "type": {
       "layer": "base",
@@ -37216,8 +37258,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "rules": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.ducats": {
       "layer": "base",
@@ -38245,12 +38287,12 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "name": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "type": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "range": {
       "layer": "base",
@@ -38261,8 +38303,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "rules": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "cost.ducats": {
       "layer": "base",
@@ -45797,7 +45839,7 @@
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
-    "description": {
+    "lore": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
@@ -45823,7 +45865,7 @@
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
-    "description": {
+    "lore": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
@@ -45849,7 +45891,7 @@
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
-    "description": {
+    "lore": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
@@ -45875,7 +45917,7 @@
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
-    "description": {
+    "lore": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
@@ -45901,7 +45943,7 @@
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
-    "description": {
+    "lore": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
@@ -45927,13 +45969,47 @@
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
-    "description": {
+    "lore": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }
   },
   "faction:court-of-the-seven-headed-serpent": {
     "specialRules": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    }
+  },
+  "weapon:dispatch01-weapon-vengeful-scripture": {
+    "name": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "type": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "range": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "keywords": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "rules": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "cost.ducats": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "cost.glory": {
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
+    },
+    "lore": {
       "layer": "dispatch-01",
       "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     }

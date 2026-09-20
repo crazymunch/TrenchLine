@@ -70,6 +70,51 @@ const emptyDataset = (units = [unit()]) => ({ units, weapons: [], factions: [], 
 const layer = (ops) => ({ id: 'test-layer', name: 'Test', sourceRef: 't', status: 'official', ops });
 
 describe('layer engine', () => {
+  it('unsets a field rather than emptying it', () => {
+    /*
+      A weapon with no special rule carries NO `rules` key — 69 of the 658 do
+      — and the app tests the field's presence. `set` to '' would give it a
+      rules section containing nothing, which reads as "there is a rule here
+      and we lost it".
+
+      It exists because the Dispatch REPRINTS entries: the Gavel of Justice
+      comes back with Type, Range and Keywords and no rule, and the
+      catalogue's `Wrath of God` on it is what the Witchburner's new `Found
+      Guilty` ability replaced. Keeping both places the BLOOD MARKER twice.
+    */
+    const ds = emptyDataset([]);
+    ds.weapons = [{ id: 'w1', name: 'Gavel', keywords: ['CRITICAL'], rules: 'Wrath of God: …' }];
+    const p = createProvenance();
+    const un = applyLayer(
+      ds, layer([{ op: 'unset', target: { kind: 'weapon', id: 'w1' }, field: 'rules' }]), p);
+    expect(un).toEqual([]);
+    expect('rules' in ds.weapons[0]).toBe(false);
+    expect(p.get('weapon', 'w1', 'rules')).toBeTruthy();
+  });
+
+  it('follows a weapon rename through to the kit entries that point at it', () => {
+    /*
+      A weapon's name is one fact stored twice: on the forced-kit entry (from
+      the catalogue's selectionEntry) and on the profile. The Goetic Warlock
+      carried `Iron-Clawed Hands` on one and `Reaping Claws` on the other, and
+      the Dispatch calls the thing `Flaying Iron Claws` — so renaming the
+      profile alone would have left the card printing the old name.
+    */
+    const ds = emptyDataset([unit({
+      battlekit: [
+        { linkId: 'k1', name: 'Iron-Clawed Hands', profileId: 'w1', keywords: [] },
+        { linkId: 'k2', name: 'Something Else', profileId: 'w2', keywords: [] },
+      ],
+    })]);
+    ds.weapons = [{ id: 'w1', name: 'Reaping Claws' }, { id: 'w2', name: 'Something Else' }];
+    applyLayer(
+      ds,
+      layer([{ op: 'set', target: { kind: 'weapon', id: 'w1' }, field: 'name', value: 'Flaying Iron Claws' }]),
+      createProvenance());
+    expect(ds.units[0].battlekit.map((b) => b.name))
+      .toEqual(['Flaying Iron Claws', 'Something Else']);
+  });
+
   it('sets a cost and stamps provenance for it', () => {
     const ds = emptyDataset(); const p = createProvenance();
     applyLayer(ds, layer([{ op: 'setCost', target: { kind: 'unit', id: 'u1' }, currency: 'ducats', value: 99 }]), p);
@@ -293,7 +338,7 @@ describe('generated output', () => {
   it.skipIf(!fs.existsSync(file))('records the base commit and layers it was built from', () => {
     const src = fs.readFileSync(file, 'utf8');
     expect(src).toMatch(/"baseCommit": "[0-9a-f]{40}"/);
-    expect(src).toMatch(/"layers": \[\s*"dispatch-01"/);
+    expect(src).toMatch(/"layers": \[\s*"warbands-book",\s*"dispatch-01"/);
   });
 });
 

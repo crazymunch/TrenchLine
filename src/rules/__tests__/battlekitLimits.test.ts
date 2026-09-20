@@ -3,7 +3,29 @@ import DATASET from '@/data/generated/trenchline.generated';
 import { validateRoster } from '../validate';
 import { battlekitBreaches } from '../battlekitLimits';
 import { armouryFor } from '../armoury';
-import { defaultSultanateWarband } from '@/store/seed';
+import fs from 'node:fs';
+import type { Warband } from '@/types/warband';
+
+/*
+  A real, fully-equipped Iron Sultanate roster, from
+  `data-sources/fixtures/`. It used to be `defaultSultanateWarband` in
+  `src/store/seed.ts`, which was built from one player's own warband shipped as
+  application source — see that fixture's README. The gear is what these tests
+  need; the prose was never theirs to carry.
+*/
+const sultanateRoster: Warband = {
+  id: 'wb-fixture-iron-sultanate',
+  name: 'Iron Sultanate Test Roster',
+  factionId: 'iron-sultanate',
+  ducatLimit: 1220,
+  treasuryDucats: 220,
+  gloryPoints: 4,
+  units: JSON.parse(fs.readFileSync(
+    'data-sources/fixtures/iron-sultanate-roster.units.json', 'utf8')),
+  armoryStash: [],
+  createdAt: '2026-06-01T10:00:00Z',
+  updatedAt: '2026-06-01T10:00:00Z',
+} as unknown as Warband;
 import { toRoster } from '../fromWarband';
 import type { Dataset } from '@/types/catalogue';
 import type { Roster, RosterItem } from '../costs';
@@ -238,14 +260,14 @@ describe('a real warband', () => {
     is here to keep true.
   */
   it('raises no Battlekit violation, because there is none to raise', () => {
-    const { roster } = toRoster(defaultSultanateWarband, d);
+    const { roster } = toRoster(sultanateRoster, d);
     const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
     expect(v.map((x) => x.message).sort()).toEqual([]);
   });
 
   it('no longer calls the Homunculus’s 2-Handed RANGED weapon illegal', () => {
     // The first reported bug, pinned in its own right so it cannot come back quietly.
-    const { roster } = toRoster(defaultSultanateWarband, d);
+    const { roster } = toRoster(sultanateRoster, d);
     const v = validateRoster(roster, d).violations.filter((x) => x.code === 'battlekit-limit');
     expect(v.map((x) => x.message).join(' | ')).not.toMatch(/Siege Jezzail/);
   });
@@ -260,7 +282,7 @@ describe('a real warband', () => {
       also grants nothing else here, but the Keyword is what the carrying rule
       keys on, and this is the wire that was cut.
     */
-    const { roster } = toRoster(defaultSultanateWarband, d);
+    const { roster } = toRoster(sultanateRoster, d);
     const weakened = {
       ...roster,
       units: roster.units.map((u) => ({

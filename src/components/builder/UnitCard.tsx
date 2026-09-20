@@ -8,7 +8,7 @@ import { AddEquipmentModal } from './AddEquipmentModal';
 import { UnitLoreModal } from './UnitLoreModal';
 import { UnitAdvancementModal } from './UnitAdvancementModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
-import { forcedBattlekit } from '../../rules/battlekit';
+import { forcedBattlekit, battlekitProfile } from '../../rules/battlekit';
 import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
 import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
 import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
@@ -577,30 +577,81 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                 <span>Battlekit (always carried)</span>
               </span>
               <div className="space-y-1">
-                {forcedBattlekit(unit.profileSnapshot).map((b) => (
-                  <div
-                    key={b.linkId}
-                    className="flex items-center justify-between gap-2 text-xs bg-theme-base px-2 py-1 rounded border border-dashed border-theme-border"
-                  >
-                    <span className="font-semibold text-theme-text truncate">{b.name}</span>
-                    {b.keywords.length > 0 && (
-                      /*
-                        One chip per Keyword rather than a joined string, so
-                        each is its own tap target. `KeywordChip` shows an
-                        unrecognised one plain rather than guessing at it.
-                      */
-                      <span className="flex flex-wrap justify-end gap-1 flex-shrink-0">
-                        {b.keywords.map((k) => (
-                          <KeywordChip
-                            key={k}
-                            name={k}
-                            className="font-mono text-xs sm:text-[10px] rounded px-1"
-                          />
-                        ))}
-                      </span>
-                    )}
-                  </div>
-                ))}
+                {forcedBattlekit(unit.profileSnapshot).map((b) => {
+                  /*
+                    A forced WEAPON is still a weapon.
+
+                    The row used to be a name and its Keyword chips, which says
+                    everything there is to say about Reinforced Armour and far
+                    too little about the Scripture Guardian's Vengeful
+                    Scripture — Special, 18", with two rules that decide how it
+                    is used. The same weapon bought from an Armoury Table
+                    showed its whole row, so the model that always carries one
+                    saw less of it than the model that paid.
+                  */
+                  const profile = battlekitProfile(b, DATASET.weapons);
+                  const line = [profile?.type, profile?.range]
+                    .filter((v) => v && v !== '-').join(' | ');
+                  const ruleId = `kit-${b.linkId}`;
+                  const ruleOpen = expandedAbilities[ruleId];
+                  return (
+                    <div
+                      key={b.linkId}
+                      className="text-xs bg-theme-base px-2 py-1 rounded border border-dashed border-theme-border"
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        {/*
+                          The name WRAPS rather than truncating. At 375px the
+                          chips take the right-hand half of the row, and
+                          "Vengeful Scripture" came out as "Vengeful Script…" —
+                          a weapon the player then cannot look up. Two words on
+                          two lines costs a row of height and says the whole
+                          name.
+                        */}
+                        <div className="min-w-0">
+                          <span className="font-semibold text-theme-text block">{b.name}</span>
+                          {line && (
+                            <span className="text-xs sm:text-[10px] font-mono text-theme-muted block">
+                              {line}
+                            </span>
+                          )}
+                        </div>
+                        {b.keywords.length > 0 && (
+                          /*
+                            One chip per Keyword rather than a joined string, so
+                            each is its own tap target. `KeywordChip` shows an
+                            unrecognised one plain rather than guessing at it.
+                          */
+                          <span className="flex flex-wrap justify-end gap-1 flex-shrink-0">
+                            {b.keywords.map((k) => (
+                              <KeywordChip
+                                key={k}
+                                name={k}
+                                className="font-mono text-xs sm:text-[10px] rounded px-1"
+                              />
+                            ))}
+                          </span>
+                        )}
+                      </div>
+                      {profile?.rules && (
+                        <>
+                          <button
+                            onClick={() => toggleAbilityExpand(ruleId)}
+                            className="w-full flex items-center justify-between text-left font-mono text-xs sm:text-[10px] uppercase text-theme-muted hover:text-theme-text transition-colors min-h-[44px] lg:min-h-0"
+                          >
+                            <span>{ruleOpen ? 'Hide rule' : 'Rule'}</span>
+                            {ruleOpen ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                          </button>
+                          {ruleOpen && (
+                            <KeywordText className="text-theme-muted text-xs sm:text-[11px] pt-1.5 leading-relaxed border-t border-theme-border/40">
+                              {profile.rules}
+                            </KeywordText>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}

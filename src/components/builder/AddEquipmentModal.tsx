@@ -291,6 +291,12 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
         name: unitProfileName,
         keywords: unit?.profileSnapshot?.stats?.keywords,
         roles: unit?.profileSnapshot?.category ? [unit.profileSnapshot.category] : [],
+        /* A Mercenary may have no Battlekit but its own — see
+           `mercenaryRefusal`. Both of these decide that: the kit is what
+           "other" is measured against, and the permission is the Scripture
+           Guardian's stated exception. */
+        battlekit: forcedBattlekit(unit?.profileSnapshot),
+        mercenaryMayBuy: unit?.profileSnapshot?.mercenaryMayBuy,
       },
       traits: traitsOf(unit),
       taken: chosenBy(unit),

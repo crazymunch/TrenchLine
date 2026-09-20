@@ -49,6 +49,8 @@ export interface Violation {
     | 'option-group-max'
     | 'option-group-distinct'
     | 'third-party-not-allowed'
+    | 'mercenary-extra-battlekit'
+    | 'mercenary-melee-required'
     | 'variant-locked';
   message: string;
   /** Which rule said so, for the "why?" affordance. */
@@ -600,6 +602,7 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
   violations.push(...checkVariant(roster, variant, profiles));
   violations.push(...checkVariantGear(roster, variant, profiles, dataset, armoury, weapons));
   violations.push(...checkBattlekitLimits(roster, profiles, dataset, armoury, weapons));
+  violations.push(...checkMercenaryKit(roster, profiles, weapons));
 
   const faction = (dataset as unknown as { factions?: { id: string; name: string;
     specialRules?: FactionSpecialRule[] }[] }).factions
@@ -738,6 +741,94 @@ function checkVariantGrants(
  * to a table. The violation quotes the published sentence rather than a
  * paraphrase, because the player's next move is to check it.
  */
+/**
+ * A Mercenary carrying what it may not, and one missing what it must.
+ *
+ * "A Mercenaries' Battlekit cannot be removed or lost over the course of the
+ * campaign for any reason, and they cannot have any other Battlekit"
+ * (Warbands L9751-9752). `equipGate.ts` stops the player reaching this from
+ * the equip sheet; this is what catches a roster that already has it — an
+ * import, a cloud pull, or a Warband built before the gate shipped.
+ *
+ * The exception, and the requirement, are the same entry's. The Scripture
+ * Guardian "must have either two 1-Handed Melee Weapons or one 2-Handed Melee
+ * Weapon" (Dispatch L748-749), so a Guardian with neither is not illegal — it
+ * is unfinished, and says so as a warning rather than refusing the roster.
+ *
+ * Silent where the entry's own Battlekit is not in the dataset: the rule
+ * forbids any OTHER Battlekit, and the app cannot name what is "other" when it
+ * does not hold the kit. See `mercenaryRefusal` for the Mamluk Faris case.
+ */
+function checkMercenaryKit(
+  roster: Roster,
+  profiles: Map<string, UnitProfile>,
+  weapons: Map<string, { id: string; name: string; range?: string; type?: string }>,
+): Violation[] {
+  const out: Violation[] = [];
+
+  for (const u of roster.units) {
+    const profile = profiles.get(u.profileId);
+    if (!profile) continue;
+    if (!(profile.roles ?? []).some((r) => r.toLowerCase() === 'mercenary')) continue;
+
+    const kit = profile.battlekit ?? [];
+    if (!kit.length) continue;
+
+    const kitNames = new Set(kit.map((b) => nameKey(b.name)));
+    const kitIds = new Set(kit.map((b) => b.id));
+    const mayBuyMelee = (profile.mercenaryMayBuy ?? []).includes('Melee');
+    let meleeHands = 0;
+
+    for (const item of u.items) {
+      const w = item.weaponId ? weapons.get(item.weaponId) : undefined;
+      const name = item.name ?? w?.name ?? '';
+      if (!name && !item.weaponId) continue;
+      /* Granted by the entry itself, or a Variant, is not "other". */
+      if (item.grantedBy) continue;
+      if (item.weaponId && kitIds.has(item.weaponId)) continue;
+      if (nameKey(name) && kitNames.has(nameKey(name))) continue;
+
+      const isMelee = (w?.range ?? '').trim().toLowerCase() === 'melee'
+        && !/armour/i.test(w?.type ?? '');
+      if (mayBuyMelee && isMelee) {
+        meleeHands += /2-?handed/i.test(w?.type ?? '') ? 2 : 1;
+        continue;
+      }
+
+      out.push(err({
+        code: 'mercenary-extra-battlekit',
+        message: `${profile.name} cannot have ${name || 'that'}: a Mercenary may `
+               + 'have no Battlekit but its own.',
+        rule: "A Mercenaries' Battlekit cannot be removed or lost over the course "
+            + 'of the campaign for any reason, and they cannot have any other '
+            + 'Battlekit.',
+        unitId: u.id,
+        profileId: u.profileId,
+      }));
+    }
+
+    /*
+      Two 1-Handed or one 2-Handed, counted in hands so the two readings share
+      one number. A warning: an unfinished model is not an illegal one, and
+      refusing the roster would stop a player saving a Warband mid-build.
+    */
+    if (mayBuyMelee && meleeHands !== 2) {
+      out.push(warn({
+        code: 'mercenary-melee-required',
+        message: `${profile.name} must have either two 1-Handed Melee Weapons or `
+               + `one 2-Handed Melee Weapon (it has ${meleeHands === 0 ? 'none'
+                 : `${meleeHands} hand${meleeHands === 1 ? '' : 's'}' worth`}).`,
+        rule: 'In addition, it must have either two 1-Handed Melee Weapons or one '
+            + '2-Handed Melee Weapon.',
+        unitId: u.id,
+        profileId: u.profileId,
+      }));
+    }
+  }
+
+  return out;
+}
+
 function checkBattlekitLimits(
   roster: Roster,
   profiles: Map<string, UnitProfile>,

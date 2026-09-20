@@ -46,8 +46,14 @@ describe('every Keyword the dataset prints', () => {
     /* Real Keywords with no glossary entry — a data gap, not a matcher bug. */
     'CLERGY',
     'LIMITED POTENTIAL',
-    /* A cross-reference, not an instance: the rule lives under Sworn Brethren. */
-    'FIRETEAM (see Sworn Brethren)',
+    /*
+      A cross-reference, not an instance: the rule lives under Sworn Brethren.
+      The `▶` is the page's cross-reference mark and the dataset keeps it, the
+      way it keeps 'a Vivisector (▶ see Vivisector)'. The Dispatch op that
+      writes this row had dropped it; restored when layerTranscription started
+      checking transcriptions against the printed line.
+    */
+    'FIRETEAM (▶ see Sworn Brethren)',
     /* Two Keywords in one catalogue field. Prose finds both; a chip cannot. */
     'HEAVY IGNORE ARMOUR',
     /* An extraction artefact. */

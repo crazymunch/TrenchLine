@@ -156,9 +156,20 @@ const CATALOGUE_ALIASES = new Map([
   ['combatengineer', 'engineer'],
   ['mechanizedheavyinfantry', 'heavyinfantry'],
   ['warwolfassaultbeast', 'warwolf'],
-  /* The catalogue's selectionEntry is `Sister of Saint Cosmas`; its Unit profile
-     is named `Combat Medic`, and the pipeline ships the profile's name. */
-  ['sisterofsaintcosma', 'combatmedic'],
+  /*
+    No alias for the Sister of Saint Cosmas any more.
+
+    There was one — `sisterofsaintcosma -> combatmedic` — because the
+    catalogue's selectionEntry is `Sister of Saint Cosmas` while its Unit
+    profile is named `Combat Medic`, and the pipeline shipped the profile's
+    name. The Warbands-book layer now ships the book's name, so the alias
+    would send the book's Sister entry to the New Antioch Combat Medic
+    instead: two book entries pairing to one dataset unit, and the Sister
+    reported as having no entry at all.
+
+    The whole point of an alias is that one side does not say what the book
+    says. Once both do, keeping it is what breaks the match.
+  */
 ]);
 
 const PROVENANCE = `src/data/generated/${RULESET}.provenance.json`;
