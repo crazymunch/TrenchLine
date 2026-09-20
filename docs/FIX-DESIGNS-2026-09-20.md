@@ -31,6 +31,7 @@ carry, and what these designs cover:
 | FD-05 | RR-25, then RR-11, then RR-12 | the roster store, the builder, `validate.ts` |
 | FD-06 | RR-05 | the wizard's Promotions step, Play Mode's deed claim, `parse-campaign.mjs` |
 | FD-07 | RR-10 | the wizard's Exploration step |
+| FD-08 | DA-01, DA-02 | `scripts/lib/parse-battlescribe.mjs`, `src/rules/applyVariant.ts`, `src/rules/recruitable.ts` |
 
 ## FD-00. PR #59 as it stands
 
@@ -592,6 +593,98 @@ dataset's `lootPerPoint` plus ten; a Location that grants a Skill leaves it in
 `docs/ROSTER-FILE.md` for the new field, `docs/FEATURES.md` for Exploration,
 and the RR-10 entry in the review marked with what landed.
 
+## FD-08. DA-01 and DA-02: abilities a Variant reveals, and a second Unit profile
+
+### Root cause
+
+DA-01. The catalogues mark an Ability profile `hidden="true"` when a Variant
+owns it and reveal it with a `set hidden=false` modifier whose condition names
+the Variant (`New Antioch.cat` line 4246, Weapon Familiarity, is the shape).
+`scripts/lib/parse-battlescribe.mjs` reads the profile and not the attribute,
+so `unit.abilities` carries no `hidden`, and `recruitable()`
+(`src/rules/recruitable.ts` line 271) copies every ability into
+`innateAbilities`. `applyVariant` (`src/rules/applyVariant.ts` line 64) runs
+only the Variant's own `ops` and breaks on `field === 'hidden'`; the unit's
+`modifiers` with a `profile:<name>` origin, which are where the catalogue's
+reveal lives, are read by nothing but `variantLocks`, and that reads them for
+the unit as a whole, never per ability.
+
+The shipped Shocktrooper carries one reveal modifier, for Axe Mastery, where
+the catalogue reveals four abilities. The dedup at the end of the modifier
+reader (`parse-battlescribe.mjs`, the `seen` set after line 416) keys on the
+rule with `origin` removed, so four identical "reveal when Remnants of
+Byzantium" rules on four profiles collapse to one. Verify by counting the
+Shocktrooper's `hidden` modifiers before and after that filter; if it holds,
+that is the first fix.
+
+The conditions are trees: the Shocktrooper's Shock Charge is hidden when
+`all[Remnants of Byzantium, Shields, any[...]]`. Forty-three hidden toggles
+on twenty units; eighteen name a Variant, the rest name the unit's own
+selections (`Shields`, `Infected`, `Hellhound`, `Lost Arm [26]`) or a Court
+sin, and eleven carry a compound `when` with no top-level name.
+
+DA-02. `Black Grail.cat` line 3166 and 3207: the Thrall entry holds two
+`upgrade` sub-entries, `Grounded` and `Winged`, each carrying a Unit profile.
+The parser (line 872, first Unit profile per entry) emits one unit per
+sub-entry, so `Winged Thrall` ships as a 0-Ducat unit with no roles, keywords
+or abilities and `recruitable()` offers it. The Carcass Front layer already
+has the shape for this: `secondaryProfile` (`scripts/lib/carcass-front-layer.mjs`
+line 114), which `recruitable()` filters at line 169.
+
+### The change
+
+1. **Parser, abilities.** Record `hidden: true` on an ability whose profile
+   attribute is `hidden="true"`. Key the modifier dedup on `origin` as well
+   as the rule, so per-profile reveals survive; keep the entry-versus-profile
+   collapse only when the origin is the same.
+2. **Parser, profiles.** When an entry's Unit profile comes from a sub-entry
+   and the entry has more than one, emit one unit from the parent (cost,
+   limits, keywords, abilities from the parent; stats from the first
+   profile) and each further profile as its own `UnitProfile` with
+   `secondaryProfile: true`, the parent's `entryId` as `parentEntryId`, and
+   the parent's cost, roles, keywords and abilities copied so the Codex card
+   is not blank. Nothing new is typed; the Fly Thrall's statline is the
+   second profile's.
+3. **A visibility function.** `visibleAbilities(profile, ctx)` in
+   `src/rules/applyVariant.ts`, where `ctx` is `{ variant, selections }`
+   and `selections` is the names of the model's options, gear and injuries.
+   Start from the abilities that are not `hidden`; walk the unit's
+   `profile:<name>` modifiers with `field === 'hidden'` in order; evaluate
+   `when` as a tree: `all` and `any` combine; a leaf with `scope: 'roster'`
+   whose `childId` is a Variant's `entryId` or whose `childName` is a
+   Variant's name is true when `ctx.variant` matches; a leaf with `scope:
+   'self'` or `'model'` is true when `selections` holds `childName`; any
+   other leaf is unknown, and an unknown leaf leaves the modifier unapplied
+   and is reported by the build's cross-check so it cannot pass silently.
+   `value: 'false'` reveals, `'true'` hides.
+4. **Callers.** `recruitable()` builds `innateAbilities` with
+   `visibleAbilities(u, { variant, selections: [] })`; the unit card, the
+   recruit sheet and the Play Mode reference sheet call it with the
+   `ActiveUnit`'s selections, so Shock Charge appears when the Shields are
+   carried. An ability whose only reveal is a Variant is tagged
+   `variantOnly: [names]` for the Codex, which shows every ability with that
+   label rather than hiding it.
+
+### The test
+
+Against `DATASET`: the Shocktrooper's abilities with no Variant are `Shock
+Charge` and `Assault Drill` and nothing else; with the Remnants of Byzantium
+Variant they include Axe Mastery, Shield Bash, Indomitable and Weapon
+Familiarity; the Desecrated Saint shows one Aura for one Court Variant and
+none without; a Hound of the Black Grail with `Infected` among its
+selections loses `Teeths & Claws`; no unit named `Winged Thrall` is
+recruitable and the Thrall's secondary profile carries the Fly Thrall's
+statline; a modifier with an unknown leaf is listed by the cross-check, and
+the count is zero on the shipped catalogues.
+
+### Acceptance
+
+`npm run rules:audit:book` before and after: the `ability.variant (revealed
+by X)` rows in the DA report go to zero, and the `APP ONLY` list loses
+Winged Thrall. `docs/RULESET-MODEL.md` (`hidden` on abilities,
+`secondaryProfile` from the catalogues), `docs/ROSTER-PATHS.md` if it names
+the Thrall sub-entries.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -600,5 +693,5 @@ and the RR-10 entry in the review marked with what landed.
 3. FD-04, then FD-06, then FD-03. All change the wizard's later steps; #59
    changed its first step, so they rebase cleanly once it has merged.
 4. FD-05a, FD-05b, FD-05c, in that order, one PR each.
-5. FD-07.
-6. Then RR-09, RR-13, DA-01/02, DA-03/05/04, and the rest of the two lists.
+5. FD-07, then FD-08.
+6. Then RR-09, RR-13, DA-03/05/04, and the rest of the two lists.
