@@ -8,6 +8,7 @@ import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
 import { canEquip } from '../../rules/equipGate';
 import { armouryFor } from '../../rules/armoury';
 import { traitsOf, chosenBy } from '../../rules/formulae';
+import { battlekitBreaches } from '../../rules/battlekitLimits';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { WeaponProfile, ArmourProfile, EquipmentItem } from '../../types/rules';
@@ -182,45 +183,32 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   const currentArmour = unit?.equippedArmour || [];
   const currentEquipment = unit?.equippedEquipment || [];
 
-  // Check special traits: STRONG and Extra Limbs (3rd Arm / Homunculus)
-  const isStrong = Boolean(
-    unit?.profileSnapshot.innateAbilities?.some(a => /strong|bulky|large|ogre/i.test(a.name) || /strong/i.test(a.description)) ||
-    unit?.specialUpgrades?.some(u => /strong/i.test(u.name)) ||
-    unit?.skills?.some(s => /strong/i.test(s.name))
-  );
-
   /*
-    Derived from the Formula, not from a name that reads like one.
+    The hand arithmetic is the ENGINE's, not this file's (FD-13a).
 
-    This was `/third arm|extra arm|limb/i` over the same lists — and the real
-    Formula, `Additional Arm`, matches none of those three alternatives. So a
-    model that had bought the entry the catalogue prints was refused its third
-    weapon, while a model carrying `Third Arm (Extra Limb)` — from a
-    hand-written list that appears in no book — was allowed it.
+    What stood here was a second carrying-rules engine, and it got the book
+    wrong in three ways at once:
 
-    It also never looked at `equippedEquipment`, which is where an imported
-    roster's Formulae actually land.
+      const isStrong = /strong|bulky|large|ogre/i.test(a.name) || ...
+      const effectiveHands = (isStrong && rawHands >= 2) ? 1 : rawHands;
+
+    STRONG is a **Keyword** — the dataset carries it as one — and this found
+    it by a regex over ability names and descriptions, the same
+    name-pattern habit the rest of this file was purged of. Then it applied
+    the conversion to **every** 2-Handed Melee Weapon, where the book grants
+    exactly one: *"it can equip and use ONE 2-Handed Melee Weapon as if it
+    were a 1-Handed Melee Weapon"* (Digital Rulebook L3247 to L3249). So a
+    STRONG model could be given three greatswords and shown three hands
+    used out of three. And CUMBERSOME — *"require two hands to use, EVEN IF
+    the model has the STRONG Keyword"* — was read not at all.
+
+    `battlekitLimits.ts` had all three right already, including the entry's
+    own stated allowance and the shield clause, and said so in a comment
+    naming this file's version as the broken one. Two engines, one book;
+    this one goes.
   */
-  const hasExtraArm = hasExtraLimb(unit);
-
-  const maxMeleeHands = hasExtraArm ? 3 : 2;
-  const maxRangedHands = hasExtraArm ? 3 : 2;
-
-  // Melee hands calculation: 2H weapons count as 1H if model has STRONG
-  const meleeWeapons = currentWeapons.filter(w => w.type === 'Melee' || w.range === 'Melee' || w.range?.startsWith('Melee') || /shield|mantlet/i.test(w.name));
-  const meleeHandsUsed = meleeWeapons.reduce((sum, w) => {
-    const rawHands = w.hands || 1;
-    const effectiveHands = (isStrong && rawHands >= 2) ? 1 : rawHands;
-    return sum + effectiveHands;
-  }, 0);
-
-  // Ranged hands calculation
-  const rangedWeapons = currentWeapons.filter(w => w.type === 'Ranged' || (w.range && w.range !== 'Melee' && !w.range?.startsWith('Melee') && !/shield|mantlet/i.test(w.name)));
-  const rangedHandsUsed = rangedWeapons.reduce((sum, w) => sum + (w.hands || 1), 0);
-
-  const isOverMeleeHands = meleeHandsUsed > maxMeleeHands;
-  const isOverRangedHands = rangedHandsUsed > maxRangedHands;
   const isOverArmourLimit = currentArmour.length > 1;
+
 
   /*
     The three name-pattern predicates that stood here are gone.
@@ -311,6 +299,25 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     added — the same one the player just added with `+`, which is what makes
     the pair read as one control rather than two unrelated buttons.
   */
+  /*
+    What the model is carrying breaks, in the book's own sentences.
+
+    The same call the roster validator makes, so the sheet and the validator
+    cannot disagree about a loadout: a model offered a third weapon here and
+    then refused at the roster door is the worst of both answers.
+  */
+  const breachesNow = React.useMemo(() => {
+    if (!dataset) return [];
+    return battlekitBreaches(carriedNow, {
+      dataset,
+      armoury: armouryFor(dataset, factionId),
+      keywords: unit?.profileSnapshot?.stats?.keywords,
+      modelName: unit?.profileSnapshot?.name,
+      traits: traitsOf(unit),
+      extraLimb: hasExtraLimb(unit),
+    });
+  }, [dataset, factionId, carriedNow, unit]);
+
   const sameItem = (a: { id?: string; name: string }, b: { id?: string; name: string }) =>
     (b.id != null && a.id === b.id) || a.name === b.name;
   const ownedIn = (
@@ -424,38 +431,24 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           </div>
         )}
 
-        {/* Loadout Status & Hand Limits Banner */}
+        {/* What the loadout breaks, quoted rather than counted */}
         <div className="px-4 py-2 bg-theme-elevated border-b border-theme-border flex flex-wrap items-center justify-between gap-2 text-xs flex-shrink-0">
           <div className="flex flex-wrap items-center gap-3">
             <span className="text-theme-muted">
-              Melee Hands: <strong className={`font-bold ${isOverMeleeHands ? 'text-status-error' : 'text-theme-text'}`}>{meleeHandsUsed} / {maxMeleeHands}</strong>
-            </span>
-            <span>•</span>
-            <span className="text-theme-muted">
-              Ranged Hands: <strong className={`font-bold ${isOverRangedHands ? 'text-status-error' : 'text-theme-text'}`}>{rangedHandsUsed} / {maxRangedHands}</strong>
-            </span>
-            <span>•</span>
-            <span className="text-theme-muted">
               Armour Slots: <strong className={`font-bold ${isOverArmourLimit ? 'text-status-error' : 'text-theme-text'}`}>{currentArmour.length} / 1</strong>
             </span>
-            {isStrong && (
-              <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-theme-primary text-theme-base font-bold uppercase">
-                STRONG (2H Melee = 1H)
-              </span>
-            )}
-            {hasExtraArm && (
-              <span className="text-xs sm:text-[10px] px-1.5 py-0.2 rounded bg-status-legal text-white font-bold uppercase">
-                3rd Arm (+1 Hand Capacity)
-              </span>
-            )}
           </div>
 
-          {(isOverMeleeHands || isOverRangedHands) && (
-            <span className="text-xs sm:text-[11px] text-status-error flex items-center space-x-1 font-bold">
-              <AlertTriangle className="w-3.5 h-3.5" />
-              <span>
-                {isOverMeleeHands ? `Exceeds Melee Hands (${meleeHandsUsed}/${maxMeleeHands})` : `Exceeds Ranged Hands (${rangedHandsUsed}/${maxRangedHands})`}
-              </span>
+          {/*
+            The sentence, not a tally. `x / y hands` was a number this file
+            worked out for itself and got wrong; the engine returns the
+            published rule that a loadout breaks, and that is what a player
+            needs in order to check the app against the page.
+          */}
+          {breachesNow.length > 0 && (
+            <span className="text-xs sm:text-[11px] text-status-error flex items-start gap-1 font-bold">
+              <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+              <span>{breachesNow[0].message}</span>
             </span>
           )}
         </div>
