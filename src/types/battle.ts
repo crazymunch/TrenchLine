@@ -42,6 +42,37 @@ export interface BattleSide {
   vp: number;
   /** Turn number -> points scored that turn. */
   turnScores: Record<number, number>;
+  /**
+   * The campaign `MatchRecord` this side's post-battle produced.
+   *
+   * A game has as many post-battles as it has rosters, and the record held
+   * ONE id for the whole battle (FD-09b / RR-27) — so a second side got no
+   * Trauma, no Experience and no Exploration, and nothing could say whether
+   * it ever would. A side with no id here has not had its post-battle run;
+   * that is what the Hub's unresolved list reads and what stops the same side
+   * being offered twice.
+   *
+   * **On the side rather than in a map on the battle**, which is where FD-09
+   * put it, for a reason that decides it: `Battle.sides` is a `Json` column,
+   * so this reaches the cloud with the record it belongs to and needs no
+   * migration — where a new top-level field would need a column, and a
+   * per-side link that did not sync would have another device offering a
+   * post-battle already run here, and counting it twice.
+   */
+  campaignMatchId?: string;
+  /**
+   * The models this side had on the table.
+   *
+   * Written from Play Mode's own deployment, so a post-battle run LATER — or
+   * on another device — still knows who sat the game out, which decides who
+   * earns Experience: "each ELITE model that took part in a game and
+   * survived". Without it a post-battle opened from the Chronicle would have
+   * to assume the whole roster played (FD-09b / RR-27).
+   *
+   * Absent on a record written before this, and on a placeholder side, which
+   * has no roster to deploy.
+   */
+  deployedUnitIds?: string[];
 }
 
 /** A Glorious Deed, and who took it. */
@@ -98,8 +129,46 @@ export interface BattleRecord {
   /** Present only where the match was played as coalitions. */
   coalitionTotals?: Record<CoalitionId, number>;
   weather?: { name: string; effect: string };
-  /** The campaign `MatchRecord` this battle also produced, where there is one. */
+  /**
+   * The campaign `MatchRecord` this battle also produced, where there is one.
+   *
+   * @deprecated Read through `campaignMatchIds`. Kept because records already
+   * written carry it, and it is the PRIMARY side's entry — the side whose
+   * post-battle Play Mode opened when the match ended.
+   */
   campaignMatchId?: string;
+}
+
+/**
+ * Every side's `MatchRecord` id, however the record spells it.
+ *
+ * `campaignMatchId` was one id for the whole battle and is read as the
+ * primary side's, so a record written before this keeps its link rather than
+ * reading as a battle nobody resolved.
+ */
+export function matchIdsOf(
+  battle: Pick<BattleRecord, 'sides' | 'campaignMatchId'>,
+): Record<string, string> {
+  const ids: Record<string, string> = {};
+  for (const s of battle.sides) if (s.campaignMatchId) ids[s.id] = s.campaignMatchId;
+  const primary = battle.sides[0]?.id;
+  if (battle.campaignMatchId && primary && !ids[primary]) {
+    ids[primary] = battle.campaignMatchId;
+  }
+  return ids;
+}
+
+/**
+ * Sides with a roster of their own that have not had their post-battle run.
+ *
+ * A placeholder is excluded because it has no roster: there is no Trauma to
+ * roll, no Experience to award and no Strongbox to pay.
+ */
+export function unresolvedSides(
+  battle: Pick<BattleRecord, 'sides' | 'campaignMatchId'>,
+): BattleSide[] {
+  const ids = matchIdsOf(battle);
+  return battle.sides.filter((s) => !s.wasPlaceholder && !ids[s.id]);
 }
 
 export const BATTLE_VERSION = 1 as const;
@@ -117,6 +186,11 @@ const side = (v: unknown): BattleSide | null => {
     coalition: v.coalition === 'A' || v.coalition === 'B' ? v.coalition : undefined,
     vp: typeof v.vp === 'number' && Number.isFinite(v.vp) ? v.vp : 0,
     turnScores: isRecord(v.turnScores) ? v.turnScores as Record<number, number> : {},
+    ...(typeof v.campaignMatchId === 'string' && v.campaignMatchId
+      ? { campaignMatchId: v.campaignMatchId } : {}),
+    ...(Array.isArray(v.deployedUnitIds)
+      ? { deployedUnitIds: v.deployedUnitIds.filter((x): x is string => typeof x === 'string') }
+      : {}),
   };
 };
 
@@ -190,6 +264,7 @@ export function parseBattle(raw: unknown): BattleRecord | null {
       : {}),
     ...(typeof raw.campaignMatchId === 'string'
       ? { campaignMatchId: raw.campaignMatchId } : {}),
+
   };
 }
 

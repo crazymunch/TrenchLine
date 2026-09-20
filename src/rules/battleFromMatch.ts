@@ -41,6 +41,15 @@ export interface BattleInput {
   playTurn: number;
   weather?: { name: string; effect: string } | null;
   campaignMatchId?: string;
+  /**
+   * Who each side had on the table, keyed by side id.
+   *
+   * Recorded so a post-battle run LATER — the second side's, or one opened
+   * from the Chronicle on another device — still knows who sat the game out,
+   * which decides who earns Experience (FD-09b / RR-27). Without it such a
+   * post-battle would have to assume the whole roster played.
+   */
+  deployedUnitIds?: Record<string, readonly string[]>;
   /** Injected so a record is reproducible in a test. */
   now?: Date;
   id?: string;
@@ -57,7 +66,7 @@ export function battleFromMatch(input: BattleInput): BattleRecord | null {
   const {
     matchWarbandIds, sideInfo, scores, coalitions,
     scenarioId, scenarioName, scenarioDeeds, playTurn, weather,
-    campaignMatchId, now = new Date(),
+    campaignMatchId, deployedUnitIds, now = new Date(),
   } = input;
 
   if (!matchWarbandIds.length) return null;
@@ -74,6 +83,8 @@ export function battleFromMatch(input: BattleInput): BattleRecord | null {
       factionId: info?.factionId ?? '',
       wasPlaceholder: info?.isPlaceholder ?? false,
       ...(coalitions[id] ? { coalition: coalitions[id] } : {}),
+      ...(deployedUnitIds?.[id]?.length
+        ? { deployedUnitIds: [...deployedUnitIds[id]] } : {}),
       vp: s?.vp ?? 0,
       turnScores: s?.turnScores ?? {},
     };

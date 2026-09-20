@@ -27,7 +27,47 @@ outside a campaign recorded nothing whatsoever.
   campaign. `BattleRecord` says what happened in it.
 
 Where both exist they are linked by `campaignMatchId`, set when the
-post-battle wizard commits.
+post-battle wizard commits — **on the side, one per roster** (FD-09b / RR-27).
+
+## A game has as many post-battles as it has rosters
+
+`BattleRecord.campaignMatchId` was one id for the WHOLE battle, and Play Mode
+opened one wizard, for the active warband. So a second side — the player's own
+other warband, or another user's in a hosted match — got no Trauma, no
+Experience and no Exploration, and the record had nowhere to say whether it
+ever would. The Chronicle had the game; the campaign had half of it.
+
+`BattleSide.campaignMatchId` is that link, per side. A side without one has not
+had its post-battle run, which is what both offers read:
+
+- **Play Mode** asks as soon as the wizard closes — *"Another side fought this
+  game"* — and keeps asking until every side with a roster on this device is
+  linked, or the player declines.
+- **The Campaign Hub** lists the rest under *Unresolved battles*, because
+  declining is not the same as being finished, and a battle recorded on
+  somebody else's device arrives here the same way.
+
+A **placeholder** side is never offered: it has no roster, so there is no
+Trauma to roll, no Experience to award and no Strongbox to pay.
+
+`BattleSide.deployedUnitIds` rides with it. A post-battle run later cannot read
+Play Mode's live state, and assuming the whole roster played would hand
+Experience to models that sat the game out — *"each ELITE model that took part
+in a game and survived"*.
+
+**Both live on the SIDE rather than on the battle**, which is not where FD-09
+put them: it specified `campaignMatchIds: Record<sideId, matchId>` on the
+record. `Battle.sides` is a `Json` column, so a per-side fact reaches the cloud
+inside the record it belongs to and needs no migration — where a new top-level
+field would need a column of its own, and a per-side link that did not sync
+would leave another device offering a post-battle already run here, and
+counting it twice. Both fields had to be named in the battles API's `Side`
+schema, which is `.strict()`: a client sending a field it does not list has its
+whole battle rejected.
+
+The old whole-battle field is still written where it is empty and reads as the
+**primary** side's, so a record already in a Chronicle keeps its link rather
+than reading as a battle nobody resolved.
 
 > **This sentence was aspirational until 2026-09-20.** The field was declared
 > on `BattleRecord`, carried in the cloud sync payload, accepted by the battles

@@ -8,6 +8,7 @@ import { useDataset } from '../../rules/useDataset';
 import { DiceRoller } from './DiceRoller';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
 import { matchHandover, type MatchHandover } from '@/rules/matchHandover';
+import { unresolvedSides, type BattleRecord, type BattleSide } from '@/types/battle';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
 import { ModelReferenceSheet } from './ModelReferenceSheet';
 import { QuickSearchModal } from './QuickSearchModal';
@@ -80,7 +81,7 @@ export const PlayModeView: React.FC = () => {
     warbands,
     opponents,
     factions,
-    getActiveWarband, 
+    getActiveWarband, setActiveWarbandId,
     playTurn, 
     incrementTurn, 
     setPlayTurn,
@@ -153,6 +154,17 @@ export const PlayModeView: React.FC = () => {
      most matches — so nothing below assumes a match HAS teams. */
   const [coalitions, setCoalitions] = useState<CoalitionMap>({});
   const [deployedUnitIds, setDeployedUnitIds] = useState<Record<string, string[]>>({});
+  /*
+    The battle whose post-battles are being worked through.
+
+    A game has as many post-battles as it has rosters, and only the active
+    warband's was ever opened — so a second side got no Trauma, no Experience
+    and no Exploration (FD-09b / RR-27). Held by id rather than by value
+    because the record is re-read from storage between wizards: committing one
+    writes that side's `campaignMatchId` onto it, and the next offer has to
+    see that.
+  */
+  const [battleForPostBattle, setBattleForPostBattle] = useState<string | null>(null);
   /*
     What the wizard opens on.
 
@@ -433,6 +445,44 @@ export const PlayModeView: React.FC = () => {
     is campaign-only: a one-off game recorded nothing at all before, and the
     battle happened either way.
   */
+  /**
+   * The handover for one side of a battle.
+   *
+   * `deployedUnitIds` comes off the RECORD where it has it, and only falls
+   * back to the live tracker for the side this device was playing: a
+   * post-battle for another warband cannot read who that player deployed out
+   * of this device's match state.
+   */
+  const handoverFor = (battle: BattleRecord, sideId: string): MatchHandover | null => {
+    const wb = warbands.find((w) => w.id === sideId);
+    const recorded = battle.sides.find((sd) => sd.id === sideId)?.deployedUnitIds;
+    return matchHandover(battle, {
+      ownSideId: sideId,
+      rosterUnitIds: wb?.units.map((u) => u.id) ?? [],
+      deployedUnitIds: recorded
+        ?? deployedUnitIds[sideId]
+        ?? wb?.units.map((u) => u.id)
+        ?? [],
+    });
+  };
+
+  /**
+   * The next side of this battle with a roster on this device and no
+   * post-battle yet.
+   *
+   * Re-read from storage rather than from state, because the commit that just
+   * closed the wizard wrote the last side's link onto the stored record.
+   * Placeholder sides are not offered: they have no roster.
+   */
+  const nextUnresolvedSide = (): { battle: BattleRecord; side: BattleSide } | null => {
+    if (!battleForPostBattle) return null;
+    const battle = storage.getBattles().find((b) => b.id === battleForPostBattle);
+    if (!battle) return null;
+    const side = unresolvedSides(battle)
+      .find((sd) => warbands.some((w) => w.id === sd.id && w.campaignId));
+    return side ? { battle, side } : null;
+  };
+
   const handleEndMatch = () => {
     const battle = battleFromMatch({
       matchWarbandIds,
@@ -452,6 +502,12 @@ export const PlayModeView: React.FC = () => {
       weather: activeWeather
         ? { name: activeWeather.name, effect: activeWeather.effect }
         : null,
+      /*
+        Who was on the table, per side, so a post-battle run later — the other
+        side's, or one opened from the Chronicle — knows who sat the game out
+        rather than assuming the whole roster played (FD-09b / RR-27).
+      */
+      deployedUnitIds,
     });
     if (battle) {
       /*
@@ -466,16 +522,12 @@ export const PlayModeView: React.FC = () => {
       storage.addBattle(battle);
       /*
         And hand it to the wizard rather than making the player retype it.
-        `primaryWarband` is the side whose post-battle this is — the wizard is
-        opened for the active warband only (RR-27 is the rest of that).
+        `primaryWarband` is the side whose post-battle runs FIRST; the others
+        are offered in turn once it commits — see `nextUnresolvedSide` below
+        (FD-09b / RR-27).
       */
-      setHandover(matchHandover(battle, {
-        ownSideId: primaryWarband?.id ?? '',
-        rosterUnitIds: primaryWarband?.units.map((u) => u.id) ?? [],
-        deployedUnitIds: primaryWarband
-          ? (deployedUnitIds[primaryWarband.id] ?? primaryWarband.units.map((u) => u.id))
-          : [],
-      }));
+      setBattleForPostBattle(battle.id);
+      setHandover(handoverFor(battle, primaryWarband?.id ?? ''));
       /*
         Nothing records whether this landed. The Chronicle works it out by
         comparing what it holds against what the cloud returns — a local
@@ -2145,6 +2197,41 @@ export const PlayModeView: React.FC = () => {
           onClose={() => setIsPostBattleOpen(false)}
         />
       )}
+
+      {/*
+        The other sides' post-battles (FD-09b / RR-27).
+
+        A game has as many post-battles as it has rosters, and only the active
+        warband's was ever run — so a second warband of the player's own, or
+        another user's in a hosted match, got no Trauma, no Experience and no
+        Exploration at all: the Chronicle had the game and the campaign did
+        not.
+
+        Offered rather than forced, one at a time, and it keeps offering until
+        every side with a roster on this device is linked or the player
+        declines. Declining is not a loss: the Campaign Hub lists the same
+        battle as unresolved, so it can be finished later or on the device
+        that holds the other roster.
+      */}
+      {!isPostBattleOpen && nextUnresolvedSide() && (() => {
+        const next = nextUnresolvedSide()!;
+        return (
+          <ConfirmModal
+            isOpen
+            title="ANOTHER SIDE FOUGHT THIS GAME"
+            message={`${next.side.name} has no post-battle for this match yet — `
+              + 'no Trauma, no Experience and no Exploration. Run it now?'}
+            confirmLabel={`Post-battle for ${next.side.name}`}
+            cancelLabel="Later"
+            onConfirm={() => {
+              setActiveWarbandId(next.side.id);
+              setHandover(handoverFor(next.battle, next.side.id));
+              setIsPostBattleOpen(true);
+            }}
+            onCancel={() => setBattleForPostBattle(null)}
+          />
+        );
+      })()}
 
       {/* ALL OUT WAR CARD & ALLIANCE CONSOLE */}
       {isCardConsoleOpen && isAllOutWarScenario && (
