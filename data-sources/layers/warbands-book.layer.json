@@ -1,0 +1,133 @@
+{
+  "id": "warbands-book",
+  "name": "Warbands of Trench Crusade",
+  "sourceRef": "Warbands of Trench Crusade",
+  "status": "official",
+  "_note": [
+    "What the BOOK states and the catalogues lack. Nothing here is a change to a published value: it is the printed entry reaching a field the catalogue left empty, or carrying a name the catalogue never caught up with.",
+    "Applied BEFORE dispatch-01, so the Dispatch still wins wherever the two speak about the same thing. `data-sources/resolutions.json` states the precedence as Dispatch over rulebook over catalogue; the rulebook rung had no layer until this one.",
+    "Every op addresses its target BY ID. Two units are named 'Combat Medic' and the Mercenaries one is the Sister of Saint Cosmas; the layer engine refuses an ambiguous name outright.",
+    "Every value is transcribed from the cited lines and `layers.transcription.test.mjs` checks each one against the extract, so a line that drifts fails the suite rather than shipping."
+  ],
+  "ops": [
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "field": "name",
+      "value": "Sister of Saint Cosmas",
+      "_why": "The catalogue kept the model's pre-rename name, 'Combat Medic', which is also the name of a New Antioch Troop. `entryName` keeps the catalogue's spelling for promotions, and a saved roster keeps its snapshot name and its stable id.",
+      "_src": "warbands-of-trench-crusade.txt L10366 — '0-1 Sister of Saint Cosmas - Cost: 2 ☼'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "field": "stats.ranged",
+      "value": "+0 DICE",
+      "_why": "The catalogue carries a bare '0'. The book prints '+0 DICE', which is the same value written the way every other statline is.",
+      "_src": "warbands-of-trench-crusade.txt L10381 — '6”/Infantry +0 DICE +0 DICE -1 25mm'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "field": "stats.melee",
+      "value": "+0 DICE",
+      "_src": "warbands-of-trench-crusade.txt L10381 — '6”/Infantry +0 DICE +0 DICE -1 25mm'"
+    },
+    {
+      "op": "replaceAbility",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "name": "Finish the Fallen",
+      "ability": {
+        "id": "warbands-book-finish-the-fallen",
+        "name": "Finish the Fallen",
+        "description": "Due to their knowledge of anatomy and physiology, the Sisters are experts at inflicting debilitating injuries and excruciating pain. Add +1 INJURY DICE to Injury Rolls for Melee Attacks made by a Sister of Saint Cosmas if the target is Down and does not have the BLACK GRAIL or DEMONIC Keywords."
+      },
+      "_why": "The catalogue's text says '+1 DICE' where the book says '+1 INJURY DICE'. Those are different rolls.",
+      "_src": "warbands-of-trench-crusade.txt L10387-10392"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "aa7f-02df-a12f-1ed3"
+      },
+      "field": "battlekitNote",
+      "value": "A Sister of Saint Cosmas always has Standard Armour, a Gas Mask, Medi-kit and a Misericordia.",
+      "_src": "warbands-of-trench-crusade.txt L10382-10383"
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "02df-b4d5-3ca5-9a2b"
+      },
+      "ability": {
+        "id": "warbands-book-battlefield-vivisection",
+        "name": "Battlefield Vivisection",
+        "description": "Whenever a Combat Biologist is part of your Warband, add the Gather Knowledge Glorious Deed to those normally available in each scenario you play.",
+        "grantsDeed": {
+          "name": "Gather Knowledge",
+          "description": "You complete this Glorious Deed if 3 or more enemy models are taken Out of Action while they are within 1” of a friendly Combat Biologist."
+        }
+      },
+      "_why": "The catalogue gives the Combat Biologist no abilities at all. `grantsDeed` is what puts Gather Knowledge in Play Mode's deed list when a Biologist is on the roster, which is what the ability says happens.",
+      "_src": "warbands-of-trench-crusade.txt L9804-9806, the deed at L9807-9809"
+    },
+    {
+      "op": "addAbility",
+      "target": {
+        "kind": "unit",
+        "id": "02df-b4d5-3ca5-9a2b"
+      },
+      "ability": {
+        "id": "warbands-book-prize-specimens",
+        "name": "Prize Specimens",
+        "description": "When a Combat Biologist takes any enemy model with the Keyword DEMONIC or BLACK GRAIL Out of Action with a Melee attack, place 1 BLESSING MARKER beside the Combat Biologist."
+      },
+      "_src": "warbands-of-trench-crusade.txt L9810-9813"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "02df-b4d5-3ca5-9a2b"
+      },
+      "field": "battlekitNote",
+      "value": "A Combat Biologist always has Gas Grenades, Standard Armour, a Gas Mask, and a Vivisector (▶ see Vivisector).",
+      "_src": "warbands-of-trench-crusade.txt L9802-9803"
+    },
+    {
+      "op": "addBattlekit",
+      "target": {
+        "kind": "unit",
+        "id": "02df-b4d5-3ca5-9a2b"
+      },
+      "weapon": "Vivisector",
+      "_why": "The Vivisector is a Weapon profile on the model itself. The parser will not read that shape as forced kit, because the catalogue also uses it for reference statlines and doing so gives the Artillery Witch two bombs the book never grants her (see `forcedKitOf`). The book says the Biologist always has one, so the book is what says it here.",
+      "_src": "warbands-of-trench-crusade.txt L9802-9803 — 'always has Gas Grenades, Standard Armour, a Gas Mask, and a Vivisector'"
+    },
+    {
+      "op": "set",
+      "target": {
+        "kind": "unit",
+        "id": "2d21-7af1-0770-da4c"
+      },
+      "field": "allowedAlignment",
+      "value": "Fallen",
+      "_why": "Stated by alignment, not by a list of names. Writing the Fallen factions out here would go stale the moment a Fallen Warband is added — which is how the Heretic Naval Raiders came to be missed by hand-written host lists. `recruitable.ts` resolves it against each faction's own alignment.",
+      "_src": "warbands-of-trench-crusade.txt L10273 — 'A Sin Eater is Fallen and can be recruited as a Mercenary by Fallen Warbands.'"
+    }
+  ]
+}

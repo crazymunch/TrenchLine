@@ -546,6 +546,13 @@ for (const ruleset of RULESETS) {
       // variants change it and a future faction need not match.
       budget: { ducats: f.budget ?? 0, glory: 0 },
       specialRules: f.specialRules,
+      /*
+        'Faithful' or 'Fallen', from the book's own closing sentence — see
+        `parseFactionRules`. A Mercenary's hosts are stated by alignment, so
+        this is what `allowedAlignment` resolves against; until now only the
+        Carcass Front lists carried one and the core six had none.
+      */
+      alignment: f.alignment,
       // Distinguishes "the book says this faction has no special rules" from
       // "we failed to find any" — only the first is a fact about the game.
       noSpecialRules: Boolean(f.explicitlyNone),
@@ -1503,6 +1510,30 @@ for (const ruleset of RULESETS) {
       console.log(`    ${u.op?.op ?? '?'} ${u.op?.collection ?? u.op?.factionId ?? ''}`
         + `${u.op?.row?.name ? `/${u.op.row.name}` : ''}`
         + `${u.op?.entity?.name ? `/${u.op.entity.name}` : ''}: ${u.why}`);
+    }
+  }
+
+  /*
+    A unit whose hosts are stated by ALIGNMENT must have factions to match.
+
+    `allowedAlignment` resolves in `recruitable.ts` to every faction carrying
+    that alignment. If none does, the filter matches nobody and the model is
+    offered to no Warband at all — which on screen is indistinguishable from a
+    model the game does not have, and is the quietest way to lose one.
+
+    Checked here rather than in the app: the app must not throw at a player,
+    and by the time it runs this has already guaranteed the invariant.
+  */
+  const alignmentsPresent = new Set(
+    (dataset.factions ?? []).map((f) => f.alignment).filter(Boolean));
+  for (const u of dataset.units ?? []) {
+    if (u.allowedAlignment && !alignmentsPresent.has(u.allowedAlignment)) {
+      failed = true;
+      console.log(
+        `  ${u.name} is hired by "${u.allowedAlignment}" Warbands and no faction `
+        + 'carries that alignment — it would be offered to nobody. '
+        + `Alignments present: ${[...alignmentsPresent].join(', ') || '(none)'}. `
+        + 'THIS FAILS THE BUILD');
     }
   }
   if (gearRenames.length) {

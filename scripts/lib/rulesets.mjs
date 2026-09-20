@@ -26,7 +26,14 @@ export const RULESETS = [
       'The GitHub catalogues, cross-checked against the official rulebooks and ' +
       'brought up to date with the Trench Dispatch and the Carcass Front ' +
       'supplement. The most accurate ruleset available in the app.',
-    layers: ['dispatch-01', 'carcass-front'],
+    /*
+      `warbands-book` first: it carries what the BOOK states and the catalogue
+      lacks, and `dispatch-01` after it so the newer source still wins wherever
+      the two speak about the same thing. `data-sources/resolutions.json` states
+      that precedence — Dispatch over rulebook over catalogue — and the rulebook
+      rung had no layer until this one.
+    */
+    layers: ['warbands-book', 'dispatch-01', 'carcass-front'],
     includeBeta: true,
     isDefault: true,
   },

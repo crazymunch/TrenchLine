@@ -125,6 +125,25 @@ export function recruitable(
     appFactionIds.find((f) => sameFaction(f, id)) ?? id;
 
   /*
+    The factions of one alignment, for a host rule the source states that way.
+
+    The Sin Eater's hosts are "Fallen Warbands", not a list. Resolving it here
+    rather than writing the Fallen factions into the layer means a Fallen
+    Warband added later is included by the same sentence that included the
+    others — which is the failure the hand-written lists had: the Heretic
+    Naval Raiders arrived and no list knew about them.
+
+    Each faction's `alignment` is read from the book's own "… are Faithful." /
+    "… are Fallen." sentence; see `parseFactionRules`. `rules-build` refuses to
+    emit a unit whose alignment matches no faction, so this cannot quietly
+    resolve to nobody.
+  */
+  const alignedFactions = (want: string) =>
+    (dataset.factions ?? [])
+      .filter((f) => f.alignment === want)
+      .map((f) => appId(f.id ?? f.name));
+
+  /*
     The entry ids of the third-party Warband Variants, so a unit's own reveal
     condition can be joined to them. The gate is split across the data: the
     condition sits on the unit, the thing it names sits in a group elsewhere in
@@ -302,7 +321,10 @@ export function recruitable(
       allowedFactions: categoryOf(u) === 'Mercenary'
         ? (gate.hosts.length
             ? gate.hosts.map(appId)
-            : u.allowedFactions ? u.allowedFactions.map(appId) : appFactionIds)
+            : u.allowedFactions ? u.allowedFactions.map(appId)
+            /* Stated by alignment rather than by name — see `alignedFactions`. */
+            : u.allowedAlignment ? alignedFactions(u.allowedAlignment)
+            : appFactionIds)
         : undefined,
       thirdParty: gate.thirdParty || undefined,
       requiresVariant: locks.get(u.entryId || u.id)

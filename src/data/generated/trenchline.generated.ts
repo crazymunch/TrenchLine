@@ -2,7 +2,7 @@
 // Produced by `npm run rules:build` from data-sources/.
 // Ruleset: trenchline
 // Base:    Fawkstrot11/TrenchCrusade@1b463a8e2eaafc9d6722ae6eeda93e296fb7012b
-// Layers:  dispatch-01, carcass-front
+// Layers:  warbands-book, dispatch-01, carcass-front
 // See docs/RULESET-MODEL.md.
 
 import type { Dataset } from '../../types/catalogue';
@@ -18867,7 +18867,7 @@ export const DATASET: Dataset = {
       "id": "aa7f-02df-a12f-1ed3",
       "entryId": "39c2-abb6-fef0-f96e",
       "hiddenByDefault": true,
-      "name": "Combat Medic",
+      "name": "Sister of Saint Cosmas",
       "entryName": "Sister of Saint Cosmas",
       "factionId": "Mercenaries",
       "roles": [
@@ -18878,8 +18878,8 @@ export const DATASET: Dataset = {
         "movement": "6\"/Infantry",
         "movementInches": 6,
         "movementType": "Infantry",
-        "ranged": "0",
-        "melee": "0",
+        "ranged": "+0 DICE",
+        "melee": "+0 DICE",
         "armour": "-1",
         "base": "25mm"
       },
@@ -18891,9 +18891,9 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [
         {
-          "id": "0ed0-319a-6fee-c76c",
+          "id": "warbands-book-finish-the-fallen",
           "name": "Finish the Fallen",
-          "description": "Due to their knowledge of anatomy and physiology, the Sisters are experts at inflicting debilitating injuries and excruciating pain. Add +1 DICE to Injury Rolls for Melee Attacks made by a Sister of Saint Cosmas if the target is Down and does not have the BLACK GRAIL or DEMONIC Keywords."
+          "description": "Due to their knowledge of anatomy and physiology, the Sisters are experts at inflicting debilitating injuries and excruciating pain. Add +1 INJURY DICE to Injury Rolls for Melee Attacks made by a Sister of Saint Cosmas if the target is Down and does not have the BLACK GRAIL or DEMONIC Keywords."
         },
         {
           "id": "3e7f-811a-8510-6602",
@@ -18981,7 +18981,8 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "battlekitNote": "A Sister of Saint Cosmas always has Standard Armour, a Gas Mask, Medi-kit and a Misericordia."
     },
     {
       "id": "05fe-9537-b2ad-0782",
@@ -19524,7 +19525,8 @@ export const DATASET: Dataset = {
           }
         }
       ],
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "allowedAlignment": "Fallen"
     },
     {
       "id": "031a-a689-a059-6278",
@@ -20185,7 +20187,22 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 1,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "warbands-book-battlefield-vivisection",
+          "name": "Battlefield Vivisection",
+          "description": "Whenever a Combat Biologist is part of your Warband, add the Gather Knowledge Glorious Deed to those normally available in each scenario you play.",
+          "grantsDeed": {
+            "name": "Gather Knowledge",
+            "description": "You complete this Glorious Deed if 3 or more enemy models are taken Out of Action while they are within 1” of a friendly Combat Biologist."
+          }
+        },
+        {
+          "id": "warbands-book-prize-specimens",
+          "name": "Prize Specimens",
+          "description": "When a Combat Biologist takes any enemy model with the Keyword DEMONIC or BLACK GRAIL Out of Action with a Melee attack, place 1 BLESSING MARKER beside the Combat Biologist."
+        }
+      ],
       "options": [],
       "battlekit": [
         {
@@ -20235,6 +20252,21 @@ export const DATASET: Dataset = {
             "glory": 0
           },
           "profileId": "71ec-000e-5999-ba1c"
+        },
+        {
+          "id": "ee4b-f5d6-afa4-9e50",
+          "linkId": "warbands-book:02df-b4d5-3ca5-9a2b:vivisector",
+          "name": "Vivisector",
+          "quantity": 1,
+          "keywords": [
+            "BLOCK",
+            "CUMBERSOME"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "6dbf-5d41-0a93-b558"
         }
       ],
       "constraints": [
@@ -20275,6 +20307,7 @@ export const DATASET: Dataset = {
         }
       ],
       "sourceFile": "Mercenaries.cat",
+      "battlekitNote": "A Combat Biologist always has Gas Grenades, Standard Armour, a Gas Mask, and a Vivisector (▶ see Vivisector).",
       "allowedFactions": [
         "New Antioch",
         "Iron Sultanate"
@@ -61433,6 +61466,7 @@ export const DATASET: Dataset = {
           "description": "A New Antioch Warband can include up to 2 Fireteams. Each Fireteam consists of any two models from the Warband. All of the models in the Fireteams are given the FIRETEAM Keyword at no additional cost in 👑 . Fireteams in a New Antioch Warband have the Concentrated Attack ability: * Concentrated Attack: If a model from a Fireteam hits a target that had been hit by an attack made by the other member of their Fireteam earlier in the same joint Activation, then you can spend 3 BLOOD MARKERS to convert the Injury Roll for the second attack to a Bloodbath Roll, even if the target is not Down."
         }
       ],
+      "alignment": "Faithful",
       "noSpecialRules": false
     },
     {
@@ -61443,6 +61477,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "specialRules": [],
+      "alignment": "Faithful",
       "noSpecialRules": true
     },
     {
@@ -61453,6 +61488,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "specialRules": [],
+      "alignment": "Faithful",
       "noSpecialRules": true
     },
     {
@@ -61463,6 +61499,7 @@ export const DATASET: Dataset = {
         "glory": 0
       },
       "specialRules": [],
+      "alignment": "Fallen",
       "noSpecialRules": true
     },
     {
@@ -61482,6 +61519,7 @@ export const DATASET: Dataset = {
           "description": "Fighting against the Cult of the Black Grail is a terrifying prospect. Your opponent must add -1 DICE to all Morale Checks unless their Warband is of either the Court of the Seven-Headed Serpent or the Cult of the Black Grail."
         }
       ],
+      "alignment": "Fallen",
       "noSpecialRules": false
     },
     {
@@ -61497,6 +61535,7 @@ export const DATASET: Dataset = {
           "description": "Goetic Powers can be purchased for a model when it is recruited, or during the Quartermaster Step. However, you must pay 1 [currency unreadable in the extracted source] for each model that you wish to purchase a Goetic Power in the Quartermaster Step, representing the effort needed to learn a new power."
         }
       ],
+      "alignment": "Fallen",
       "noSpecialRules": false
     },
     {
@@ -69752,6 +69791,7 @@ export const DATASET: Dataset = {
       "Trench Pilgrims.cat"
     ],
     "layers": [
+      "warbands-book",
       "dispatch-01",
       "carcass-front"
     ]

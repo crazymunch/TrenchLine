@@ -4622,8 +4622,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "name": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "entryName": {
       "layer": "base",
@@ -4654,28 +4654,34 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "stats.ranged": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.melee": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.armour": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "stats.base": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.ducats": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "cost.glory": {
       "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "source": "battlescribe:Mercenaries.cat@1b463a8",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "min": {
       "layer": "base",
@@ -4686,8 +4692,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "options": {
       "layer": "base",
@@ -4704,6 +4710,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "battlekitNote": {
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     }
   },
   "unit:05fe-9537-b2ad-0782": {
@@ -5113,6 +5123,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "allowedAlignment": {
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     }
   },
   "unit:031a-a689-a059-6278": {
@@ -5769,8 +5783,8 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "abilities": {
-      "layer": "base",
-      "source": "battlescribe:Mercenaries.cat@1b463a8"
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "options": {
       "layer": "base",
@@ -5787,6 +5801,10 @@
     "modifiers": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "battlekitNote": {
+      "layer": "warbands-book",
+      "source": "warbands-book:Warbands of Trench Crusade"
     },
     "allowedFactions": {
       "layer": "dispatch-01",

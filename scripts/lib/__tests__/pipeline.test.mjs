@@ -293,7 +293,7 @@ describe('generated output', () => {
   it.skipIf(!fs.existsSync(file))('records the base commit and layers it was built from', () => {
     const src = fs.readFileSync(file, 'utf8');
     expect(src).toMatch(/"baseCommit": "[0-9a-f]{40}"/);
-    expect(src).toMatch(/"layers": \[\s*"dispatch-01"/);
+    expect(src).toMatch(/"layers": \[\s*"warbands-book",\s*"dispatch-01"/);
   });
 });
 
