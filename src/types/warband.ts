@@ -152,8 +152,33 @@ export interface StashedItem {
   name: string;
   type: 'Weapon' | 'Armour' | 'Equipment';
   cost: number;
+  /**
+   * Which currency that `cost` is in.
+   *
+   * The app prices in two — Ducats and Glory — and this held one number with
+   * no label, so the Quartermaster debited Ducats for everything. A Glory
+   * Item bought from the Arsenal took its price out of the Strongbox's
+   * Ducats and left the Glory untouched: the item was free in the currency
+   * it is actually priced in, and paid for in one it is not.
+   *
+   * Optional, because a stash written before this says nothing — and the
+   * honest reading of an unlabelled cost is the one the app was already
+   * making. `stashCurrency` applies that default in one place rather than
+   * every reader guessing.
+   */
+  currency?: 'ducats' | 'glory';
   quantity: number;
 }
+
+/**
+ * The currency a stashed item is priced in.
+ *
+ * Ducats where the item does not say, which is what an older stash means:
+ * every item in one was bought with Ducats, because that is all the
+ * Quartermaster could spend.
+ */
+export const stashCurrency = (item: Pick<StashedItem, 'currency'>): 'ducats' | 'glory' =>
+  item.currency === 'glory' ? 'glory' : 'ducats';
 
 export type StashItem = StashedItem;
 

@@ -187,6 +187,18 @@ The step that reads it is `rollPromotions` in
 are derived, not written here — see
 [`RULESET-MODEL.md`](RULESET-MODEL.md#campaignpromotions--who-may-be-promoted-and-how-much-experience).
 
+## `StashedItem.currency` — which Strongbox an Arsenal item came out of
+
+The app prices in two currencies and `StashedItem` held one `cost` with no
+label, so the Quartermaster debited Ducats for everything. A Glory Item bought
+from the Arsenal took its price out of the Ducats and left the Glory
+untouched — free in the currency it is priced in, paid for in one it is not.
+
+**Optional, and its absence is not a gap.** Every item in a stash written
+before this was bought with Ducats, because Ducats is all the Quartermaster
+could spend. `stashCurrency` reads the absence as `ducats` in one place, so no
+reader has to guess and no migration has to touch an existing Arsenal.
+
 ## `benched` — the models left out of the Force
 
 The Threshold Value caps the Ducats a Force may field and Field Strength caps
