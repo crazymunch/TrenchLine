@@ -20,7 +20,7 @@ import type { ActiveUnit } from '@/types/warband';
 import {
   traumaProcedure, eliteVerdict, casualtyRoute, survivalOutcome, rollSurvival,
   scarCount, unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries,
-  barsExperience,
+  barsExperience, traumaWriteFor, traumaRowIn,
 } from '../trauma';
 
 const PROC = traumaProcedure(DATASET)!;
@@ -272,5 +272,108 @@ describe('the Experience Point', () => {
   it('withholds it rather than guessing when ELITE cannot be established', () => {
     expect(earnsExperience(unit({ category: 'Mercenary' }), opts))
       .toMatchObject({ earns: false, blocked: 'elite-unknown' });
+  });
+});
+
+/* --------------------------------------------------- what a result records */
+
+describe('what a Trauma result writes onto the model', () => {
+  /*
+    RR-07. Two rules, neither applied.
+
+    Page 101: "Unless stated otherwise, each time an ELITE model is taken Out
+    of Action, they receive a Battle Scar." Nothing in the store wrote
+    `unit.scars` at all, so retirement at the third scar could not be reached
+    by playing.
+
+    And five results end "It does not receive an Injury or a Battle Scar" —
+    every one of them was appended to `unit.injuries` anyway. 41-63 Full
+    Recovery is fifteen of the thirty-six results, so a model that had once
+    recovered fully hit the duplicate-injury reroll prompt on nearly half of
+    all later rolls.
+  */
+  const row = (name: string) => {
+    const r = DATASET.campaign.trauma.find((t) => t.name === name);
+    expect(r, `${name} is not in the shipped Trauma Table`).toBeDefined();
+    return r!;
+  };
+  /* The string the wizard records: `D66: 31 - Leg Wound: <the row's text>`. */
+  const recorded = (name: string) => {
+    const r = row(name);
+    return `D66: ${r.roll} - ${r.name}: ${r.description}`;
+  };
+
+  const ELITE = { elite: true };
+  const TROOP = { elite: false };
+
+  it('finds the row a recorded outcome landed on', () => {
+    expect(traumaRowIn(DATASET, recorded('Leg Wound'))?.roll).toBe('31');
+    expect(traumaRowIn(DATASET, 'a note the player typed')).toBeNull();
+    expect(traumaRowIn(DATASET, null)).toBeNull();
+  });
+
+  it('writes nothing for the five rows that say so', () => {
+    // The rows' own sentence, not a list of roll numbers kept here.
+    for (const name of ['Robbed', 'Full Recovery', 'Hardened', 'Bitter Lessons', 'Prominent Scar']) {
+      const w = traumaWriteFor(DATASET, recorded(name), ELITE);
+      expect(w.injury, name).toBe(false);
+      expect(w.scar, name).toBeNull();
+    }
+  });
+
+  it('is exactly those five in the shipped table', () => {
+    /*
+      Scope, measured rather than asserted from memory. If a Dispatch adds a
+      sixth or rewords one of these, this fails and whoever changed it finds
+      out that the wizard's behaviour moved with it.
+    */
+    const silent = DATASET.campaign.trauma
+      .filter((r) => !traumaWriteFor(DATASET, `D66: ${r.roll} - ${r.name}: ${r.description}`, ELITE).injury)
+      .map((r) => r.name);
+    expect(silent).toEqual(['Robbed', 'Full Recovery', 'Hardened', 'Bitter Lessons', 'Prominent Scar']);
+  });
+
+  it('gives an ELITE model the injury and the Battle Scar', () => {
+    const w = traumaWriteFor(DATASET, recorded('Leg Wound'), ELITE);
+    expect(w.injury).toBe(true);
+    expect(w.scar).toEqual({ name: 'Leg Wound', roll: '31' });
+  });
+
+  it('gives a Troop no Battle Scar', () => {
+    // "each time an ELITE model is taken Out of Action". A Troop that survives
+    // its D6 takes none.
+    const w = traumaWriteFor(DATASET, recorded('Leg Wound'), TROOP);
+    expect(w.injury).toBe(true);
+    expect(w.scar).toBeNull();
+  });
+
+  it('writes nothing for a model already off the roster', () => {
+    // Dead, or a capture nobody ransomed: there is no entry left to mark.
+    const w = traumaWriteFor(DATASET, recorded('Leg Wound'), { elite: true, alreadyRemoved: true });
+    expect(w.injury).toBe(false);
+    expect(w.scar).toBeNull();
+  });
+
+  it('keeps an unrecognised result as an injury, and gives it no scar', () => {
+    /*
+      Rule 2, both ways. The player rolled something and it is their record of
+      it, so it is not dropped — but a scar retires a model at three, and that
+      is not a conclusion to reach from a row this build could not read.
+    */
+    const w = traumaWriteFor(DATASET, 'D66: 99 - Something This Build Cannot Read', ELITE);
+    expect(w.injury).toBe(true);
+    expect(w.scar).toBeNull();
+    expect(w.row).toBeNull();
+  });
+
+  it('stops a Full Recovery triggering the duplicate-injury prompt', () => {
+    /*
+      The end-to-end shape of the defect: record a Full Recovery the way the
+      wizard did, and every later Full Recovery reads as a repeat.
+    */
+    const write = traumaWriteFor(DATASET, recorded('Full Recovery'), ELITE);
+    const injuries = write.injury ? [recorded('Full Recovery')] : [];
+    const model = { injuries, scars: [] } as unknown as ActiveUnit;
+    expect(alreadySuffered(model, 'Full Recovery')).toBe(false);
   });
 });

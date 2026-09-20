@@ -624,7 +624,7 @@ the catalogues because the catalogues are a community transcription of it.
 > predates 1.0.2, whose changelog rewrites only Head Wound and Captured — so
 > these were drift, not errata the app was behind on. All twenty-two rows now
 > come from the rulebook and the catalogue supplies row names and a drift
-> report. See RR-01 in the rules review (`docs/RULES-REVIEW-2026-09-19.md`, opened separately as PR #58).
+> report. See RR-01 in the rules review, opened separately as PR #58.
 
 > **On the Dispatch's status:** the document describes itself as *"an unofficial,
 > fan-made digital rules update… not affiliated with or endorsed by Factory

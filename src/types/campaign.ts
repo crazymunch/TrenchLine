@@ -45,6 +45,22 @@ export interface CasualtyRecord {
    * because the rule says the two of you *can* negotiate one.
    */
   ransomPaid?: number;
+  /**
+   * What the Trauma row's own text says this result writes onto the model.
+   *
+   * Decided in the wizard, which has the dataset and knows whether the model
+   * is ELITE, and applied verbatim by the store — the same split the
+   * Experience awards use.
+   *
+   * Optional because a match recorded before this existed has no such field,
+   * and the store must keep treating those as "write the injury, add no scar",
+   * which is what it did.
+   */
+  records?: {
+    injury: boolean;
+    /** The Battle Scar to add. ELITE only; the book gives Troops none. */
+    scar?: { name: string; roll?: string };
+  };
 }
 
 export interface MatchParticipantSummary {

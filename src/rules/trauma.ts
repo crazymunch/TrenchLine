@@ -25,7 +25,7 @@
  * the book by `scripts/lib/parse-campaign.mjs`. Nothing in this file states a
  * die, a threshold or a scar count of its own.
  */
-import type { Dataset, TraumaProcedure } from '../types/catalogue';
+import type { Dataset, TraumaProcedure, TraumaRow } from '../types/catalogue';
 import type { ActiveUnit } from '../types/warband';
 
 /**
@@ -209,6 +209,97 @@ export const alreadySuffered = (unit: ActiveUnit, injuryName: string): boolean =
   return (unit.injuries ?? []).some(has)
     || (unit.scars ?? []).some((s) => has(s.name ?? ''));
 };
+
+/**
+ * What a Trauma result actually writes onto the model.
+ *
+ * Two rules, and the app was applying neither.
+ *
+ * **The Battle Scar.** Page 101: *"Unless stated otherwise, each time an ELITE
+ * model is taken Out of Action, they receive a Battle Scar."* Nothing in the
+ * store ever wrote `unit.scars`, so `unfitForDuty` — which the wizard already
+ * computes and displays — counted only scars a player had added by hand in the
+ * Advancement modal. Retirement at the third scar could not be reached by
+ * playing the game.
+ *
+ * **The rows that write nothing.** Five results end *"It does not receive an
+ * Injury or a Battle Scar"*: 36 Robbed, 41-63 Full Recovery, 64 Hardened,
+ * 65 Bitter Lessons and 66 Prominent Scar. Every one of them was appended to
+ * `unit.injuries` anyway. Because 41-63 is fifteen of the thirty-six results,
+ * a model that had ever recovered fully then hit the duplicate-injury prompt —
+ * *"This warrior already carries that injury… roll again"* — on nearly half of
+ * all later rolls, and the Codex and the print sheet listed "Full Recovery"
+ * among its injuries.
+ *
+ * The distinction is read out of the row's own text, not from a list of roll
+ * numbers, so a Dispatch that adds or reworded a disclaiming row needs no
+ * change here.
+ */
+export interface TraumaWrite {
+  /** The row the outcome landed on, where one could be identified. */
+  row: TraumaRow | null;
+  /** Append the outcome to `unit.injuries`. */
+  injury: boolean;
+  /** The Battle Scar to add, or `null`. ELITE only — Troops take none. */
+  scar: { name: string; roll?: string } | null;
+}
+
+/**
+ * The rows that opt out.
+ *
+ * Matched on the sentence rather than the roll, because the sentence is the
+ * rule. `an Injury` and `a Battle Scar` are the book's capitalisation; the
+ * match is case-insensitive so a reworded row still reads.
+ */
+const RECORDS_NOTHING = /does\s+not\s+receive\s+an?\s+Injury\s+or\s+a\s+Battle\s+Scar/i;
+
+/** The Trauma row a recorded outcome landed on, found by its text. */
+export const traumaRowIn = (
+  dataset: Dataset | null | undefined,
+  outcome: string | null | undefined,
+): TraumaRow | null => {
+  if (!outcome) return null;
+  /* The wizard records `D66: 31 - Leg Wound: <the row's text>`, so the row's
+     own description appears verbatim. Matching on the name alone would also
+     fire on a narrative note a player typed. */
+  return (dataset?.campaign?.trauma ?? [])
+    .find((r) => r.description && outcome.includes(r.description)) ?? null;
+};
+
+/**
+ * What to write for one casualty.
+ *
+ * `elite` decides the scar and nothing else: the book gives Battle Scars to
+ * ELITE models taken Out of Action, and a Troop that survives its D6 takes
+ * none. `alreadyRemoved` covers Dead and an unransomed Capture — there is no
+ * roster entry left to mark.
+ */
+export function traumaWriteFor(
+  dataset: Dataset | null | undefined,
+  outcome: string | null | undefined,
+  opts: { elite: boolean; alreadyRemoved?: boolean },
+): TraumaWrite {
+  const row = traumaRowIn(dataset, outcome);
+
+  if (opts.alreadyRemoved) return { row, injury: false, scar: null };
+
+  /*
+    A row this build cannot identify writes the injury and no scar. Not
+    nothing: the player rolled something and it is still their record of it,
+    and silently dropping it would be the fallback rule 2 forbids. Not a scar
+    either, because a scar retires a model at three and that is not a decision
+    to make on a row we failed to read.
+  */
+  if (!row) return { row: null, injury: true, scar: null };
+
+  if (RECORDS_NOTHING.test(row.description)) return { row, injury: false, scar: null };
+
+  return {
+    row,
+    injury: true,
+    scar: opts.elite ? { name: row.name, roll: row.roll } : null,
+  };
+}
 
 /* ------------------------------------------------------------- experience */
 

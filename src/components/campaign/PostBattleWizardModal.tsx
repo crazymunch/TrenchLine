@@ -6,12 +6,12 @@ import { useStore } from '../../store/useStore';
 import { useDataset } from '../../rules/useDataset';
 import { useScenarios } from '../../rules/useScenarios';
 import {
-  explorationDice, explorationTables, resolveExploration, campaignGameOf,
+  explorationDice, explorationBandFor, resolveExploration, campaignGameOf,
   reinforcementGlory, reinforcementCost, reinforcementsSequence,
 } from '../../rules/campaign';
 import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
-  unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries,
+  unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries, traumaWriteFor,
 } from '../../rules/trauma';
 import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rules/capture';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
@@ -176,10 +176,12 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
 
   if (!warband) return null;
 
-  // Games already played drives both the dice count and which Location tables
-  // are open, so it is one less than the game being prepared for.
-  const gamesPlayed = Math.max(1, campaignGameOf(warband, campaign) - 1 || 1);
-  const openTables = dataset ? explorationTables(dataset, gamesPlayed) : null;
+  /* Games already played drives both the Exploration dice count and which
+     Location tables are open. The count and the bands are derived together in
+     `explorationBandFor`, which carries why this is not `- 1`. */
+  const band = explorationBandFor(dataset, warband, campaign);
+  const gamesPlayed = band.gamesPlayed;
+  const openTables = band.tables.length ? { tables: band.tables, choose: band.choose } : null;
   // A band change must not leave a table selected that is no longer open.
   const explorationTable: ExplorationTableName =
     openTables?.tables.includes(selectedExplorationTable)
@@ -442,14 +444,32 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     const casualties: CasualtyRecord[] = Object.entries(casualtyOutcomes).map(([unitId, data]) => {
       const u = warband.units.find((item) => item.id === unitId);
       const capture = settled(unitId);
+      const removed = capture ? capture.removed : data.isDead;
+      /*
+        The Trauma row's own text decides what is written: five results say
+        "It does not receive an Injury or a Battle Scar" and were being
+        recorded as injuries anyway, and no result ever added the Battle Scar
+        the book gives an ELITE model taken Out of Action.
+      */
+      const write = traumaWriteFor(dataset, data.outcome, {
+        /* `elite` is nullable — the dataset may not say. Unknown takes no
+           scar: three of them retire a model, and that is not a conclusion to
+           reach from a missing Keyword. */
+        elite: eliteOf(unitId).elite === true,
+        alreadyRemoved: removed || capture?.fullRecovery,
+      });
       return {
         unitId,
         unitName: u?.customName || 'Unknown Warrior',
         /* The row's text, then what the two players did about it. */
         outcome: capture ? `${data.outcome} ${capture.text}` : data.outcome,
-        isDead: capture ? capture.removed : data.isDead,
+        isDead: removed,
         ...(capture?.fullRecovery ? { fullRecovery: true } : {}),
         ...(capture && capture.ransom > 0 ? { ransomPaid: capture.ransom } : {}),
+        records: {
+          injury: write.injury,
+          ...(write.scar ? { scar: write.scar } : {}),
+        },
       };
     });
 

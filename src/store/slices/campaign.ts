@@ -387,6 +387,10 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         const adv = advancements.find((a) => a.unitId === u.id);
 
         const newInjuries = [...u.injuries];
+        /* Battle Scars, which nothing in this slice used to write at all — so
+           `unfitForDuty` counted only what a player had typed in by hand, and
+           retirement at the third scar was unreachable through play. */
+        const newScars = [...(u.scars ?? [])];
         let isDead = u.isDead;
         let currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
           title: t,
@@ -402,7 +406,15 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
             recovered from — and, under the duplicate-injury rule, stop it ever
             being captured again (RC-04).
           */
-          if (!cas.fullRecovery) newInjuries.push(cas.outcome);
+          /*
+            `records` is decided in the wizard from the Trauma row's own text.
+            Absent on a match recorded before that existed, and those keep the
+            old behaviour — write the injury, add no scar — rather than being
+            reinterpreted now against a table that has since changed.
+          */
+          const writesInjury = cas.records ? cas.records.injury : !cas.fullRecovery;
+          if (writesInjury) newInjuries.push(cas.outcome);
+          if (cas.records?.scar) newScars.push(cas.records.scar);
           if (cas.isDead) isDead = true;
 
           const norm = cas.outcome.toLowerCase();
@@ -487,6 +499,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         return {
           ...u,
           injuries: newInjuries,
+          scars: newScars,
           isDead,
           advancements: newAdvancements,
           deeds: newDeeds,

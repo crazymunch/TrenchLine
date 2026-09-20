@@ -465,6 +465,39 @@ export function explorationDice(dataset: Dataset, gamesPlayed: number): number |
   return bandFor(e.dice, Math.max(1, Math.floor(gamesPlayed) || 1)) ?? null;
 }
 
+/**
+ * The Exploration band for the post-battle step, from the campaign itself.
+ *
+ * This arithmetic used to live in `PostBattleWizardModal` as
+ * `campaignGameOf(warband, campaign) - 1`, under a comment saying the count is
+ * "one less than the game being prepared for". That describes the state *after*
+ * commit: `applyPostBattleResults` increments `currentTurn`, so while the
+ * wizard is open `campaignGameOf` already *is* the number of the game just
+ * played — which is the games-played count the book's bands are indexed on.
+ *
+ * Subtracting made every band a game late. After the third game the book gives
+ * four dice and opens the Rare table; the app gave three and Common only, at
+ * ten Ducats per pip. The same screen's `nextGame` did not subtract, so the two
+ * numbers disagreed about which game it was.
+ *
+ * It lives here rather than in the component so that the relationship between
+ * a stored campaign and the band it produces is something a test can hold.
+ */
+export function explorationBandFor(
+  dataset: Dataset | null | undefined,
+  warband: { campaignId?: string },
+  campaign?: { id?: string; currentGame?: number; currentTurn?: number },
+): { gamesPlayed: number; dice: number | null; tables: ExplorationTableName[]; choose: boolean } {
+  const gamesPlayed = campaignGameOf(warband, campaign);
+  const open = dataset ? explorationTables(dataset, gamesPlayed) : null;
+  return {
+    gamesPlayed,
+    dice: dataset ? explorationDice(dataset, gamesPlayed) : null,
+    tables: open?.tables ?? [],
+    choose: open?.choose ?? false,
+  };
+}
+
 /** Which Location tables this warband may consult, and whether it is a choice. */
 export function explorationTables(
   dataset: Dataset,
