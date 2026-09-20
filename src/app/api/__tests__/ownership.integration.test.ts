@@ -243,9 +243,26 @@ describeDb('ownership, against a migrated database', () => {
     */
     it('refuses a territory claim from every direction it should', async () => {
       const campaign = await create(alice);
-      const territory = (await prisma.territoryNode.findFirst({
-        where: { campaignId: campaign.id },
-      }))!;
+      /*
+        The territory is made here, not read back from the campaign.
+
+        It used to be `findFirst` on the new campaign, which worked only
+        because the `create` action gave every campaign four fixed territories
+        of its own — scaffolding removed in FD-14 AI-2, because whichever
+        framework a campaign turns out to be played under, those four were not
+        its map. A campaign now starts with none, so a test that needs one
+        creates one; what is under test here is the claim's four refusals, not
+        where the row came from.
+      */
+      const territory = await prisma.territoryNode.create({
+        data: {
+          campaignId: campaign.id,
+          name: 'North Trench Sector A-1',
+          type: 'Trench Line',
+          perk: '',
+          description: 'A territory this test made, so it has one to claim.',
+        },
+      });
 
       as(null);
       expect((await post(campaignsPOST,
