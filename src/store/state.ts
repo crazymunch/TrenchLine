@@ -474,6 +474,30 @@ export interface AppState {
    */
   setCampaignHouseRule: <K extends keyof CampaignHouseRules>(
     rule: K, value: CampaignHouseRules[K]) => boolean;
+  /**
+   * Move the campaign on to its next game. The organiser's, and nobody else's.
+   *
+   * **The only writer of the game number** (FD-09a / RR-17). It had two —
+   * `applyPostBattleResults` and `logCampaignMatch`, each adding one — and the
+   * number is campaign-wide: `docs/CAMPAIGN-SYNC.md`'s authority table gives
+   * it to the organiser, and every Threshold and Exploration band reads it
+   * through `campaignGameOf`. So a member finishing their own post-battle
+   * moved everyone's game on; two members committing game 1 left it reading 3;
+   * and because neither queued a `campaign.settings` op, the value never
+   * reached the cloud and the next adoption overwrote it.
+   *
+   * Returns false where there is no campaign to write to, the same shape as
+   * `setCampaignHouseRule`.
+   */
+  advanceCampaignGame: () => boolean;
+  /**
+   * Whether every member has committed a post-battle for the current game.
+   *
+   * What `autoAdvance` asks before moving the campaign on by itself. Read
+   * from each member's warband snapshots rather than a counter, so a member
+   * who commits twice does not count twice.
+   */
+  everyMemberPlayedThisGame: () => boolean;
   logCampaignMatch: (
     p1WarbandId: string,
     p2WarbandId: string,

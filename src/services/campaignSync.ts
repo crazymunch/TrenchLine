@@ -24,7 +24,8 @@ export type CampaignOp =
       data: {
         name?: string;
         currentTurn?: number;
-        currentGame?: number;
+        /* No `currentGame`: the Campaign table has no such column, so the
+           endpoint no longer accepts one — see `/api/campaigns/sync`. */
         maxWarbandDucats?: number;
         gloryVictoryThreshold?: number;
         framework?: 'classic' | 'carcass-front';

@@ -218,6 +218,20 @@ export interface WarbandSnapshot {
   label: string; // e.g. "Founding Muster", "Post-Battle 1: Victory vs Sorcerer Zortan"
   type: 'founding' | 'post_battle' | 'recruitment' | 'equipment' | 'manual';
   matchId?: string;
+  /**
+   * The campaign game this post-battle belongs to.
+   *
+   * Written from `campaignGameOf` at commit, so "has this member played game
+   * N" is answerable — which is what decides whether the campaign may move on
+   * (FD-09a / RR-17). Counting snapshots would not do it: a member who joined
+   * late has fewer, and one who commits twice would have more.
+   *
+   * Absent on every snapshot written before this, and read STRICTLY because
+   * of it: an old snapshot is not evidence for the current game, so an
+   * existing campaign waits for a fresh post-battle rather than advancing the
+   * moment this ships.
+   */
+  campaignGame?: number;
   scenarioName?: string;
   outcome?: 'Victory' | 'Defeat' | 'Draw';
   ducatCost: number;
