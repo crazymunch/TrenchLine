@@ -45,16 +45,35 @@ const COLLECTIONS = {
   variant: 'variants',
 };
 
+/**
+ * Resolve an op's target, or say why it cannot be.
+ *
+ * Returns `{ entity }` on a hit, `{ ambiguous: [ids] }` where a NAME matches
+ * more than one entity, and `{}` where nothing matches.
+ *
+ * The ambiguity case is the interesting one. Two units are named "Combat
+ * Medic" — New Antioch's Troop and the Mercenaries entry that is really the
+ * Sister of Saint Cosmas — and the New Antioch one comes first. Taking the
+ * first match meant an op written for the Sister edited the Troop instead and
+ * reported success, which is the worst shape a rules bug can have: the wrong
+ * model changed, and the build said it was fine.
+ *
+ * An id is unambiguous by construction, so it is tried first and a name is
+ * only consulted when no id matches.
+ */
 function findTarget(dataset, ref) {
   const coll = dataset[COLLECTIONS[ref.kind]];
-  if (!coll) return null;
+  if (!coll) return {};
+
+  const byId = coll.find((e) => e.id === ref.id);
+  if (byId) return { entity: byId };
+
   // Layers transcribed from a PDF address entries by name, since the source
   // has no ids. Catalogue-derived ops address them by id. Accept both.
-  return (
-    coll.find((e) => e.id === ref.id) ??
-    coll.find((e) => e.name?.toLowerCase() === String(ref.id).toLowerCase()) ??
-    null
-  );
+  const want = String(ref.id).toLowerCase();
+  const byName = coll.filter((e) => e.name?.toLowerCase() === want);
+  if (byName.length > 1) return { ambiguous: byName.map((e) => e.id) };
+  return byName.length === 1 ? { entity: byName[0] } : {};
 }
 
 /**
@@ -121,7 +140,33 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
   const stamp = (ref, field, found) =>
     provenance.stamp(ref.kind, found?.id ?? ref.id, field, { layer: layer.id, source });
 
-  for (const op of layer.ops) {
+  /*
+    An op whose target names an ITEM that exists as several entities.
+
+    The Dispatch says "Add the FUMBLE Keyword to: … Incendiary Grenades …
+    Molotov Cocktail …". Each of those is one item on the page and two
+    entries in the dataset — the Iron Sultanate's copy and the shared Ranged
+    Weapons one — so the op means both, and taking the first match gave
+    FUMBLE to the Sultanate's copy and left the shared one, which every other
+    faction draws from, without it. Shipped, and silent, because the op
+    reported success.
+
+    `"all": true` on the target says so out loud. Expanded here into one
+    id-addressed op per match, so the applier below still handles exactly one
+    entity and nothing in it had to learn about this. An `all` that matches
+    ONE entity is fine — the item simply is not duplicated — and one that
+    matches none falls through to the usual "target not found".
+  */
+  const ops = layer.ops.flatMap((op) => {
+    if (!op.target?.all) return [op];
+    const coll = dataset[COLLECTIONS[op.target.kind]] ?? [];
+    const want = String(op.target.id).toLowerCase();
+    const hits = coll.filter((e) => e.name?.toLowerCase() === want);
+    if (!hits.length) return [op];
+    return hits.map((e) => ({ ...op, target: { ...op.target, id: e.id, all: undefined } }));
+  });
+
+  for (const op of ops) {
     if (op.op === 'add') {
       const coll = dataset[op.collection];
       if (!coll) { unresolved.push({ op, why: `no collection ${op.collection}` }); continue; }
@@ -203,7 +248,31 @@ export function applyLayer(dataset, layer, provenance, notes = [], deferred = []
       continue;
     }
 
-    const target = findTarget(dataset, op.target);
+    const found = findTarget(dataset, op.target);
+    /*
+      A weapon `setCost` does its own name-wide resolution and is exempt.
+
+      It loops every weapon whose NAME matches and whose faction the op's
+      `factions` list names, precisely because an item is priced per Armoury
+      Table and several copies of it exist — and it is already unresolved
+      without that list. So the multiplicity the guard is complaining about is
+      the thing that op is built to handle, and the first match it takes here
+      is not what it edits.
+    */
+    const selfResolving = op.op === 'setCost' && op.target?.kind === 'weapon';
+    if (found.ambiguous && !selfResolving) {
+      unresolved.push({
+        op,
+        why: `'${op.target?.id}' names ${found.ambiguous.length} ${op.target?.kind}s `
+           + `(${found.ambiguous.join(', ')}) — address it by id`,
+      });
+      continue;
+    }
+    const target = found.entity
+      ?? (selfResolving && found.ambiguous
+        ? (dataset[COLLECTIONS[op.target.kind]] ?? []).find((e) => e.id === found.ambiguous[0])
+        : null)
+      ?? null;
     if (!target) { unresolved.push({ op, why: `target not found: ${op.target?.kind}/${op.target?.id}` }); continue; }
 
     switch (op.op) {

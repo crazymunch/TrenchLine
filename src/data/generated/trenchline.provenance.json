@@ -43858,8 +43858,8 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",
@@ -43917,8 +43917,8 @@
       "source": "battlescribe:Ranged Weapons.cat@1b463a8"
     },
     "keywords": {
-      "layer": "base",
-      "source": "battlescribe:Ranged Weapons.cat@1b463a8"
+      "layer": "dispatch-01",
+      "source": "dispatch-01:data-sources/dispatch/trench-dispatch-01-april-2026.txt"
     },
     "rules": {
       "layer": "base",

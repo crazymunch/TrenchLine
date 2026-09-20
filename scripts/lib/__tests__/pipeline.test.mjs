@@ -83,6 +83,46 @@ describe('layer engine', () => {
     expect(ds.units[0].cost.glory).toBe(4);
   });
 
+  /*
+    Two entities sharing a name is the failure mode with the worst shape: the
+    op edits the wrong one and the build reports success.
+  */
+  it('refuses a name that matches two entities, and names their ids', () => {
+    const ds = emptyDataset([unit(), unit({ id: 'u2', cost: { ducats: 20, glory: 0 } })]);
+    const p = createProvenance();
+    const unresolved = applyLayer(
+      ds, layer([{ op: 'setCost', target: { kind: 'unit', id: 'Test Unit' }, currency: 'ducats', value: 99 }]), p,
+    );
+    expect(unresolved).toHaveLength(1);
+    expect(unresolved[0].why).toContain('u1');
+    expect(unresolved[0].why).toContain('u2');
+    // And neither was touched: an ambiguous op edits nothing at all.
+    expect(ds.units.map((u) => u.cost.ducats)).toEqual([10, 20]);
+  });
+
+  /*
+    `all` is how an op says it means the ITEM, not one copy of it. The
+    Dispatch's "Add the FUMBLE Keyword to: … Incendiary Grenades" names one
+    thing on the page that the dataset holds twice.
+  */
+  it('applies an `all` target to every entity of that name', () => {
+    const ds = emptyDataset([unit(), unit({ id: 'u2' })]);
+    const p = createProvenance();
+    applyLayer(ds, layer([
+      { op: 'addKeyword', target: { kind: 'unit', id: 'Test Unit', all: true }, keyword: 'FUMBLE' },
+    ]), p);
+    expect(ds.units.every((u) => u.keywords.includes('FUMBLE'))).toBe(true);
+  });
+
+  it('leaves an `all` that matches one entity working exactly as before', () => {
+    const ds = emptyDataset(); const p = createProvenance();
+    const unresolved = applyLayer(ds, layer([
+      { op: 'addKeyword', target: { kind: 'unit', id: 'Test Unit', all: true }, keyword: 'FUMBLE' },
+    ]), p);
+    expect(unresolved).toHaveLength(0);
+    expect(ds.units[0].keywords).toContain('FUMBLE');
+  });
+
   it('writes nested fields by dotted path', () => {
     const ds = emptyDataset(); const p = createProvenance();
     applyLayer(ds, layer([{ op: 'set', target: { kind: 'unit', id: 'u1' }, field: 'stats.melee', value: '+2 DICE' }]), p);
