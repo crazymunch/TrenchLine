@@ -347,7 +347,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       });
     },
 
-    equipWeapon: (warbandId, unitId, weaponId) => {
+    equipWeapon: (warbandId, unitId, weaponId, settled) => {
       const state = get();
       const weapon = state.weapons.find((w) => w.id === weaponId);
       if (!weapon) return;
@@ -373,7 +373,12 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             })
           };
           /* Battlekit is paid for out of the Strongbox (FD-05e-2). It was
-             added to the model's cost and charged to nobody. */
+             added to the model's cost and charged to nobody.
+
+             Unless the Arsenal already paid: `assignStashToUnit` moves an
+             item the Warband owns onto a model, and charging there took the
+             price a second time (FD-05e-3). */
+          if (settled) return updatedWb;
           return charge(updatedWb, equipped.cost, equipped.instanceId,
             `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
@@ -427,7 +432,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       });
     },
 
-    equipArmour: (warbandId, unitId, armourId) => {
+    equipArmour: (warbandId, unitId, armourId, settled) => {
       const state = get();
       const arm = state.armour.find((a) => a.id === armourId);
       if (!arm) return;
@@ -452,7 +457,12 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             })
           };
           /* Battlekit is paid for out of the Strongbox (FD-05e-2). It was
-             added to the model's cost and charged to nobody. */
+             added to the model's cost and charged to nobody.
+
+             Unless the Arsenal already paid: `assignStashToUnit` moves an
+             item the Warband owns onto a model, and charging there took the
+             price a second time (FD-05e-3). */
+          if (settled) return updatedWb;
           return charge(updatedWb, equipped.cost, equipped.instanceId,
             `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });
@@ -506,7 +516,7 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
       });
     },
 
-    equipEquipment: (warbandId, unitId, equipmentId) => {
+    equipEquipment: (warbandId, unitId, equipmentId, settled) => {
       const state = get();
       const item = state.equipment.find((e) => e.id === equipmentId);
       if (!item) return;
@@ -531,7 +541,12 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             })
           };
           /* Battlekit is paid for out of the Strongbox (FD-05e-2). It was
-             added to the model's cost and charged to nobody. */
+             added to the model's cost and charged to nobody.
+
+             Unless the Arsenal already paid: `assignStashToUnit` moves an
+             item the Warband owns onto a model, and charging there took the
+             price a second time (FD-05e-3). */
+          if (settled) return updatedWb;
           return charge(updatedWb, equipped.cost, equipped.instanceId,
             `Bought ${equipped.name}.`, campaignGameOf(w, s.campaign));
         });

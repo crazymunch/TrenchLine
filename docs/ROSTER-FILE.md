@@ -207,17 +207,30 @@ The step that reads it is `rollPromotions` in
 are derived, not written here — see
 [`RULESET-MODEL.md`](RULESET-MODEL.md#campaignpromotions--who-may-be-promoted-and-how-much-experience).
 
-## `StashedItem.currency` — which Strongbox an Arsenal item came out of
+## `StashedItem.price` — what an Arsenal item cost, in both currencies
 
 The app prices in two currencies and `StashedItem` held one `cost` with no
 label, so the Quartermaster debited Ducats for everything. A Glory Item bought
 from the Arsenal took its price out of the Ducats and left the Glory
 untouched — free in the currency it is priced in, paid for in one it is not.
 
-**Optional, and its absence is not a gap.** Every item in a stash written
-before this was bought with Ducats, because Ducats is all the Quartermaster
-could spend. `stashCurrency` reads the absence as `ducats` in one place, so no
-reader has to guess and no migration has to touch an existing Arsenal.
+`currency` was the first answer to that, and it is one discriminator where an
+Armoury Table row is two numbers: a row can price an item in Ducats and Glory
+together, and one label cannot say so. `price` is the row's own `Cost`, carried
+whole. `cost` stays the **Ducat** number, which is what every reader has always
+meant by it.
+
+**All three readings are written down, and none of them is a guess.**
+`stashPrice` is the one place that resolves them:
+
+| What the entry carries | What it means |
+| --- | --- |
+| `price` | The price, both currencies. Authoritative. |
+| `cost` + `currency: 'glory'` | Zero Ducats and `cost` Glory. |
+| `cost` alone | `cost` Ducats — every item in a stash written before `currency` existed was bought with Ducats, because Ducats is all the Quartermaster could spend. |
+
+So no migration has to touch an existing Arsenal, and an item bought before
+`price` existed still sells back into the Strongbox it came out of.
 
 ## `benched` — the models left out of the Force
 
