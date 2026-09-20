@@ -145,6 +145,8 @@ holds `docPaths.test.mjs`, so vitest picks it up):
 - No entry from either parser has a keyword or rule string matching
   `/\b[A-Z]{2}$/` that is not a Keywords-chapter name.
 - The count of `unreadable` entries does not rise.
+- The keyword-only wrapped rows are the Titan Zulfiqar and the Corruption
+  Belcher; the Ophidian Rifle carries a rule as well (PR #64).
 
 ### Acceptance
 
@@ -295,7 +297,9 @@ The wizard's Promotions step offers `'+1 Melee', '+1 Ranged', '+1 Armour',
 '+1" Move', 'Eagle Eye (Skill)', 'Mighty Blow (Skill)', 'Diehard (Skill)',
 'Shadow Walker (Skill)'` (`PostBattleWizardModal.tsx`, the `unitAdvancements`
 map) and the store appends the string to `unit.advancements`. The game has no
-characteristic advances and three of those Skills do not exist. `UnitAdvancementModal.tsx`
+characteristic advances and three of those Skills do not exist. Those three are Eagle Eye, Mighty Blow and
+Diehard; Shadow Walker is a real Stealth Skill, offered here as a free pick
+rather than rolled for (confirmed in PR #62). `UnitAdvancementModal.tsx`
 line 385 says "5 XP unlocks an official Compendium Skill roll" and
 `CodexView.tsx` lines 801 to 811 roll uniformly over a 2D6 table.
 
@@ -510,6 +514,24 @@ The book, page 104 to 106 and 111:
 The dataset carries LIMITED POTENTIAL as a keyword on six units; the book's
 list has seven. The Brazen Bull is the difference, and its entry was replaced
 by `dispatch-01`, so the Dispatch's own keyword row decides, not this page.
+
+**Corrected by PR #63, with evidence.** The catalogue gives all seven of the
+book's models LIMITED POTENTIAL and `dispatch-01` removes the Bull's, so this
+is precedence working: `experienceCap` reads the keyword, the table ships as
+provenance, and the build prints the one disagreement. A faction heading with
+nothing under it is not a failure: two factions print a bare `-` in each
+table, and that is the book saying none. The failures worth catching are a
+heading that resolves to no faction, a model name that resolves to no unit,
+and a number whose sentence stopped matching; page 111 breaks its number onto
+the next line, so the numbers are read from the joined text. Faction headings
+are spelled three ways across the book, the faction list and the unit label,
+so the match is a two-way subset on stemmed words. Three of the four names
+the dataset appeared not to have were the catalogue's entry name against its
+profile name (`Anchorite Shrine` / `Anchorite`), so units now carry
+`entryName`; the one real rename, the book's `Fly Thralls` for the catalogue's
+`Winged Thrall`, is a cited equivalence in
+`data-sources/rulebook/promotion-model-names.json` that fails the build in
+both directions.
 
 ### The change
 
