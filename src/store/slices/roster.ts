@@ -164,27 +164,39 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         variantId: founding?.variantId,
         allowThirdParty: founding?.allowThirdParty ?? false,
         /*
-          The ledger opens on what the Strongbox actually holds.
+          The ledger opens empty and the founding booking below fills it.
 
-          It used to open on the founding ALLOWANCE — `ducats: ducatLimit` —
-          while `treasuryDucats: 0` was written eight lines below, on the same
-          object, by this same function. Nothing debited the entry when a
-          model was recruited, so the two disagreed by the whole allowance
-          from the moment of founding and never converged. Nothing read the
-          ledger, so nobody saw it.
+          FD-05d made the ledger the Strongbox's authority but deliberately
+          booked NO Ducats at founding, because the allowance was not
+          Strongbox money in this app: the builder measured recruitment
+          against `ducatLimit` on its own and unspent Ducats went nowhere.
+          That note pointed here, and this is FD-05e.
 
-          The allowance is not Strongbox money in this app yet: the builder
-          measures recruitment against `ducatLimit` on its own, and unspent
-          Ducats go nowhere. The book says they should —
+          The allowance and the Strongbox are one pot, and the book says so
+          in the sentence that introduces the Strongbox at all:
 
-            "Any unspent 👑 are put into your Warband's Strongbox (to
-             represent your in-game treasury)"  — Warbands, p.10
+            "As you make your choices, subtract the cost of each choice from
+             your starting amount of 👑. You can continue spending until you
+             have bought everything you can, or decide to stop. Any unspent
+             👑 are put into your Warband's Strongbox (to represent your
+             in-game treasury) and the 👑 can be used later or hoarded to buy
+             something more expensive."
+                        — Warbands of Trench Crusade, p.10 (extract line 441)
 
-          — and routing them there is FD-05e, which changes what a Warband
-          holds. This change does not: it makes the record agree with the
-          balance that is already there. So the allowance is named in the
-          note, where it is a fact about the muster, rather than credited as
-          Ducats the Warband does not have.
+          So there is one account, opened with the allowance and drawn down
+          by each choice; what is left at the end of the muster is simply
+          what is left. A Warband founded on 700 that spends 620 holds 80,
+          where it used to hold 0.
+
+          And the Quartermaster Step spends from that same pot, which is why
+          a recruit debits it (`addUnitToWarband`):
+
+            "You can recruit models to your Warband in the Quartermaster Step
+             in the same way as you did when you first created it."
+                        — Trench Crusade Digital Rulebook (extract line 7219)
+            "If you have any 👑 in your Strongbox, you can spend them to
+             purchase new Battlekit from your Warband's Armoury Tables"
+                        — the same page (extract line 7228)
         */
         ledger: [],
         ducatLimit,
@@ -209,13 +221,24 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         rather than restating them, and so a Warband is reconciled from birth
         — `openLedger` at the roster doors then finds nothing to do for it.
       */
+      /*
+        Campaign force only.
+
+        `forceMode: 'unrestricted'` is for one-off games, where the player
+        sets the Ducats and Glory themselves and `ducatLimit` is a list cap
+        they chose rather than a treasury the campaign issued. Crediting it
+        would put a number in the Strongbox that means nothing and that the
+        player is also setting by hand. The same split already exists as
+        `isCampaignForce` in the builder and `campaignForce` in
+        `src/rules/campaign.ts`.
+      */
       const founded = book(newWarband, {
         reason: 'founding',
-        ducats: 0,
+        ducats: forceMode === 'campaign' ? ducatLimit : 0,
         glory: startingGlory,
         game: 1,
         note: forceMode === 'campaign'
-          ? `Founded on an allowance of ${ducatLimit} Ducats, spent at the muster.`
+          ? `Founded on an allowance of ${ducatLimit} Ducats.`
           : 'Founded.',
       }, now);
 

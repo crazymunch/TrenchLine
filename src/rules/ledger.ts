@@ -232,3 +232,149 @@ export function openLedger<W extends Moneyed>(warband: W, at?: string): W {
 
   return { ...warband, ledger: [entry], treasuryDucats: ducats, gloryPoints: glory };
 }
+
+/**
+ * The parts of a Warband the founding-pot migration reads.
+ *
+ * Wider than `Moneyed` because the decision needs the roster, the snapshots
+ * and the allowance, not just the money.
+ */
+export type Mustered = Moneyed & Pick<Warband,
+  'ducatLimit' | 'forceMode' | 'units' | 'snapshots' | 'chronicleLog'>;
+
+/** A post-battle reason: proof the Warband has played, whatever its snapshots say. */
+const PLAYED_REASONS: readonly LedgerReason[] = ['exploration', 'ransom', 'reinforcements'];
+
+/**
+ * Give a never-played campaign Warband the founding pot it was always shown.
+ *
+ * FD-05e makes the allowance and the Strongbox one account. A Warband founded
+ * before that change has the allowance nowhere: the builder measured its
+ * roster against `ducatLimit` and nothing was ever debited, so its Strongbox
+ * opened at 0 while the builder printed a "remaining" figure that existed only
+ * as an expression on screen. This books that figure.
+ *
+ * **Only for a Warband that has never played**, and the burden of proof is on
+ * "never". Credit given wrongly is money a player did not earn, so anything
+ * this cannot read as certainly-not-a-battle counts as a battle.
+ *
+ * So this migrates only a Warband that is positively a FRESH MUSTER: one
+ * whose record carries no trace of a campaign at all. Anything else is left
+ * alone and corrected by the player through the Strongbox setter, which books
+ * a visible `admin-adjust`.
+ *
+ * Every one of these is evidence of a campaign, and any one of them is enough:
+ *
+ * - a ledger entry with a post-battle reason;
+ * - a snapshot of type `post_battle`, or carrying a `matchId` or an
+ *   `outcome`, or whose `type` is ABSENT. `WarbandSnapshot.type` is newer than
+ *   the snapshots themselves, so an untyped one cannot be classified and is
+ *   read as a battle rather than guessed past;
+ * - a non-empty `chronicleLog`;
+ * - Glory. The book earns it in battle — "☼ are earned by performing valorous
+ *   deeds in battle" (Warbands, p.10) — so a balance means games played. The
+ *   Papal States muster on 11 is the one exception and is simply not
+ *   migrated, which costs it nothing it had;
+ * - Ducats already in the Strongbox. Nothing credited a pre-FD-05e Warband
+ *   but earnings and a hand-set balance, and neither is a fresh muster.
+ *
+ * **This is stricter than the ruling that commissioned it**, which said to
+ * credit the allowance on top of whatever the Strongbox already held. A real
+ * committed roster says otherwise:
+ * `data-sources/fixtures/trenchline-roster/v0-ninefold-penance.json` is a v0
+ * export with `ducatLimit: 1000`, three models costing 140, and **no
+ * snapshots and no ledger at all** — so every structural test reads it as
+ * never-played. It holds 85 Ducats and 2 Glory. A Warband that had never
+ * played would hold 860 unspent, not 85, and would have no Glory; that roster
+ * has been through a campaign whose record this format never kept. Under the
+ * looser rule it would be handed roughly 860 Ducats it did not earn.
+ *
+ * Money credited wrongly is worse than money a player has to re-enter once,
+ * so the doubt resolves against crediting.
+ *
+ * A Warband that HAS played keeps its balance and is given nothing — the rule
+ * FD-05e states as "its opened balance stands, and the cost of its roster is
+ * not re-charged". The reason is that the data cannot separate the founding
+ * roster from hires made since (which never debited) or from the dead (whose
+ * cost was spent and whose models are gone), so any computed credit would be a
+ * guess, and this app does not guess money. Such a player corrects it once
+ * through the Strongbox setter, which books a visible `admin-adjust`.
+ *
+ * Two entries, not one net figure, because the pair is the story: the
+ * allowance arrived and the roster was bought. Anything the Strongbox already
+ * held stays as its own entries, so nothing typed is lost.
+ *
+ * An over-budget draft goes negative by exactly its overspend. That is correct
+ * and not a failure: the builder already prints it as over budget, and a hire
+ * is refused while the balance cannot pay for it, which forces the trim first.
+ *
+ * **Idempotent**, because sync replays and this sits at the roster doors. The
+ * marker is a `founding` entry carrying Ducats: a Warband founded after this
+ * change has one from birth, and a #75-era `founding` row booking 0 Ducats is
+ * not it.
+ *
+ * ## Why `before` is a separate argument
+ *
+ * This runs AFTER `openLedger` at the doors, so that the account exists and
+ * carries whatever was typed into it before the founding pair is appended.
+ * But `openLedger` **replaces** the ledger with a single `reconciliation`
+ * entry — that is its whole shape — which destroys the `exploration`,
+ * `ransom` and `reinforcements` rows that prove a Warband has played. Reading
+ * the opened record would therefore declare a played Warband never-played
+ * whenever its snapshots did not also say so, and credit it an allowance it
+ * spent years ago.
+ *
+ * So the played question is asked of the record as it arrived, and the money
+ * is booked on the opened one. Running the migration first instead is not an
+ * option: `book` re-derives the totals from the ledger, so booking onto a
+ * ledger that does not yet agree with the stored balance would discard that
+ * balance.
+ */
+export function migrateFoundingPot<W extends Mustered>(
+  warband: W,
+  before: Mustered = warband,
+  at?: string,
+): W {
+  /* Campaign force only: an unrestricted list holds no money to migrate. */
+  if (warband.forceMode === 'unrestricted') return warband;
+
+  const ledger = warband.ledger ?? [];
+  if (ledger.some((e) => e.reason === 'founding' && (e.ducats ?? 0) > 0)) return warband;
+
+  /* Asked of the record as it ARRIVED — see "Why `before` is a separate
+     argument" above — and answered conservatively. */
+  const arrived = before.ledger ?? [];
+  const snapshots = before.snapshots ?? [];
+  const campaigned = arrived.some((e) => PLAYED_REASONS.includes(e.reason))
+    || ledger.some((e) => PLAYED_REASONS.includes(e.reason))
+    || snapshots.some((snap) => snap.type === 'post_battle'
+      || !!snap.matchId
+      || !!snap.outcome
+      /* Untyped: unclassifiable, so not provably a fresh muster. */
+      || snap.type === undefined)
+    || (before.chronicleLog?.length ?? 0) > 0
+    || (before.gloryPoints ?? 0) > 0
+    || (before.treasuryDucats ?? 0) > 0;
+  if (campaigned) return warband;
+
+  const allowance = warband.ducatLimit ?? 0;
+  if (allowance <= 0) return warband;
+
+  const units = warband.units ?? [];
+  const rosterCost = units.reduce((sum, u) => sum + (u.totalCost ?? 0), 0);
+  const when = at ?? new Date().toISOString();
+
+  const credited = book(warband, {
+    reason: 'founding',
+    ducats: allowance,
+    game: 1,
+    note: 'Founding allowance, credited at migration.',
+  }, when);
+
+  return book(credited, {
+    reason: 'quartermaster',
+    ducats: -rosterCost,
+    game: 1,
+    note: `Roster at migration: ${units.length} model${units.length === 1 ? '' : 's'}, ${rosterCost} Ducats.`,
+  }, when);
+}

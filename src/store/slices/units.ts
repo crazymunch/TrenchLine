@@ -8,6 +8,7 @@ import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import type { ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } from '../../types/warband';
 import { persistWarbands } from '../persist';
+import { book } from '../../rules/ledger';
 
 export type UnitsSlice = Pick<AppState, 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
 
@@ -85,7 +86,34 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             units: [...w.units, newUnit],
             updatedAt: new Date().toISOString()
           };
-          return updatedWb;
+          /*
+            The recruit is paid for out of the Strongbox (FD-05e).
+
+            It never was. The allowance and the Strongbox were two pots: the
+            builder measured the roster against `ducatLimit` and nothing was
+            ever debited, so a Warband's treasury was untouched by a muster
+            that spent every Ducat of it. One pot now — founding credits the
+            allowance, and each choice subtracts its cost, which is the
+            book's own sequence:
+
+              "subtract the cost of each choice from your starting amount of
+               👑 … Any unspent 👑 are put into your Warband's Strongbox"
+                          — Warbands of Trench Crusade, p.10
+
+            The Quartermaster Step hires "in the same way as you did when you
+            first created it" (Digital Rulebook, extract line 7219), so the
+            same debit serves both and carries the same reason.
+
+            Campaign force only, for the reason `createWarband` gives: an
+            unrestricted Warband's Ducats are the player's to set, and
+            debiting a pot they never opened would drive it negative.
+          */
+          if (w.forceMode === 'unrestricted') return updatedWb;
+          return book(updatedWb, {
+            reason: 'quartermaster',
+            ducats: -newUnit.totalCost,
+            note: `Recruited ${newUnit.customName}.`,
+          }, updatedWb.updatedAt);
         });
         updated = persistWarbands(updated, s.warbands);
         return { warbands: updated };
