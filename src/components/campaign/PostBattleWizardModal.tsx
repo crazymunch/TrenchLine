@@ -55,7 +55,7 @@ interface PostBattleWizardModalProps {
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ handover, onClose }) => {
   const {
     getActiveWarband, applyPostBattleResults, campaign, setCampaignHouseRule,
-    claimEarnedRecruitment, opponents, factions,
+    claimEarnedRecruitment, opponents, factions, warbands,
   } = useStore();
 
   const warband = getActiveWarband();
@@ -547,6 +547,34 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
    * each, and pick one of the two Skills. Where the circles are is derived —
    * see `parseExperienceTrack`.
    * ---------------------------------------------------------------- */
+
+  /**
+   * Every model the player could name as the game's standout, grouped by
+   * roster.
+   *
+   * It offered the active Warband's models and nothing else, which is the
+   * wrong shape for the thing it records: the model that decided a game is
+   * frequently on the other side of the table, and a note that cannot say so
+   * is a note about half the game.
+   *
+   * So every Warband on this device is offered, the active one first, and the
+   * field stays free text for a model on a roster this device does not hold —
+   * an opponent in a hosted match, or a placeholder, which has no roster at
+   * all. That is why it is an `input` with a `datalist` rather than a
+   * `select`: pick a name or type one, in one control.
+   */
+  const standoutOptions = [
+    ...(warband ? [warband] : []),
+    ...warbands.filter((w) => w.id !== warband?.id),
+  ]
+    .filter((w) => (w.units ?? []).length > 0)
+    .map((w) => ({
+      warbandName: w.name,
+      units: (w.units ?? []).map((u) => ({
+        name: u.customName,
+        profile: u.profileSnapshot?.name ?? '',
+      })),
+    }));
 
   /** The Patron's own list, for a roll of 2. Empty if the Patron is unknown. */
   const patronSkills = patronSkillsFor(dataset, warband.patron);
@@ -1847,19 +1875,40 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                         beside the real Glorious Deeds. The game has no MVP and
                         no Heroic Deed, so this is a battle-report note and is
                         now labelled as one (RR-24). */}
-                    <label className="text-xs sm:text-[10px] uppercase text-theme-muted block">Standout model (battle report only):</label>
-                    <select
+                    <label
+                      htmlFor="standout-model"
+                      className="text-xs sm:text-[10px] uppercase text-theme-muted block"
+                    >
+                      Standout model of the game (battle report only):
+                    </label>
+                    {/*
+                      Any roster, not just this one. The model that decided a
+                      game is often on the other side of the table, and it
+                      offered only the active Warband's — so the note could not
+                      say what it was for.
+
+                      Free text as well as a list: an opponent in a hosted
+                      match, or a placeholder, has no roster on this device,
+                      and "not in the list" must not mean "cannot be named".
+                    */}
+                    <input
+                      id="standout-model"
+                      list="standout-model-options"
                       value={mvpUnitName}
                       onChange={(e) => setMvpUnitName(e.target.value)}
-                      className="w-full bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
-                    >
-                      <option value="">-- Select MVP Warrior --</option>
-                      {warband.units.map((u) => (
-                        <option key={u.id} value={u.customName}>
-                          {u.customName} ({u.profileSnapshot.name})
-                        </option>
-                      ))}
-                    </select>
+                      placeholder="Pick a model, or type any name"
+                      className="w-full min-h-[44px] bg-theme-base border border-theme-border rounded px-2.5 py-1.5 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+                    />
+                    <datalist id="standout-model-options">
+                      {standoutOptions.flatMap((roster) =>
+                        roster.units.map((u) => (
+                          <option key={`${roster.warbandName}-${u.name}`} value={u.name}>
+                            {u.profile
+                              ? `${u.profile} — ${roster.warbandName}`
+                              : roster.warbandName}
+                          </option>
+                        )))}
+                    </datalist>
                   </div>
                 </div>
 
