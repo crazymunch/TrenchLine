@@ -28,6 +28,7 @@ import {
   X,
   Copy,
   Crown,
+  Armchair,
   ChevronDown,
   ChevronUp,
   Scroll,
@@ -65,6 +66,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
     updateUnitName, 
     updateUnitCategory,
     setUnitAsLeader,
+    setUnitBenched,
     removeWeapon, 
     removeArmour, 
     removeEquipment,
@@ -261,6 +263,21 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
           {/* Header Right: Rating Badge & 3-Dots Action Menu */}
           <div className="flex items-center space-x-2 flex-shrink-0 order-2 ml-auto">
             {/*
+              Benched, and said on the card rather than only in the menu that
+              set it. A model left out of the Force is still on the Roster and
+              still looks exactly like one that is fielded — which is the
+              whole difficulty of the rule: the Threshold caps what you field,
+              and the list you are reading is what you own.
+            */}
+            {unit.benched && (
+              <span
+                className="font-mono text-xs sm:text-[10px] uppercase tracking-wider px-1.5 py-0.5 border border-theme-border text-theme-muted whitespace-nowrap"
+                title="Sits this game out — not counted against the Threshold Value or Field Strength, and earns no Experience"
+              >
+                Sits out
+              </span>
+            )}
+            {/*
               Cost badge — both currencies, because the app prices in two.
 
               It printed `{unit.totalCost} D` and nothing else, so a Mercenary
@@ -293,6 +310,10 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
             <div className="relative">
               <button
                 onClick={() => setIsActionMenuOpen(!isActionMenuOpen)}
+                /* Named, because it had no name at all: three dots and an
+                   icon, which a screen reader reads as "button". */
+                aria-label={`Actions for ${unit.customName}`}
+                aria-expanded={isActionMenuOpen}
                 className={`min-w-[44px] min-h-[44px] lg:min-w-0 lg:min-h-0 lg:p-1.5 flex items-center justify-center transition-colors ${
                   role.filled ? 'text-theme-base hover:opacity-70' : 'text-theme-muted hover:text-theme-text'
                 }`}
@@ -313,6 +334,24 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                       <span>Make Leader</span>
                     </button>
                   )}
+
+                  {/*
+                    The bench. "Any models you do not use will have to sit the
+                    game out" (p.97) — the Threshold Value and Field Strength
+                    cap the Force, and the roster is allowed to exceed both.
+                    So this is a choice the player makes, not a correction the
+                    app applies: nothing is removed and nothing is refused.
+                  */}
+                  <button
+                    onClick={() => {
+                      setUnitBenched(warbandId, unit.id, !unit.benched);
+                      setIsActionMenuOpen(false);
+                    }}
+                    className="w-full px-3 py-2 text-left flex items-center space-x-2 text-theme-text hover:bg-theme-elevated hover:text-theme-primary transition-colors"
+                  >
+                    <Armchair className={`w-3.5 h-3.5 ${unit.benched ? 'text-theme-primary' : 'text-theme-muted'}`} />
+                    <span>{unit.benched ? 'Bring back into the Force' : 'Sit this game out'}</span>
+                  </button>
 
                   <button
                     onClick={() => {

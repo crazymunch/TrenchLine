@@ -259,6 +259,14 @@ export interface AppState {
   removeUnitFromWarband: (warbandId: string, unitId: string) => void;
   updateUnitName: (warbandId: string, unitId: string, name: string) => void;
   updateUnitCategory: (warbandId: string, unitId: string, category: UnitCategory) => void;
+  /**
+   * Leave a model out of the Force, or bring it back in.
+   *
+   * The Threshold Value and Field Strength cap what a Warband FIELDS, not
+   * what it owns (p.97), so this removes nothing — it is the player saying
+   * which models sit this game out.
+   */
+  setUnitBenched: (warbandId: string, unitId: string, benched: boolean) => void;
   setUnitAsLeader: (warbandId: string, unitId: string) => void;
   updateUnitLore: (warbandId: string, unitId: string, lore: string, quote?: string, titles?: string[], deeds?: string[]) => void;
   equipWeapon: (warbandId: string, unitId: string, weaponId: string) => void;

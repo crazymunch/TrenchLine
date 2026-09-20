@@ -145,6 +145,67 @@ export function forceLimits(
 }
 
 /**
+ * What the Warband's list is measured against, and what counts towards it.
+ *
+ * Two different numbers that were the same number for two years, because
+ * before the first game they are equal:
+ *
+ * - **`ducatLimit`** is the FOUNDING allowance. It is set once and never
+ *   changes.
+ * - **The Threshold Value** caps the Force and rises after every game
+ *   (p.97).
+ *
+ * The builder resolved `forceLimits` to print a badge and then measured
+ * against `ducatLimit`, so a Warband three games into a campaign was told it
+ * was over a limit it had long outgrown, and never told about the one it was
+ * actually under. The two agree at game 1, which is why it went unnoticed —
+ * and which is also why this is a function with a test rather than four lines
+ * inside a 900-line component.
+ *
+ * A benched model is out of the Force: "any models you do not use will have to
+ * sit the game out". An unrestricted Warband has no campaign to measure
+ * against and keeps its founding allowance, which is what it exists for.
+ */
+export interface ForceBudget {
+  /** What the Force may cost. */
+  cap: number;
+  /** What it does cost. */
+  spend: number;
+  /** The whole roster, including whoever is sitting out. */
+  rosterCost: number;
+  /** Models left out of the Force. */
+  benched: number;
+  /** Which rule set the cap — for a screen that has to say why. */
+  source: 'threshold' | 'founding-allowance';
+}
+
+export function forceBudget(
+  warband: {
+    units: { totalCost?: number; benched?: boolean }[];
+    ducatLimit?: number;
+    forceMode?: string;
+  },
+  limits: { threshold: number } | null,
+): ForceBudget {
+  const units = warband.units ?? [];
+  const rosterCost = units.reduce((n, u) => n + (u.totalCost ?? 0), 0);
+  const fielded = units.filter((u) => !u.benched);
+  const spendAll = rosterCost;
+  const spendForce = fielded.reduce((n, u) => n + (u.totalCost ?? 0), 0);
+
+  const campaignForce = warband.forceMode !== 'unrestricted';
+  const useThreshold = campaignForce && !!limits;
+
+  return {
+    cap: useThreshold ? limits!.threshold : (warband.ducatLimit ?? 0),
+    spend: campaignForce ? spendForce : spendAll,
+    rosterCost,
+    benched: units.length - fielded.length,
+    source: useThreshold ? 'threshold' : 'founding-allowance',
+  };
+}
+
+/**
  * What Calling for Reinforcements lets you spend.
  *
  * The one place the Threshold acts as an allowance rather than a cap:

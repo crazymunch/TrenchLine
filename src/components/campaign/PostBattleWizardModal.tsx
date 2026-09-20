@@ -212,22 +212,30 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   const [physicalDice, setPhysicalDice] = useState('');
   const [promotionRolls, setPromotionRolls] = useState<PromotionResult | null>(null);
   /*
-    Which models sat the game out. Empty by default because the common case is
-    that the whole warband fought, and the app records no participation of its
-    own — so this is the one place a player can say otherwise, and the
-    Experience rule ("took part in a game") needs the answer.
-  */
-  /*
-    Ticked for the models Play Mode did not deploy.
+    Which models sat the game out, and the Experience rule ("took part in a
+    game") needs the answer.
 
-    This started empty for every model, although the tracker knew exactly who
-    had been on the table — so a model left in the Arsenal earned its
-    Experience Point unless the player remembered to tick it by hand. The
-    player can still change any of them; what changed is which way they start.
+    Ticked for two groups, both of which the app already knows about, and
+    neither of which it used to read:
+
+    - **The models Play Mode did not deploy.** It started empty for every
+      model although the tracker knew exactly who had been on the table, so a
+      model left in the Arsenal earned its Experience Point unless the player
+      remembered to tick it by hand.
+    - **The models the player benched.** "Any models you do not use will have
+      to sit the game out; they will not earn any experience" (p.97) — the
+      same sentence that puts a model over the Threshold on the bench says it
+      earns nothing. Read here as well as from the handover, because the
+      wizard can be opened without a match and the bench is on the roster
+      either way.
+
+    The player can still change any of them; what changed is which way they
+    start.
   */
-  const [satOut, setSatOut] = useState<Record<string, boolean>>(
-    () => Object.fromEntries((handover?.satOutUnitIds ?? []).map((id) => [id, true])),
-  );
+  const [satOut, setSatOut] = useState<Record<string, boolean>>(() => Object.fromEntries([
+    ...(handover?.satOutUnitIds ?? []).map((id) => [id, true] as const),
+    ...(warband?.units ?? []).filter((u) => u.benched).map((u) => [u.id, true] as const),
+  ]));
 
   // Advancements
   /*

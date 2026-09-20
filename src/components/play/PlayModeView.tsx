@@ -378,8 +378,16 @@ export const PlayModeView: React.FC = () => {
     );
   }
 
-  // Deployed units for current warband
-  const currentDeployedIds = deployedUnitIds[viewingWarband.id] || viewingWarband.units.map((u) => u.id);
+  /*
+    Deployed units for the current warband.
+
+    The default is the Force, not the Roster: a model the player benched to
+    stay under the Threshold Value or Field Strength (p.97) "will have to sit
+    the game out", so putting it on the table by default undoes the choice
+    they made in the builder. An explicit selection still wins over both.
+  */
+  const currentDeployedIds = deployedUnitIds[viewingWarband.id]
+    || viewingWarband.units.filter((u) => !u.benched).map((u) => u.id);
   const deployedUnits = viewingWarband.units.filter((u) => currentDeployedIds.includes(u.id));
   const deployedCost = deployedUnits.reduce((sum, u) => sum + u.totalCost, 0);
 

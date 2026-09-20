@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, titles, snapshots, `isDead`, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -186,6 +186,35 @@ The step that reads it is `rollPromotions` in
 [`src/rules/promotions.ts`](../src/rules/promotions.ts); the numbers it applies
 are derived, not written here — see
 [`RULESET-MODEL.md`](RULESET-MODEL.md#campaignpromotions--who-may-be-promoted-and-how-much-experience).
+
+## `benched` — the models left out of the Force
+
+The Threshold Value caps the Ducats a Force may field and Field Strength caps
+its models (p.97), and both rise after every game. The **Roster is allowed to
+exceed both**:
+
+> Your Warband's Threshold Value and/or its Field Strength may mean that you
+> cannot take all of the models that are on your Warband Roster. When this is
+> the case any models you do not use will have to sit the game out; they will
+> not earn any experience and cannot influence the game in any way.
+
+So `benched` is not an error state and removes nothing. It is the player
+saying which models they are leaving behind.
+
+**`durable`, and the call is not obvious.** It reads like battle state, and it
+is a decision about a game that has not been played yet. But a player picks
+their Force the night before, closes the app, and opens it at the table — a
+restore that un-benched everybody would hand them a list over the Threshold
+with no sign of why.
+
+**Omitted rather than stored `false`.** An un-benched model has to look, in a
+file, exactly like one that was never benched; otherwise every roster grows a
+field per model that says nothing.
+
+It is read in three places, and the last two come from the same sentence as
+the first: the builder measures the Force rather than the whole Roster, Play
+Mode's default deployment skips it, and the post-battle step starts it ticked
+as having not taken part — *"they will not earn any experience"*.
 
 ## `fallen` — the models the Roster no longer holds
 

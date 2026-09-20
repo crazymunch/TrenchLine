@@ -140,6 +140,12 @@ export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
   advancementRolls: 'durable',
   injuries: 'durable',
   scars: 'durable',
+  /* Sitting the next game out. DURABLE, and the call is not obvious: it
+     reads like battle state, and it is a decision about a game not yet
+     played. A player picks their Force the night before and closes the app,
+     and a restore that un-benched everybody would hand them a list over the
+     Threshold with no sign of why. */
+  benched: 'durable',
   isDead: 'durable',
   /* Which battle killed it. Durable: it is what lets the memorial name the
      game, and it cannot be recovered from anywhere else once the roster

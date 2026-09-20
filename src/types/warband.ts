@@ -73,6 +73,29 @@ export interface ActiveUnit {
    * It stays on the type, and `true` on a loaded roster still means what it
    * meant — that is what moves the model to `fallen` on load.
    */
+  /**
+   * Sitting this game out, by the player's choice.
+   *
+   * The Threshold Value caps the Ducats a Force may field and Field Strength
+   * caps its models (p.97), and the book is explicit that the ROSTER may
+   * exceed both:
+   *
+   * > Your Warband's Threshold Value and/or its Field Strength may mean that
+   * > you cannot take all of the models that are on your Warband Roster. When
+   * > this is the case any models you do not use will have to sit the game
+   * > out; they will not earn any experience and cannot influence the game in
+   * > any way.
+   *
+   * So this is not an error state and never removes a model. It is the
+   * player saying which models they are leaving behind, and it is durable
+   * because that choice has to survive closing the app between the list and
+   * the game.
+   *
+   * It does two things elsewhere: Play Mode's default deployment skips it,
+   * and the post-battle step starts it ticked as having not taken part —
+   * "they will not earn any experience" is the same sentence.
+   */
+  benched?: boolean;
   isDead: boolean;
   /**
    * The match that killed it, where the record knows.
