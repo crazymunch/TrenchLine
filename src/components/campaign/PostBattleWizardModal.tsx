@@ -13,7 +13,11 @@ import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries, traumaWriteFor,
 } from '../../rules/trauma';
-import { cappedExperience, experienceCap } from '../../rules/promotions';
+import {
+  cappedExperience, experienceCap, canBePromoted, eliteCount, promotionRules,
+  promotionPool, assignmentIsLegal, rollPromotions,
+  type DiceAssignment, type PromotionResult,
+} from '../../rules/promotions';
 import {
   advancementRollsDue, nextAdvancementAt, advancementRoll, patronSkillsFor,
   SKILL_TABLES, SKILL_TABLE_LABEL,
@@ -193,6 +197,20 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     is picking a die on a guess, and the die decides whether the model dies.
   */
   const [eliteOverrides, setEliteOverrides] = useState<Record<string, boolean>>({});
+
+  /*
+    The Promotion Dice Pool, in the book's three steps (p.105).
+
+    `assignment` is step 2 — how many dice each Troop has been given.
+    `promotionRolls` is step 3's result, held so the player can see what the
+    dice did before it is committed, and re-roll if they mis-entered.
+    `extraDice` is the Glory Items the app does not model: a number the player
+    types, kept apart from the derived ones so the pool can show its working.
+  */
+  const [assignment, setAssignment] = useState<DiceAssignment>({});
+  const [extraDice, setExtraDice] = useState(0);
+  const [physicalDice, setPhysicalDice] = useState('');
+  const [promotionRolls, setPromotionRolls] = useState<PromotionResult | null>(null);
   /*
     Which models sat the game out. Empty by default because the common case is
     that the whole warband fought, and the app records no participation of its
@@ -576,6 +594,74 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       })),
     }));
 
+  /* ---------------------------------------------------------------- *
+   * The Promotion Dice Pool (RR-05 / FD-06b)
+   *
+   * Promotion was `handleToggleElite` on the unit card: a switch that set
+   * `isElite` and asked nothing. No pool, no assignment rule, no roll, no
+   * ceiling — so a Warband could promote its whole roster, in one click each,
+   * and a model the rulebook forbids along with them.
+   * ---------------------------------------------------------------- */
+
+  /** Troops this Warband may actually promote, by the book's two tables. */
+  const promotable = warband.units.filter((u) =>
+    !u.isDead && canBePromoted(dataset, u, warband).eligible);
+
+  const pool = promotionPool(dataset, {
+    deeds: handover?.deedsClaimed ?? 0,
+    warband,
+    extraDice,
+  });
+
+  const assignmentCheck = assignmentIsLegal(
+    assignment, promotable.map((u) => u.id), pool?.dice ?? 0);
+
+  const elitesNow = eliteCount(warband);
+  const stepApplies = Boolean(pool) && elitesNow < (promotionRules(dataset)?.maxElites ?? 0);
+
+  const setDice = (unitId: string, delta: number) => {
+    setPromotionRolls(null);
+    setAssignment((p) => {
+      const next = Math.max(0, (p[unitId] ?? 0) + delta);
+      return { ...p, [unitId]: next };
+    });
+  };
+
+  /**
+   * Roll the assigned dice.
+   *
+   * In-app or physical, the way the Exploration Step already offers: the
+   * player types the dice they rolled at the table, in any order, and the app
+   * reads them left to right exactly as `rollPromotions` consumes them.
+   */
+  const rollThePool = (physical: boolean) => {
+    const total = assignmentCheck.assigned;
+    const dice = physical
+      ? physicalDice.split(/[^1-6]+/).filter(Boolean).map(Number)
+      : Array.from({ length: total }, () => Math.floor(Math.random() * 6) + 1);
+
+    const result = rollPromotions(
+      dataset,
+      promotable.map((u) => u.id),
+      assignment,
+      dice,
+      { missesBefore: warband.promotionMisses ?? 0, eliteBefore: elitesNow },
+    );
+    setPromotionRolls(result);
+
+    /*
+      A promoted model is ELITE "from then on, including for the rest of the
+      Promotions and Experience Step" — so it earns its Experience Point in
+      this same submission, and the Experience list below must already know.
+    */
+    const promoted = (result?.outcomes ?? []).filter((o) => o.promoted).map((o) => o.unitId);
+    setEliteOverrides((p) => ({
+      ...p,
+      ...Object.fromEntries(promoted.map((id) => [id, true])),
+    }));
+    if (!physical) soundEffects.playDiceRoll();
+  };
+
   /** The Patron's own list, for a roll of 2. Empty if the Patron is unknown. */
   const patronSkills = patronSkillsFor(dataset, warband.patron);
 
@@ -734,6 +820,16 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       explorationForfeited ? 0 : ducatsGained,
       casualties,
       skillsLearned,
+      /*
+        The Promotions this step made. `misses` is the whole new count, not a
+        delta — it runs across models and between games, and only a Promotion
+        clears it. An unrolled pool commits nothing and carries the old count
+        forward unchanged.
+      */
+      {
+        unitIds: (promotionRolls?.outcomes ?? []).filter((o) => o.promoted).map((o) => o.unitId),
+        misses: promotionRolls?.misses ?? warband.promotionMisses ?? 0,
+      },
       experience,
       tookReinforcements,
       narrativeLog,
@@ -1274,10 +1370,175 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                   models that sat the game out, to models it had just recorded
                   dead, and to models carrying the injury that forbids Experience.
                 */}
-                Each <strong>ELITE</strong> model that took part in this game and
-                survived gains 1 Experience Point. Troops gain none. Choose
-                promotions or official Skills from the Melee, Ranged, Stealth or
-                Wildcard trees.
+                {/*
+                  "Choose promotions or official Skills from the Melee,
+                  Ranged, Stealth or Wildcard trees" was the old sentence, and
+                  neither half survives: a Promotion is won on a Promotion
+                  Die, and a Skill comes off a 2D6 roll on two tables the
+                  player picks. Nothing here is chosen from a list.
+                */}
+                Promotions first, then Experience — the book's order. A Troop is
+                Promoted by a Promotion Die, out of a pool this Warband earned from
+                its Glorious Deeds. Then each <strong>ELITE</strong> model that took
+                part in this game and survived gains 1 Experience Point, including one
+                Promoted a moment ago. Troops gain none.
+              </div>
+
+              {/* ---------------- THE PROMOTION DICE POOL ---------------- */}
+              {/*
+                Before any Experience, because the book puts it there and the
+                order is load-bearing: a model promoted here is ELITE "from
+                then on, including for the rest of the Promotions and
+                Experience Step", so it earns its point in this same
+                submission.
+              */}
+              <div className="rounded border border-theme-border bg-theme-base p-3 space-y-3">
+                <h4 className="text-xs uppercase font-bold text-theme-text">Promotions</h4>
+
+                {!pool ? (
+                  <p className="text-xs sm:text-[11px] text-theme-muted">
+                    This ruleset does not carry the Promotion rules, so no Promotion
+                    Dice can be rolled.
+                  </p>
+                ) : !stepApplies ? (
+                  /* "Ignore the Promotion step completely if there are already
+                     6 or more models with the ELITE Keyword…" */
+                  <p className="text-xs sm:text-[11px] text-theme-muted">
+                    This Warband has <strong className="text-theme-text">{elitesNow}</strong> models
+                    with the ELITE Keyword, so the Promotion step is skipped.
+                  </p>
+                ) : promotable.length === 0 ? (
+                  <p className="text-xs sm:text-[11px] text-theme-muted">
+                    No model on this Roster can be Promoted.
+                  </p>
+                ) : (
+                  <>
+                    {/* The pool, showing its working: a number a player cannot
+                        check against the page is a number they will not trust. */}
+                    <div className="space-y-1">
+                      <p className="text-xs text-theme-accent">
+                        Promotion Dice Pool: <strong>{pool.dice}</strong>
+                      </p>
+                      <p className="text-xs sm:text-[11px] text-theme-muted">
+                        {pool.parts.map((part) => `${part.label} ${part.dice}`).join(' + ')}
+                      </p>
+                      <label className="flex min-h-[44px] items-center gap-2 text-xs sm:text-[11px] text-theme-muted">
+                        <span>Extra dice from Glory Items or Skills the app does not model:</span>
+                        <input
+                          type="number"
+                          min={0}
+                          max={20}
+                          value={extraDice}
+                          onChange={(e) => { setPromotionRolls(null); setExtraDice(Math.max(0, Number(e.target.value))); }}
+                          className="h-[44px] w-16 shrink-0 rounded border border-theme-border bg-theme-elevated px-2 text-center text-base text-theme-text"
+                        />
+                      </label>
+                    </div>
+
+                    {/* Step 2: assign. The rule is enforced, not described. */}
+                    <div className="space-y-2">
+                      {promotable.map((u) => (
+                        <div key={u.id} className="flex items-center justify-between gap-2">
+                          <span className="min-w-0 flex-1 truncate text-xs text-theme-text">
+                            {u.customName}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => setDice(u.id, -1)}
+                              className="rounded bg-theme-elevated px-3 font-bold text-theme-text"
+                              aria-label={`One fewer Promotion Die for ${u.customName}`}
+                            >
+                              −
+                            </button>
+                            <span className="w-6 text-center text-xs font-bold text-theme-primary">
+                              {assignment[u.id] ?? 0}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => setDice(u.id, 1)}
+                              className="rounded bg-theme-elevated px-3 font-bold text-theme-text"
+                              aria-label={`One more Promotion Die for ${u.customName}`}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <p className="text-xs sm:text-[11px] text-theme-muted">
+                        {assignmentCheck.assigned} of {pool.dice} assigned.
+                        {assignmentCheck.assigned < pool.dice
+                          && ' Dice left in the pool are lost.'}
+                      </p>
+                      {!assignmentCheck.legal && (
+                        <p className="text-xs sm:text-[11px] text-theme-danger">
+                          {assignmentCheck.detail}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Step 3: roll. In-app or the dice already on the table. */}
+                    <div className="flex flex-col gap-2 sm:flex-row">
+                      <button
+                        type="button"
+                        disabled={!assignmentCheck.legal || assignmentCheck.assigned === 0}
+                        onClick={() => rollThePool(false)}
+                        className="min-h-[44px] flex-1 rounded bg-theme-primary px-3 text-xs font-bold uppercase text-theme-base disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Roll {assignmentCheck.assigned} in app
+                      </button>
+                      <div className="flex flex-1 gap-2">
+                        <input
+                          value={physicalDice}
+                          onChange={(e) => setPhysicalDice(e.target.value)}
+                          placeholder="or type the dice: 6 2 4"
+                          aria-label="Promotion Dice rolled at the table"
+                          className="min-h-[44px] min-w-0 flex-1 rounded border border-theme-border bg-theme-elevated px-2 text-base sm:text-xs text-theme-text"
+                        />
+                        <button
+                          type="button"
+                          disabled={!assignmentCheck.legal || physicalDice.trim().length === 0}
+                          onClick={() => rollThePool(true)}
+                          className="min-h-[44px] shrink-0 rounded bg-theme-elevated px-3 text-xs font-bold uppercase text-theme-text disabled:opacity-40 disabled:cursor-not-allowed"
+                        >
+                          Use
+                        </button>
+                      </div>
+                    </div>
+
+                    {(warband.promotionMisses ?? 0) > 0 && !promotionRolls && (
+                      <p className="text-xs sm:text-[11px] text-theme-muted">
+                        {warband.promotionMisses} dice rolled without a Promotion so far.
+                        {' '}At {promotionRules(dataset)?.autoAfterMisses}, the next one is
+                        automatically a Promotion.
+                      </p>
+                    )}
+
+                    {promotionRolls && (
+                      <div className="space-y-1 rounded border border-theme-accent bg-theme-elevated p-2">
+                        {promotionRolls.outcomes.map((o) => {
+                          const u = promotable.find((x) => x.id === o.unitId);
+                          if (!u || o.rolled.length === 0) return null;
+                          return (
+                            <p key={o.unitId} className="text-xs text-theme-text">
+                              <strong>{u.customName}</strong>: {o.rolled.join(', ')}
+                              {o.promoted
+                                ? o.automatic
+                                  ? ' — PROMOTED (automatic, after the run of misses)'
+                                  : ' — PROMOTED'
+                                : ' — no Promotion'}
+                            </p>
+                          );
+                        })}
+                        <p className="text-xs sm:text-[11px] text-theme-muted">
+                          Misses in a row, carried on the Roster: {promotionRolls.misses}.
+                          {promotionRolls.unrolled > 0
+                            && ` ${promotionRolls.unrolled} dice were not rolled: the Warband reached its ELITE ceiling.`}
+                        </p>
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
 
               {/*

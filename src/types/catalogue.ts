@@ -321,6 +321,27 @@ export interface PromotionTableRow {
 export interface PromotionRules {
   /** The Promotion step is skipped at this many ELITE models. The book says 6. */
   maxElites: number;
+  /**
+   * The dice half of the step, each number read from its own sentence on p.105.
+   *
+   * Optional because a ruleset built between FD-06a and FD-06b carries the
+   * eligibility bounds and not these — and a pool of `0` dice is a real
+   * answer that must stay distinguishable from a ruleset that cannot say.
+   */
+  /** `1D6` before any Deeds. */
+  poolBase?: number;
+  /** `plus 1D6 for each Glorious Deed`. */
+  poolPerDeed?: number;
+  /** A Promotion Die promotes on this face or better. The book says 6. */
+  promoteOn?: number;
+  /**
+   * Misses in a row after which the next die is automatically a Promotion.
+   *
+   * The book says 5, and the count is kept on the Roster BETWEEN games — so
+   * five misses spread over three games still make the sixth die a 6. See
+   * `warband.promotionMisses`.
+   */
+  autoAfterMisses?: number;
   /** Models That Cannot Be Promoted, p.107. */
   cannotPromote: PromotionTableRow[];
   /**

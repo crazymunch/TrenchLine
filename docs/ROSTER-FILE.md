@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, titles, snapshots, `isDead`, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, titles, snapshots, `isDead`, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -165,6 +165,27 @@ It stays `durable`, and it is still displayed. Those strings are the player's
 own record of what they did at their table, and clearing them on import or
 export would be a data change rather than a fix. New progression goes to
 `skills`.
+
+## `promotionMisses` — a counter the Warband carries, not the game
+
+Promotion Dice are rolled per game, but the misses are **not** counted per
+game. The rulebook's five-miss rule is *"once the total reaches 5 dice, then
+the next roll automatically Promotes"* — a running total that survives the
+post-battle step it was rolled in. Three misses this game and two the next make
+the sixth die a Promotion, and that is only true if the number is written down
+on the roster.
+
+So `warband.promotionMisses` is `durable`. A restore that dropped it would not
+lose a Skill or a statline — nothing would look wrong — it would quietly cost
+the player a Promotion they had already paid five dice for. It is optional and
+omitted when zero, which needs no `schemaVersion` bump (see above): an older
+reader that does not know the field reads a Warband that has never missed, and
+a newer reader of an older file reads the same.
+
+The step that reads it is `rollPromotions` in
+[`src/rules/promotions.ts`](../src/rules/promotions.ts); the numbers it applies
+are derived, not written here — see
+[`RULESET-MODEL.md`](RULESET-MODEL.md#campaignpromotions--who-may-be-promoted-and-how-much-experience).
 
 ## Not in this format
 

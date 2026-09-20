@@ -74,6 +74,11 @@ export const WARBAND_FIELDS: Record<keyof Warband, Disposition> = {
   explorationDiscoveries: 'durable',
   ducatLimit: 'durable',
   treasuryDucats: 'durable',
+  /* Promotion Dice rolled in a row without a Promotion. Durable, and it reads
+     like battle state without being any: the count is kept BETWEEN games, so a
+     restore that dropped it hands the Warband back five misses it had already
+     paid for — the same class of mistake as resurrecting a dead model. */
+  promotionMisses: 'durable',
   gloryPoints: 'durable',
   units: 'durable',
   armoryStash: 'durable',

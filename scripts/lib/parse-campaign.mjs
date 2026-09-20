@@ -1577,6 +1577,57 @@ export function parsePromotions(factions, units, {
     /cannot have more than\s+(\d+) Experience Points/i,
     'the Limited Potential Experience cap');
 
+  /*
+    The dice half of the step (p.105).
+
+    Four numbers, each from its own sentence, and each one decides how often a
+    Warband gets a new ELITE model:
+
+      poolBase          "Your Promotion Dice Pool is made up of 1D6, plus…"
+      poolPerDeed       "…plus 1D6 for each Glorious Deed that was carried out
+                        during the game by any model from your Warband."
+      promoteOn         "As soon as one of the dice rolls a '6', stop rolling
+                        for that model, and Promote the model…"
+      autoAfterMisses   "…make a note on your Roster of how many dice you have
+                        rolled in a row without getting a Promotion. Once the
+                        total reaches 5 dice, then the next roll (the 6th one),
+                        is automatically considered to be a 6."
+
+    `promoteOn` is read rather than assumed, for the same reason as the rest:
+    a 6 on a D6 is a 1-in-6 chance and a hardcoded one is a number nobody would
+    ever check against the page again.
+  */
+  const poolBase = readNumber(
+    text,
+    /Promotion Dice Pool is made up of\s+(\d+)D6/i,
+    'the base Promotion Dice');
+
+  const poolPerDeed = readNumber(
+    text,
+    /plus\s+(\d+)D6 for each Glorious Deed/i,
+    'the Promotion Dice per Glorious Deed');
+
+  const promoteOn = readNumber(
+    text,
+    /As soon as one of the dice rolls a\s*["\u201c\u2018']?(\d+)["\u201d\u2019']?\s*,\s*stop rolling/i,
+    'the roll that Promotes');
+
+  const autoAfterMisses = readNumber(
+    text,
+    /Once the total reaches\s+(\d+) dice, then the next roll/i,
+    'the number of misses after which a Promotion is automatic');
+
+  if (promoteOn < 1 || promoteOn > 6) {
+    throw new Error(
+      `parse-campaign: a Promotion Die promotes on ${promoteOn}, which is not a `
+      + 'face of a D6. The sentence has most likely been misread.');
+  }
+  if (autoAfterMisses < 1) {
+    throw new Error(
+      `parse-campaign: the automatic Promotion arrives after ${autoAfterMisses} `
+      + 'misses, which would make every first roll a Promotion.');
+  }
+
   const withIds = (rows) => rows.map((r) => ({
     faction: r.faction,
     factionId: resolveFactionHeading(r.faction, factions),
@@ -1618,7 +1669,15 @@ export function parsePromotions(factions, units, {
       + 'The book and the catalogue now agree on these, so the entry should be removed.');
   }
 
-  return { maxElites, cannotPromote, limitedPotential: { maxXp, factions: limitedPotential } };
+  return {
+    maxElites,
+    poolBase,
+    poolPerDeed,
+    promoteOn,
+    autoAfterMisses,
+    cannotPromote,
+    limitedPotential: { maxXp, factions: limitedPotential },
+  };
 }
 
 /**

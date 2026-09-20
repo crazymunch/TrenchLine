@@ -65640,6 +65640,10 @@ export const DATASET: Dataset = {
     ],
     "promotions": {
       "maxElites": 6,
+      "poolBase": 1,
+      "poolPerDeed": 1,
+      "promoteOn": 6,
+      "autoAfterMisses": 5,
       "cannotPromote": [
         {
           "faction": "The Principality of New Antioch",

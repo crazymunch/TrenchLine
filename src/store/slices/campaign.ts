@@ -370,6 +370,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       ducatsGained,
       casualties,
       skillsLearned,
+      promotions,
       experience,
       tookReinforcements,
       narrative,
@@ -494,7 +495,17 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           gains nothing: that is the answer for every Troop, and a warband of
           Troops correctly earns no Experience at all.
         */
-        const newXp = u.xp + (experience.some((x) => x.unitId === u.id && x.earns) ? 1 : 0);
+        /*
+          Promotions first, then Experience — the book's order, and it matters.
+
+          "They begin with 0 Experience Points, but will gain at least 1 due to
+          surviving the game after which they were Promoted." So a model
+          promoted in this step has its Experience reset and THEN takes its
+          point, which is one, not one on top of whatever it had as a Troop.
+        */
+        const justPromoted = promotions.unitIds.includes(u.id);
+        const xpBefore = justPromoted ? 0 : u.xp;
+        const newXp = xpBefore + (experience.some((x) => x.unitId === u.id && x.earns) ? 1 : 0);
         for (const l of learned) {
           newSkills.push({
             name: l.name,
@@ -530,6 +541,17 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           injuries: newInjuries,
           scars: newScars,
           isDead,
+          ...(justPromoted
+            ? {
+              /*
+                The Keyword, and the section of the Roster it is written in:
+                "Cross out their old entry on your Warband Roster and write a
+                new one for them in the Elite Models section."
+              */
+              isElite: true,
+              profileSnapshot: { ...u.profileSnapshot, category: 'Elite' as const, elite: true },
+            }
+            : {}),
           skills: newSkills,
           /* One per Skill learned, which is what `advancementRollsDue`
              subtracts from the thresholds the model's Experience has passed. */
@@ -550,6 +572,12 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       ];
       if (casualties.length > 0) {
         casualties.forEach((c) => changesSummary.push(`Casualty: ${c.unitName} - ${c.outcome}`));
+      }
+      if (promotions.unitIds.length > 0) {
+        promotions.unitIds.forEach((id) => {
+          const u = activeWb.units.find((item) => item.id === id);
+          changesSummary.push(`Promotion: ${u?.customName || 'Warrior'} gains the ELITE Keyword`);
+        });
       }
       if (skillsLearned.length > 0) {
         skillsLearned.forEach((a) => {
@@ -650,6 +678,13 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         gloryPoints: activeWb.gloryPoints + gloryGained,
         treasuryDucats: strongboxAfter,
         armoryStash: stashAfter,
+        /*
+          The Promotion Dice miss count, kept on the Roster between games: five
+          misses spread over three games still make the sixth die a 6. Only a
+          Promotion clears it, which `rollPromotions` has already done — this
+          writes back whatever it returned.
+        */
+        promotionMisses: promotions.misses || undefined,
         units: updatedUnits,
         snapshots: [...existingSnapshots, matchSnapshot]
       };
