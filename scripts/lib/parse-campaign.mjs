@@ -812,6 +812,114 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
   return out;
 }
 
+/* ------------------------------------------------------ the Experience track */
+
+/**
+ * When an ELITE model may make an Advancement Roll, from the catalogue.
+ *
+ * The book describes the track and cannot state it: page 105 says Experience
+ * is checked off "one Experience box per point, from left to right, starting
+ * with the top row; when you reach a box that is a circle, you can make an
+ * Advancement Roll for the model" — and the circles are printed on the Roster
+ * Sheet, a page the PDF text extraction does not carry. There is no sentence
+ * anywhere that lists the numbers.
+ *
+ * The catalogue encodes them, because NewRecruit has to enforce them. The
+ * `Skills` entry link raises its own allowance from 1 to 6 as the Advancement
+ * group's selection count passes 1, 3, 6, 9, 13 and 17 — so the model earns a
+ * Skill on reaching 2, 4, 7, 10, 14 and 18 Experience. The `Experience` entry
+ * caps at 18, which is the last circle.
+ *
+ * ## The one place this deliberately differs from NewRecruit
+ *
+ * The catalogue's condition counts selections in the whole `Advancement`
+ * group, and that group also holds `Elite Promotion`. So in NewRecruit a
+ * Troop promoted to ELITE carries one selection before it has any Experience
+ * at all, and reaches each circle a point early. The book does not say that —
+ * it says a promoted model "begin[s] with 0 Experience Points" — so this
+ * counts Experience alone and a promoted model rolls on the same numbers as
+ * one that started ELITE.
+ *
+ * That is a deviation from the source it derives from, which is why it is
+ * written here rather than left for a reader to notice. The thing to check it
+ * against is the Roster Sheet's printed circles, if a PDF with extractable
+ * sheets ever exists.
+ */
+export function parseExperienceTrack(cat = CAMPAIGN_CAT) {
+  const parser = new XMLParser({
+    ignoreAttributes: false, attributeNamePrefix: '@_', trimValues: false,
+    isArray: (n) => ['selectionEntry', 'selectionEntryGroup', 'entryLink', 'modifier', 'condition', 'constraint'].includes(n),
+  });
+  const doc = parser.parse(fs.readFileSync(cat, 'utf8'));
+
+  let max = null;
+  const thresholds = [];
+
+  const walk = (node) => {
+    if (!node || typeof node !== 'object') return;
+
+    if (String(node['@_name'] ?? '') === 'Experience' && node['@_type'] === 'upgrade') {
+      const c = (node.constraints?.constraint ?? []).find((x) => x['@_type'] === 'max');
+      const n = Number(c?.['@_value']);
+      if (Number.isFinite(n)) max = n;
+    }
+
+    if (String(node['@_name'] ?? '') === 'Skills' && node.modifiers) {
+      for (const mod of node.modifiers.modifier ?? []) {
+        for (const cond of mod.conditions?.condition ?? []) {
+          if (cond['@_type'] !== 'greaterThan') continue;
+          if (cond['@_childName'] !== 'Advancement') continue;
+          const n = Number(cond['@_value']);
+          if (Number.isFinite(n)) thresholds.push(n);
+        }
+      }
+    }
+
+    for (const v of Object.values(node)) {
+      if (Array.isArray(v)) v.forEach(walk);
+      else if (v && typeof v === 'object') walk(v);
+    }
+  };
+  walk(doc);
+
+  if (!Number.isFinite(max)) {
+    throw new Error(
+      'parse-campaign: no max on the Experience entry in the campaign catalogue. '
+      + 'Without it there is no end to the track and no way to tell a complete '
+      + 'model from one the parser failed to read.');
+  }
+
+  /*
+    Each modifier fires ABOVE its threshold, so the roll is at threshold + 1.
+    Sorted and de-duplicated because the catalogue lists them in file order,
+    which is not promised to be numeric.
+  */
+  const advancementAt = [...new Set(thresholds)].sort((a, b) => a - b).map((n) => n + 1);
+
+  if (!advancementAt.length) {
+    throw new Error(
+      'parse-campaign: the Experience track has no Advancement Rolls. The `Skills` '
+      + 'link\'s allowance modifiers are the only record of where the circles are '
+      + 'printed on the Roster Sheet, and an empty track would silently give every '
+      + 'model unlimited Skills.');
+  }
+
+  const strictlyIncreasing = advancementAt.every((n, i) => i === 0 || n > advancementAt[i - 1]);
+  if (!strictlyIncreasing) {
+    throw new Error(
+      `parse-campaign: Advancement Rolls are not strictly increasing: ${advancementAt.join(', ')}.`);
+  }
+
+  const over = advancementAt.filter((n) => n > max);
+  if (over.length) {
+    throw new Error(
+      `parse-campaign: Advancement Rolls past the end of the track (max ${max}): `
+      + `${over.join(', ')}. A roll a model can never reach is a Skill it can never earn.`);
+  }
+
+  return { max, advancementAt };
+}
+
 /* ------------------------------------------------- the Trauma Step procedure */
 
 /**
