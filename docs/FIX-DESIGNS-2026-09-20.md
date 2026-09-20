@@ -513,6 +513,23 @@ store's legacy `weapons`, `armour` and `equipment` lists, not from
 added never reaches the store from the UI; and a hire still never debits
 (`store/slices/units.ts` line 15), which is item 2's first entry.
 
+**Corrected by the developer's FD-05d probe, verified here.** The root cause
+above said the ledger is "written once, at founding" and left it at that.
+It is worse: `createWarband` (`store/slices/roster.ts` lines 154 to 169)
+opens the ledger with an entry crediting the WHOLE founding allowance and
+writes `treasuryDucats: 0` on the same object, and nothing ever debits the
+entry. The ledger and the Strongbox have disagreed by the full allowance
+since the moment of founding, on every campaign Warband. So item 5's
+reconciliation cannot append "the difference": nothing has ever read these
+entries, and the stored balance is the only number a player has seen. The
+migration OPENS the account from the stored balance, once, and keeps the
+founding figure as a note. The developer also names FD-05e, which it holds
+back deliberately: the founding allowance and the Strongbox are one pot
+(the Warbands book's "any unspent Ducats are put into your Warband's
+Strongbox", cited as page 10; the PR must quote the line), so a Warband
+founded on 700 that spends 620 holds 80 and today holds 0. FD-05d moves no
+number; FD-05e corrects one.
+
 ## FD-06. RR-05: the Promotions and Experience Step
 
 ### Root cause
