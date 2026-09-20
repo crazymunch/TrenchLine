@@ -214,3 +214,54 @@ describe('Mercenary recruitment restrictions', () => {
     expect(merc('Scripture Guardian').allowedFactions).toBeNull();
   });
 });
+
+/**
+ * The fixed kit the catalogue states in shapes the parser used to skip.
+ *
+ * FD-11a. `forcedKitOf` read only an `entryLink` whose `min` equalled its
+ * `max`, and the Mercenaries catalogue states "always has" three other ways.
+ * Driven through the BUILT dataset rather than the parser so it also proves
+ * the layers do not undo it.
+ */
+describe('FD-11a: forced Battlekit that the parser used to miss', () => {
+  const kit = (name: string) =>
+    ((unit(name) as { battlekit?: { name: string }[] }).battlekit ?? [])
+      .map((b) => b.name).sort();
+
+  it('gives the Combat Biologist the items stated by a min-only link', () => {
+    // "A Combat Biologist always has Gas Grenades, Standard Armour, a Gas
+    // Mask, and a Vivisector" — warbands-of-trench-crusade L9802.
+    // The Vivisector is a profile on the model itself; the catalogue uses that
+    // shape for reference statlines too, so it is stated from the book in
+    // FD-11b rather than guessed here. See `forcedKitOf`.
+    expect(kit('Combat Biologist')).toEqual(['Gas Grenades', 'Gas Mask', 'Standard Armour']);
+  });
+
+  it('gives the Sin Eater the Maul stated by a nested min=max entry', () => {
+    // "Sin Eater always has Reinforced Armour, a Combat Helmet, and a
+    // Tenderiser Maul" — L10281. The catalogue spells it "Tenderizer"; that
+    // is a gear-name ruling, not this change.
+    expect(kit('Sin Eater')).toEqual(['Combat Helmet', 'Reinforced Armour', 'Tenderizer Maul']);
+  });
+
+  it('gives the Goetic Warlock the claws the Dispatch puts on its kit', () => {
+    // "A Goetic Warlock always has Reinforced Armour and Flaying Iron Claws"
+    // — Trench Dispatch 01, L785-786. The rename is FD-11b's op; the
+    // catalogue calls them Iron-Clawed Hands.
+    expect(kit('Goetic Warlock')).toEqual(['Iron-Clawed Hands', 'Reinforced Armour']);
+  });
+
+  it('prices a model’s own gear profile at zero, not at the model’s cost', () => {
+    /*
+      The Gavel of Justice stood in the weapon list at the Witchburner's 6
+      Glory and the Vivisector at the Combat Biologist's 3, because the emit
+      read the node's cost and on a model node that is the model's price.
+      Neither has an Armoury row, and `fromWarband` falls back to this cost
+      for an item that has no row — so it is a price waiting for a caller.
+    */
+    const w = (name: string) =>
+      (DATASET.weapons ?? []).find((x: { name: string }) => x.name === name);
+    expect(w('Gavel of Justice')!.cost).toEqual({ ducats: 0, glory: 0 });
+    expect(w('Vivisector')!.cost).toEqual({ ducats: 0, glory: 0 });
+  });
+});

@@ -210,37 +210,59 @@ function forcedKitOf(node, resolve) {
   const out = [];
   const seen = new Set();
 
-  const forced = (e) => {
+  /* Keywords a gear profile grants, from whichever profiles carry them. */
+  const keywordsOf = (profiles) => [...new Set(profiles
+    .flatMap((pr) => clean(charMap(pr).Keywords).split(','))
+    .map((k) => clean(k).toUpperCase())
+    .filter((k) => k && k !== '-'))];
+
+  const GEAR = ['Weapon', 'Battlekit'];
+  const gearProfilesOf = (e) => arr(e?.profiles?.profile)
+    .filter((pr) => GEAR.includes(attr(pr, 'typeName')));
+
+  const push = (entry) => {
+    if (!entry.id || seen.has(entry.id)) return;
+    seen.add(entry.id);
+    out.push(entry);
+  };
+
+  const minMax = (e) => {
     const cs = arr(e?.constraints?.constraint);
     const min = cs.find((c) => attr(c, 'type') === 'min');
     const max = cs.find((c) => attr(c, 'type') === 'max');
-    return min && Number(attr(min, 'value')) >= 1
-        && max && Number(attr(max, 'value')) === Number(attr(min, 'value'));
+    return { min, max };
   };
 
+  /*
+    Shape 1: an entryLink with `min` equal to `max`.
+
+    Shape 2: an entryLink with a `min` and NO `max`. "At least one, and you may
+    take more" is still "always has" for the one, and the Mercenaries catalogue
+    states the Combat Biologist's Gas Grenades, Gas Mask and Standard Armour
+    that way. Requiring a `max` skipped all three and left the model with no
+    Battlekit at all.
+
+    The rule the original comment states still holds and is why this reads
+    entryLinks and not groups: a `min` on a GROUP that lets you pick between
+    options is a choice, not a fixture, and belongs with `options`.
+  */
   for (const l of arr(node?.entryLinks?.entryLink)) {
-    if (attr(l, 'type') !== 'selectionEntry' || !forced(l)) continue;
+    if (attr(l, 'type') !== 'selectionEntry') continue;
+    const { min, max } = minMax(l);
+    if (!min || Number(attr(min, 'value')) < 1) continue;
+    if (max && Number(attr(max, 'value')) !== Number(attr(min, 'value'))) continue;
+
     const target = resolve(attr(l, 'targetId'));
     if (!target) continue;
-    const id = attr(target, 'id');
-    if (seen.has(id)) continue;
-    seen.add(id);
-
-    // The profile the target carries — a Battlekit or Weapon entry — is where
-    // the keywords the gear grants are written.
     const profiles = arr(target?.profiles?.profile);
-    const kw = profiles
-      .flatMap((pr) => clean(charMap(pr).Keywords).split(','))
-      .map((k) => clean(k).toUpperCase())
-      .filter((k) => k && k !== '-');
 
-    out.push({
-      id,
+    push({
+      id: attr(target, 'id'),
       // What the roster selects, so a modifier scoped to the selection resolves.
       linkId: attr(l, 'id'),
       name: clean(attr(l, 'name')) || clean(attr(target, 'name')),
-      quantity: Number(attr(arr(l.constraints?.constraint).find((c) => attr(c, 'type') === 'min'), 'value')),
-      keywords: [...new Set(kw)],
+      quantity: Number(attr(min, 'value')),
+      keywords: keywordsOf(profiles),
       /*
         Almost always zero, and that is the catalogue's own accounting rather
         than a free lunch: it prices the model to include the kit. Where it is
@@ -251,6 +273,63 @@ function forcedKitOf(node, resolve) {
       profileId: profiles[0] ? attr(profiles[0], 'id') : undefined,
     });
   }
+
+  /*
+    Shape 3: a selectionEntry nested inside the model, min = max, carrying a
+    Weapon or Battlekit profile of its own. The Sin Eater's Tenderizer Maul and
+    the Goetic Warlock's Iron-Clawed Hands are stated this way — no link to
+    resolve, the entry simply sits inside the model.
+  */
+  for (const e of arr(node?.selectionEntries?.selectionEntry)) {
+    const { min, max } = minMax(e);
+    if (!min || !max) continue;
+    if (Number(attr(min, 'value')) < 1) continue;
+    if (Number(attr(max, 'value')) !== Number(attr(min, 'value'))) continue;
+
+    const profiles = gearProfilesOf(e);
+    if (!profiles.length) continue;
+
+    push({
+      id: attr(e, 'id'),
+      /* There is no link: the entry IS what the roster selects. */
+      linkId: attr(e, 'id'),
+      name: clean(attr(e, 'name')) || clean(attr(profiles[0], 'name')),
+      quantity: Number(attr(min, 'value')),
+      keywords: keywordsOf(profiles),
+      cost: costsOf(e),
+      profileId: attr(profiles[0], 'id'),
+    });
+  }
+
+  /*
+    A Weapon profile on the model ITSELF — the Combat Biologist's Vivisector,
+    the Witchburner's Gavel of Justice — is deliberately NOT read here, and
+    the reason is worth writing down because it looks like an omission.
+
+    The catalogue uses a model-node Weapon profile for two different things
+    and does not distinguish them. Sometimes it is kit the model always has.
+    Sometimes it is a reference statline for a weapon the model can produce,
+    or choose between. Reading the shape structurally gets the first case
+    right and the second case wrong, and the book says which is which:
+
+    - Artillery Witch (Warbands L6560): "always has Infernal Bombs" — the
+      model node carries Infernal Bomb, Gas Bomb AND Phosphor Bomb, so the
+      structural rule hands her two she does not have.
+    - Ecclesiastic Prisoner (L3229): "always has an Iron Capirote" — the
+      structural rule gives her Feeble Flailing instead.
+    - Heralds of Beelzebub (L7920): "cannot have any other Battlekit apart
+      from a Compound Eyes Helmet" — the structural rule adds an Infected
+      Proboscis.
+
+    Three wrong out of the handful checked is not a rule, it is a coincidence
+    that holds for the Mercenaries. So the Vivisector and the Gavel are stated
+    from the book, where "always has" is written down, rather than guessed
+    from a shape that means two things.
+
+    What IS fixed here is the price: a gear profile on a model node was
+    emitted into `weapons` at the MODEL's cost. See the note at the emit.
+  */
+
   return out;
 }
 
@@ -1112,7 +1191,20 @@ export function parseCatalogues(dir) {
             .map((k) => clean(k))
             .filter((k) => k && k !== '-'),
           rules: clean(c.Rules) || undefined,
-          cost,
+          /*
+            A gear profile on a MODEL is kit the model always has, and the
+            model is priced to include it — so the weapon itself costs
+            nothing. `cost` here is the node's, and on a model node that is
+            the model's price: read unchanged it put the Gavel of Justice in
+            the weapon list at the Witchburner's 6 Glory and the Vivisector at
+            the Combat Biologist's 3. Nothing sells them today, but a weapon
+            that says it costs what the model costs is wrong data waiting for
+            a caller.
+
+            On any other node — an ordinary armoury weapon's own entry — the
+            node's cost IS the weapon's, and it is carried through unchanged.
+          */
+          cost: unitProfile ? { ducats: 0, glory: 0 } : cost,
           constraints,
           modifiers,
           restrictions: [],

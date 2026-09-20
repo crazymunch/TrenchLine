@@ -19259,6 +19259,21 @@ export const DATASET: Dataset = {
             "glory": 0
           },
           "profileId": "33ed-6314-e75f-8982"
+        },
+        {
+          "id": "4d1c-67e3-95cf-1169",
+          "linkId": "4d1c-67e3-95cf-1169",
+          "name": "Tenderizer Maul",
+          "quantity": 1,
+          "keywords": [
+            "+1 INJURY MODIFIER",
+            "HEAVY"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "c63d-fe53-a980-4a2a"
         }
       ],
       "constraints": [
@@ -19982,7 +19997,56 @@ export const DATASET: Dataset = {
       "max": 1,
       "abilities": [],
       "options": [],
-      "battlekit": [],
+      "battlekit": [
+        {
+          "id": "ed69-d081-68a5-999e",
+          "linkId": "1304-f5fe-7fd4-42eb",
+          "name": "Gas Grenades",
+          "quantity": 1,
+          "keywords": [
+            "-1 INJURY DICE",
+            "ASSAULT",
+            "BLAST 3”",
+            "GAS",
+            "IGNORE ARMOUR",
+            "IGNORE COVER",
+            "IGNORE LONG RANGE"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "5f7a-f61c-c4cc-98ad"
+        },
+        {
+          "id": "8927-946d-c993-14ee",
+          "linkId": "6daf-76ad-db19-b5be",
+          "name": "Gas Mask",
+          "quantity": 1,
+          "keywords": [
+            "NEGATE GAS"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "29d4-73f4-67aa-ecbb"
+        },
+        {
+          "id": "fc21-c383-cc54-c15c",
+          "linkId": "ed7a-c8e3-3f55-bbaf",
+          "name": "Standard Armour",
+          "quantity": 1,
+          "keywords": [
+            "-1 INJURY MODIFIER"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "71ec-000e-5999-ba1c"
+        }
+      ],
       "constraints": [
         {
           "id": "afe6-45e9-ff41-16df",
@@ -20508,6 +20572,21 @@ export const DATASET: Dataset = {
             "glory": 0
           },
           "profileId": "33ed-6314-e75f-8982"
+        },
+        {
+          "id": "1e63-fd87-a6a7-eb5e",
+          "linkId": "1e63-fd87-a6a7-eb5e",
+          "name": "Iron-Clawed Hands",
+          "quantity": 1,
+          "keywords": [
+            "CLEAVE 2",
+            "CRITICAL"
+          ],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "e8d8-c2a3-9a3e-b3b8"
         }
       ],
       "constraints": [
@@ -23911,7 +23990,20 @@ export const DATASET: Dataset = {
         }
       ],
       "options": [],
-      "battlekit": [],
+      "battlekit": [
+        {
+          "id": "0de4-111f-503c-60f9",
+          "linkId": "0de4-111f-503c-60f9",
+          "name": "Atonement Bell",
+          "quantity": 1,
+          "keywords": [],
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "a7b5-4e6d-1d0e-de50"
+        }
+      ],
       "constraints": [
         {
           "id": "6b28-6340-4a94-d517",
@@ -31302,7 +31394,7 @@ export const DATASET: Dataset = {
       "range": "Melee",
       "keywords": [],
       "cost": {
-        "ducats": 55,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -31646,7 +31738,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "If a Melee Attack made by a Herald of Beelzebub causes any INFECTION MARKERS to be placed on the target model, you can remove up to 1 BLOOD MARKER from the attacking Herald of Beelzebub.",
       "cost": {
-        "ducats": 50,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -31876,7 +31968,7 @@ export const DATASET: Dataset = {
         "INFECTION MARKERS"
       ],
       "cost": {
-        "ducats": 140,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -43066,7 +43158,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "You can cast this spell before an Injury Roll is made for the spellcaster. If you do so, add a -1 INJURY MODIFIER to the roll for every 2 BLOOD MARKERS that were paid to cast the spell.",
       "cost": {
-        "ducats": 75,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -43209,7 +43301,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "You can cast this spell once per Turn after an Injury Roll is made for the spellcaster. If you do so, the result of the Injury Roll is changed to a No Effect result (make Injury Rolls for other models hit by the same attack normally).",
       "cost": {
-        "ducats": 110,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -43382,7 +43474,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "You can cast this spell when the spellcaster takes a Move, Dash or Charge Action and moves into contact with a terrain piece. If you do so, you can interrupt the spellcaster's move to remove them from the battlefield and then deploy them in contact with another terrain piece more than 1\" from any enemy models, unless the spellcaster is making a charge. If the spell is cast during a charge, the spellcaster must deploy closer to the target than it was before it was removed from the battlefield. You can then carry on with the spellcaster's move as normal. This spell can be used for a normal move or a charge or a retreat, and can be cast more than once during the course of a single ACTION (you must pay its cost each time it is cast). If it is cast as part of a charge, the spellcaster must still start the charge within 12\" of the target model, and you will need to take a Risky Success Roll for the spellcaster if they do not have a Line of Sight to the target model.",
       "cost": {
-        "ducats": 110,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -43555,7 +43647,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "You can cast this spell before the spellcaster takes a Retreat ACTION. If you do so, enemy models cannot make a Melee Attack on the spellcaster when they retreat.",
       "cost": {
-        "ducats": 110,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -43730,7 +43822,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "Special Ammunition: Before making an Injury Roll for an attack made with a Bow of Lethe, you must choose if the roll will have the +2 INJURY DICE Keyword or the IGNORE ARMOUR Keyword.",
       "cost": {
-        "ducats": 110,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -43903,7 +43995,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "You can cast this spell before making any Injury Rolls for an attack made by the spellcaster. If you do so, add +1 INJURY DICE to all of the Injury Rolls you make for the attack. For example, if the attack has the BLAST Keyword, you would add +1 INJURY DICE to the rolls for each model that was caught in the blast radius of the attack.",
       "cost": {
-        "ducats": 100,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -43975,7 +44067,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "You must take a Cast Spell ACTION with the spellcaster in order for it to cast this spell. If you do so, you can carry out one of the following Commands with a Yoke Fiend that is within 18\" of the spellcaster. Carrying out a Command does not stop the Yoke Fiend from being Activated in the same Turn (before or after the Command was issued). - Sacrifice Command: The Yoke Fiend kills itself. It is taken Out of Action and crossed off its Warband Roster. - Fight Command: The Yoke Fiend carries out a Melee Attack. - Move Command: The Yoke Fiend carries out a Move (it cannot Charge or Retreat). - Shoot Command: The Yoke Fiend carries out a Ranged Attack.",
       "cost": {
-        "ducats": 30,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -44494,7 +44586,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "You must take a Cast Spell ACTION with the spellcaster in order for it to cast this spell. If you do so, you can carry out one of the following Commands with a Yoke Fiend that is within 18\" of the spellcaster. Carrying out a Command does not stop the Yoke Fiend from being Activated in the same Turn (before or after the Command was issued). - Sacrifice Command: The Yoke Fiend kills itself. It is taken Out of Action and crossed off its Warband Roster. - Fight Command: The Yoke Fiend carries out a Melee Attack. - Move Command: The Yoke Fiend carries out a Move (it cannot Charge or Retreat). - Shoot Command: The Yoke Fiend carries out a Ranged Attack.",
       "cost": {
-        "ducats": 105,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -44658,7 +44750,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "Touch of the Void: Before making an Injury Roll for an attack made with a Void Blade, you must choose if the roll will have the +2 INJURY DICE Keyword or the IGNORE ARMOUR Keyword.",
       "cost": {
-        "ducats": 95,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -45519,7 +45611,7 @@ export const DATASET: Dataset = {
         "RISKY"
       ],
       "cost": {
-        "ducats": 145,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -45727,7 +45819,7 @@ export const DATASET: Dataset = {
         "RISKY"
       ],
       "cost": {
-        "ducats": 145,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -45940,7 +46032,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "* Duck: Add -1 INJURY DICE to the roll for a model that is hit by an Infernal Bomb if it is in contact with a terrain piece that is at least ½\" tall and that lies in between it and the target point. * Infernal Strike: If the Success Roll for a Ranged Attack with an Infernal Bomb that targets an enemy model is a Success or a Critical Success, or if the attack is a Failure and the target point scatters onto a model's base, apply the effect of the DEADLY Keyword to the Injury Roll for that model. Injury Rolls for other models caught in the Infernal Bomb’s BLAST are made normally. * Mighty Explosion: If a model that has been hit by an Infernal Bomb is not taken Out of Action by the Injury Roll, it is blown away D3” in a straight line by the explosion, even if the model has been taken Down by the Injury Roll. Roll separately for each model to see how far it is blown away by an Infernal Bomb. If the model was the target of the attack, it is blown directly away from the Artillery Witch. If the model was caught in the Blast of the weapon, it is blown directly away from the target point. The model stops if it is blown into another model, Impassable terrain, or terrain it cannot cross without having to Climb.",
       "cost": {
-        "ducats": 100,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -46257,7 +46349,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "Choking Gas: If a model that has been hit by a Gas Bomb is not taken Out of Action by the Injury Roll, it staggers D3” in a straight line trying to get away from the gas cloud. Roll separately for each model to see how far it staggers. If the model was the target of the attack, it staggers in a direction chosen by the player making the attack. If the model was caught in the Blast of the weapon, it staggers directly away from the target point. The model stops if it staggers into another model, Impassable terrain, or a terrain piece it cannot cross without having to Climb.",
       "cost": {
-        "ducats": 100,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -46572,7 +46664,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "* Duck: Add -1 INJURY DICE to the roll for a model that is hit by a Phosphor Bomb if it is in contact with a terrain piece that is at least ½\" tall and that lies in between it and the target point. * Phosphorous Strike: If a model was the target for a Phosphor Bomb and hit by it, or if a Phosphor Bomb scatters and the target point lands on a model's base, when you make the Injury Roll for that model, roll 3D6 and add all 3 dice together. Any +INJURY DICE or -INJURY DICE that applied to the Injury Roll will apply normally, except that you pick the 3 highest or lowest dice in the roll instead of the 2 highest or lowest. Additionally, it applies an additional +1 BLOOD MARKER to that model. Injury Rolls for other models caught in the Phosphor Bomb’s BLAST are made normally. * Mighty Explosion: If a model that has been hit by a Phosphor Bomb is not taken Out of Action by the Injury Roll, it is blown away D3\" in a straight line by the explosion. Roll separately for each model to see how far it is blown away by a Phosphor Bomb. If the model was the target of the attack, it is blown directly away from the Artillery Witch. If the model was caught in the Blast of the weapon, it is blown directly away from the target point. The model stops if it is blown into another model, Impassable terrain, or terrain it cannot cross without having to Climb.",
       "cost": {
-        "ducats": 100,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -52125,7 +52217,7 @@ export const DATASET: Dataset = {
       "range": "Melee",
       "keywords": [],
       "cost": {
-        "ducats": 75,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -52201,7 +52293,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "-",
       "cost": {
-        "ducats": 140,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -52380,7 +52472,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "-",
       "cost": {
-        "ducats": 140,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -52561,7 +52653,7 @@ export const DATASET: Dataset = {
       "rules": "Attacks made against model with the keywords DEMONIC, HERETIC, and BLACK GRAIL add +1 INJURY DICE.",
       "cost": {
         "ducats": 0,
-        "glory": 7
+        "glory": 0
       },
       "constraints": [
         {
@@ -53041,7 +53133,7 @@ export const DATASET: Dataset = {
       "rules": "Counts as Combat Helmet and Gas Mask (immune to GAS and SHRAPNEL)",
       "cost": {
         "ducats": 0,
-        "glory": 3
+        "glory": 0
       },
       "constraints": [
         {
@@ -53099,7 +53191,7 @@ export const DATASET: Dataset = {
       "rules": "Witchburners are well aware of the dignity of their status. A Witchburner cannot take a Dash ACTION.",
       "cost": {
         "ducats": 0,
-        "glory": 5
+        "glory": 0
       },
       "constraints": [
         {
@@ -53157,7 +53249,7 @@ export const DATASET: Dataset = {
       "rules": "ACTION: A Witchburner can take a Divine Judgement ACTION. If they do so, take a Risky Success Roll for the Witchburner. If the roll is a Failure, the Witchburner’s Activation ends. If the roll is a Success or a Critical Success, pick 1 enemy model within 24\" of the Witchburner (no Line of Sight is required) and place 1 BLOOD MARKER next to them. If the enemy model has the BLACK GRAIL, DEMONIC, or HERETIC Keyword, place 2 BLOOD MARKERS next to it instead of 1.",
       "cost": {
         "ducats": 0,
-        "glory": 5
+        "glory": 0
       },
       "constraints": [
         {
@@ -53217,7 +53309,7 @@ export const DATASET: Dataset = {
       "rules": "Wrath of God: After making the Injury Roll for a Gavel of Justice, place 1 extra BLOOD MARKER next to the target model (even if the Injury Roll has No Effect). If the target has the BLACK GRAIL, DEMONIC, or HERETIC Keyword, place 2 BLOOD MARKERS next to it instead of 1.",
       "cost": {
         "ducats": 0,
-        "glory": 5
+        "glory": 0
       },
       "constraints": [
         {
@@ -53514,7 +53606,7 @@ export const DATASET: Dataset = {
       "rules": "-",
       "cost": {
         "ducats": 0,
-        "glory": 1
+        "glory": 0
       },
       "constraints": [
         {
@@ -53636,7 +53728,7 @@ export const DATASET: Dataset = {
       "rules": "Pain Amplifier: Lower the roll needed to achieve a Critical Success for a Melee Attack made by this weapon by 1 for each BLOOD MARKER next to the target by 1 (so an enemy with 1 BLOOD MARKER will suffer a Critical Success on a roll of 11+). Inflict Pain: If an attack made by this weapon against a target, without the ARTIFICIAL Keyword and mounted on a 40mm base or smaller is, a Critical Success, but the target is not taken Out of Action, then the target will move D3\" in a straight line directly away from the attacking model. It will stop if it moves into a friendly model, Impassable Terrain, a terrain piece it cannot cross without having to Climb, or immediately before it would move within 1\" of an enemy model other than the attacker. If the target model would finish the move more than 1\" from the attacking model, then the attacking model and any other models within 1\" of the target model can make an additional Melee Attack on it before it is moved, as if the target were carrying out a retreat move. If this causes the model to move a second time, add D3\" to the distance it is moved but do not attack it again.",
       "cost": {
         "ducats": 0,
-        "glory": 3
+        "glory": 0
       },
       "constraints": [
         {
@@ -53859,7 +53951,7 @@ export const DATASET: Dataset = {
       "rules": "-",
       "cost": {
         "ducats": 0,
-        "glory": 4
+        "glory": 0
       },
       "constraints": [],
       "modifiers": [
@@ -56469,7 +56561,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "Ballistic Box Armour: Add -1 INJURY DICE to Injury Rolls for a model that has Engineer Body Armour that has been hit by an attack with the SHRAPNEL Keyword.",
       "cost": {
-        "ducats": 80,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -57118,7 +57210,7 @@ export const DATASET: Dataset = {
       "range": "Melee",
       "keywords": [],
       "cost": {
-        "ducats": 35,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -57248,7 +57340,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "No infiltrator can be placed within 12” of a Guard Dog, and you can charge any enemy within 4” of this dog even if it is out of sight.",
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -57274,7 +57366,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "Mercy dogs can also drag any model within 1” that is Down at ½ speed with them, both with normal movement or when dashing.",
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -57300,7 +57392,7 @@ export const DATASET: Dataset = {
       "keywords": [],
       "rules": "Mercy dogs carry a Medi-Kit which can be used by any friendly model on themselves within 1” of the dog",
       "cost": {
-        "ducats": 5,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -59543,7 +59635,7 @@ export const DATASET: Dataset = {
       "range": "Melee",
       "keywords": [],
       "cost": {
-        "ducats": 20,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [],
@@ -59676,7 +59768,7 @@ export const DATASET: Dataset = {
         "RISKY"
       ],
       "cost": {
-        "ducats": 140,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -59838,7 +59930,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "If an attack would normally ignore armour, Runeforged Armour still grants a -1 INJURY MODIFIER.",
       "cost": {
-        "ducats": 120,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
@@ -59889,7 +59981,7 @@ export const DATASET: Dataset = {
       ],
       "rules": "Massive: The Improvised Melee Weapon rolls on the Injury Chart with 3D6 (instead of usual 2D6), adding all three dice together!",
       "cost": {
-        "ducats": 140,
+        "ducats": 0,
         "glory": 0
       },
       "constraints": [
