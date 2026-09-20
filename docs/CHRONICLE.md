@@ -26,7 +26,29 @@ outside a campaign recorded nothing whatsoever.
 - they answer different questions. `MatchRecord` says what a battle did to a
   campaign. `BattleRecord` says what happened in it.
 
-Where both exist they are linked by `campaignMatchId`.
+Where both exist they are linked by `campaignMatchId`, set when the
+post-battle wizard commits.
+
+> **This sentence was aspirational until 2026-09-20.** The field was declared
+> on `BattleRecord`, carried in the cloud sync payload, accepted by the battles
+> API schema and taken as an option by `battleFromMatch` — and **no caller
+> passed it**, so it was absent on every record ever written. The two halves of
+> one game were therefore unjoinable, and they disagreed: the Chronicle's
+> result was measured off Victory Points, the campaign's was typed into a box
+> that defaulted to Victory whatever the score. The Campaign Hub reads the
+> second, the Chronicle the first, and neither knew the other existed. See
+> RR-22 and RR-23 in the rules review.
+>
+> A link nothing populates is indistinguishable from no link, which is why
+> `src/store/__tests__/battleMatchLink.test.ts` asserts the stamped id rather
+> than the field's existence.
+
+The post-battle wizard also **opens on the battle it follows**: the scenario,
+the result read off the Victory Points, the opposing side's name and which
+models were left in the Arsenal all come from the record written one line
+earlier, via `rules/matchHandover.ts`. They seed the wizard and the player can
+change any of them; what changed is that they no longer start at a fixed value
+with the real answer sitting unread in the Chronicle.
 
 ## Three decisions worth knowing
 

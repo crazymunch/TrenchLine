@@ -376,7 +376,8 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       narrativeReport,
       mvpUnitName,
       opponentWarbandName,
-      notableMoments
+      notableMoments,
+      battleId
     ) => {
       const state = get();
       const activeWb = state.getActiveWarband();
@@ -684,6 +685,26 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       };
 
       storage.saveCampaign(updatedCampaign);
+
+      /*
+        Join the two records of this one game.
+
+        Play Mode writes a scored `BattleRecord` to the Chronicle and this
+        writes a typed `MatchRecord` to the campaign; the Campaign Hub reads
+        the second and the Chronicle the first, and neither knew the other
+        existed. `BattleRecord.campaignMatchId` was built for exactly this —
+        it is in the type, the sync payload, the API schema and
+        `battleFromMatch`'s options — and no caller had ever set it (RR-23).
+
+        Read back and rewritten rather than held in memory, because the battle
+        was stored before this wizard opened and may have been pushed to the
+        cloud in between; `addBattle` replaces by id, so this updates the one
+        record rather than adding a second.
+      */
+      if (battleId) {
+        const battle = storage.getBattles().find((b) => b.id === battleId);
+        if (battle) storage.addBattle({ ...battle, campaignMatchId: matchId });
+      }
 
       set({
         warbands: updatedWarbands,

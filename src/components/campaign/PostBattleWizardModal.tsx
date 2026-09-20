@@ -14,6 +14,7 @@ import {
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries, traumaWriteFor,
 } from '../../rules/trauma';
 import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rules/capture';
+import type { MatchHandover } from '../../rules/matchHandover';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import type { ExplorationTableName } from '../../types/catalogue';
@@ -32,10 +33,18 @@ import {
 import { opponentLabel } from '@/types/opponent';
 
 interface PostBattleWizardModalProps {
+  /**
+   * What the match this follows already recorded.
+   *
+   * Absent where the wizard is opened outside Play Mode, and the screen then
+   * starts empty exactly as it used to — it is a starting point, never a
+   * substitute for one (RR-22).
+   */
+  handover?: MatchHandover | null;
   onClose: () => void;
 }
 
-export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ onClose }) => {
+export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ handover, onClose }) => {
   const {
     getActiveWarband, applyPostBattleResults, campaign, setCampaignHouseRule,
     claimEarnedRecruitment, opponents, factions,
@@ -106,15 +115,26 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
   const variantReinforcementGlory =
     dataset ? reinforcementGlory(dataset, warband?.variantId) : 0;
   const reinforcementBonus = tookReinforcements ? variantReinforcementGlory : 0;
-  // Empty until the dataset loads; `scenario` below falls back to the first.
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string>('');
-  const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>('Victory');
+  /*
+    Seeded from the match this follows, where there was one.
+
+    All three of these used to start at a fixed value with the real answer
+    sitting in a record written one line earlier: the scenario fell back to the
+    first in the list, the result was Victory whatever the score, and the
+    opponent was an empty box. Where they default, they commit (RR-22).
+
+    `useState`'s initial value, not an effect: the handover is fixed for the
+    life of this wizard, and re-seeding on a later render would overwrite an
+    answer the player had already corrected.
+  */
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string>(handover?.scenarioId ?? '');
+  const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>(handover?.result ?? 'Victory');
   const [gloryGained, setGloryGained] = useState<number>(3);
   const [ducatsGained, setDucatsGained] = useState<number>(30);
   const [narrativeLog] = useState<string>('');
   
   // Narrative & Battle Report Fields
-  const [opponentWarbandName, setOpponentWarbandName] = useState<string>('');
+  const [opponentWarbandName, setOpponentWarbandName] = useState<string>(handover?.opponentName ?? '');
   const [mvpUnitName, setMvpUnitName] = useState<string>('');
   const [battleReportText, setBattleReportText] = useState<string>('');
 
@@ -154,7 +174,17 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
     own — so this is the one place a player can say otherwise, and the
     Experience rule ("took part in a game") needs the answer.
   */
-  const [satOut, setSatOut] = useState<Record<string, boolean>>({});
+  /*
+    Ticked for the models Play Mode did not deploy.
+
+    This started empty for every model, although the tracker knew exactly who
+    had been on the table — so a model left in the Arsenal earned its
+    Experience Point unless the player remembered to tick it by hand. The
+    player can still change any of them; what changed is which way they start.
+  */
+  const [satOut, setSatOut] = useState<Record<string, boolean>>(
+    () => Object.fromEntries((handover?.satOutUnitIds ?? []).map((id) => [id, true])),
+  );
 
   // Advancements
   const [unitAdvancements, setUnitAdvancements] = useState<Record<string, string>>({});
@@ -517,7 +547,12 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ on
       narrativeLog,
       battleReportText.trim().length > 0 ? battleReportText : undefined,
       mvpUnitName.trim().length > 0 ? mvpUnitName : undefined,
-      opponentWarbandName.trim().length > 0 ? opponentWarbandName : undefined
+      opponentWarbandName.trim().length > 0 ? opponentWarbandName : undefined,
+      /* notableMoments — nothing collects them yet. */
+      undefined,
+      /* Joins this MatchRecord to the Chronicle's BattleRecord for the same
+         game, which is what stops the two disagreeing (RR-23). */
+      handover?.battleId,
     );
   };
 
