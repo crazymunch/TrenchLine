@@ -32,6 +32,8 @@ carry, and what these designs cover:
 | FD-06 | RR-05 | the wizard's Promotions step, Play Mode's deed claim, `parse-campaign.mjs` |
 | FD-07 | RR-10 | the wizard's Exploration step |
 | FD-08 | DA-01, DA-02 | `scripts/lib/parse-battlescribe.mjs`, `src/rules/applyVariant.ts`, `src/rules/recruitable.ts` |
+| FD-09 | RR-17, RR-27 | the campaign store, Play Mode's end of match, the Chronicle record |
+| FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
 
 ## FD-00. PR #59 as it stands
 
@@ -685,6 +687,121 @@ Winged Thrall. `docs/RULESET-MODEL.md` (`hidden` on abilities,
 `secondaryProfile` from the catalogues), `docs/ROSTER-PATHS.md` if it names
 the Thrall sub-entries.
 
+## FD-09. RR-17 and RR-27: one game counter, and a post-game for every side
+
+### Root cause
+
+RR-17. `currentTurn` has two writers, `applyPostBattleResults`
+(`src/store/slices/campaign.ts` line 667) and `logCampaignMatch` (line 982),
+and each adds one. Neither queues a `campaign.settings` op; the only writer
+of that op is the house-rules toggle (line 893). `docs/CAMPAIGN-SYNC.md`'s
+authority table gives the turn number to the organiser. So three things go
+wrong at once: a member's own post-battle moves a campaign-wide number, two
+members each committing game 1 leave the counter reading 3, and the value
+never reaches the cloud, so adoption (line 195, `currentTurn:
+theirs.currentTurn`) puts it back. Every Threshold and Exploration band reads
+this number through `campaignGameOf`.
+
+RR-27. `handleEndMatch` (`src/components/play/PlayModeView.tsx`, #59 line
+435) builds the handover for `primaryWarband` and opens one wizard. A side
+that is another of the player's own warbands, or another user's in a hosted
+match, gets no Trauma, no Experience and no Exploration; the Chronicle has
+the game and the campaign does not. `BattleRecord.campaignMatchId` (#59,
+RR-23) is one id per battle, which cannot hold two sides' post-battles.
+
+### The change
+
+1. **One writer.** `currentGame` is written only by
+   `advanceCampaignGame()`, an organiser action in the Hub ("Start game
+   N+1"), which queues `campaign.settings` with `{ currentGame }`. The two
+   increments go. Adoption keeps taking the server's value, which is now the
+   right one. An organiser setting `autoAdvance`, on by default for a
+   campaign with one member, advances the game when every member has a
+   `post_battle` snapshot for the current game.
+2. **The game a warband is on** stays `campaignGameOf`, with its documented
+   latecomer decision; nothing per warband changes.
+3. **Per-side links.** `BattleRecord.campaignMatchIds?: Record<sideId,
+   matchId>` replaces the single id; the old field is read as the primary
+   side's entry. `BattleSide.deployedUnitIds?: string[]` is written from Play
+   Mode's `deployedUnitIds` (line 149) so a post-battle run later, or
+   elsewhere, still knows who sat out.
+4. **Local sides.** After the wizard commits, if another side is a warband in
+   the local store with no entry in `campaignMatchIds`, Play Mode offers
+   "Post-battle for <name>": it sets that warband active and opens the wizard
+   with `matchHandover(battle, { ownSideId: thatId, ... })`. It repeats until
+   every local side is linked or the player declines.
+5. **Remote sides.** The Chronicle already syncs the record. When a client
+   holds a battle where one of its own warbands is a side with no entry in
+   `campaignMatchIds`, the Campaign Hub lists it under "Unresolved battles"
+   with a button that opens the wizard on that handover. Placeholder sides
+   get nothing; they have no roster.
+
+### The test
+
+A post-battle commit leaves `currentGame` unchanged and queues no settings
+op; `advanceCampaignGame` queues exactly one with the next number; two
+members' commits do not move it; `autoAdvance` moves it once both have a
+snapshot for the game. A battle with two local sides yields two match
+records and both ids on the record; the unresolved list holds a battle until
+its side is linked and not after; deployed ids round-trip through the
+record and seed `satOutUnitIds`.
+
+### Acceptance
+
+`docs/CAMPAIGN-SYNC.md` (the counter's single writer and op),
+`docs/CHRONICLE.md` (`campaignMatchIds`, `deployedUnitIds`, the unresolved
+list), `docs/FEATURES.md`.
+
+## FD-10. RR-13, RR-14 and RR-09: what the Quartermaster Step still lacks
+
+Three small things and one branch, each its own PR, after FD-05.
+
+### RR-13: `Limit: N` counts the Arsenal
+
+`rules/validate.ts` lines 203 to 215 build `rosterCounts` from each unit's
+`items`; `roster.stash` (`rules/fromWarband.ts` lines 279 to 289) is not
+counted. Page 123, lines 7234 to 7238, counts "in its Arsenal and/or equipped
+by a model". Add the stash to the count. Test: one equipped and one stashed
+copy of a Limit 2 item refuse a third purchase, and a copy sold back allows
+it again.
+
+### RR-14: retiring at two Battle Scars
+
+Page 123, lines 7214 to 7218. After FD-05a and FD-05c: a "Retire" action on
+a unit card with two or more scars moves the model to `fallen` with
+`retired: true` and its kit to the Arsenal, or sold at half rounded up
+through the ledger. Test: a model with one scar has no action; with two the
+action appears; retiring with "sell" credits the ledger `ceil(cost / 2)`.
+
+### RR-14: Glory Items behind their gate
+
+Page 125, lines 7373 to 7381: Glory Items are bought only after an
+Exploration discovery permits it (Trench Merchant, Black Market, Black
+Network), from the faction's Glory Item Table with its own stipulations.
+`warband.explorationEffects` (FD-07) records the gate as an effect with the
+Location's name; `armouryFor` exposes the Glory rows only when one is
+present; each row's stipulation is read from the table as `restrictions`
+are today. Test: a warband with no effect sees no Glory rows; one with the
+Trench Merchant effect sees them; a "Limit: 1" Glory Item refuses a second.
+
+### RR-14: the campaign scenario tables
+
+Page 96, lines 5350 to 5384: Early (games 1 to 3), Mid (4 to 8), Endgame (9
+to 11) D6 tables and the Great War at 12. Parse them into
+`campaign.scenarioTables` in `parse-campaign.mjs` and have the Mission
+Generator offer "Roll for game N" from `campaignGameOf`. Test: the three
+tables cover 1 to 6 each, name only scenarios the dataset holds, and game 12
+returns the Great War.
+
+### RR-09: the Carcass Front branch
+
+`rules/campaign.ts` implements the Carcass Front Exploration Step
+(`resolveCarcassFrontExploration`, `hasThreeOfAKind`, `carcassFrontResources`)
+with no caller. The wizard's step 5 branches on `campaign.framework ===
+'carcass-front'`: three dice, three of a kind, the resource result, loot at
+the supplement's rate. Test: a Carcass Front warband's step never calls
+`resolveExploration` and its loot is the supplement's, read from the dataset.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -693,5 +810,5 @@ the Thrall sub-entries.
 3. FD-04, then FD-06, then FD-03. All change the wizard's later steps; #59
    changed its first step, so they rebase cleanly once it has merged.
 4. FD-05a, FD-05b, FD-05c, in that order, one PR each.
-5. FD-07, then FD-08.
-6. Then RR-09, RR-13, DA-03/05/04, and the rest of the two lists.
+5. FD-07, then FD-08, then FD-09.
+6. FD-10, one PR per heading, and then DA-03/05/04 and the rest of the two lists.
