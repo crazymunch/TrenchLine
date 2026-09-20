@@ -13,6 +13,7 @@ import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries, traumaWriteFor,
 } from '../../rules/trauma';
+import { cappedExperience, experienceCap } from '../../rules/promotions';
 import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rules/capture';
 import type { MatchHandover } from '../../rules/matchHandover';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
@@ -424,13 +425,29 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     const override = unitId in eliteOverrides
       ? { ...u, profileSnapshot: { ...u.profileSnapshot, elite: eliteOverrides[unitId] } }
       : u;
-    return earnsExperience(override, {
+    const verdict = earnsExperience(override, {
       tookPart: !satOut[unitId],
       /* An executed captive died; a ransomed one is a Full Recovery and earns
          its point like any other survivor. */
       died: diedInStep(unitId),
       xpBarringInjuries: barring,
     });
+    /*
+      Limited Potential: "The following models cannot have more than 7
+      Experience Points" (p.111). A model at its cap earns nothing, and is
+      listed with everyone else who earns nothing so the player can see why
+      rather than watching a number fail to move.
+    */
+    if (verdict.earns && cappedExperience(dataset, u, 1).withheld > 0) {
+      return { earns: false as const, blocked: 'at-experience-cap' as const };
+    }
+    return verdict;
+  };
+
+  /** The cap a model is sitting on, for the sentence that explains it. */
+  const capFor = (unitId: string) => {
+    const u = warband.units.find((x) => x.id === unitId);
+    return u ? experienceCap(dataset, u) : null;
   };
 
   /** Why a model earns nothing, in the rule's terms rather than the code's. */
@@ -440,6 +457,19 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     died: 'did not survive the game',
     'head-wound': 'Head Wound — can no longer gain Experience Points',
     'elite-unknown': 'ELITE status not recorded — resolve it in the Trauma Step',
+    'at-experience-cap': 'LIMITED POTENTIAL — already at its Experience maximum',
+  };
+
+  /**
+   * The sentence for a model that earns nothing, with the cap's own number in
+   * it where that is the reason. "already at its Experience maximum" invites
+   * the question the rule already answers.
+   */
+  const xpReasonFor = (unitId: string, blocked: string | undefined) => {
+    const base = XP_REASON[blocked ?? ''] ?? blocked;
+    if (blocked !== 'at-experience-cap') return base;
+    const cap = capFor(unitId);
+    return cap == null ? base : `LIMITED POTENTIAL — capped at ${cap} Experience Points`;
   };
 
   /**
@@ -534,7 +564,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       return {
         unitId: u.id,
         earns: verdict.earns,
-        ...(verdict.earns ? {} : { reason: XP_REASON[verdict.blocked ?? ''] ?? verdict.blocked }),
+        ...(verdict.earns ? {} : { reason: xpReasonFor(u.id, verdict.blocked) }),
       };
     });
 
@@ -1166,7 +1196,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
               <div className="space-y-3">
                 {warband.units.map((unit) => {
                   const xp = experienceFor(unit.id);
-                  const reason = xp.earns ? null : (XP_REASON[xp.blocked ?? ''] ?? xp.blocked);
+                  const reason = xp.earns ? null : xpReasonFor(unit.id, xp.blocked);
                   return (
                   <div key={unit.id} className="p-3 bg-theme-elevated border border-theme-border rounded space-y-2">
                     <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">

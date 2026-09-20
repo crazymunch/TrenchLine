@@ -23,7 +23,8 @@ import { parseWarbandEntries, parseVariants, parseArmouryTables, parseFactionRul
 import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable, parseExperienceTrack,
          parseCampaignPhaseSteps, parseTraumaProcedure,
-         parseReinforcementsSequence } from './lib/parse-campaign.mjs';
+         parseReinforcementsSequence, parsePromotions,
+         promotionKeywordDrift } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
 import { parseMarkers } from './lib/parse-markers.mjs';
@@ -782,6 +783,24 @@ for (const ruleset of RULESETS) {
        * Quartermaster, which a four-step sequence cannot express.
        */
       phaseSteps: parseCampaignPhaseSteps(),
+      /**
+       * Who may be Promoted, and how much Experience a model may hold.
+       *
+       * The app had neither bound. Promotion was a free switch on the unit
+       * card, so a Warband could promote a model the book forbids and could
+       * hold any number of ELITE models; and Experience was granted with no
+       * cap, so a LIMITED POTENTIAL model went past the 7 the book allows.
+       *
+       * The dice half of the step — the Promotion Dice Pool, its assignment
+       * rule and the five-miss counter — is derived separately, with the step
+       * that rolls it. See docs/RULES-COVERAGE-AUDIT.md RR-05.
+       */
+      promotions: parsePromotions(
+        factionRules.map((f) => ({
+          id: f.faction.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+          name: f.faction,
+        })),
+        base.units),
     },
     meta: {
       rulesetId: ruleset.id,
@@ -1581,6 +1600,22 @@ for (const ruleset of RULESETS) {
     number moves, a model that used to be exportable has stopped being one, and
     that is worth a line on the console rather than a silent shrink.
   */
+  /*
+    Limited Potential, cross-checked against the units as shipped.
+
+    The rulebook's table and the catalogue's keyword agree on all seven models
+    until `dispatch-01` rewrites the Brazen Bull's keyword row without it. That
+    is precedence working, not a fault — so the build states the difference and
+    leaves it standing.
+  */
+  const drift = promotionKeywordDrift(dataset.campaign?.promotions, dataset.units);
+  if (drift.length) {
+    console.log(`  Limited Potential: ${drift.length} model(s) where the rulebook's `
+      + 'table and the shipped keywords differ:');
+    for (const d of drift) console.log(`      ${d}`);
+    console.log('      Precedence decides; experienceCap reads the keyword.');
+  }
+
   console.log(`  roster paths: ${rosterPaths.units.length} unit(s) and `
     + `${rosterPaths.variants.length} variant(s) mapped, ${rosterPaths.unmapped.length} `
     + 'without a BattleScribe identity');

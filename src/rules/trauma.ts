@@ -320,7 +320,11 @@ export function traumaWriteFor(
  */
 export interface XpVerdict {
   earns: boolean;
-  blocked?: 'not-elite' | 'did-not-take-part' | 'died' | 'head-wound' | 'elite-unknown';
+  blocked?: 'not-elite' | 'did-not-take-part' | 'died' | 'head-wound' | 'elite-unknown'
+  /* LIMITED POTENTIAL, and already at the cap. Decided by `experienceCap` in
+     rules/promotions.ts, because the cap is read from the model's keyword and
+     that needs the dataset, which this function does not take. */
+  | 'at-experience-cap';
 }
 
 /**

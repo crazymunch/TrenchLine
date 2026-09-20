@@ -1231,3 +1231,376 @@ export function parseReinforcementsSequence(src = RULEBOOK_TXT) {
       'that Exploration and the Quartermaster are forgone'),
   };
 }
+
+/* ------------------------------------------------------------------ *
+ * Promotions & Experience Step — who may be promoted, and how much
+ * Experience a model may hold.
+ * ------------------------------------------------------------------ */
+
+/**
+ * The book prints two faction-by-faction tables in exactly the same shape:
+ * `Models That Cannot Be Promoted` (p.107) and `Limited Potential` (p.111).
+ *
+ * Each is a preamble, then six blocks of a faction heading followed by one
+ * line of comma-separated model names, or a bare `-` where the faction has
+ * none. Both end at a two-or-three-letter page mark (`MG`, `GD`) and the
+ * chapter sidebar, which is the same class of artefact as the `PW` mark FD-01
+ * removed from the Battlekit tables.
+ *
+ * The preamble is NOT the anchor, because the two tables wrap differently:
+ * p.107 ends its preamble on its own line, and p.111 runs the last sentence
+ * on from the one before and breaks in the middle of it
+ * (`…cannot have more than` / `7 Experience Points.`). Anchoring on a
+ * sentence that survives one reflow and not the other is how a parser comes
+ * to read a page number as a faction.
+ *
+ * So the scan starts at the heading and collects from the first line that
+ * resolves to a dataset faction — the preamble, however it wrapped, resolves
+ * to none. `-` yields an empty list, which is a real answer: two factions
+ * have no model in either table.
+ *
+ * Returns `[{ faction, names }]` in the book's order. The faction is the
+ * book's own heading, verbatim, so that a later failure reports the words on
+ * the page rather than a slug nobody can find there.
+ */
+function parseFactionModelTable(lines, heading, factions) {
+  /*
+    The heading appears twice — once in the chapter sidebar's running list,
+    once over the table. The table's copy is the one with faction headings
+    under it, which is what the scan below requires, so both are tried in
+    order and the first that yields rows wins.
+  */
+  const heads = lines
+    .map((l, i) => (heading.test(l.trim()) ? i : -1))
+    .filter((i) => i >= 0);
+
+  for (const at of heads) {
+    const out = [];
+    for (let i = at + 1; i < Math.min(at + 60, lines.length); i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+      /* The page mark closes the table and opens the sidebar. */
+      if (/^[A-Z]{2,3}$/.test(line)) break;
+      if (/^--\s*\d+\s+of\s+\d+\s*--$/.test(line)) break;
+
+      if (!matchFaction(line, factions)) {
+        /* Still in the preamble. Once rows have started, a line that is not a
+           faction means the table has ended. */
+        if (out.length) break;
+        continue;
+      }
+
+      const names = (lines[i + 1] ?? '').trim();
+      if (!names) continue;
+      out.push({
+        faction: line,
+        names: names === '-' ? [] : names.split(',').map((n) => n.trim()).filter(Boolean),
+      });
+      i++;
+    }
+    if (out.length) return out;
+  }
+
+  throw new Error(
+    `parse-campaign: cannot find the "${heading.source}" table in the rulebook, `
+    + `or found the heading (${heads.length} time(s)) with no faction rows under it. `
+    + 'This table is the only statement of which models the rule covers, so an '
+    + 'empty one would read as "every model qualifies" rather than as a failure.');
+}
+
+/**
+ * Resolve the book's faction heading to a dataset faction id.
+ *
+ * The book writes them out in full — `The Sultanate of the Iron Wall`, `The
+ * Principality of New Antioch` — and the dataset keys them short:
+ * `iron-sultanate`, `new-antioch`. Neither is a prefix, a suffix or a
+ * substring of the other, and `The Cult of the Black Grail` differs from
+ * `cult-of-the-black-grail` only by a leading article. One string rule does
+ * not cover all six.
+ *
+ * What does: the dataset name's significant words are a subset of the book
+ * heading's. `{iron, sultanate} ⊂ {sultanate, iron, wall}` and `{new,
+ * antioch} ⊂ {principality, new, antioch}`, and each match is unique.
+ *
+ * Throws unless exactly one faction matches. A heading that matched none
+ * would silently drop a whole faction's models from the rule; one that
+ * matched two would apply another faction's list.
+ */
+const FACTION_STOP = new Set(['the', 'of', 'and']);
+
+/*
+  Faction labels are spelled three different ways in three places, and none of
+  the three is a substring of the others:
+
+    rulebook table   The Sultanate of the Iron Wall   The Cult of the Black Grail
+    faction list     Iron Sultanate                   Cult of the Black Grail
+    unit.factionId   Iron Sultanate                   Black Grail
+
+  The book is longest, the unit label is shortest, and the faction list sits
+  between them — so a one-directional rule gets one pair right and the other
+  wrong. Words are stemmed (`Legions` and `Legion` are the same faction) and
+  either side may be the subset.
+*/
+const factionWords = (s) => new Set(
+  String(s ?? '').toLowerCase().split(/[^a-z0-9]+/)
+    .filter((w) => w && !FACTION_STOP.has(w))
+    .map((w) => w.replace(/s$/, '')));
+
+const subset = (a, b) => [...a].every((x) => b.has(x));
+
+/**
+ * The one dataset faction a label names, or `null`.
+ *
+ * `null` for both "no faction" and "more than one", because a label that
+ * matches two factions is not a weaker answer than one that matches none — it
+ * is a worse one, and both must stop the caller.
+ */
+function matchFaction(label, factions) {
+  const mine = factionWords(label);
+  if (!mine.size) return null;
+  const hits = factions.filter((f) => {
+    const theirs = factionWords(f.name);
+    return theirs.size > 0 && (subset(theirs, mine) || subset(mine, theirs));
+  });
+  return hits.length === 1 ? hits[0] : null;
+}
+
+function resolveFactionHeading(heading, factions) {
+  const hit = matchFaction(heading, factions);
+  if (!hit) {
+    throw new Error(
+      `parse-campaign: the rulebook faction heading "${heading}" does not resolve `
+      + 'to exactly one dataset faction. Every heading in the Promotions tables must, '
+      + "because an unresolved heading silently drops that faction's models from the rule.");
+  }
+  return hit.id;
+}
+
+
+
+/**
+ * The book's model names, resolved to the units the dataset actually carries.
+ *
+ * The two vocabularies look further apart than they are. The catalogue holds
+ * both a selectionEntry name and a profile name for every model, and it is the
+ * ENTRY name the books print:
+ *
+ *   book                        entry                      profile
+ *   Anchorite Shrine            Anchorite Shrine           Anchorite
+ *   War Wolf Assault Beast      War Wolf Assault Beast     War Wolf
+ *   Grail Thralls               Grail Thrall               Thrall
+ *
+ * The dataset carried only the profile name, so three of these looked like
+ * models it did not have. Matching the entry name as well — see `entryName` in
+ * `parse-battlescribe.mjs` — resolves them from the source, with nothing
+ * written down by hand.
+ *
+ * What is left is genuine drift, and there is exactly one case of it: the
+ * book's `Fly Thralls` is the catalogue's `Winged Thrall`, a rename, not a
+ * spelling. That one is recorded with a citation on each side in
+ * `promotion-model-names.json`. Such a file says what the book's words refer
+ * to and never what a model costs or can do, so it is a name equivalence
+ * rather than game data — but it is still the kind of thing that rots, so the
+ * build fails if it names a pair that no longer needs reconciling.
+ *
+ * Case, punctuation, a parenthetical (`Homunculi (House of Wisdom)`) and a
+ * trailing plural are reduced here, because those are spellings of one name.
+ *
+ * Anything still unresolved throws, and both tables are reported together: a
+ * build that surfaces one missing name per run is a build nobody finishes.
+ */
+function resolveModelNames(rows, units, aliases, tableName, unresolved, usedAliases) {
+  const norm = (s) => String(s ?? '')
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')      // `Homunculi (House of Wisdom)`
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+  /*
+    Candidate spellings of one name, never a replacement for it: the original
+    is always in the set, so an extra rule can only add a way to match and
+    never take one away.
+
+    `Hounds of the Black Grail` pluralises mid-name, so the last word is not
+    always the one carrying the `s`; and `Homunculi` is the Latin plural of
+    the `Homunculus` the catalogue lists. Both are spellings of a single name,
+    which is why they are reduced here rather than written down as
+    equivalences.
+  */
+  const forms = (s) => {
+    const n = norm(s);
+    return new Set([n, n.replace(/s$/, ''), n.replace(/s\b/g, ''), n.replace(/i$/, 'us')]);
+  };
+  const overlap = (a, b) => [...a].some((x) => x && b.has(x));
+
+  return rows.map(({ faction, factionId, names }) => ({
+    faction,
+    factionId,
+    models: names.map((name) => {
+      const inFaction = units.filter((u) => u.factionSlug === factionId);
+      const key = `${factionId}::${name}`;
+      const alias = aliases[key];
+
+      const want = forms(name);
+      if (alias) { usedAliases.add(key); forms(alias.is).forEach((f) => want.add(f)); }
+
+      /* Either of the model's two names may be the one the book used. */
+      const hit = inFaction.find((u) =>
+        overlap(want, forms(u.name)) || (u.entryName && overlap(want, forms(u.entryName))));
+
+      if (!hit) unresolved.push(`${tableName}: ${faction} — "${name}"`);
+      return { name, unitId: hit?.id ?? null, unitName: hit?.name ?? null };
+    }),
+  }));
+}
+
+
+/**
+ * One bound, read from the sentence that states it.
+ *
+ * Run against the whole page rather than line by line: the Limited Potential
+ * cap breaks across a line in the middle of its own sentence
+ * (`…cannot have more than` / `7 Experience Points.`), so a per-line scan
+ * finds the words and not the number.
+ */
+function readNumber(text, re, what) {
+  const m = re.exec(text);
+  if (!m) {
+    throw new Error(
+      `parse-campaign: cannot read ${what} from the rulebook (${re.source}). `
+      + 'A missing bound must fail the build rather than default, because the '
+      + 'default a player would never notice is "no limit".');
+  }
+  return Number(m[1]);
+}
+
+
+/**
+ * The Promotions & Experience Step's eligibility rules.
+ *
+ * `poolBase`, `poolPerDeed`, `promoteOn` and `autoAfterMisses` are the dice
+ * half of the step and are derived separately, where the step that rolls them
+ * is built — see FD-06b. This reads the two bounds that apply before any dice
+ * are picked up:
+ *
+ *   maxElites    "Ignore the Promotion step completely if there are already 6
+ *                or more models with the ELITE Keyword…" (p.105)
+ *   maxXp        "The following models cannot have more than 7 Experience
+ *                Points." (p.111)
+ *
+ * and the two model lists that say who each applies to.
+ */
+export function parsePromotions(factions, units, {
+  src = RULEBOOK_TXT,
+  aliasSrc = 'data-sources/rulebook/promotion-model-names.json',
+} = {}) {
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
+  const aliases = JSON.parse(fs.readFileSync(aliasSrc, 'utf8')).names ?? {};
+  /* Joined, so a sentence that wrapped still reads as one. */
+  const text = lines.join(' ');
+  /* Units label their faction in their own spelling; resolve once, here, so
+     the three vocabularies meet in exactly one place. */
+  const withFaction = units.map((u) => ({
+    ...u, factionSlug: matchFaction(u.factionId, factions)?.id ?? null,
+  }));
+
+  const maxElites = readNumber(
+    text,
+    /there are already (\d+) or more models with the\s+ELITE Keyword/i,
+    'the Maximum Elites bound');
+
+  const maxXp = readNumber(
+    text,
+    /cannot have more than\s+(\d+) Experience Points/i,
+    'the Limited Potential Experience cap');
+
+  const withIds = (rows) => rows.map((r) => ({
+    faction: r.faction,
+    factionId: resolveFactionHeading(r.faction, factions),
+    names: r.names,
+  }));
+
+  const unresolved = [];
+  const usedAliases = new Set();
+
+  const cannotPromote = resolveModelNames(
+    withIds(parseFactionModelTable(lines, /^Models That Cannot Be Promoted$/i, factions)),
+    withFaction, aliases, 'Models That Cannot Be Promoted', unresolved, usedAliases);
+
+  const limitedPotential = resolveModelNames(
+    withIds(parseFactionModelTable(lines, /^Limited Potential$/i, factions)),
+    withFaction, aliases, 'Limited Potential', unresolved, usedAliases);
+
+  if (unresolved.length) {
+    throw new Error(
+      `parse-campaign: ${unresolved.length} model name(s) in the rulebook's `
+      + 'Promotions tables match no unit in the dataset:\n  '
+      + unresolved.join('\n  ')
+      + '\n\nEach must match a unit\'s profile or entry name, or be given a cited '
+      + 'equivalence in data-sources/rulebook/promotion-model-names.json. Dropping one '
+      + 'would let the app promote a model the book forbids, or lift a cap it imposes.');
+  }
+
+  /*
+    An equivalence that is no longer needed is a claim about the data that has
+    stopped being true — most likely because the catalogue renamed the model
+    back. Left in place it would go on asserting a reconciliation nobody can
+    check, so it fails the build the same way a missing one does.
+  */
+  const stale = Object.keys(aliases).filter((k) => !usedAliases.has(k));
+  if (stale.length) {
+    throw new Error(
+      'parse-campaign: promotion-model-names.json names '
+      + `${stale.length} equivalence(s) that nothing needed:\n  ${stale.join('\n  ')}\n\n`
+      + 'The book and the catalogue now agree on these, so the entry should be removed.');
+  }
+
+  return { maxElites, cannotPromote, limitedPotential: { maxXp, factions: limitedPotential } };
+}
+
+/**
+ * Where the rulebook's Limited Potential table and the shipped keywords differ.
+ *
+ * The rule is stated twice. The rulebook prints the p.111 table parsed above;
+ * the catalogue puts a LIMITED POTENTIAL keyword on the unit. They agree on
+ * all seven models — and then `dispatch-01` replaces the Brazen Bull's whole
+ * Warband Entry, and the keyword row it prints (p.10: SULTANATE ARTIFICIAL
+ * FEAR NEGATE SHRAPNEL STRONG TOUGH) has no LIMITED POTENTIAL in it.
+ *
+ * So the disagreement is not extraction drift and not a stale catalogue. It is
+ * the Trench Dispatch changing a model, which is what the Dispatch is for, and
+ * precedence — Dispatch over rulebook over catalogue — says the Brazen Bull's
+ * Experience is no longer capped.
+ *
+ * This must therefore run on the FINAL units, after layers. Run against the
+ * raw catalogue it compares the book with the book and reports nothing, which
+ * is the mistake that made this function necessary: the Brazen Bull's
+ * provenance still reads `Iron Sultanate.cat` because a layer that overwrites
+ * a field does not rewrite the entry's source, so the pre-layer keywords look
+ * like the shipped ones.
+ *
+ * Returns the differences in both directions, for the build to print. They are
+ * reported and not resolved: which source wins is precedence's business, and
+ * `experienceCap` applies it by reading the keyword.
+ */
+export function promotionKeywordDrift(promotions, units) {
+  const rows = promotions?.limitedPotential?.factions ?? [];
+  const has = (u) => (u?.keywords ?? [])
+    .some((k) => String(k).toUpperCase() === 'LIMITED POTENTIAL');
+  const named = new Map(rows.flatMap((f) => f.models.map((m) => [m.unitId, { ...m, faction: f.faction }])));
+
+  const out = [];
+  for (const [unitId, m] of named) {
+    const u = units.find((x) => x.id === unitId);
+    if (u && !has(u)) {
+      out.push(`the rulebook names "${m.name}" (${m.faction}) in its Limited Potential `
+        + `table, and the shipped ${u.name} carries no LIMITED POTENTIAL keyword`);
+    }
+  }
+  for (const u of units) {
+    if (has(u) && !named.has(u.id)) {
+      out.push(`${u.factionId} ${u.name} carries the LIMITED POTENTIAL keyword and the `
+        + "rulebook's Limited Potential table does not name it");
+    }
+  }
+  return out;
+}

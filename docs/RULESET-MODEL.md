@@ -577,6 +577,41 @@ Three renames result today: *Demonic Grenade* → *Demonic Aura Grenade*, *Call
 of Flesh* → *Call of the Flesh*, *War Cross* → *Warcross*. Each keeps
 `profileName` so the app's name can be traced back to the catalogue's.
 
+#### The same two names, on a unit
+
+Units have the problem too, and it bit in a different place. A unit shipped
+only its **profile** name, so a model the rulebook names by its **entry** could
+not be found from the rulebook's own words:
+
+| rulebook | selectionEntry | profile |
+| --- | --- | --- |
+| Anchorite Shrine | Anchorite Shrine | Anchorite |
+| War Wolf Assault Beast | War Wolf Assault Beast | War Wolf |
+| Grail Thralls | Grail Thrall | Thrall |
+
+`reconcileGearNames` is not the answer here: none of these is a spelling slip,
+each name contains the other, and both spellings are real and wanted. The unit
+simply carries `entryName` alongside `name` now — absent where the two agree,
+so its presence means *the books may call this model something else*.
+
+That resolved three of the four models the Promotions tables named and the
+dataset appeared not to have. Plural, parenthetical and Latin-plural spellings
+(`Hounds of the Black Grail`, `Homunculi (House of Wisdom)`) are reduced in the
+parser, because they are spellings of one name.
+
+One case is left, and it is not a spelling at all. The rulebook's `Fly Thralls`
+is the catalogue's **Winged Thrall** — a rename — and the catalogue reaches it
+through an *option* named `Winged` under the `Grail Thrall` entry, so neither
+of the unit's two names is the book's. A matcher loose enough to bridge that
+would mismatch half the table, so it is recorded instead, with a citation on
+each side, in `data-sources/rulebook/promotion-model-names.json`.
+
+That file states **name equivalences only** — never a cost, a statline, a
+keyword or a constraint. Both directions fail the build: a book name that
+resolves to nothing, and an equivalence that nothing needs any more. The second
+matters as much as the first, because an equivalence that has outlived its
+drift is a claim about the data that has quietly stopped being true.
+
 **An unresolved layer op now fails the build.** It used to print and carry on,
 under a comment that already said why that was wrong — "a published rule the
 app does not have — the one thing this pipeline exists to make visible" — while
@@ -643,6 +678,26 @@ the catalogues because the catalogues are a community transcription of it.
 > these were drift, not errata the app was behind on. All twenty-two rows now
 > come from the rulebook and the catalogue supplies row names and a drift
 > report. See RR-01 in the rules review, opened separately as PR #58.
+
+> **Limited Potential, and the Brazen Bull: precedence working.** The rule is
+> stated twice. The rulebook prints a table of seven models on p.111 that
+> *"cannot have more than 7 Experience Points"*; the catalogue puts a
+> `LIMITED POTENTIAL` keyword on the unit. The two agree on all seven — and
+> then `dispatch-01` **replaces the Brazen Bull's whole Warband Entry**, and
+> the keyword row it prints (p.10: SULTANATE ARTIFICIAL FEAR NEGATE SHRAPNEL
+> STRONG TOUGH) has no `LIMITED POTENTIAL` in it. This is not drift and not a
+> stale catalogue: it is the Dispatch changing a model, which is what the
+> Dispatch is for, so the Bull's Experience is no longer capped.
+>
+> The consequence for code is that `experienceCap` reads the **keyword**, not
+> the rulebook's table, because only the keyword carries the layer. The table
+> still ships as `campaign.promotions.limitedPotential` — provenance and a
+> cross-check — and `promotionKeywordDrift` prints any model the two disagree
+> about on every build, so a future divergence is visible rather than silently
+> preferred. Note also that the pre-layer catalogue is the wrong thing to
+> compare against: a layer that overwrites a field does not rewrite the entry's
+> `sourceFile`, so the Bull's provenance still reads `Iron Sultanate.cat` and
+> its unlayered keywords still include the one the Dispatch removed.
 
 > **On the Dispatch's status:** the document describes itself as *"an unofficial,
 > fan-made digital rules update… not affiliated with or endorsed by Factory
@@ -713,6 +768,46 @@ to one model at build-a-roster time rather than to the dataset at build time.
 One engine, two uses.
 
 ---
+
+### `campaign.promotions` — who may be Promoted, and how much Experience
+
+Derived from rulebook pp.105–111 by `parsePromotions`. It carries the two
+bounds that apply *before* any dice are picked up; the Promotion Dice Pool, its
+assignment rule and the five-miss counter arrive with the step that rolls them.
+
+```ts
+interface PromotionRules {
+  maxElites: number;                     // 6 — the step is skipped at this many
+  cannotPromote: PromotionTableRow[];    // p.107
+  limitedPotential: { maxXp: number; factions: PromotionTableRow[] };  // p.111
+}
+
+interface PromotionTableRow {
+  faction: string;     // the heading as the rulebook prints it
+  factionId: string;
+  models: { name: string; unitId: string | null; unitName: string | null }[];
+}
+```
+
+Three things about it are load-bearing:
+
+- **Every model resolves to a `unitId` at build time, or the build fails.** The
+  app never matches these by name — see *Names: the books decide* above for why
+  `Fly Thralls` makes that impossible.
+- **`faction` keeps the book's own words.** The headings are spelled three ways
+  across three sources (`The Sultanate of the Iron Wall` / `Iron Sultanate` /
+  the unit's `Iron Sultanate`), and a failure that reports a slug sends a
+  maintainer looking for a string that appears on no page.
+- **`models: []` is an answer.** Two factions have a bare `-` in each table.
+  That is the book saying "none", not a row we failed to read.
+
+`limitedPotential` is provenance, not the operative rule — see the Brazen Bull
+note under precedence above.
+
+**Optional on the type.** A ruleset built before this existed says nothing, and
+"no rules" must stay distinguishable from "anyone may be promoted, without
+limit" — which is what the app did for two years, with a switch on the unit
+card.
 
 ## 7b. Catalogue modifiers — the conditional layer
 

@@ -951,6 +951,24 @@ export function parseCatalogues(dir) {
           */
           hiddenByDefault: hiddenByDefaultOf(node) || undefined,
           name: clean(attr(unitProfile, 'name')),
+          /*
+            The entry's name, where it differs from the profile's.
+
+            These are routinely different, and the books use the ENTRY name:
+            `War Wolf Assault Beast` contains a profile called `War Wolf`,
+            and `Anchorite Shrine` one called `Anchorite`. Taking only the
+            profile name left the app unable to find, by the name printed in
+            the rulebook, a model the rulebook was talking about — which is
+            how the Promotions tables came to name four models the dataset
+            appeared not to have (FD-06a).
+
+            Absent when the two agree, which is the common case, so its
+            presence means "the books may call this model something else".
+          */
+          entryName: (() => {
+            const e = clean(attr(node, 'name'));
+            return e && e !== clean(attr(unitProfile, 'name')) ? e : undefined;
+          })(),
           factionId: faction,
           roles: cats.filter((x) => ROLE_NAMES.has(x)),
           keywords: cats.filter((x) => !ROLE_NAMES.has(x)).map((k) => k.toUpperCase()),
