@@ -9,7 +9,7 @@ import type { AppState } from '../state';
 import type { ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } from '../../types/warband';
 import { persistWarbands } from '../persist';
 
-export type UnitsSlice = Pick<AppState, 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
+export type UnitsSlice = Pick<AppState, 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
 
 export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set, get) => ({
     addUnitToWarband: (warbandId, baseProfileId, customName) => {
@@ -169,6 +169,34 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             updatedAt: new Date().toISOString()
           };
           return updatedWb;
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    /*
+      Bench a model, or bring it back.
+
+      The Threshold Value caps the Ducats a Force may field and Field Strength
+      caps its models (p.97), and the roster is allowed to exceed both: "any
+      models you do not use will have to sit the game out". So this is a
+      choice, not a correction — nothing is removed, nothing is refused, and
+      the builder's warning simply stops naming the Ducats once enough of the
+      roster is on the bench.
+    */
+    setUnitBenched: (warbandId, unitId, benched) => {
+      set((state) => {
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          return {
+            ...w,
+            units: w.units.map((u) => (u.id === unitId
+              /* Omitted rather than stored false, so an un-benched model looks
+                 in a file exactly like one that was never benched. */
+              ? (() => { const { benched: _was, ...rest } = u; return benched ? { ...rest, benched: true } : rest; })()
+              : u)),
+          };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };

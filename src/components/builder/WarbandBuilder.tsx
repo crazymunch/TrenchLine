@@ -16,7 +16,8 @@ import { RulesetSwitcher } from './RulesetSwitcher';
 import { VariantPicker } from './VariantPicker';
 import { useDataset } from '../../rules/useDataset';
 import { variantById } from '../../rules/variants';
-import { forceLimits, campaignGameOf, canChangeVariant } from '../../rules/campaign';
+import { forceLimits, forceBudget, campaignGameOf, canChangeVariant } from '../../rules/campaign';
+import { checkForceLimits } from '../../rules/validate';
 import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
 import { warbandCode } from '../../rules/warbandCode';
 import { 
@@ -141,7 +142,32 @@ export const WarbandBuilder: React.FC = () => {
   const variantByOverride = isAdmin && !canChangeVariant(warband);
 
   const totalCost = warband.units.reduce((sum, u) => sum + u.totalCost, 0);
-  const isOverBudget = totalCost > warband.ducatLimit;
+
+  /*
+    The Force, which is what the book actually caps.
+
+    `ducatLimit` is the FOUNDING allowance and never changes. The Threshold
+    Value does — it rises after every game (p.97) — and `forceLimits` has
+    resolved it a hundred lines above this for two years, to print a badge.
+    The bar, the warning and the over-budget flag all measured the founding
+    number, so a Warband three games into a campaign was told it was over a
+    limit it had long since outgrown, and never told about the one it was
+    actually under.
+
+    Before the first game the Threshold is the founding allowance, so this is
+    the same check it always was for a new Warband — no special case.
+
+    A benched model is not in the Force: "any models you do not use will have
+    to sit the game out". Field Strength counts only models with a Warband
+    Entry, which today is every `ActiveUnit`; a Battlekit-model feature later
+    has to exclude itself here.
+  */
+  const budget = forceBudget(warband, limits);
+  const forceCount = warband.units.filter((u) => !u.benched).length;
+  const forceViolations = limits ? checkForceLimits(budget.spend, forceCount, limits) : [];
+
+  const { cap: budgetCap, spend: budgetSpend, benched: benchedCount } = budget;
+  const isOverBudget = budgetSpend > budgetCap;
 
   // Total unequipped stash items
   const totalStashItems = Array.isArray(warband.armoryStash) ? warband.armoryStash.length : 0;
@@ -479,14 +505,26 @@ export const WarbandBuilder: React.FC = () => {
               </div>
 
               <span className={`font-bold tabular-nums ${isOverBudget ? 'text-status-error' : 'text-theme-text'}`}>
-                {totalCost} / {warband.ducatLimit} D
+                {budgetSpend} / {budgetCap} D
               </span>
             </div>
+
+            {/*
+              Why the bar reads less than the roster costs. Without this the
+              number simply drops when a model is benched, which looks like
+              the app losing a model rather than the player fielding fewer.
+            */}
+            {benchedCount > 0 && (
+              <p className="text-xs sm:text-[10px] text-theme-muted">
+                {benchedCount} model{benchedCount === 1 ? '' : 's'} sitting this game out
+                {' · '}roster costs {totalCost} D
+              </p>
+            )}
 
             <div className={`meter ${isOverBudget ? '' : 'accent'}`}>
               <i
                 style={{
-                  width: `${Math.min(100, (totalCost / warband.ducatLimit) * 100)}%`,
+                  width: `${Math.min(100, (budgetSpend / Math.max(1, budgetCap)) * 100)}%`,
                   background: isOverBudget ? 'rgb(var(--status-error))' : undefined,
                 }}
               />
@@ -549,7 +587,21 @@ export const WarbandBuilder: React.FC = () => {
                     • Roster requires exactly 1 Leader warrior. Appoint below or click the crown <Crown className="w-3 h-3 inline text-theme-primary" /> on any warrior card.
                   </p>
                 )}
-                {isOverBudget && (
+                {/*
+                  The Force's own warnings, in the book's words, from
+                  `checkForceLimits` — which was written with both of them and
+                  had no caller anywhere in the app.
+
+                  They are WARNINGS, not errors: the roster is what you own
+                  and it has no cap; the Force is what you field and it has
+                  two. Telling a player to delete a model they are entitled to
+                  own would be the wrong instruction. What they do instead is
+                  bench somebody.
+                */}
+                {forceViolations.map((v) => (
+                  <p key={v.code}>• {v.message}</p>
+                ))}
+                {!isCampaignForce && isOverBudget && (
                   <p>
                     • Roster exceeds the {warband.ducatLimit} Ducat point limit by {totalCost - warband.ducatLimit} Ducats.
                   </p>

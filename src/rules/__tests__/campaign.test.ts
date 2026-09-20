@@ -14,7 +14,7 @@ import {
   forceLimits, startingBudget, reinforcementAllowance,
   strongboxOf, reversible, type LedgerEntry,
   explorationDice, explorationTables, resolveExploration, explorationLedgerEntry,
-  hasPlayedAGame, canChangeVariant, explorationBandFor,
+  hasPlayedAGame, canChangeVariant, explorationBandFor, forceBudget,
 } from '../campaign';
 import { checkForceLimits } from '../validate';
 
@@ -444,5 +444,70 @@ describe('the Exploration band for a post-battle step', () => {
 
   it('treats a warband outside the campaign as its first game', () => {
     expect(explorationBandFor(DATASET, { campaignId: undefined }, undefined).gamesPlayed).toBe(1);
+  });
+});
+
+/*
+  What the builder measures the list against.
+
+  RR-11 / FD-05b. `ducatLimit` is the founding allowance and never changes;
+  the Threshold Value rises after every game. They are EQUAL at game 1, which
+  is why the builder measuring the wrong one went unnoticed for two years —
+  and which is why the case that matters here is game 2.
+*/
+describe('forceBudget', () => {
+  const unit = (totalCost: number, benched = false) => ({ totalCost, ...(benched ? { benched: true } : {}) });
+  const roster = (...units: { totalCost: number; benched?: boolean }[]) =>
+    ({ units, ducatLimit: 700 });
+
+  it('measures against the Threshold, not the founding allowance', () => {
+    /*
+      The whole defect, in one assertion. At game 2 the Threshold is 800 and
+      the founding allowance is still 700, so a 780-Ducat Force is legal and
+      the app called it over budget.
+    */
+    const g1 = forceLimits(DATASET, 1)!;
+    const g2 = forceLimits(DATASET, 2)!;
+    expect(g2.threshold).toBeGreaterThan(g1.threshold);
+
+    const b = forceBudget(roster(unit(780)), g2);
+    expect(b.cap).toBe(g2.threshold);
+    expect(b.cap).not.toBe(700);
+    expect(b.spend).toBe(780);
+    expect(b.spend > b.cap).toBe(false);
+    expect(b.source).toBe('threshold');
+  });
+
+  it('agrees with the founding allowance at game 1, which is why this hid', () => {
+    const g1 = forceLimits(DATASET, 1)!;
+    expect(forceBudget(roster(unit(780)), g1).cap).toBe(700);
+  });
+
+  it('leaves a benched model out of the spend, and says how many', () => {
+    // "Any models you do not use will have to sit the game out."
+    const b = forceBudget(roster(unit(680), unit(100, true)), forceLimits(DATASET, 1));
+    expect(b.spend).toBe(680);
+    expect(b.rosterCost).toBe(780);
+    expect(b.benched).toBe(1);
+  });
+
+  it('keeps the founding allowance for an unrestricted Warband', () => {
+    /* No campaign to measure against: it exists to try lists out at a fixed
+       budget, and a rising Threshold would defeat the point. */
+    const b = forceBudget(
+      { ...roster(unit(780), unit(100, true)), forceMode: 'unrestricted' },
+      forceLimits(DATASET, 5),
+    );
+    expect(b.cap).toBe(700);
+    expect(b.source).toBe('founding-allowance');
+    // And it measures the whole roster: the bench is a campaign idea.
+    expect(b.spend).toBe(880);
+  });
+
+  it('falls back to the founding allowance when the ruleset states no table', () => {
+    // Rule 2: a dataset that cannot say is not a dataset saying "no cap".
+    const b = forceBudget(roster(unit(780)), null);
+    expect(b.cap).toBe(700);
+    expect(b.source).toBe('founding-allowance');
   });
 });
