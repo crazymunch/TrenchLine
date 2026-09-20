@@ -37,6 +37,7 @@ carry, and what these designs cover:
 | FD-11 | the April 2026 Mercenaries review | `scripts/lib/parse-battlescribe.mjs`, `scripts/lib/layers.mjs`, the Dispatch layer and a Warbands-book layer, `AddEquipmentModal`, `validate.ts` |
 | FD-12 | the official Warband Roster Sheet in the app; the Experience track; provenance of skills and rewards | a new sheet route, `UnitCard`, the wizard's Promotions step, `src/types/warband.ts` |
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
+| FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | `src/data/warbandLore.ts`, `prisma/seed.ts`, the campaigns API, `CodexView`, the importer |
 
 ### Landed, as of 07:20 UTC on 20 September
 
@@ -1517,6 +1518,153 @@ and their roster file, so that "Formulas not showing up properly" and
 "wrong rules on the card" are reproduced against the real model before
 FD-13a is built.
 
+## FD-14. The pass for invented content
+
+The owner asked for a pass over what the original generator seeded and the
+app never dropped. Two read-only sweeps covered `src/`, `prisma/`,
+`scripts/`, `public/` and `docs/`; every finding below was re-verified on
+`main` at b652f7d, at the line cited.
+
+What is clean, so nobody re-audits it: the store's weapons, armour,
+equipment, units and faction rules hydrate from the generated dataset
+through `src/rules/recruitable.ts`; `src/rules/` is derived throughout;
+the Chronicle, the Hub, `ModelReferenceSheet` and `RosterPrintSheet` read
+the dataset and refuse on a miss; the Codex's Skills tab now carries the
+real 2D6 roll (the fabricated `idx + 1` numbering is gone, and the comment
+at `src/components/codex/CodexView.tsx` line 885 records why). The
+sixteen small rule constants in `src/rules/dice.ts`, the range and attack
+calculators and `DiceProbabilityModal` are faithful to the pages they cite.
+
+### AI-1. One player's warband shipped as source — harmful, live
+
+`src/data/warbandLore.ts`, 850 lines: biographies, quotes, titles and deeds
+for ten named models; the warband's lore, motto, patron and chronicle;
+three hand-typed roster snapshots holding some ninety weapon, armour and
+equipment entries with costs, ranges, dice modifiers and keywords; an
+invented match history. It is injected live: `src/services/newRecruitImporter.ts`
+line 680 runs `enrichUnitWithLore` over every imported model, and lines
+682 to 698 give any import whose faction is the Iron Sultanate, or whose
+name merely contains "qarn" or "sultanate", that warband's lore, motto,
+patron and chronicle; `src/store/slices/roster.ts` line 67 does the same
+to every warband pulled from the cloud. `src/store/init.ts` lines 56 to 77
+say all of this was removed; only the localStorage seeding was.
+
+The warband is the owner's own, Al-Qarn Rihla. So, before deleting: the
+PR reads that warband's production rows, read-only, and reports whether
+the lore, quotes, titles and deeds are stored on the records or only ever
+supplied from this file at read time. If the latter, the owner decides
+whether to copy them into the record once; that is a production data
+write and is asked first, never done. Then delete the file, both call
+sites, and `defaultSultanateWarband` in `src/store/seed.ts`, whose one
+consumer is a test that moves to a fixture under `data-sources/fixtures/`.
+
+### AI-2. Invented data in the seed, and in every new campaign
+
+`prisma/seed.ts` is wired by `package.json`'s `prisma.seed` and runs under
+`prisma migrate dev` and `db seed`. It creates a demo user, a Lieutenant
+with an invented statline (Ranged +1, Melee +2, Armour "+2"), a
+"Standard Issue Bolt-Action Rifle" with the keywords Reliable and Bayonet
+Lug, a "Standard (1 Wound)" damage line in a game with no Wounds, an
+invented injury, and a campaign whose four territories carry the perks
+(lines 111 to 129: "+5 Ducats supply bonus per round", "Reroll 1 failed
+Morale check per match", "Free Frag Grenade in Warband Stash after each
+game", "+2 Glory on Victory when defending") that `src/store/seed.ts` and
+the campaigns API both say were blanked. The seed creates nothing with
+game data in it, or nothing at all.
+
+`src/app/api/campaigns/route.ts` line 149, `STARTING_TERRITORIES`: every
+new cloud campaign is still given the four example territories that
+`scripts/clear-example-campaigns.mjs` uses as its deletion signature, so
+the script's premise, that only the old API made them, is no longer true.
+A new campaign starts with no territories unless its framework supplies
+them; Carcass Front does. `src/store/seed.ts` lines 151 to 167,
+`defaultFreshCampaign` (invite code TRENCH-1099, threshold 25), is every
+new device's starting campaign; a fresh device starts with none.
+
+Production data: the clear script deletes campaigns only, so a database
+that ran the seed keeps the demo user and warband. The PR reports what
+exists in production, read-only; deleting it is the owner's call and is
+asked, per the standing grant.
+
+### AI-3. Rules text typed into the Codex and the modals
+
+- `CodexView.tsx` lines 513 to 580: a hand-typed "OFFICIAL 1.0.2 CHANGELOG
+  & ERRATA INDEX", ten rows. One row, ARMOUR PIERCING, is the base
+  glossary's text presented as an erratum.
+- `src/data/rulesets/index.ts`, `keyChanges` rendered as "Key Mechanics":
+  paraphrases ("take 3 highest" where the book says highest or lowest), a
+  1.0 ruleset with no source in the repository, and marketing lines.
+- `CodexView.tsx` line 1104: "every model that was taken Out of Action must
+  roll on this D66 Trauma Table". The book has Troops take a D6 Survival
+  Roll and only ELITE models roll D66; the wizard says so at
+  `src/components/campaign/PostBattleWizardModal.tsx` line 724, the Codex
+  says the opposite.
+- `CodexView.tsx` line 1676: `|| '48" x 48"'` under the words "Official
+  Rulebook Diagram"; `src/components/codex/MissionGenerator.tsx` lines 100
+  to 103 seed a custom mission with 48" x 48", "6" from board edge" and "4
+  Turns" against its own comment at line 118.
+- `CodexView.tsx` line 831: "Roll D66 for Skill" on a 2D6 table.
+- `src/components/builder/UnitCard.tsx` line 752 and
+  `src/components/builder/UnitAdvancementModal.tsx` line 566: `roll ||
+  'D66'`, a fabricated roll for a skill with none recorded.
+- `UnitAdvancementModal.tsx` line 409: "Warriors gain 1 XP per game
+  survived"; the book gives the point to ELITE models, even when taken Out
+  of Action.
+- `src/components/play/QuickSearchModal.tsx` line 109: the Trauma table
+  labelled "D66 Injury Chart".
+
+The change: the changelog table and the `keyChanges` are either derived
+from `data-sources/rulebook/extracted/changelog-1.0.2.txt` by a parser
+into the dataset, or deleted; the banner and the labels take the book's
+words; the defaults go blank; a skill with no roll prints no roll.
+
+### AI-4. A source nobody parses
+
+`src/data/allOutWarData.ts`: three scenarios, with table sizes the rulebook
+never prints, and twelve Betrayal cards, typed by hand and reaching the
+Codex, Play Mode and the scenario picker, while
+`data-sources/rulebook/all-out-war.pdf` and its extract are committed and
+unparsed. Parse them, in `scripts/lib/parse-scenarios.mjs` or a sibling,
+into the dataset; drop the file. Its `derived: false` marker stays only
+until then.
+
+### AI-5. Fallbacks that invent
+
+- `PostBattleWizardModal.tsx` line 582: `?? 3` Exploration dice. FD-07
+  carries it.
+- `newRecruitImporter.ts` line 495: an armour with no INJURY MODIFIER
+  keyword is given "-1 Injury Modifier".
+- `src/services/xmlParser.ts` lines 70 to 89: default category, Movement
+  and characteristics for any catalogue entry missing them, reached only
+  through `fetchAndParseAllRemoteCatalogs` and `generateDiffs` in
+  `src/services/githubSync.ts`, which nothing calls. Delete all three.
+- `src/components/customizer/CustomizerView.tsx` lines 43 to 47: invented
+  stats seeding the editor.
+- The honorific title maps in `src/store/slices/campaign.ts` lines 424 to
+  441 and `src/store/slices/progression.ts` lines 209 to 226, two copies of
+  app flavour keyed on Trauma-result substrings. One copy, marked as
+  flavour and not as a rule, or none.
+
+### AI-6. Residue
+
+`scratch/` is ignored but 77 files are tracked, among them the generators
+that wrote the invented data into `src/data/`: `git rm -r --cached
+scratch/`. Placeholders naming Sorcerer Zortan, Commander Valerius and
+Bayt al-Nahas (`src/components/campaign/LogMatchModal.tsx` line 243,
+`PostBattleWizardModal.tsx` line 2156, `src/components/builder/UnitLoreModal.tsx`
+line 353, `src/components/builder/WarbandChronicleModal.tsx` line 146,
+`src/components/auth/AuthModal.tsx` line 181) become neutral examples.
+`docs/FEATURES.md`'s "what must be deleted" and `init.ts`'s "all four are
+gone" say what is true after AI-1. The faction blurbs in
+`src/data/defaultRules.ts` are presentation and stay.
+
+### Order within FD-14
+
+AI-1 and the scratch removal first, one PR, because it changes what other
+people's rosters receive. AI-2 second, with the production report and no
+deletion. AI-3 and AI-5 together, after the milestone. AI-4 last, as a
+pipeline PR with the audit counts.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -1529,7 +1677,9 @@ FD-13a is built.
 6. FD-10, one PR per heading, and then DA-03/05/04 and the rest of the two lists.
 7. FD-11a, FD-11b, FD-11c, one PR each, ahead of item 4: the owner asked for
    the Mercenaries first, and FD-11a changes what every later layer sees.
-8. After the READY FOR TESTING milestone (Order 14): FD-13a, FD-13b, then
-   FD-12, then FD-08 and FD-10. The Experience track component in FD-12 item
-   1 is small and phone-visible, so it may ride with WIZ-2 if the developer
-   judges it fits.
+8. FD-14's AI-1 and AI-2 right after FD-11c and before FD-05e: small
+   deletions, and the first changes what other people's rosters receive.
+9. After the READY FOR TESTING milestone (Order 14): FD-13a, FD-13b, then
+   FD-12, then FD-14's AI-3 and AI-5, then FD-08 and FD-10, then FD-14's
+   AI-4. The Experience track component in FD-12 item 1 is small and
+   phone-visible, so it may ride with WIZ-2 if the developer judges it fits.
