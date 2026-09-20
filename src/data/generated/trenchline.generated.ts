@@ -69722,12 +69722,13 @@ export const DATASET: Dataset = {
           "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
-            "ducats": 15,
+            "ducats": 10,
             "glory": 0
           },
           "restrictions": [
             "Limit: 2"
-          ]
+          ],
+          "source": "dispatch-01"
         },
         {
           "name": "Satchel Charge",
@@ -70120,10 +70121,11 @@ export const DATASET: Dataset = {
           "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
-            "ducats": 15,
+            "ducats": 10,
             "glory": 0
           },
-          "restrictions": []
+          "restrictions": [],
+          "source": "dispatch-01"
         },
         {
           "name": "Molotov Cocktail",
@@ -70610,12 +70612,13 @@ export const DATASET: Dataset = {
           "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
-            "ducats": 15,
+            "ducats": 10,
             "glory": 0
           },
           "restrictions": [
             "Jabirean Alchemist Only"
-          ]
+          ],
+          "source": "dispatch-01"
         },
         {
           "name": "Trench Shield",
@@ -71174,10 +71177,11 @@ export const DATASET: Dataset = {
           "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
-            "ducats": 15,
+            "ducats": 10,
             "glory": 0
           },
-          "restrictions": []
+          "restrictions": [],
+          "source": "dispatch-01"
         },
         {
           "name": "Trench Shield",
@@ -71779,12 +71783,13 @@ export const DATASET: Dataset = {
           "weaponId": "3bfd-2c1d-2d6b-a36c",
           "section": "Grenades",
           "cost": {
-            "ducats": 15,
+            "ducats": 10,
             "glory": 0
           },
           "restrictions": [
             "Limit: 2"
-          ]
+          ],
+          "source": "dispatch-01"
         },
         {
           "name": "Trench Shield",

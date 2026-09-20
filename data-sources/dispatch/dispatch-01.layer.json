@@ -249,6 +249,14 @@
       },
       "currency": "ducats",
       "value": 10,
+      "factions": [
+        "new-antioch",
+        "trench-pilgrims",
+        "iron-sultanate",
+        "heretic-legions",
+        "court-of-the-seven-headed-serpent"
+      ],
+      "_factions": "The five Armoury Tables the Dispatch line names, and only those. The Procession of the Sacred Affliction and the Heretic Naval Raiders also stock Incendiary Grenades and are NOT named, so they keep 15. Without this list the engine set the price on one weapon profile it happened to resolve first and no armoury row at all, so every faction was still charged 15.",
       "_src": "p.2 — 'Change the Cost of Incendiary Grenades to 10 in the following Armoury Tables: New Antioch, Trench Pilgrims, Iron Sultanate, Heretic Legions, The Court'"
     },
     {
