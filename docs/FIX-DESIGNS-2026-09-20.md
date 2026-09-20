@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | src/data/warbandLore.ts (deleted by #82), prisma/seed.ts (deleted by #83), the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 11:10 UTC on 20 September
+### Landed, as of 12:10 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -67,7 +67,7 @@ carry, and what these designs cover:
 | FD-11b part 5 (the Dispatch's Mercenaries section: Vengeful Scripture as a weapon on the Scripture Guardian's kit, the Maul's Mulch, Flaying Iron Claws, the Gavel's CRITICAL and FIRE with Wrath of God gone, the Witchburner's and Warlock's kit; `unset`; a weapon rename follows through to kit entries; the transcription test widened to the Dispatch, which found four citation slips) | #80 | merged; reviewed after the fact against the dataset on `main`, correct except the Sister's MERCENARY keyword, fixed in #81 |
 | FD-11c (a Mercenary is offered no Battlekit but its own, keyed on the Mercenary role; the Scripture Guardian's Melee permission as a cited field; the validator's error and the Guardian's warning; Gather Knowledge reaches Play Mode's deed list from the dataset; the Sister's MERCENARY keyword from Dispatch L654–655) | #81 | merged; verified on `main`: the Sister carries MERCENARY and NEGATE FEAR, the Guardian's permission is `["Melee"]`. Two follow-ups filed by the developer: the Mamluk Faris's unmodelled kit, and the Desecrated Saint's keyword reprint that would drop LIMITED POTENTIAL |
 | FD-14 AI-1 (the lore file deleted, both injection sites removed, the test roster materialised as a fixture, `scratch/` untracked) | #82 | merged, after the owner confirmed the cleared row was another account's and the cleanup stands |
-| FD-14 AI-2 (the seed deleted and its hook removed; no starting territories from the campaigns API; a fresh device has no campaign; and a found bug fixed: the store replaced any stored map with fewer than six pins or without pin coordinates, which reseated every Carcass Front campaign on the twelve classic theatres) | #83 | open; `check` red on 53d5a1c because an integration test still expects the API to have created a territory; diagnosed and ordered fixed in the test (Order 21). Read-only production report: one inert seed user row remains, owning nothing; removing it is the owner's call |
+| FD-14 AI-2 (the seed deleted and its hook removed; no starting territories from the campaigns API; a fresh device has no campaign; and a found bug fixed: the store replaced any stored map with fewer than six pins or without pin coordinates, which reseated every Carcass Front campaign on the twelve classic theatres) | #83 | merged, green on 8e90130 after two red runs, both recorded below. The owner ruled the inert seed user row stays |
 
 ## FD-00. PR #59 as it stands
 
@@ -1630,6 +1630,21 @@ that ran the seed keeps the demo user and warband. The PR reports what
 exists in production, read-only; deleting it is the owner's call and is
 asked, per the standing grant.
 
+**Two red CI runs on #83, recorded.** The first was the PR's: an
+integration test took the API's first territory as its fixture, and the
+API no longer creates one; the test now creates its own node. The
+developer could not see it locally because the database-backed suite
+skips itself without a test database, so it stood up a local Postgres and
+now runs that suite before pushing. The second was not the PR's and my
+diagnosis of it was wrong in the detail: I read the tablet-only failure
+of "a roll offers two Skills" as sparse tables; the developer ran every
+2D6 total through the Advancement Roll and found only 2 and 12 come back
+empty, and only because both are the Patron Skill row and the test
+warband has no Patron recorded. The test now pins its roll, so it still
+exercises the button, the roll and the offer, and cannot fail on the dice.
+The developer's open question, whether the book says something else
+should happen for a model with no Patron, is answered below as FD-15.
+
 ### AI-3. Rules text typed into the Codex and the modals
 
 - `CodexView.tsx` lines 513 to 580: a hand-typed "OFFICIAL 1.0.2 CHANGELOG
@@ -1708,6 +1723,29 @@ AI-1 and the scratch removal first, one PR, because it changes what other
 people's rosters receive. AI-2 second, with the production report and no
 deletion. AI-3 and AI-5 together, after the milestone. AI-4 last, as a
 pipeline PR with the audit counts.
+
+## FD-15. A Patron Skill result needs a Patron
+
+Rulebook lines 4753 to 4755: "Once they have recruited their Warband, they
+must pick a Patron for it." Lines 4757 to 4759: the Patron "determines
+which skill you may select if you roll a Patron Skill result on any of the
+Skill Tables". Lines 6042 to 6043, in the Advancement Roll: "If a Patron
+Skill is rolled, use one of the Patron Skills for the Patron you picked
+for your Warband." So a campaign Warband with no Patron recorded is a gap
+in the record, not a case the rules leave open, and "nothing can be
+offered" is the app's honest report of that gap.
+
+The change, small, after WIZ-2: the campaign founding path and the Roster
+Sheet header (FD-12) carry the Patron as a required field for a campaign
+Warband, chosen from the book's list for the faction; a Warband already in
+a campaign with none recorded is asked for it the first time the wizard
+opens, and the Promotions step asks for it on the spot if a Patron Skill
+result lands with none set, then offers that Patron's Skills. The Patrons
+and their Skills come from the dataset; verify the core six factions'
+Patrons (rulebook line 4757 onward) are parsed there as the Carcass Front
+ones are, and parse them if not. Test: a Patron Skill result on a Warband
+with a Patron offers that Patron's Skills; with none, the step asks and
+then offers; a Skill already held falls to the next lowest per line 6039.
 
 ## Order
 
