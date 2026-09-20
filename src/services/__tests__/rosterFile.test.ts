@@ -213,8 +213,14 @@ describe('the round trip', () => {
   });
 
   it('survives a roster with nothing optional set', () => {
+    /*
+      `forceMode: 'unrestricted'`, so the FD-05e founding-pot migration at the
+      import door leaves it alone. This test is about a roster with nothing
+      optional set surviving the round trip, not about the migration, which
+      has its own cases in `src/rules/__tests__/foundingStrongbox.test.ts`.
+    */
     const bare = {
-      id: 'w', name: 'Bare', factionId: 'new-antioch',
+      id: 'w', name: 'Bare', factionId: 'new-antioch', forceMode: 'unrestricted',
       ducatLimit: 500, treasuryDucats: 0, gloryPoints: 0,
       units: [], armoryStash: [],
       createdAt: 'a', updatedAt: 'b',

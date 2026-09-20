@@ -37,7 +37,7 @@ import type {
 } from '../types/warband';
 import type { Dataset } from '../types/catalogue';
 import { migrateFallen } from '../rules/fallen';
-import { openLedger } from '../rules/ledger';
+import { openLedger, migrateFoundingPot } from '../rules/ledger';
 
 export const ROSTER_FILE_FORMAT = 'trenchline.roster';
 export const ROSTER_SCHEMA_VERSION = 1;
@@ -471,8 +471,17 @@ function readRoster(value: Record<string, unknown>, warnings: string[]): RosterR
     than one that explains itself.
   */
   const before = (out.fallen ?? []).length;
-  const migrated = openLedger(
-    migrateFallen(out as unknown as Warband),
+  /*
+    The same three migrations as the storage door, in the same order, so an
+    imported roster arrives in the shape a stored one has — including the
+    founding pot a never-played campaign Warband was always shown.
+  */
+  const fallenFixed = migrateFallen(out as unknown as Warband);
+  const migrated = migrateFoundingPot(
+    openLedger(fallenFixed),
+    /* The record as it arrived: `openLedger` replaces the ledger, and with it
+       the rows that prove this Warband has played. See `migrateFoundingPot`. */
+    fallenFixed,
   ) as unknown as DurableWarband;
   const moved = (migrated.fallen ?? []).length - before;
   if (moved > 0) {

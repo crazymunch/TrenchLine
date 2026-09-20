@@ -36,7 +36,21 @@ const unreconciled = (): Warband => ({
   gloryPoints: 2,
   units: [],
   armoryStash: [],
-  snapshots: [],
+  /*
+    Played, so the door's OTHER migration leaves it alone.
+
+    `migrateFoundingPot` (FD-05e) also sits at this door and gives a
+    never-played campaign Warband its founding pot. This fixture exists to
+    prove that `openLedger` moves no money, which is a different claim, so it
+    is marked as having played a game — otherwise the two migrations are
+    tested as one and neither is pinned. The founding pot has its own cases in
+    `src/rules/__tests__/foundingStrongbox.test.ts`.
+  */
+  snapshots: [{
+    id: 'snap-pb', timestamp: '2026-01-10T00:00:00Z', label: 'Post-Battle',
+    type: 'post_battle', ducatCost: 0, treasuryDucats: 340, gloryPoints: 2,
+    unitCount: 0, units: [], armoryStash: [], changesSummary: [],
+  }],
   createdAt: '2026-01-01T00:00:00Z',
   updatedAt: '2026-01-01T00:00:00Z',
 } as unknown as Warband);

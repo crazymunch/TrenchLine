@@ -1,7 +1,7 @@
 import { Warband } from '../types/warband';
 import { repairInventedFormulae } from './repairSavedRosters';
 import { migrateFallen } from '../rules/fallen';
-import { openLedger } from '../rules/ledger';
+import { openLedger, migrateFoundingPot } from '../rules/ledger';
 import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
 import { parseCampaign } from './campaignFromCloud';
@@ -137,16 +137,30 @@ export const storage = {
         have made. Idempotent, so a second read finds nothing to move.
       */
       /*
-        Two migrations at this door, in order: the dead leave the roster, and
-        then every Warband gets a Strongbox ledger that agrees with its
-        balance. Both are idempotent and both are driven by the data rather
-        than by a version number.
+        Three migrations at this door, in order: the dead leave the roster,
+        every Warband gets a Strongbox ledger that agrees with its balance,
+        and a never-played campaign Warband is given the founding pot it was
+        always shown. All three are idempotent and all three are driven by the
+        data rather than by a version number.
 
         `openLedger` moves no money — it opens the account on whatever the
-        Warband already holds. See `rules/ledger.ts` for why opening rather
-        than correcting is the right shape exactly once.
+        Warband already holds. `migrateFoundingPot` does move one, and only
+        for a Warband that has never played: it books the allowance and the
+        roster that was bought with it, which is the figure the builder has
+        been printing as "remaining" without ever recording. See
+        `rules/ledger.ts` for both, and for why a played Warband is left
+        alone.
+
+        Order matters, and so does the second argument. `openLedger` runs
+        first, so the account exists and carries whatever was typed into it
+        before the founding pair is appended — but it REPLACES the ledger with
+        a single opening entry, which destroys the rows that prove a Warband
+        has played. So the record as it arrived is passed alongside, and the
+        played question is asked of that.
       */
-      const warbands = repaired.map(migrateFallen).map((w) => openLedger(w));
+      const warbands = repaired
+        .map(migrateFallen)
+        .map((w) => migrateFoundingPot(openLedger(w), w));
       const moved = warbands.reduce(
         (n, w, i) => n + Math.max(0, (w.fallen?.length ?? 0) - (repaired[i].fallen?.length ?? 0)), 0);
       if (moved) {
