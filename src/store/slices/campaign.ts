@@ -513,11 +513,14 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           How many points, not whether any.
 
           A model that performed at least one Glorious Deed gains a second
-          Experience Point (p.105), and a LIMITED POTENTIAL model near its cap
-          gains only what it has room for. Both are decided in the wizard,
-          where the match and the cap are both in hand, and arrive as a number
-          on the award. A model absent from `experience` gains nothing, which
-          is still the answer for every Troop.
+          Experience Point (p.105); a model that rolled Bitter Lessons gains
+          the D3 its Trauma row owes it; every other ELITE model gains +1 where
+          the Warband holds War Stories and the player took it (FD-06d); and a
+          LIMITED POTENTIAL model near its cap gains only what it has room for.
+          All of them are decided in the wizard, where the match, the Trauma
+          rolls and the cap are in hand, and arrive as one number on the award.
+          A model absent from `experience` gains nothing, which is still the
+          answer for every Troop.
         */
         const award = experience.find((x) => x.unitId === u.id && x.earns);
         const newXp = xpBefore + (award?.points ?? 0);
