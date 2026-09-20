@@ -307,6 +307,14 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
       glory: factionOf(dataset, warband.factionId)?.budget?.glory
         ?? warband.gloryPoints ?? 0,
     },
+    /* The Strongbox itself, for the overdrawn check. An unrestricted list
+       holds no money, so it carries none and is never refused for it. */
+    ...(warband.forceMode === 'unrestricted' ? {} : {
+      strongbox: {
+        ducats: warband.treasuryDucats ?? 0,
+        glory: warband.gloryPoints ?? 0,
+      },
+    }),
   };
 
   return { roster, unmatched };

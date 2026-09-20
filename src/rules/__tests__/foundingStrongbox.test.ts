@@ -291,3 +291,51 @@ describe('a v0 roster with no snapshots and no ledger', () => {
     expect(after.ledger ?? []).toHaveLength(0);
   });
 });
+
+/**
+ * The Papal States Intervention Force musters on Glory, and that is not play.
+ *
+ * "Any Glory is evidence of play" would declare a fresh Papal draft played —
+ * its Specialist Force rule musters it on 11 ☼ — and leave it with a Strongbox
+ * of 0. The floor is the Glory on the record's own `founding` entry, which is
+ * 0 for every other Variant.
+ */
+describe('a never-played Papal States muster', () => {
+  it('loads holding its unspent allowance, not nothing', () => {
+    const papal = {
+      id: 'wb-papal', name: 'Swiss Guard', factionId: 'new-antioch',
+      forceMode: 'campaign', ducatLimit: 700,
+      treasuryDucats: 0, gloryPoints: 11,
+      /* A #75-era muster: the founding entry booked the Glory and no Ducats. */
+      ledger: [{
+        id: 'led-f', at: '2026-01-01T00:00:00Z', reason: 'founding',
+        ducats: 0, glory: 11, game: 1, note: 'Founded on an allowance of 700 Ducats.',
+      }],
+      units: [{ id: 'u1', totalCost: 620 }],
+      armoryStash: [], snapshots: [], chronicleLog: [],
+      createdAt: 'a', updatedAt: 'b',
+    } as unknown as Warband;
+
+    const after = migrateFoundingPot(papal);
+    expect(strongbox(after).ducats).toBe(80);
+    /* And its muster Glory is untouched. */
+    expect(strongbox(after).glory).toBe(11);
+  });
+
+  it('but Glory ABOVE the muster is play, and is not migrated', () => {
+    const won = {
+      id: 'wb-papal2', name: 'Swiss Guard', factionId: 'new-antioch',
+      forceMode: 'campaign', ducatLimit: 700,
+      treasuryDucats: 0, gloryPoints: 14,
+      ledger: [{
+        id: 'led-f', at: '2026-01-01T00:00:00Z', reason: 'founding',
+        ducats: 0, glory: 11, game: 1, note: 'Founded.',
+      }],
+      units: [{ id: 'u1', totalCost: 620 }],
+      armoryStash: [], snapshots: [], chronicleLog: [],
+      createdAt: 'a', updatedAt: 'b',
+    } as unknown as Warband;
+
+    expect(strongbox(migrateFoundingPot(won)).ducats).toBe(0);
+  });
+});

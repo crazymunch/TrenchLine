@@ -30,6 +30,7 @@ export interface Violation {
   code:
     | 'over-budget-ducats'
     | 'over-budget-glory'
+  | 'strongbox-overdrawn'
     | 'unit-max'
     | 'unit-min'
     | 'wargear-limit'
@@ -593,6 +594,25 @@ export function validateRoster(roster: Roster, dataset: Dataset): ValidationResu
       code: 'over-budget-glory',
       message: `Over budget by ${-budget.remaining.glory} Glory ` +
                `(${budget.spent.glory} of ${budget.budget.glory}).`,
+    }));
+  }
+
+  /*
+    An overdrawn Strongbox, refused here rather than on the button.
+
+    FD-05e made the builder's remaining figure the Strongbox and FD-05e-2 made
+    every purchase spend it, so a muster can now run the balance negative. The
+    builder does not block that — a player part-way through a list is over for
+    a moment and then trims, and a button that will not press while they
+    rearrange is the worse failure — but a roster that is still overdrawn must
+    not reach a game or the post-battle wizard, because every number those
+    produce would be built on Ducats the Warband does not have.
+  */
+  const overdrawn = -(roster.strongbox?.ducats ?? 0);
+  if (overdrawn > 0) {
+    violations.push(err({
+      code: 'strongbox-overdrawn',
+      message: `Strongbox overdrawn by ${overdrawn} Ducats.`,
     }));
   }
 

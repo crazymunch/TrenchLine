@@ -119,6 +119,17 @@ export interface Roster {
   /** Loose wargear bought but not assigned to a model. */
   stash: RosterItem[];
   budget: Cost;
+  /**
+   * What the Strongbox holds, where the Warband has one.
+   *
+   * Carried so the validator can refuse an overdrawn campaign roster. The
+   * builder deliberately does NOT block a muster that runs over — a player
+   * mid-list is over budget for a moment and then trims — so the refusal
+   * belongs where a roster is checked before it is used, not on the button.
+   *
+   * Absent for an unrestricted list, which holds no money by design.
+   */
+  strongbox?: Cost;
 }
 
 /** What one model costs, including everything attached to it. */

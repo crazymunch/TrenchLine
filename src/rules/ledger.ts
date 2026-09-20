@@ -33,7 +33,7 @@
  * storage, and the difference is worth naming rather than glossing.
  */
 import type { LedgerEntry, LedgerReason } from './campaign';
-import { strongboxOf } from './campaign';
+import { strongboxOf, reversible } from './campaign';
 import type { Warband } from '../types/warband';
 
 /** The parts of a Warband this module reads and writes. */
@@ -47,6 +47,8 @@ export interface Movement {
   note?: string;
   /** The game this belongs to, so `reversible` can release a turn as a unit. */
   game?: number;
+  /** What this paid for — a unit id, or a Battlekit `instanceId`. */
+  ref?: string;
   byUserId?: string;
   byName?: string;
 }
@@ -100,6 +102,7 @@ export function book<W extends Moneyed>(
     ...(movement.game !== undefined ? { game: movement.game } : {}),
     ...(movement.byUserId ? { byUserId: movement.byUserId } : {}),
     ...(movement.byName ? { byName: movement.byName } : {}),
+    ...(movement.ref ? { ref: movement.ref } : {}),
   };
 
   const ledger = [...(opened.ledger ?? []), entry];
@@ -271,10 +274,19 @@ const PLAYED_REASONS: readonly LedgerReason[] = ['exploration', 'ransom', 'reinf
  *   the snapshots themselves, so an untyped one cannot be classified and is
  *   read as a battle rather than guessed past;
  * - a non-empty `chronicleLog`;
- * - Glory. The book earns it in battle — "☼ are earned by performing valorous
- *   deeds in battle" (Warbands, p.10) — so a balance means games played. The
- *   Papal States muster on 11 is the one exception and is simply not
- *   migrated, which costs it nothing it had;
+ * - Glory ABOVE what the muster itself granted. The book earns it in battle —
+ *   "☼ are earned by performing valorous deeds in battle" (Warbands, p.10) —
+ *   so a balance beyond the muster means games played. The floor is the Glory
+ *   on the record's own `founding` entry, which is 0 for every Variant but
+ *   the Papal States Intervention Force: its Specialist Force rule musters it
+ *   on 11, and a flat "any Glory is play" would have declared a fresh Papal
+ *   draft played and left it with a Strongbox of 0.
+ *
+ *   **A pre-#75 Papal draft is still not migrated**, because it has no ledger
+ *   and so no founding entry to read the floor from, and 11 Glory with no
+ *   record of where it came from is indistinguishable from 11 Glory won. That
+ *   casualty is accepted: it costs one visit to the Strongbox setter, where a
+ *   wrong credit would cost the campaign its integrity;
  * - Ducats already in the Strongbox. Nothing credited a pre-FD-05e Warband
  *   but earnings and a hand-set balance, and neither is a fresh muster.
  *
@@ -353,7 +365,8 @@ export function migrateFoundingPot<W extends Mustered>(
       /* Untyped: unclassifiable, so not provably a fresh muster. */
       || snap.type === undefined)
     || (before.chronicleLog?.length ?? 0) > 0
-    || (before.gloryPoints ?? 0) > 0
+    /* Above the muster's own grant — see the Papal States note above. */
+    || (before.gloryPoints ?? 0) > (arrived.find((e) => e.reason === 'founding')?.glory ?? 0)
     || (before.treasuryDucats ?? 0) > 0;
   if (campaigned) return warband;
 
@@ -377,4 +390,52 @@ export function migrateFoundingPot<W extends Mustered>(
     game: 1,
     note: `Roster at migration: ${units.length} model${units.length === 1 ? '' : 's'}, ${rosterCost} Ducats.`,
   }, when);
+}
+
+
+/**
+ * Undo purchases the player may still undo, and leave settled ones alone.
+ *
+ * "Users can make any variations from the end of one game to the start of the
+ * next" — so a model recruited and taken off again in the same muster should
+ * leave no trace, and its Ducats should come back. `reversible` already knows
+ * which entries those are; this removes the ones that paid for `refs`.
+ *
+ * **Removed, not refunded.** Appending a credit would read as a sale, and the
+ * book sells Battlekit, never models; it would also leave two entries in the
+ * history for a purchase that, as far as the campaign is concerned, never
+ * happened. An entry with no `ref` — everything written before FD-05e-2 — is
+ * never matched, so an old ledger is never disturbed.
+ *
+ * Returns which refs were undone, because the caller's next move depends on
+ * it: Battlekit whose purchase is settled goes to the Arsenal, where the
+ * existing `sold` path gives half back, rather than being discarded.
+ */
+export function undoPurchases<W extends Moneyed>(
+  warband: W,
+  refs: readonly string[],
+  currentGame: number,
+): { warband: W; undone: Set<string> } {
+  const wanted = new Set(refs.filter(Boolean));
+  const undone = new Set<string>();
+  if (!wanted.size) return { warband, undone };
+
+  const ledger = warband.ledger ?? [];
+  const canUndo = new Set(
+    reversible([...ledger], currentGame)
+      .filter((e) => e.reason === 'quartermaster' && e.ref && wanted.has(e.ref))
+      .map((e) => e.id),
+  );
+  if (!canUndo.size) return { warband, undone };
+
+  const kept = ledger.filter((e) => {
+    if (!canUndo.has(e.id)) return true;
+    if (e.ref) undone.add(e.ref);
+    return false;
+  });
+  const total = strongboxOf(kept);
+  return {
+    warband: { ...warband, ledger: kept, treasuryDucats: total.ducats, gloryPoints: total.glory },
+    undone,
+  };
 }
