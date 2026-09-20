@@ -26,10 +26,26 @@ export const LogMatchModal: React.FC<LogMatchModalProps> = ({ onClose }) => {
   // Empty until the dataset loads, so the default is applied once it has.
   const [scenarioName, setScenarioName] = useState<string>('');
   const [outcome, setOutcome] = useState<'p1' | 'p2' | 'draw'>('p1');
-  const [p1Glory, setP1Glory] = useState<number>(3);
-  const [p1Ducats, setP1Ducats] = useState<number>(30);
-  const [p2Glory, setP2Glory] = useState<number>(1);
-  const [p2Ducats, setP2Ducats] = useState<number>(15);
+  /*
+    Both currencies start at zero, because the book has no payout for a result.
+
+    Glory is one point per Glorious Deed carried out (page 99: "Each time you
+    carry out a Glorious Deed in a campaign, your Warband gains 1 ☼"), and
+    Ducats between games are the Exploration Roll times ten and nothing else
+    (page 114). Neither depends on who won.
+
+    These used to open at 3/30 for the first player and 1/15 for the second —
+    a result-based scale that appears nowhere in the rulebook (RR-02) — so an
+    organiser logging a match on the players' behalf handed out Glory and
+    Ducats the game does not award, without being asked and usually without
+    noticing. This is an organiser's form and every field is theirs to fill:
+    what changed is that it no longer fills four of them with invented
+    numbers.
+  */
+  const [p1Glory, setP1Glory] = useState<number>(0);
+  const [p1Ducats, setP1Ducats] = useState<number>(0);
+  const [p2Glory, setP2Glory] = useState<number>(0);
+  const [p2Ducats, setP2Ducats] = useState<number>(0);
   const [narrative, setNarrative] = useState<string>('');
 
 

@@ -11,7 +11,7 @@
 import { describe, it, expect } from 'vitest';
 
 import type { BattleRecord, BattleSide, DeedClaim } from '@/types/battle';
-import { matchHandover } from '../matchHandover';
+import { matchHandover, GLORY_PER_DEED } from '../matchHandover';
 
 const side = (over: Partial<BattleSide> & { id: string }): BattleSide => ({
   name: over.id, factionId: 'f', wasPlaceholder: false, vp: 0, turnScores: {}, ...over,
@@ -131,11 +131,44 @@ describe('the Glorious Deeds', () => {
   const deed = (sideId: string, title: string): DeedClaim =>
     ({ title, description: '', sideId, sideName: sideId });
 
+  it('pays one Glory per Deed, and nothing for the result', () => {
+    /*
+      RR-02. Page 99: "Each time you carry out a Glorious Deed in a campaign,
+      your Warband gains 1 ☼." That is the whole of the between-game Glory
+      award. The wizard paid 3 for a win, 1 for a draw and 0 for a loss — a
+      scale that appears nowhere in the book — while the Deeds sat unread in
+      the record written one line earlier.
+    */
+    expect(GLORY_PER_DEED).toBe(1);
+
+    const won = battle({
+      sides: [side({ id: 'mine', vp: 9 }), side({ id: 'theirs', vp: 1 })],
+      deeds: [deed('mine', 'Hold the Line')],
+    });
+    const lost = battle({
+      sides: [side({ id: 'mine', vp: 1 }), side({ id: 'theirs', vp: 9 })],
+      deeds: [deed('mine', 'Hold the Line')],
+    });
+
+    expect(matchHandover(won, opts())!.result).toBe('Victory');
+    expect(matchHandover(lost, opts())!.result).toBe('Defeat');
+    // Same Deeds, same Glory. The result changes nothing.
+    expect(matchHandover(won, opts())!.gloryEarned).toBe(1);
+    expect(matchHandover(lost, opts())!.gloryEarned).toBe(1);
+  });
+
+  it('pays nothing for a game with no Deeds, however it went', () => {
+    // A win used to open on 3 Glory and 35 Ducats. The book pays neither.
+    const h = matchHandover(battle(), opts())!;
+    expect(h.result).toBe('Victory');
+    expect(h.deedsClaimed).toBe(0);
+    expect(h.gloryEarned).toBe(0);
+  });
+
   it('counts only this side’s', () => {
     /*
-      One Glory per Deed is what the book pays between games, so this is the
-      number the payout should be derived from (RR-02). Counted here; wiring it
-      to the Glory field is that finding's job.
+      A Deed belongs to the side that claimed it. Counting the whole table
+      would pay this warband for its opponent's heroics.
     */
     const b = battle({
       deeds: [deed('mine', 'Hold the Line'), deed('theirs', 'Break Them'), deed('mine', 'First Blood')],

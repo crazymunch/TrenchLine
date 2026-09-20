@@ -129,8 +129,25 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   */
   const [selectedScenarioId, setSelectedScenarioId] = useState<string>(handover?.scenarioId ?? '');
   const [outcome, setOutcome] = useState<'Victory' | 'Defeat' | 'Draw'>(handover?.result ?? 'Victory');
-  const [gloryGained, setGloryGained] = useState<number>(3);
-  const [ducatsGained, setDucatsGained] = useState<number>(30);
+  /*
+    The book's two between-game payouts, and neither is decided by the result.
+
+    Glory: "Each time you carry out a Glorious Deed in a campaign, your Warband
+    gains 1 ☼" (page 99). Play Mode already records every Deed and who claimed
+    it, so this opens on that count.
+
+    Ducats: "The value of the Loot you find is equal to your Exploration Roll
+    times 10 in 👑" (page 114), and from nowhere else between games. So it
+    starts at zero and the Exploration Step in step 5 sets it.
+
+    Both started at a fixed 3 and 30, and the three result buttons below
+    overwrote them with 3/35, 1/20 and 0/10 — a scale that appears nowhere in
+    the rulebook (RR-02). A player who entered nothing committed 35 Ducats for
+    a win the book pays nothing for. Both fields are still editable: the
+    default stops being invented, the player still decides.
+  */
+  const [gloryGained, setGloryGained] = useState<number>(handover?.gloryEarned ?? 0);
+  const [ducatsGained, setDucatsGained] = useState<number>(0);
   const [narrativeLog] = useState<string>('');
   
   // Narrative & Battle Report Fields
@@ -706,19 +723,10 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     <button
                       key={res}
                       type="button"
-                      onClick={() => {
-                        setOutcome(res);
-                        if (res === 'Victory') {
-                          setGloryGained(3);
-                          setDucatsGained(35);
-                        } else if (res === 'Draw') {
-                          setGloryGained(1);
-                          setDucatsGained(20);
-                        } else {
-                          setGloryGained(0);
-                          setDucatsGained(10);
-                        }
-                      }}
+                      /* Records the result and nothing else. It used to
+                         rewrite both payouts from a result-based scale the
+                         book does not print (RR-02). */
+                      onClick={() => setOutcome(res)}
                       className={`py-3 rounded text-sm font-bold uppercase transition-all ${
                         outcome === res
                           ? res === 'Victory'
@@ -747,6 +755,11 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     onChange={(e) => setGloryGained(parseInt(e.target.value) || 0)}
                     className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none focus:border-theme-primary"
                   />
+                  <p className="mt-1 text-xs text-theme-muted">
+                    {handover
+                      ? `1 per Glorious Deed — ${handover.deedsClaimed} recorded this game.`
+                      : '1 per Glorious Deed carried out.'}
+                  </p>
                 </div>
 
                 <div>
@@ -760,6 +773,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     onChange={(e) => setDucatsGained(parseInt(e.target.value) || 0)}
                     className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none focus:border-theme-primary"
                   />
+                  <p className="mt-1 text-xs text-theme-muted">
+                    Loot is the Exploration Roll &times; 10, set in the Exploration Step.
+                  </p>
                 </div>
               </div>
             </div>

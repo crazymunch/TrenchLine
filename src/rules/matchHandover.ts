@@ -28,6 +28,21 @@ import type { BattleRecord, BattleSide } from '../types/battle';
 
 export type MatchResult = 'Victory' | 'Defeat' | 'Draw';
 
+/**
+ * Glory for a Glorious Deed.
+ *
+ * Page 99, under **GLORY POINTS ☼**: *"Each time you carry out a Glorious Deed
+ * in a campaign, your Warband gains 1 ☼."* Page 98 says the same from the
+ * other side — carrying out a Deed *"does 4 things"*, the third of which is
+ * *"You gain 1 ☼"*.
+ *
+ * Named rather than inlined because it is the whole of the book's between-game
+ * Glory rule, and the app used to pay 3 for a win, 1 for a draw and 0 for a
+ * loss — a scale the book does not have anywhere (RR-02). Skills, Glory Items
+ * and some Locations award more; those are their own rules and are not this.
+ */
+export const GLORY_PER_DEED = 1;
+
 export interface MatchHandover {
   /** The Chronicle record this game already produced. Links the two. */
   battleId: string;
@@ -41,6 +56,14 @@ export interface MatchHandover {
   satOutUnitIds: string[];
   /** Glorious Deeds this side claimed, which is what the book scores Glory on. */
   deedsClaimed: number;
+  /**
+   * The Glory those Deeds earned.
+   *
+   * The whole of the book's between-game Glory award, and the app invented a
+   * result-based scale instead while the Deeds sat in the record written one
+   * line earlier (RR-02).
+   */
+  gloryEarned: number;
   /** This side's Victory Points, and the best any opponent scored. */
   ownPoints: number;
   bestOpponentPoints: number;
@@ -108,6 +131,7 @@ export function matchHandover(
         : 'Draw';
 
   const deployed = new Set(opts.deployedUnitIds);
+  const deeds = battle.deeds.filter((d) => d.sideId === own.id).length;
 
   return {
     battleId: battle.id,
@@ -116,7 +140,8 @@ export function matchHandover(
     result,
     opponentName: others.map((s) => s.name).join(', '),
     satOutUnitIds: opts.rosterUnitIds.filter((id) => !deployed.has(id)),
-    deedsClaimed: battle.deeds.filter((d) => d.sideId === own.id).length,
+    deedsClaimed: deeds,
+    gloryEarned: deeds * GLORY_PER_DEED,
     ownPoints,
     bestOpponentPoints,
   };
