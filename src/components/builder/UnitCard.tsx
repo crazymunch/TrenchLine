@@ -458,7 +458,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                 : unit.profileSnapshot.stats.movementType],
               ['RNG', unit.profileSnapshot.stats.ranged, undefined],
               ['MELEE', unit.profileSnapshot.stats.melee, undefined],
-              ['SAVE', unit.profileSnapshot.stats.armour, undefined],
+              ['ARMOUR', unit.profileSnapshot.stats.armour, undefined],
             ] as const).map(([label, value, sub]) => (
               <div key={label} className="min-w-0 px-1 py-1.5 text-center">
                 <span className="block font-mono text-xs sm:text-[10px] tracking-[0.06em] text-theme-muted">

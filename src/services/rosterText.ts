@@ -175,7 +175,7 @@ function modelLines(
     if (m.stats) {
       out.push({
         text: `MOV ${m.stats.movement} · RNG ${m.stats.ranged}`
-            + ` · MELEE ${m.stats.melee} · SAVE ${m.stats.armour}`,
+            + ` · MELEE ${m.stats.melee} · ARMOUR ${m.stats.armour}`,
         indent: 1,
       });
     }

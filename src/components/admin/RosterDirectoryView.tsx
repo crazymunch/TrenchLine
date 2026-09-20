@@ -568,7 +568,7 @@ export const RosterDirectoryView: React.FC = () => {
                         <div className="min-w-0 truncate">MOV: <strong className="text-theme-text">{u.profileSnapshot.stats.movementInches ? `${u.profileSnapshot.stats.movementInches}"` : u.profileSnapshot.stats.movement}</strong></div>
                         <div>RNG: <strong className="text-theme-text">{u.profileSnapshot.stats.ranged}</strong></div>
                         <div>MEL: <strong className="text-theme-text">{u.profileSnapshot.stats.melee}</strong></div>
-                        <div>SAVE: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>
+                        <div>ARMOUR: <strong className="text-theme-text">{u.profileSnapshot.stats.armour}</strong></div>
                       </div>
 
                       {/* Wargear */}

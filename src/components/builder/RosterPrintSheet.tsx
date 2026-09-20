@@ -79,7 +79,7 @@ const Model: React.FC<{ model: PresentedModel; mode: PrintMode }> = ({ model, mo
         <Row>
           <span className="print-stats">
             MOV {model.stats.movement} · RNG {model.stats.ranged}
-            {' · '}MELEE {model.stats.melee} · SAVE {model.stats.armour}
+            {' · '}MELEE {model.stats.melee} · ARMOUR {model.stats.armour}
           </span>
         </Row>
       )}
@@ -157,7 +157,7 @@ const Card: React.FC<{ model: PresentedModel }> = ({ model }) => (
     {model.stats && (
       <p className="print-stats">
         MOV {model.stats.movement} · RNG {model.stats.ranged}
-        {' · '}MELEE {model.stats.melee} · SAVE {model.stats.armour}
+        {' · '}MELEE {model.stats.melee} · ARMOUR {model.stats.armour}
       </p>
     )}
 

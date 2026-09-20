@@ -1774,7 +1774,7 @@ export const PlayModeView: React.FC = () => {
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.melee}</strong>
                       </div>
                       <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">SAVE</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">ARMOUR</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.armour}</strong>
                       </div>
                     </div>
