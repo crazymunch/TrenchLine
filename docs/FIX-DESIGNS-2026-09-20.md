@@ -34,8 +34,9 @@ carry, and what these designs cover:
 | FD-08 | DA-01, DA-02 | `scripts/lib/parse-battlescribe.mjs`, `src/rules/applyVariant.ts`, `src/rules/recruitable.ts` |
 | FD-09 | RR-17, RR-27 | the campaign store, Play Mode's end of match, the Chronicle record |
 | FD-10 | RR-13, RR-14, RR-09 | `validate.ts`, the builder's Quartermaster actions, the wizard's Exploration branch |
+| FD-11 | the April 2026 Mercenaries review | `scripts/lib/parse-battlescribe.mjs`, `scripts/lib/layers.mjs`, the Dispatch layer and a Warbands-book layer, `AddEquipmentModal`, `validate.ts` |
 
-### Landed, as of 05:10 UTC on 20 September
+### Landed, as of 06:00 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -49,8 +50,12 @@ carry, and what these designs cover:
 | FD-03a (Campaign Victory Points, standings, the Weather chooser) | #66 | merged |
 | WIZ-1 (the 44px rule's width, `sm:` to `lg:`, checkbox by label) | #67 | merged |
 | MVP-1 (the standout note names any roster's model) | #68 | merged |
-| FD-06b (the Promotion Dice Pool, the miss counter, the end of the switch) | #69 | reviewed; the assignment rule corrected as ordered, green, to merge |
-| FD-06c (a Deed carries the model's id; the second Experience Point) | #70 | reviewed, green, to rebase and merge |
+| FD-06b (the Promotion Dice Pool, the miss counter, the end of the switch) | #69 | merged |
+| FD-06c (a Deed carries the model's id; the second Experience Point) | #70 | merged |
+| FD-05a (a dead model leaves the Roster) | #71 | merged |
+| FD-05b (the Threshold caps the Force; the builder measures it) | #72 | merged |
+| GUARD-1 (the case-collision guard dedupes what a conflicted merge lists per stage) | #74 | merged |
+| FD-05c, first half (a purchase over the balance refused; a sale rounds up; a Glory item debits Glory) | #73 | reviewed, correct; `check` still running at 05:55 UTC; merge when green. The ledger half is FD-05d, below |
 
 ## FD-00. PR #59 as it stands
 
@@ -497,6 +502,17 @@ balance of 120 and one reconciliation entry. Docs: `ROSTER-FILE.md`,
 `CAMPAIGN-SYNC.md` (the ledger is the authority; the cached fields are not),
 `RESTRUCTURE-PLAN.md` line 419 marked done.
 
+**Split, as landed.** PR #73 carries items 3 and 4 — the refusal, the
+rounding and the currency — as FD-05c, and defers items 1, 2 and 5 (the
+ledger as the authority, every movement an entry, the reconciliation on
+load) to FD-05d. Accepted: the three are rules defects provable on their
+own, and a money migration hiding behind them is the worse diff. Two things
+FD-05d must also carry, found reviewing #73: the Arsenal modal buys from the
+store's legacy `weapons`, `armour` and `equipment` lists, not from
+`armouryFor`, so no row it offers carries a currency and the `currency` #73
+added never reaches the store from the UI; and a hire still never debits
+(`store/slices/units.ts` line 15), which is item 2's first entry.
+
 ## FD-06. RR-05: the Promotions and Experience Step
 
 ### Root cause
@@ -874,6 +890,293 @@ with no caller. The wizard's step 5 branches on `campaign.framework ===
 the supplement's rate. Test: a Carcass Front warband's step never calls
 `resolveExploration` and its loot is the supplement's, read from the dataset.
 
+## FD-11. The April 2026 Mercenaries review: the rest of the Mercenary entries
+
+The owner asked for the app to be checked against the official "April 2026
+Rules Review: Mercenaries" article. The article is a rationale post; the
+card changes it announces are images, and the sandbox cannot reach the site
+at all. Its rules text is the Mercenaries section of the Trench Dispatch,
+pp.11 to 16, which is transcribed in
+`data-sources/dispatch/trench-dispatch-01-april-2026.txt` lines 540 to 861.
+That transcription, and the Warbands book for what the Dispatch does not
+restate, are the sources below. Every line number is in those two files
+unless it says otherwise.
+
+### What the article changes, and where the dataset stands
+
+Checked against the dataset the default ruleset builds on `main`:
+
+| Entry | The Dispatch says | On `main` |
+| --- | --- | --- |
+| MERCENARY glossary keyword (L544–552) | new keyword | present |
+| Combat Biologist (L553–564) | hosts NEW ANTIOCH and SULTANATE; keywords MERCENARY, NEGATE FEAR | both right; **no abilities and no Battlekit at all** |
+| Communicant Anti-Tank Hunter (L565–576) | hosts; keywords | right |
+| Mamluk Faris (L577–589) | hosts; keywords | right |
+| Mendelist Ammo Monk (L596–628) | hosts; Ammunition Sacrament rewritten; keywords | right |
+| Observer (L629–643) | hosts; Cost 5; keywords | right |
+| Sister of Saint Cosmas (L644–655) | hosts PILGRIM; keywords MERCENARY, NEGATE FEAR | **the entry is still named "Combat Medic", carries no keywords, and is offered to all eight Warbands** |
+| Sin Eater (L662–716) | Devour the Guilty rewritten; Tenderiser Maul rewritten (Mulch); keywords | ability and keywords right; **the Maul has the catalogue's old rule and is not on the model's Battlekit**; hosts unrestricted, so New Antioch may hire it |
+| Scripture Guardian (L723–768) | whole entry replaced: Cost 7, any Warband, statline, Battlekit line, Slow, Vengeful Scripture as Battlekit | cost, hosts, statline, keywords right; **Slow has the catalogue's text; Vengeful Scripture is still an ability with the catalogue's older rules; Battlekit empty; no Vengeful Scripture weapon** |
+| Goetic Warlock (L775–819) | whole entry replaced: Battlekit line, Powers, abilities, Flaying Iron Claws | cost, hosts, statline, keywords, abilities right; **the claws are still the catalogue's "Reaping Claws" with a rule the new profile does not print, and are not on the model's Battlekit** |
+| Witchburner (L822–861) | whole entry replaced: Cost 6, statline, Battlekit line, four abilities, Gavel of Justice CRITICAL, FIRE | cost, hosts, statline, keywords, abilities right; **the Gavel lacks FIRE, still carries the catalogue's "Wrath of God" rule alongside Found Guilty, and is not on the model's Battlekit** |
+
+So the numbers are right and the rules text is right where the layer wrote
+it; what is missing is everything the layer's own `_note` lists as "STILL
+OUTSTANDING", plus one thing it got wrong.
+
+### Root causes
+
+**1. The layer stopped where the entity model stopped.** Items 1 and 2 of
+the `_note` in `data-sources/dispatch/dispatch-01.layer.json`. Item 2 is now
+stale: `battlekitNote` exists (ops 74 and 89 use it) and `add` writes
+weapons (ops 66 to 79). Item 1 is wrong: the Sister of Saint Cosmas IS in the
+catalogues, as the Mercenaries entry named "Combat Medic" (entryId
+`39c2-abb6-fef0-f96e`, profile id `aa7f-02df-a12f-1ed3`). Its two abilities
+say "the Sisters" and "a Sister of Saint Cosmas", and its kit is hers
+(Standard Armour, Gas Mask, Medikit, Misericordia, book L10382–10383). The
+catalogue kept the model's pre-rename name; the layer took the name as
+proof of absence.
+
+**2. `forcedKitOf` reads one of four ways the catalogue states fixed kit.**
+`scripts/lib/parse-battlescribe.mjs` lines 209 to 256 read only an
+`entryLink` whose `min` equals its `max`. The Mercenaries catalogue also
+states "always has" as:
+
+- an `entryLink` with `min="1"` and no `max` — the Combat Biologist's Gas
+  Grenades, Gas Mask and Standard Armour, `data-sources/battlescribe/Mercenaries.cat`
+  lines 861 to 875;
+- a nested `selectionEntry` with `min` = `max` = 1 carrying a Weapon
+  profile — the Sin Eater's Tenderizer Maul (line 367, its profile at 373) and the
+  Warlock's Iron-Clawed Hands, whose profile is Reaping Claws (1816 and 1818);
+- a Weapon profile on the unit node itself, inline or through an
+  `infoLink type="profile"` — the Biologist's Vivisector (line 833) and the
+  Witchburner's Gavel of Justice (line 285).
+
+The second and third shapes DO reach `dataset.weapons` (lines 1039 to 1046
+emit them), but with the unit's own cost: the Gavel is a 6-Glory weapon and
+the Vivisector a 3-Glory one in the dataset, because `cost` there is the
+node's. Nothing sells them today, but a weapon that says it costs what the
+model costs is wrong data waiting for a caller.
+
+**3. `findTarget` takes the first name match.** `scripts/lib/layers.mjs`
+lines 48 to 58. Two units are named "Combat Medic", and the New Antioch
+Troop comes first, so a name-addressed op meant for the Sister would edit
+the wrong model and report success.
+
+**4. Nothing carries what the book states and the catalogue lacks.** The
+Biologist's two abilities and Battlekit line (book L9802–9813), the Sister's
+name, statline and "+1 INJURY DICE" (L10366–10392), the Sin Eater's hosts
+"Fallen Warbands" (L10273), and each core faction's alignment (L1241,
+L2744, L4100, L5994, L7254, L8380). `data-sources/resolutions.json` states
+the precedence as Dispatch over rulebook over catalogue, but the rulebook
+rung is applied only through a resolution, and a resolution is for a
+CONFLICT. An empty catalogue field is a gap, and no gap is filled from the
+book today.
+
+### The change, in three PRs
+
+#### FD-11a. Parser: fixed kit the catalogue states three other ways
+
+`scripts/lib/parse-battlescribe.mjs` only, plus its tests.
+
+1. `forcedKitOf` also reads the three shapes above. For a `min`-only link,
+   quantity is the `min`. For a nested `selectionEntry`, `id` and `linkId`
+   are the child entry's id and `profileId` its Weapon or Battlekit
+   profile. For a profile the unit carries itself, `id` and `profileId` are
+   the profile's id and `linkId` is the `infoLink`'s id where there is one,
+   else the profile's. Keep `seen` by id so a weapon reached two ways is one
+   entry. The rule the existing comment states still holds: a `min` on a
+   GROUP is a choice and stays with `options`.
+2. The weapon record emitted for a profile the unit carries (lines 1039 to
+   1046) has cost zero, as the forced links do and for the reason the
+   comment at lines 245 to 250 gives: the model is priced to include it.
+3. `UnitCard` (`src/components/builder/UnitCard.tsx`) shows a forced WEAPON
+   with its profile — type, range, keywords, rules — looked up by
+   `profileId`, not just its name. Check whether it does; if it renders
+   names only, add the lookup. `AddEquipmentModal` needs nothing: the rows
+   it hides by Battlekit name (line 250) are armoury rows, and none of these
+   weapons has one.
+4. Check where the armour keyword on a Battlekit entry flows.
+   `src/rules/recruitable.ts` line 383 reads an `INJURY MODIFIER` off the
+   Battlekit; the Dispatch says "the Injury Modifier for any Armour they have
+   has been included in the model's Profile" (L551–552). If that value is
+   ever added to `stats.armour`, it must not be for a unit with the
+   MERCENARY keyword. Report what you find in the PR body either way.
+
+Tests in `scripts/lib/__tests__/pipeline.test.mjs`, fixtures in the style of
+the Combat Medic test at line 584: one per shape, and one that the emitted
+weapon costs zero. Then the built dataset, in `src/rules/__tests__/dispatch.test.ts`:
+Combat Biologist's Battlekit names are Gas Grenades, Gas Mask, Standard
+Armour, Vivisector; Sin Eater's are Combat Helmet, Reinforced Armour and the
+Maul; Goetic Warlock's are Reinforced Armour and the claws; Witchburner's
+are Combat Helmet, Reinforced Armour, Gavel of Justice; the Gavel and the
+Vivisector cost 0 Ducats and 0 Glory.
+
+Acceptance: `npm run rules:audit:battlekit` before and after. List in the
+PR body every unit outside the Mercenaries whose Battlekit changed. Each
+must be one the book prints as "always has"; one that is not is a bug in
+the new rule, not a bonus.
+
+#### FD-11b. Layers: the entries as printed, and a book layer for what the Dispatch does not restate
+
+1. **Ambiguity guard.** `findTarget` in `scripts/lib/layers.mjs` returns
+   unresolved when a name matches more than one entity, naming the ids, and
+   the build fails as it does for any unresolved op. Test with two "Combat
+   Medic" fixtures (the pipeline test at line 148 already builds that pair).
+   Every op below that touches the Sister targets `aa7f-02df-a12f-1ed3`.
+
+2. **Faction alignment, derived.** `parseFactionRules` in
+   `scripts/lib/parse-warbands.mjs` already walks each Warband Creation
+   block. Read the sentence that ends it — "New Antioch Warbands are
+   Faithful." (L1241), "Trench Pilgrims are Faithful." (L2744), "The
+   Sultanate of the Iron Wall are Faithful." (L4100), "The Heretic Legions
+   are Fallen." (L5994), "The Cult of the Black Grail are Fallen." (L7254),
+   "…Serpent are Fallen." (L8379–8380, wrapped) — into `alignment` on the
+   faction, the field `src/types/catalogue.ts` line 476 already declares
+   and the Carcass Front layer already fills for its two. A block with no
+   such sentence fails the parse; do not default. Test: all eight factions
+   in the built dataset carry one, three Faithful and three Fallen among
+   the core six.
+
+3. **`allowedAlignment` on a unit.** New optional field on `UnitProfile`,
+   `'Faithful' | 'Fallen'`, for a host rule stated by alignment rather than
+   by name. `src/rules/recruitable.ts` lines 302 to 305 resolve it to the
+   factions whose `alignment` matches, ahead of the permissive default. The
+   build fails if a unit states one and no faction carries an alignment: a
+   filter that matches nothing is a hire nobody can make. The Carcass Front
+   comment at `scripts/lib/carcass-front-layer.mjs` line 352 refused to
+   invent an alignment for a Mercenary; this is not that — it is the
+   book's own sentence, and the factions' alignments are now read, not
+   assumed.
+
+4. **A Warbands-book layer.** A new layer file, `warbands-book.layer.json`,
+   in the layers directory `loadLayer` already searches
+   (`scripts/rules-build.mjs` line 84), id `warbands-book`, applied
+   BEFORE `dispatch-01` in the `trenchline` ruleset in
+   `scripts/lib/rulesets.mjs`, so the Dispatch still wins. Same shape as the
+   Dispatch layer: every op carries `_src` naming the book file and a line
+   range. It holds only what the book states and the catalogue lacks:
+
+   - Sister (`aa7f-02df-a12f-1ed3`): `set name` "Sister of Saint Cosmas"
+     (L10366); `set stats.ranged` "+0 DICE" and `set stats.melee` "+0 DICE"
+     (L10381 — the catalogue's bare "0" is the parse artefact op 46 records
+     on the Witchburner); `replaceAbility` "Finish the Fallen" with the
+     book's text, which says "+1 INJURY DICE" where the catalogue says
+     "+1 DICE" (L10387–10392); `set battlekitNote` (L10382–10383).
+   - Combat Biologist (`02df-b4d5-3ca5-9a2b`): `addAbility` "Battlefield
+     Vivisection" (L9804–9809, the Gather Knowledge sentence included in the
+     description) and "Prize Specimens" (L9810–9813); `set battlekitNote`
+     (L9802–9803).
+   - Sin Eater (`2d21-7af1-0770-da4c`): `set allowedAlignment` "Fallen"
+     (L10273).
+
+   The layer is a transcription, so prove it: a test in
+   `scripts/lib/__tests__/` reads the layer and the extract and checks that
+   every `name`, `battlekitNote` and ability `description` value appears in
+   the cited lines after whitespace is normalised. An op whose text is not
+   on its cited lines fails.
+
+   The rename has consequences to check, not assume: `entryName` (the
+   catalogue's "Combat Medic") is what promotions key on and stays as it
+   is; `scripts/rules-audit-book.mjs` matches by name, so its "Sister of
+   Saint Cosmas — no dataset unit" and "Combat Medic [Mercenaries] — no
+   book entry" rows both disappear, and that is the acceptance check; any
+   saved roster keeps its snapshot name and its stable unit id.
+
+5. **Dispatch layer additions**, in `data-sources/dispatch/dispatch-01.layer.json`,
+   each with `_src`, by id:
+
+   - Sister: `setKeywords` MERCENARY, NEGATE FEAR (L655); `set
+     allowedFactions` ["Trench Pilgrims"] (L650–651; the Procession follows
+     by the delegation the build already applies).
+   - Scripture Guardian (`3fe9-1530-6fcd-1855`): `replaceAbility` "Slow"
+     (L754–755); `removeAbility` "Vengeful Scripture" — it is Battlekit now
+     (L748, L757); `add` to `weapons` with id `dispatch01-vengeful-scripture`:
+     type Special, range 18”, keywords ASSAULT, IGNORE COVER (L761), rules
+     the Unmaking and Spoken paragraphs (L762–768), description L759,
+     factionId "Mercenaries", cost zero; `set battlekitNote` to the whole
+     Battlekit paragraph (L748–753); and the model's three fixed items.
+     The parser cannot supply those — the catalogue entry links nothing —
+     so add one op, `addBattlekit`, to `layers.mjs`: target a unit, name a
+     weapon; it resolves the weapon by name in `dataset.weapons`
+     (unresolved when the name matches none or more than one) and appends
+     a `ForcedBattlekit` with `id` the weapon's `entryId` or `id`,
+     `linkId` `dispatch01:<unit id>:<slug>`, quantity 1, the weapon's
+     keywords, cost zero and `profileId` the weapon's id. Three ops:
+     Reinforced Armour, Combat Helmet, Vengeful Scripture. Order the weapon
+     `add` before them.
+   - Sin Eater's Maul (weapon `c63d-fe53-a980-4a2a`): `set rules` to the
+     Mulch paragraph (L708–714). Type, range and keywords already match
+     L706–707. Leave the catalogue's "Tenderizer" spelling; the
+     `_gearNames` mechanism in `data-sources/resolutions.json` is where a
+     spelling ruling goes, and it is a ruling, not this PR's.
+   - Goetic Warlock's claws (weapon `e8d8-c2a3-9a3e-b3b8`): `set name`
+     "Flaying Iron Claws", `set type` "2-Handed", `set rules` to empty
+     (L797–799: the new profile prints keywords and no rule; the
+     catalogue's "even though it does not have a Melee Weapon" describes a
+     model that now has one). Keywords already CLEAVE 2, CRITICAL. `set
+     battlekitNote` (L785–786).
+   - Witchburner's Gavel (weapon `ddce-0973-220d-51e0`): `set keywords`
+     CRITICAL, FIRE (L863); `set rules` to empty — the Dispatch's Gavel
+     prints none (L858–863) and Found Guilty (L853–855, already on the
+     unit) is what replaced Wrath of God; with both, a Fallen model takes
+     two extra markers. `set battlekitNote` (L835).
+
+   Update the `_note`: strike items 1 and 2, say why item 1 was wrong, and
+   record that ops on the Sister address the id because the name is shared.
+
+Tests, in `src/rules/__tests__/dispatch.test.ts` against the built dataset:
+the Sister by her name, keywords, hosts (Trench Pilgrims and the
+Procession, not New Antioch), Finish the Fallen contains "+1 INJURY DICE";
+Combat Biologist has the two abilities; Sin Eater's hosts are exactly the
+Fallen factions and never New Antioch, the Pilgrims, the Sultanate or the
+Procession; the Scripture Guardian has no ability named Vengeful Scripture,
+has a Battlekit weapon of that name whose profile carries ASSAULT and
+IGNORE COVER, and Slow reads "3”/Infantry when it takes a Dash ACTION"; the
+Gavel's keywords are exactly CRITICAL, FIRE and its rules are empty; the
+claws are "Flaying Iron Claws", 2-Handed, no rules.
+
+Acceptance: `npm run rules:audit:book` before and after, in the PR body.
+The Sister's two rows go; the Scripture Guardian's Slow row goes; count the
+rest and they must be unchanged.
+
+#### FD-11c. Builder: a Mercenary's kit is fixed, and the Scripture Guardian buys its weapons
+
+The glossary: "A Mercenaries' Battlekit cannot be removed or lost over the
+course of the campaign for any reason, and they cannot have any other
+Battlekit" (L550–551). The one exception is the Scripture Guardian, which
+"must have either two 1-Handed Melee Weapons or one 2-Handed Melee Weapon"
+bought "from your Faction Armoury Tables at their normal Cost" obeying
+"any stipulations that apply" (L748–753).
+
+1. `AddEquipmentModal` offers a unit with the MERCENARY keyword nothing,
+   and says so with the glossary sentence, except the Scripture Guardian,
+   which is offered the host Warband's Melee rows only, at their printed
+   cost, with the rows' own stipulations applied as for any model (it is
+   not ELITE, so ELITE-only rows are out). Find where the modal decides
+   which rows a unit may see and put the gate there, not in the render.
+2. `src/rules/validate.ts`: a MERCENARY unit carrying anything beyond its
+   Battlekit is an error naming the item; a Scripture Guardian with
+   neither two 1-Handed nor one 2-Handed Melee weapon is a warning quoting
+   L748–749; a Scripture Guardian with a Ranged weapon or armour beyond its
+   kit is the same error as any Mercenary.
+3. The Combat Biologist's deed. "add the Gather Knowledge Glorious Deed to
+   those normally available in each scenario you play" (L9804–9806). The
+   ability op in FD-11b carries `grantsDeed: { name, description }`
+   transcribed from L9807–9809, `Ability` gains that optional field, and
+   Play Mode's deed list is the scenario's deeds plus any `grantsDeed` on
+   an ability of a model in the roster. Test: a roster with a Combat
+   Biologist lists Gather Knowledge; one without does not.
+
+Tests for 1 and 2 in the existing validate and modal test files; tests for
+3 with the match-state tests.
+
+### Order within FD-11
+
+FD-11a first (it changes what the layers see), then FD-11b, then FD-11c.
+Each PR body carries the audit counts before and after, and the list of
+every entry whose Battlekit or hosts changed.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -884,3 +1187,5 @@ the supplement's rate. Test: a Carcass Front warband's step never calls
 4. FD-05a, FD-05b, FD-05c, in that order, one PR each.
 5. FD-07, then FD-08, then FD-09.
 6. FD-10, one PR per heading, and then DA-03/05/04 and the rest of the two lists.
+7. FD-11a, FD-11b, FD-11c, one PR each, ahead of item 4: the owner asked for
+   the Mercenaries first, and FD-11a changes what every later layer sees.
