@@ -152,6 +152,30 @@ export async function expectTouchTargets(page: Page) {
       if (!host.offsetParent) continue;
       const r = host.getBoundingClientRect();
       if (!r.width || !r.height) continue;
+      /*
+        A checkbox or radio is the one control whose own box is NOT its hit
+        area. The browser makes its `<label>` toggle it, so the label is what a
+        thumb aims at — and a 44px checkbox beside a model's name would be
+        absurd, which is not what docs/MOBILE.md §3 asks for. Measured on the
+        label where there is one, so this still fails a bare box with no label
+        at all, which is the case that really is unreachable.
+
+        `pointer-events: none` marks the other case: a box that is an INDICATOR
+        inside a clickable row, not a control. Those are skipped entirely.
+      */
+      const kind = host.getAttribute('type');
+      if (host.tagName === 'INPUT' && (kind === 'checkbox' || kind === 'radio')) {
+        if (getComputedStyle(host).pointerEvents === 'none') continue;
+        const id = host.getAttribute('id');
+        const label = host.closest('label')
+          ?? (id ? document.querySelector(`label[for="${id}"]`) : null);
+        const lr = (label as HTMLElement | null)?.getBoundingClientRect();
+        if (lr && lr.height >= 44 && lr.width >= 44) continue;
+        bad.push(`${Math.round(lr?.height ?? r.height)}x${Math.round(lr?.width ?? r.width)} `
+          + `<input type=${kind}>${label ? ' (its label)' : ' (no label)'}`);
+        continue;
+      }
+
       const after = getComputedStyle(host, '::after');
       const tap = after.content === '""' && parseFloat(after.minHeight) >= 44;
       const h = tap ? Math.max(r.height, parseFloat(after.minHeight)) : r.height;
@@ -183,11 +207,19 @@ export async function expectReadableText(page: Page) {
   expect(small, 'text under 12px').toEqual([]);
 }
 
-/** A form control below 16px makes iOS zoom in and never zoom back out. */
+/**
+ * A form control below 16px makes iOS zoom in and never zoom back out.
+ *
+ * Checkbox and radio are excluded, and deliberately: the zoom is triggered by
+ * focusing a field you can TYPE into, and neither of those is. Their font-size
+ * styles the label text beside them, not the box, so flagging them asked for a
+ * 16px change that would do nothing about the behaviour this guards.
+ */
 export async function expectNoZoomingInputs(page: Page) {
   const small = await page.evaluate(() =>
     [...document.querySelectorAll('input,select,textarea')]
       .filter((el) => (el as HTMLElement).offsetParent)
+      .filter((el) => !['checkbox', 'radio'].includes(el.getAttribute('type') ?? ''))
       .filter((el) => parseFloat(getComputedStyle(el).fontSize) < 16)
       .map((el) => `<${el.tagName.toLowerCase()}>`));
   expect(small, 'form controls under 16px').toEqual([]);

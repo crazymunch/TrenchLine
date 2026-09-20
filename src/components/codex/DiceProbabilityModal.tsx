@@ -69,7 +69,7 @@ export const DiceProbabilityModal: React.FC<DiceProbabilityModalProps> = ({ onCl
               <button
                 key={d}
                 onClick={() => setDice(d)}
-                className={`px-2.5 py-2 rounded font-bold border transition-all min-h-[44px] sm:min-h-0 ${
+                className={`px-2.5 py-2 rounded font-bold border transition-all min-h-[44px] lg:min-h-0 ${
                   dice === d
                     ? 'bg-theme-primary text-theme-base border-theme-primary shadow'
                     : 'bg-theme-base text-theme-muted border-theme-border hover:text-theme-text'

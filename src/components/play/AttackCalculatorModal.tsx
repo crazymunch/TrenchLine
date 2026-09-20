@@ -193,7 +193,7 @@ export const AttackCalculatorModal: React.FC<AttackCalculatorModalProps> = ({
   };
 
   const chip = (on: boolean) =>
-    `px-2.5 py-2 rounded font-bold border transition-all min-h-[44px] sm:min-h-0 ${
+    `px-2.5 py-2 rounded font-bold border transition-all min-h-[44px] lg:min-h-0 ${
       on
         ? 'bg-theme-primary text-theme-base border-theme-primary shadow'
         : 'bg-theme-base text-theme-muted border-theme-border hover:text-theme-text'
