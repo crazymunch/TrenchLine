@@ -584,7 +584,17 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
 
       /* Minted here rather than below, because the models removed a few lines
          down record which battle it was that removed them. */
-      const matchId = `m-${Date.now()}`;
+      /*
+        Unique, not merely usually-unique.
+
+        This was `m-${Date.now()}`, and a millisecond is a real collision
+        window now that ONE battle produces a match record per side and the
+        next side's wizard is one click away (FD-09b / RR-27): two records
+        sharing an id means the second side's post-battle overwrites the
+        first's link, and the battle reads as resolved having recorded one.
+        Same shape as `newOpId`, and for the same reason.
+      */
+      const matchId = `m-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
       /*
         The dead leave the Roster, rather than staying on it behind a flag.
@@ -920,7 +930,29 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       */
       if (battleId) {
         const battle = storage.getBattles().find((b) => b.id === battleId);
-        if (battle) storage.addBattle({ ...battle, campaignMatchId: matchId });
+        if (battle) {
+          /*
+            Keyed by SIDE (FD-09b / RR-27). `campaignMatchId` was one id for
+            the whole battle, and a game has as many post-battles as it has
+            rosters — so the second side's had nowhere to go, and nothing
+            could tell whether it had been run at all.
+
+            The old field is still written where it is empty, and reads as the
+            primary side's, so a record already in the Chronicle or the cloud
+            keeps its link.
+          */
+          storage.addBattle({
+            ...battle,
+            /* On the SIDE, so it reaches the cloud inside `sides` — which is
+               a Json column — rather than needing one of its own. */
+            sides: battle.sides.map((s) => (
+              s.id === activeWb.id ? { ...s, campaignMatchId: matchId } : s)),
+            /* The old whole-battle field is still written where it is empty,
+               and reads as the primary side's, so a record already in the
+               Chronicle or the cloud keeps its link. */
+            ...(battle.campaignMatchId ? {} : { campaignMatchId: matchId }),
+          });
+        }
       }
 
       set({

@@ -1,7 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { hasCampaign } from '../../store/seed';
+import { storage } from '../../services/storage';
+import { unresolvedSides, type BattleRecord } from '@/types/battle';
+import { matchHandover, type MatchHandover } from '@/rules/matchHandover';
+import { PostBattleWizardModal } from './PostBattleWizardModal';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '@/rules/useDataset';
 import { campaignVictoryPoints, byCampaignVictoryPoints } from '@/rules/campaign';
@@ -31,7 +35,7 @@ import { useOverlay } from '../ui/useOverlay';
 export const CampaignHubView: React.FC = () => {
   const {
     campaign, factions, createCampaign, getActiveWarband, warbands,
-    advanceCampaignGame, everyMemberPlayedThisGame,
+    advanceCampaignGame, everyMemberPlayedThisGame, setActiveWarbandId,
   } = useStore();
   const activeWb = getActiveWarband();
   const syncCampaign = useStore((s) => s.syncCampaignWithCloud);
@@ -55,6 +59,29 @@ export const CampaignHubView: React.FC = () => {
   const { dataset, error: datasetError } = useDataset();
   const cfTerritories = carcassFrontTerritories(dataset?.carcassFrontMap);
 
+  const unresolvedForMe = useMemo(() => {
+    const mine = new Set(warbands.filter((w) => w.campaignId === campaign.id).map((w) => w.id));
+    return storage.getBattles().flatMap((battle) =>
+      unresolvedSides(battle)
+        .filter((side) => mine.has(side.id))
+        .map((side) => ({ battle, side })));
+    // `warbands` and the campaign are what change it; the battle store is read
+    // fresh on each of those, which is when a new one can have appeared.
+  }, [warbands, campaign.id]);
+
+  const startPostBattle = (battle: BattleRecord, sideId: string) => {
+    const wb = warbands.find((w) => w.id === sideId);
+    const recorded = battle.sides.find((s) => s.id === sideId)?.deployedUnitIds;
+    setPostBattleFor(matchHandover(battle, {
+      ownSideId: sideId,
+      rosterUnitIds: wb?.units.map((u) => u.id) ?? [],
+      /* What that side actually deployed, off the record. A post-battle run
+         later cannot read the tracker's state, and assuming the whole roster
+         played would hand Experience to models that sat the game out. */
+      deployedUnitIds: recorded ?? wb?.units.map((u) => u.id) ?? [],
+    }));
+  };
+
   const [activeTab, setActiveTab] = useState<'leaderboard' | 'chronicle' | 'territory' | 'matches'>('leaderboard');
   const [copied, setCopied] = useState(false);
   const [isNewCampaignModalOpen, setIsNewCampaignModalOpen] = useState(false);
@@ -71,6 +98,13 @@ export const CampaignHubView: React.FC = () => {
   */
   const newCampaignRef = useOverlay(isNewCampaignModalOpen, () => setIsNewCampaignModalOpen(false));
   const [isLogMatchOpen, setIsLogMatchOpen] = useState(false);
+  /*
+    Battles fought by a Warband on this device whose post-battle was never
+    run (FD-09b / RR-27). Read from storage rather than held in state, so a
+    battle finished in Play Mode or synced down since this view mounted
+    leaves the list on the next render.
+  */
+  const [postBattleFor, setPostBattleFor] = useState<MatchHandover | null>(null);
   const [expandedMatchIds, setExpandedMatchIds] = useState<string[]>(['match-hist-1']);
   const [newCampaignName, setNewCampaignName] = useState('');
   const [newMaxDucats, setNewMaxDucats] = useState(700);
@@ -510,6 +544,70 @@ export const CampaignHubView: React.FC = () => {
         </div>
 
       </div>
+
+      {/*
+        Battles this device holds where one of its own warbands fought and has
+        no post-battle (FD-09b / RR-27).
+
+        Play Mode offers the other sides as soon as a match ends, and a player
+        can decline — or the game can have been recorded on somebody else's
+        device and synced here. Either way the work is still owed: no Trauma,
+        no Experience, no Exploration for that roster. This is where it waits,
+        rather than being lost the moment the offer is dismissed.
+
+        A placeholder side is never listed: it has no roster.
+      */}
+      {unresolvedForMe.length > 0 && (
+        <div className="bg-theme-surface border border-status-warning rounded-md p-4 space-y-3">
+          <p className="font-gothic font-bold text-sm text-status-warning uppercase">
+            Unresolved battles ({unresolvedForMe.length})
+          </p>
+          <p className="text-xs font-mono text-theme-muted leading-relaxed">
+            These games were fought and never finished: no Trauma, no Experience
+            and no Exploration for the Warband named.
+          </p>
+          <ul className="space-y-2">
+            {unresolvedForMe.map(({ battle, side }) => (
+              <li
+                key={`${battle.id}-${side.id}`}
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-2
+                           p-3 bg-theme-base border border-theme-border rounded text-xs font-mono"
+              >
+                <span className="text-theme-text">
+                  <strong className="text-theme-primary">{side.name}</strong>
+                  {' — '}{battle.scenarioName}
+                  <span className="text-theme-muted">
+                    {' · '}{new Date(battle.endedAt).toLocaleDateString()}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setActiveWarbandId(side.id);
+                    startPostBattle(battle, side.id);
+                  }}
+                  className="min-h-[44px] lg:min-h-0 lg:py-1 px-3 flex-shrink-0 rounded border
+                             border-theme-primary bg-theme-base text-theme-primary
+                             font-bold uppercase hover:bg-theme-elevated"
+                >
+                  Post-battle for {side.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/*
+        The wizard the unresolved list opens. Same component the match end
+        opens, on a handover built for THAT side.
+      */}
+      {postBattleFor && (
+        <PostBattleWizardModal
+          handover={postBattleFor}
+          onClose={() => setPostBattleFor(null)}
+        />
+      )}
 
       {/* TAB 1: LEADERBOARD */}
       {/*

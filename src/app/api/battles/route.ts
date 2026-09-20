@@ -69,6 +69,18 @@ const Side = z.object({
   coalition: z.enum(['A', 'B']).optional(),
   vp: z.number().int().min(-999).max(9999),
   turnScores: z.record(z.string(), z.number().int().min(-999).max(9999)),
+  /*
+    Per-side post-battle links and deployment (FD-09b / RR-27), and they have
+    to be NAMED here: this object is `.strict()`, so a client sending a field
+    the schema does not list has its whole battle rejected — which is the
+    failure the `turn` note below records happening once already.
+
+    They live on the side rather than on the battle because `Battle.sides` is
+    a Json column: a per-side fact reaches the cloud with the record it
+    belongs to, and needs no column of its own.
+  */
+  campaignMatchId: id().optional(),
+  deployedUnitIds: z.array(id()).max(60).optional(),
 }).strict();
 
 /*
