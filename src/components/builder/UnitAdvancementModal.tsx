@@ -8,6 +8,7 @@ import { soundEffects } from '../../services/soundEffects';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
+import { canBePromoted } from '../../rules/promotions';
 import { 
   Sparkles, 
   Skull, 
@@ -186,7 +187,26 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     soundEffects.playDiceRoll();
   };
 
+  /*
+    Promotion is a rule, not a preference.
+
+    This was a free switch: it set `isElite` and asked nothing, so a Warband
+    could promote an Amalgam — which the rulebook lists under Models That
+    Cannot Be Promoted — and could promote its whole roster, when the book
+    skips the step entirely at six ELITE models.
+
+    The Promotion Dice Pool, which decides whether an eligible model is
+    actually promoted, is not here yet (FD-06b). Until it is, this stays a
+    manual action for a player who has rolled at the table — but only for a
+    model the rules allow it for, and the reason is shown when they do not.
+
+    Demotion is left open: `isElite` set on the wrong model is a mistake a
+    player must be able to undo, and unsetting it is not a Promotion.
+  */
+  const promotion = canBePromoted(dataset, unit, { units: warbandUnits });
+
   const handleToggleElite = () => {
+    if (!unit.isElite && !promotion.eligible) return;
     updateUnitAdvancement(warbandId, unit.id, unit.xp || 0, !unit.isElite);
   };
 
@@ -413,13 +433,30 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                     <strong className="text-xs uppercase text-theme-text font-bold">Elite Warrior Promotion</strong>
                   </div>
                   <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
-                    Promoting a Trooper to Elite status allows them to select skills across multiple disciplines and increases their survival resilience.
+                    {/*
+                      Was: "allows them to select skills across multiple
+                      disciplines and increases their survival resilience".
+                      Neither is a rule. What a Promotion actually does is gain
+                      the model the ELITE Keyword, which is what earns it
+                      Experience and sends it to the Trauma Table rather than
+                      the Survival Roll.
+                    */}
+                    A Promoted model gains the ELITE Keyword and begins with 0 Experience
+                    Points. ELITE models earn Experience after a game and roll on the Trauma
+                    Table rather than making a Survival Roll.
                   </p>
+                  {!unit.isElite && !promotion.eligible && (
+                    <p className="text-xs sm:text-[11px] text-theme-danger leading-relaxed">
+                      {promotion.detail}
+                    </p>
+                  )}
                 </div>
 
                 <button
                   onClick={handleToggleElite}
-                  className={`px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-1.5 flex-shrink-0 ${
+                  disabled={!unit.isElite && !promotion.eligible}
+                  title={!unit.isElite && !promotion.eligible ? promotion.detail : undefined}
+                  className={`min-h-[44px] px-4 py-2 rounded text-xs font-bold uppercase transition-all flex items-center space-x-1.5 flex-shrink-0 disabled:opacity-40 disabled:cursor-not-allowed ${
                     unit.isElite
                       ? 'bg-theme-primary text-white shadow-lg'
                       : 'bg-theme-elevated text-theme-muted border border-theme-border hover:text-theme-text'

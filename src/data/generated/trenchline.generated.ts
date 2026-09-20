@@ -523,6 +523,7 @@ export const DATASET: Dataset = {
       "id": "93f3-a076-a503-e864",
       "entryId": "3a3c-7f8b-4ee4-d9d7",
       "name": "Thrall",
+      "entryName": "Grounded",
       "factionId": "Black Grail",
       "roles": [],
       "keywords": [
@@ -696,6 +697,7 @@ export const DATASET: Dataset = {
       "id": "2055-017b-f08e-aff4",
       "entryId": "4173-8d52-ff32-03d8",
       "name": "Winged Thrall",
+      "entryName": "Winged",
       "factionId": "Black Grail",
       "roles": [],
       "keywords": [],
@@ -10339,6 +10341,7 @@ export const DATASET: Dataset = {
       "id": "57ad-9a46-41b3-5414",
       "entryId": "eab4-df0a-d8f3-302d",
       "name": "War Wolf",
+      "entryName": "War Wolf Assault Beast",
       "factionId": "Heretic Legion",
       "roles": [
         "Troop"
@@ -12795,6 +12798,7 @@ export const DATASET: Dataset = {
       "entryId": "2f82-e47f-c162-9152",
       "hiddenByDefault": true,
       "name": "Homunculus",
+      "entryName": "Takwin Homunculus",
       "factionId": "Iron Sultanate",
       "roles": [],
       "keywords": [
@@ -18864,6 +18868,7 @@ export const DATASET: Dataset = {
       "entryId": "39c2-abb6-fef0-f96e",
       "hiddenByDefault": true,
       "name": "Combat Medic",
+      "entryName": "Sister of Saint Cosmas",
       "factionId": "Mercenaries",
       "roles": [
         "Mercenary"
@@ -23129,6 +23134,7 @@ export const DATASET: Dataset = {
       "id": "7b50-3c72-1794-64bb",
       "entryId": "50d8-f63e-e01d-2698",
       "name": "Engineer",
+      "entryName": "Combat Engineer",
       "factionId": "New Antioch",
       "roles": [
         "Troop"
@@ -23505,6 +23511,7 @@ export const DATASET: Dataset = {
       "id": "aeaa-7023-3585-4664",
       "entryId": "3133-240a-a0cc-9cb4",
       "name": "Heavy Infantry",
+      "entryName": "Mechanized Heavy Infantry",
       "factionId": "New Antioch",
       "roles": [
         "Troop"
@@ -23832,6 +23839,7 @@ export const DATASET: Dataset = {
       "entryId": "e558-982e-ccda-bbe7",
       "hiddenByDefault": true,
       "name": "Trench Dog",
+      "entryName": "Trench Dogs of the Red Brigade",
       "factionId": "New Antioch",
       "roles": [
         "Troop"
@@ -27989,6 +27997,7 @@ export const DATASET: Dataset = {
       "id": "3d17-425a-2ba2-daf2",
       "entryId": "f2e8-cc7b-df49-4819",
       "name": "Anchorite",
+      "entryName": "Anchorite Shrine",
       "factionId": "Trench Pilgrims",
       "roles": [
         "Troop"
@@ -69446,7 +69455,170 @@ export const DATASET: Dataset = {
         "name": "Roster Step",
         "description": "Update your Warband Roster. You are now ready for the next game!"
       }
-    ]
+    ],
+    "promotions": {
+      "maxElites": 6,
+      "cannotPromote": [
+        {
+          "faction": "The Principality of New Antioch",
+          "factionId": "new-antioch",
+          "models": []
+        },
+        {
+          "faction": "Trench Pilgrims",
+          "factionId": "trench-pilgrims",
+          "models": [
+            {
+              "name": "Ecclesiastic Prisoners",
+              "unitId": "bf78-c847-c302-fec0",
+              "unitName": "Ecclesiastic Prisoner"
+            },
+            {
+              "name": "Anchorite Shrine",
+              "unitId": "3d17-425a-2ba2-daf2",
+              "unitName": "Anchorite"
+            }
+          ]
+        },
+        {
+          "faction": "The Sultanate of the Iron Wall",
+          "factionId": "iron-sultanate",
+          "models": []
+        },
+        {
+          "faction": "Heretic Legions",
+          "factionId": "heretic-legions",
+          "models": [
+            {
+              "name": "War Wolf Assault Beast",
+              "unitId": "57ad-9a46-41b3-5414",
+              "unitName": "War Wolf"
+            },
+            {
+              "name": "Wretched",
+              "unitId": "5c28-fb72-df49-7ffd",
+              "unitName": "Wretched"
+            }
+          ]
+        },
+        {
+          "faction": "The Cult of the Black Grail",
+          "factionId": "cult-of-the-black-grail",
+          "models": [
+            {
+              "name": "Grail Thralls",
+              "unitId": "93f3-a076-a503-e864",
+              "unitName": "Thrall"
+            },
+            {
+              "name": "Fly Thralls",
+              "unitId": "2055-017b-f08e-aff4",
+              "unitName": "Winged Thrall"
+            },
+            {
+              "name": "Hounds of the Black Grail",
+              "unitId": "8fc4-805a-2894-01ad",
+              "unitName": "Hound of the Black Grail"
+            },
+            {
+              "name": "Amalgam",
+              "unitId": "e5d5-c4bb-4b99-020d",
+              "unitName": "Amalgam"
+            }
+          ]
+        },
+        {
+          "faction": "The Court of the Seven-Headed Serpent",
+          "factionId": "court-of-the-seven-headed-serpent",
+          "models": [
+            {
+              "name": "Wretched",
+              "unitId": "b2dd-8727-aaa1-e504",
+              "unitName": "Wretched"
+            },
+            {
+              "name": "Yoke Fiends",
+              "unitId": "f16c-02fc-f6ad-4562",
+              "unitName": "Yoke Fiend"
+            }
+          ]
+        }
+      ],
+      "limitedPotential": {
+        "maxXp": 7,
+        "factions": [
+          {
+            "faction": "The Principality of New Antioch",
+            "factionId": "new-antioch",
+            "models": []
+          },
+          {
+            "faction": "Trench Pilgrims",
+            "factionId": "trench-pilgrims",
+            "models": [
+              {
+                "name": "Communicant",
+                "unitId": "53e3-a873-a192-6a91",
+                "unitName": "Communicant"
+              }
+            ]
+          },
+          {
+            "faction": "The Sultanate of the Iron Wall",
+            "factionId": "iron-sultanate",
+            "models": [
+              {
+                "name": "Lion of Jabir",
+                "unitId": "2ce6-a5e6-fd5e-9b11",
+                "unitName": "Lion of Jabir"
+              },
+              {
+                "name": "Brazen Bull",
+                "unitId": "0a4b-397f-ded9-8e79",
+                "unitName": "Brazen Bull"
+              },
+              {
+                "name": "Homunculi (House of Wisdom)",
+                "unitId": "02c4-88da-ec78-8a33",
+                "unitName": "Homunculus"
+              }
+            ]
+          },
+          {
+            "faction": "Heretic Legions",
+            "factionId": "heretic-legions",
+            "models": [
+              {
+                "name": "Artillery Witch",
+                "unitId": "73fc-5557-f02b-f423",
+                "unitName": "Artillery Witch"
+              }
+            ]
+          },
+          {
+            "faction": "The Cult of the Black Grail",
+            "factionId": "cult-of-the-black-grail",
+            "models": []
+          },
+          {
+            "faction": "The Court of the Seven-Headed Serpent",
+            "factionId": "court-of-the-seven-headed-serpent",
+            "models": [
+              {
+                "name": "Pit Locust",
+                "unitId": "6987-6ba4-6c22-54b8",
+                "unitName": "Pit Locust"
+              },
+              {
+                "name": "Desecrated Saint",
+                "unitId": "8402-cb2e-c367-efe5",
+                "unitName": "Desecrated Saint"
+              }
+            ]
+          }
+        ]
+      }
+    }
   },
   "meta": {
     "rulesetId": "trenchline",
