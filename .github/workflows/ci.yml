@@ -40,6 +40,10 @@ jobs:
       # `prisma migrate` fails outright when the variable is unset — so it is
       # set here rather than discovered by a red build.
       DIRECT_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trenchline_ci
+      # The only database the integration suites may write to. Deliberately a
+      # separate name from DATABASE_URL, which in a developer's environment
+      # points at production — see src/lib/integrationDb.ts and docs/DATABASE.md.
+      TRENCHLINE_TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/trenchline_ci
       NEXTAUTH_SECRET: ci-placeholder
       # robots.txt and sitemap.xml name an absolute origin, and `siteUrl()`
       # throws rather than default to one — a sitemap full of localhost is a

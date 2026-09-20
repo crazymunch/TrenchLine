@@ -25,6 +25,14 @@ const config = [
       // generated data is not worth a lint pass.
       'src/data/generated/**',
       'coverage/**',
+      /*
+        Defensive, not descriptive: nothing in this project emits `dist/`.
+        It is listed so that a stale directory left by an older scaffold — or
+        by a contributor who ran a build from a different toolchain — cannot
+        fail a lint run over output nobody wrote. `.gitignore` keeps `dist`
+        and `dist-ssr` for the same reason, and they stay.
+      */
+      'dist/**',
       'test-results/**',
       'playwright-report/**',
       // One-off investigation scripts kept for the record, not shipped and not

@@ -173,8 +173,22 @@ it('creates no shared account for a signed-out write', async () => {
 This is true whether or not the row was seeded, it deletes nothing, and it is
 *stronger* than the original: `User.updatedAt` is `@updatedAt`, so the upsert
 that was the original defect would move it and fail the test even on a database
-where the row already exists. The old assertion could not catch that case at
-all.
+where the row already exists.
+
+**Correction, from running it.** An earlier draft of this document said the old
+assertion "could not catch that case at all". That is wrong, and the four-way
+measurement says so — seeded/absent against sabotaged/clean, on a real
+Postgres:
+
+| Row seeded? | Defect present? | Old assertion | New assertion |
+|---|---|---|---|
+| absent | yes | fails | fails |
+| seeded | yes | fails | fails |
+| seeded | **no** | **fails** | passes |
+
+On a seeded database the old assertion fails *unconditionally*. It is not blind
+to the defect; it is noise. That is worse in a different way than being blind:
+a test that fails whether or not the bug exists teaches people to ignore it.
 
 ## Finding 4 — Documentation reconciliation
 

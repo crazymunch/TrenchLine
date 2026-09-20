@@ -26,6 +26,7 @@
  * A heading the walk cannot find is reported, never guessed at.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 const SRC = 'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
 
@@ -133,7 +134,7 @@ export function parseCoreRules(file = SRC) {
   if (!fs.existsSync(file)) {
     throw new Error(`${file} not found. Run: npm run rules:pdfs && npm run rules:extract`);
   }
-  const lines = fs.readFileSync(file, 'utf8').split('\n');
+  const lines = toLines(fs.readFileSync(file, 'utf8'));
 
   /* ---- 1. the table of contents ---- */
   const toc = [];

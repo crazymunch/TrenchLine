@@ -27,6 +27,7 @@
  * than dropped, because they are the rules that make that scenario itself.
  */
 import fs from 'node:fs';
+import { toLines } from './lines.mjs';
 
 export const RULEBOOK_TXT =
   'data-sources/rulebook/extracted/trench-crusade-digital-rulebook.txt';
@@ -72,7 +73,7 @@ const BULLET = /^\*\*\s*/;
 
 /** Strip page furniture and map labels, keeping the chapter's prose in order. */
 function chapterLines(src) {
-  const all = fs.readFileSync(src, 'utf8').split('\n');
+  const all = toLines(fs.readFileSync(src, 'utf8'));
 
   const headers = [];
   all.forEach((l, i) => { if (PAGE_HEADER.test(l)) headers.push(i); });

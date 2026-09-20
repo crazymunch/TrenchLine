@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from 'vitest';
 import { PrismaClient } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
+import { integrationDbUrl } from '@/lib/integrationDb';
 
 /**
  * Publishing a campaign, against a real migrated Postgres.
@@ -21,7 +22,10 @@ import { randomUUID } from 'node:crypto';
  *
  * Skipped without `DATABASE_URL`, like the other integration suites. CI sets it.
  */
-const url = process.env.DATABASE_URL;
+/* Not DATABASE_URL: that is the application's database and may be
+   production. See `lib/integrationDb.ts` — this throws on a remote host
+   rather than skipping, so a misconfiguration interrupts. */
+const url = integrationDbUrl();
 const describeDb = url ? describe : describe.skip;
 
 const prisma = new PrismaClient({ datasources: { db: { url: url ?? 'postgresql://unused' } } });
