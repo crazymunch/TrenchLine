@@ -62580,7 +62580,7 @@ export const DATASET: Dataset = {
       "range": "12’’",
       "keywords": [
         "+1 DICE",
-        "SHOTGUN PW"
+        "SHOTGUN"
       ],
       "note": "",
       "rules": []
@@ -62654,7 +62654,7 @@ export const DATASET: Dataset = {
       "type": "2-Handed",
       "range": "Melee",
       "keywords": [
-        "CUMBERSOME PW"
+        "CUMBERSOME"
       ],
       "note": "",
       "rules": []
@@ -62845,7 +62845,7 @@ export const DATASET: Dataset = {
       ],
       "note": "",
       "rules": [
-        "Heavy Explosive: Once during a game, a model with a Satchel Charge can use it to make a Ranged Attack. PW"
+        "Heavy Explosive: Once during a game, a model with a Satchel Charge can use it to make a Ranged Attack."
       ]
     },
     {
@@ -63146,10 +63146,13 @@ export const DATASET: Dataset = {
       "type": "Armour",
       "range": "-",
       "keywords": [
-        "-2 INJURY MODIFIER"
+        "-2 INJURY MODIFIER",
+        "NEGATE SHRAPNEL"
       ],
       "description": "New Antioch Combat Engineers are clad in specially designed reinforced armour.",
-      "rules": [],
+      "rules": [
+        "Ballistic Box Armour: Add -1 INJURY DICE to Injury Rolls for a model that has Engineer Body Armour that has been hit by an attack with the SHRAPNEL Keyword even if the attacking weapon has the IGNORE ARMOUR Keyword."
+      ],
       "restrictions": [
         "Combat Engineer only"
       ],
@@ -63209,10 +63212,14 @@ export const DATASET: Dataset = {
       "type": "2-Handed",
       "range": "Melee",
       "keywords": [
-        "+1 INJURY DICE"
+        "+1 INJURY DICE",
+        "CRITICAL",
+        "CUMBERSOME"
       ],
       "description": "It takes years of gruelling Mensur practice and field drills to acquire the precision and speed required to use the specialist tank-splitter swords of the Gardekorps. Despite their great size (often over 6 feet long), they are remarkably light, and due to the large quantities of orichalcum used in their forging process, they are virtually unbreakable. They are often used to disable tanks and other armoured vehicles, by either slicing their armour open or disabling them with an accurate swing to sever their tracks. Before any battle, they are treated with a special metal-corroding chemical compound which melts armour, making it far deadlier against armoured targets than those who wear none.",
-      "rules": [],
+      "rules": [
+        "Melt Armour: When you make an Injury Roll for an attack made with a Tank- Splitter Sword, determine if the target has an Armour Characteristic that is -1 or greater, or if it is wearing Armour or carrying a Shield. If it does, before rolling the dice for the Success Roll, put one dice aside and turn it so that it shows a roll of ‘6’. Roll the rest of the dice, and then return the dice you put to one side; it counts as having rolled a 6. In addition, attacks made with a Tank-Splitter Sword are not affected by the Dragonslayer Patron Skill ( ▶ see Patrons in the Trench Crusade Digital Rulebook)."
+      ],
       "restrictions": [
         "Limit: 2"
       ],
@@ -63341,10 +63348,14 @@ export const DATASET: Dataset = {
       "keywords": [
         "+1 DICE",
         "+1 INJURY DICE",
-        "HEAVY"
+        "HEAVY",
+        "SHOTGUN",
+        "SHRAPNEL"
       ],
       "description": "A Punt Gun is an enormous shotgun loaded with up to 25 ounces of shot. It can be loaded with a risky amount of powder and square shot, which causes widespread damage and destruction. It is a very popular weapon among Trench Pilgrims who lack access to conventional heavy weapons.",
-      "rules": [],
+      "rules": [
+        "Overcharge: Before making a Ranged Attack with a model armed with a Punt Gun, you can say that the model will Overcharge the weapon. To do so, the model has to either have the STRONG Keyword or be in contact with a friendly model. An Overcharged Ranged Attack gains the BLAST 3” and RELOAD Keywords. After an Overcharged attack has been carried out, place 1 BLOOD MARKER next to the model that made the attack, and its activation immediately ends."
+      ],
       "restrictions": [
         "Limit: 2"
       ],
@@ -63503,10 +63514,14 @@ export const DATASET: Dataset = {
         "-36” +1 INJURY DICE",
         "BLAST 3”",
         "FIRE",
-        "HEAVY"
+        "HEAVY",
+        "IGNORES COVER",
+        "SCATTER"
       ],
       "description": "A trench mortar is a smooth-bore, muzzle-loading weapon with high angles of fire. The shell contains both explosives and deadly Greek fire.",
-      "rules": [],
+      "rules": [
+        "High Trajectory: When a Trench Mortar is used to make a Ranged Attack, the target model (or target point, if targeting a point on the ground) cannot be within 6” of the attacking model. Note that if the attack Scatters it may end up landing within 6” of the attacking model."
+      ],
       "restrictions": [],
       "sourceFile": "warbands-of-trench-crusade.txt"
     },
@@ -63737,7 +63752,9 @@ export const DATASET: Dataset = {
       "type": "1-Handed",
       "range": "Melee",
       "keywords": [
-        "+2 INJURY MODIFIER"
+        "+2 INJURY MODIFIER",
+        "CRITICAL",
+        "HEAVY"
       ],
       "description": "This twin-tongued great sword can weigh up to 300 pounds, only the mighty Brazen Bulls can even lift this monstrous blade, let alone wield it in combat. Its sheer weight and mono-molecule sharpness cuts through even the thickest armour when swung by the superhuman strength of the Takwin monstrosities.",
       "rules": [],
@@ -64124,7 +64141,8 @@ export const DATASET: Dataset = {
       "range": "Melee",
       "keywords": [
         "+2 INJURY DICE",
-        "HEAVY"
+        "HEAVY",
+        "INFECTION MARKERS"
       ],
       "description": "With blades crafted in the form of a fly spreading its wings, this enormous axe is eternally covered with corruption and filth of Beelzebub.",
       "rules": [],
@@ -64173,7 +64191,9 @@ export const DATASET: Dataset = {
       "type": "2-Handed",
       "range": "8”",
       "keywords": [
-        "FLAMETHROWER"
+        "FLAMETHROWER",
+        "GAS",
+        "IGNORE ARMOUR"
       ],
       "description": "Corruption belchers spew forth noxious gas and corrosive fumes captured from the Bolgias that divide the putrid swamps of the Eighth Circle of Hell.",
       "rules": [],
