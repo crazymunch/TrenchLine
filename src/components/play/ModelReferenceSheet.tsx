@@ -25,7 +25,7 @@
  */
 import React from 'react';
 import {
-  Activity, Award, HeartCrack, Shield, Sparkles, Swords,
+  Activity, Award, Backpack, HeartCrack, Shield, Sparkles, Swords,
 } from 'lucide-react';
 
 import { Sheet } from '../ui/Sheet';
@@ -78,7 +78,7 @@ export const ModelReferenceSheet: React.FC<Props> = ({
     ['MOV', mov.effective, mov.delta !== 0],
     ['RNG', p.stats.ranged, false],
     ['MELEE', p.stats.melee, false],
-    ['SAVE', p.stats.armour, false],
+    ['ARMOUR', p.stats.armour, false],
   ];
 
   return (
@@ -241,7 +241,31 @@ export const ModelReferenceSheet: React.FC<Props> = ({
               </div>
             ))}
 
-            {unit.equippedWeapons.length === 0 && unit.equippedArmour.length === 0 && (
+            {/*
+              Equipment: grenades, kits, tools.
+
+              Missed when this sheet was first written — it rendered weapons
+              and armour only, so a model's Equipment was invisible in the
+              game, and "Carrying nothing" could show on a model carrying
+              three grenades. Its `effect` is the rule the player needs, so it
+              is rendered like an ability rather than as a bare name.
+            */}
+            {(unit.equippedEquipment ?? []).map((e) => (
+              <div key={e.instanceId} className="rounded border border-theme-border bg-theme-base p-2.5">
+                <div className="flex items-center gap-2">
+                  <Backpack className="h-3.5 w-3.5 shrink-0 text-theme-primary" />
+                  <span className="text-xs font-bold text-theme-text">{e.name}</span>
+                </div>
+                {e.effect && (
+                  <KeywordText keywords={keywords} className="mt-1 text-xs text-theme-muted">
+                    {e.effect}
+                  </KeywordText>
+                )}
+              </div>
+            ))}
+
+            {unit.equippedWeapons.length === 0 && unit.equippedArmour.length === 0
+              && (unit.equippedEquipment?.length ?? 0) === 0 && (
               <span className="text-xs text-theme-muted">Carrying nothing.</span>
             )}
           </div>

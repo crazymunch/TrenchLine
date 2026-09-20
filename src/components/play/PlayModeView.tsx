@@ -7,6 +7,7 @@ import { useScenarios, sectionOf } from '../../rules/useScenarios';
 import { useDataset } from '../../rules/useDataset';
 import { DiceRoller } from './DiceRoller';
 import { PostBattleWizardModal } from '../campaign/PostBattleWizardModal';
+import { matchHandover, type MatchHandover } from '@/rules/matchHandover';
 import { AttackCalculatorModal } from './AttackCalculatorModal';
 import { ModelReferenceSheet } from './ModelReferenceSheet';
 import { QuickSearchModal } from './QuickSearchModal';
@@ -147,6 +148,15 @@ export const PlayModeView: React.FC = () => {
      most matches — so nothing below assumes a match HAS teams. */
   const [coalitions, setCoalitions] = useState<CoalitionMap>({});
   const [deployedUnitIds, setDeployedUnitIds] = useState<Record<string, string[]>>({});
+  /*
+    What the wizard opens on.
+
+    The battle record is built one line before the wizard opens and was then
+    thrown away: the wizard defaulted its scenario to the first in the list and
+    its result to Victory whatever the score (RR-22). Held here so the two are
+    the same game.
+  */
+  const [handover, setHandover] = useState<MatchHandover | null>(null);
   const [isSquadSelectOpen, setIsSquadSelectOpen] = useState(false);
   const [isObjectivesPanelOpen, setIsObjectivesPanelOpen] = useState(true);
   const [isScoringHistoryOpen, setIsScoringHistoryOpen] = useState(false);
@@ -417,6 +427,18 @@ export const PlayModeView: React.FC = () => {
         the app hanging at the one moment everyone is waiting on it.
       */
       storage.addBattle(battle);
+      /*
+        And hand it to the wizard rather than making the player retype it.
+        `primaryWarband` is the side whose post-battle this is — the wizard is
+        opened for the active warband only (RR-27 is the rest of that).
+      */
+      setHandover(matchHandover(battle, {
+        ownSideId: primaryWarband?.id ?? '',
+        rosterUnitIds: primaryWarband?.units.map((u) => u.id) ?? [],
+        deployedUnitIds: primaryWarband
+          ? (deployedUnitIds[primaryWarband.id] ?? primaryWarband.units.map((u) => u.id))
+          : [],
+      }));
       /*
         Nothing records whether this landed. The Chronicle works it out by
         comparing what it holds against what the cloud returns — a local
@@ -1752,7 +1774,7 @@ export const PlayModeView: React.FC = () => {
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.melee}</strong>
                       </div>
                       <div>
-                        <span className="text-xs sm:text-[9px] text-theme-muted block">SAVE</span>
+                        <span className="text-xs sm:text-[9px] text-theme-muted block">ARMOUR</span>
                         <strong className="text-theme-text">{unit.profileSnapshot.stats.armour}</strong>
                       </div>
                     </div>
@@ -2008,6 +2030,7 @@ export const PlayModeView: React.FC = () => {
       {/* POST-BATTLE CAMPAIGN WIZARD */}
       {isPostBattleOpen && (
         <PostBattleWizardModal
+          handover={handover}
           onClose={() => setIsPostBattleOpen(false)}
         />
       )}

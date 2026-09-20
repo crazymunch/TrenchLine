@@ -328,7 +328,21 @@ export interface AppState {
     narrativeReport?: string,
     mvpUnitName?: string,
     opponentWarbandName?: string,
-    notableMoments?: string[]
+    notableMoments?: string[],
+    /**
+     * The Chronicle `BattleRecord` this post-battle belongs to.
+     *
+     * The same game produces two records — a scored `BattleRecord` written by
+     * Play Mode and a `MatchRecord` written here — read by different screens,
+     * which never agreed because one was measured and the other typed.
+     * `BattleRecord.campaignMatchId` was designed to join them and nothing
+     * ever set it: the field is in the type, the sync payload, the API schema
+     * and `battleFromMatch`'s options, and no caller passed it (RR-23).
+     *
+     * Optional because a post-battle can still be opened without a match
+     * behind it, and that case has no battle to link to.
+     */
+    battleId?: string
   ) => void;
 
   // Multiplayer Campaign State

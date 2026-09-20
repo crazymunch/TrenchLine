@@ -7,18 +7,33 @@
  * the app ever read it back into a Characteristic, so the number the player
  * was measuring with was wrong for the whole campaign.
  *
- * ## The modifier comes from the catalogue, not from here
+ * ## The modifier comes from the Trauma table, not from here
  *
- * Rule 1: game data is derived, never typed. The Trauma table already carries
- * the effect in its own words —
+ * Rule 1: game data is derived, never typed. The table already carries the
+ * effect in its own words —
  *
- * > **[31] Leg Wound** — The model's Movement Characteristic is reduced by 2"
- * > and it suffers -1 DICE to Dash.
+ * > **[31] Leg Wound** — Subtract 2" from this model's Movement
+ * > Characteristic. In addition, add -1 DICE to the Risky Success Roll for
+ * > this model when it takes a Dash ACTION.
  *
  * — so the "2" is read out of that sentence rather than written down here. If
- * the upstream catalogue revises the number, this follows it. What is written
- * here is only the *shape* of the sentence: which words mean "a Characteristic
- * changed, by this much, in this direction".
+ * the source revises the number, this follows it. What is written here is only
+ * the *shape* of the sentence: which words mean "a Characteristic changed, by
+ * this much, in this direction".
+ *
+ * ## Why two phrasings are recognised
+ *
+ * This first shipped reading only "Movement Characteristic is reduced by 2",
+ * described in this comment as "the book's phrasing". It was not: it was the
+ * **BattleScribe catalogue's**, which is what `campaign.trauma` carried at the
+ * time. The rulebook says "Subtract 2\" from...", and when the parser was
+ * corrected to read the table from the book (RR-01 of the rules review, PR
+ * #58), this function silently stopped matching — Leg Wound fell through to
+ * `unmodelled` and the reported defect came back.
+ *
+ * Both are recognised now, and not merely to be safe: a ruleset generated
+ * before that fix still carries the catalogue's wording, and this function
+ * runs against whichever one the stored dataset holds.
  *
  * ## What it refuses to do
  *
@@ -64,26 +79,50 @@ export interface EffectiveStats {
 }
 
 /**
+ * The two ways the sources write "this Characteristic changed".
+ *
+ * `sign` is +1 or -1 per the verb; `amount` names the capture group holding
+ * the number. Anything not in this list is not a statline change as far as
+ * this function is concerned — which is what puts the row in `unmodelled`
+ * rather than having it silently contribute 0.
+ *
+ * The inch mark is optional throughout: the PDF extraction produces a curly
+ * quote, the catalogue a straight one, and some rows print neither.
+ */
+const MOVEMENT_PHRASINGS: ReadonlyArray<{
+  pattern: RegExp;
+  sign: (m: RegExpMatchArray) => number;
+  amount: number;
+}> = [
+  {
+    /* The rulebook: `Subtract 2” from this model’s Movement Characteristic.` */
+    pattern: /\b(Subtract|Add)\s+(\d+)\s*["”'’]?\s+(?:from|to)\b[^.]{0,40}?Movement\s+Characteristic/i,
+    sign: (m) => (m[1].toLowerCase() === 'subtract' ? -1 : 1),
+    amount: 2,
+  },
+  {
+    /* The catalogue: `The model’s Movement Characteristic is reduced by 2”`.
+       Still read because a ruleset generated before RR-01 carries this text. */
+    pattern: /Movement\s+Characteristic\s+is\s+(reduced|increased)\s+by\s+(\d+)/i,
+    sign: (m) => (m[1].toLowerCase() === 'reduced' ? -1 : 1),
+    amount: 2,
+  },
+];
+
+/**
  * Pull a Characteristic change out of a Trauma row's printed description.
  *
- * Matches the book's phrasing — "Movement Characteristic is reduced by 2”" —
- * and nothing else. A row that does not say this in these terms returns
- * nothing, which is what puts it in `unmodelled` rather than having it
- * silently contribute 0.
+ * Returns nothing for a row that does not state one in these terms, rather
+ * than guessing at a number from prose that might mean something else.
  */
 export function deltaFromDescription(description: string): StatDelta | null {
   const text = String(description ?? '');
 
-  /* "Movement Characteristic is reduced by 2”" — the quote character varies
-     between the PDF extraction and the catalogue, so it is not required. */
-  const reduced = text.match(
-    /Movement\s+Characteristic\s+is\s+(reduced|increased)\s+by\s+(\d+)/i,
-  );
-  if (reduced) {
-    const n = Number.parseInt(reduced[2], 10);
-    if (Number.isFinite(n) && n !== 0) {
-      return { movement: reduced[1].toLowerCase() === 'reduced' ? -n : n };
-    }
+  for (const { pattern, sign, amount } of MOVEMENT_PHRASINGS) {
+    const m = text.match(pattern);
+    if (!m) continue;
+    const n = Number.parseInt(m[amount], 10);
+    if (Number.isFinite(n) && n !== 0) return { movement: sign(m) * n };
   }
 
   return null;

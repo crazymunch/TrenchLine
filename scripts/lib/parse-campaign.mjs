@@ -488,24 +488,15 @@ export function parseCampaignPhaseSteps(src = RULEBOOK_TXT) {
 
 const CAMPAIGN_CAT = 'data-sources/battlescribe/Campaign Rules.cat';
 
-/**
- * The Trauma Table, from two sources because neither alone is complete.
- *
- * The catalogue is the authority for the eighteen injuries that attach
- * *something* to a model: each is a real entry with its D66 roll in the name
- * (`Lost an Eye [15]`) and its rules text in a Description characteristic. That
- * is machine-readable and exact.
- *
- * It necessarily lacks the four results that attach nothing — Dead and Captured
- * remove the model, Robbed strips its Battlekit, Full Recovery does nothing — so
- * those come from the rulebook. That page is the two-column layout whose
- * extraction scrambles, but these four rows survive it intact and are read
- * individually rather than as a table.
- *
- * Every row records which source it came from, because the two are not equally
- * strong and a reader should be able to tell.
- */
-export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
+/*
+  Two characters the extraction does not produce, used to keep structure that
+  joining the page into one string would otherwise destroy.
+*/
+const COLUMN_BREAK = '\u0000';  // the tab the extraction prints between columns
+const PAGE_BREAK = '\u0001';    // a `-- N of M --` marker
+
+/** The catalogue's eighteen injuries: row identity, and text for the drift report. */
+function parseCatalogueInjuries(cat) {
   const parser = new XMLParser({
     ignoreAttributes: false, attributeNamePrefix: '@_', trimValues: false,
     isArray: (n) => ['selectionEntry', 'selectionEntryGroup', 'profile', 'characteristic'].includes(n),
@@ -526,7 +517,6 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
         roll: m[2],
         name: m[1].trim(),
         description: String(desc?.['#text'] ?? '').replace(/\s+/g, ' ').trim(),
-        source: 'catalogue',
       });
     }
     for (const v of Object.values(node)) {
@@ -535,136 +525,105 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
     }
   };
   walk(doc, false);
+  return rows;
+}
 
-  if (!rows.size) throw new Error('parse-campaign: no Injuries found in the campaign catalogue.');
+/**
+ * The Trauma Table's own text, as one string, with the page furniture gone.
+ *
+ * The heading appears three times. Two are sidebar renderings that carry a
+ * fragment of the table — one of them a `11 Dead` cut at "Remove the model",
+ * which is exactly the kind of plausible-looking partial a reader must not
+ * prefer. So the region carrying the most row headings wins, rather than the
+ * first or the last.
+ */
+function traumaRegion(lines) {
+  const starts = [];
+  lines.forEach((l, i) => { if (l.trim() === 'TRAUMA TABLE') starts.push(i); });
+  if (!starts.length) {
+    throw new Error('parse-campaign: no TRAUMA TABLE heading in the extracted rulebook text.');
+  }
 
-  // The four the catalogue cannot carry, read one at a time from the rulebook.
-  const lines = toLines(fs.readFileSync(book, 'utf8'));
-  /**
-   * The Trauma page prints its heading twice and the extraction scrambles one
-   * of the two columns, so a row can appear both intact and shredded. Every
-   * occurrence is read and the cleanest is kept, rather than trusting the first
-   * — which is how `11 Dead` came out as "Remove the 2 2 M 2 2".
-   */
-  const isScrambled = (t) => /(^|\s)[A-Z0-9](\s+[A-Z0-9]){2,}(\s|$)/.test(t);
-
-  const readRow = (roll, label) => {
-    const re = new RegExp(`^\\s*${roll}\\s+${label}\\s*\\t`);
-    const candidates = [];
-    lines.forEach((l, i) => { if (re.test(l)) candidates.push(i); });
-
-    for (const i of candidates) {
-      const text = [lines[i].split('\t').slice(1).join(' ').trim()];
-      /*
-        The window was six lines, and `12 Captured` is eight. Its rule came out
-        ending "...transfer the 👑 from your Strongbox to your opponent's," —
-        cut at a comma, losing the half that says what PAYING the ransom does.
-        A player reading it would have removed a model they had just bought
-        back.
-
-        Fourteen is generous enough for the longest row in the table and still
-        bounded, so a missed boundary cannot run away down the page. The
-        boundaries below are what actually stops it.
-      */
-      for (let j = i + 1; j < Math.min(i + 14, lines.length); j++) {
-        const t = lines[j].trim();
-        if (!t || /^--\s*\d+\s+of/.test(t)) break;
-        /*
-          A new row, whether or not the name follows on the same line.
-
-          This was `^\d{2}[\s-]`, which needs something after the digits — and
-          the book prints `66` alone on its line with `Prominent Scar` beneath.
-          So `65 Bitter Lessons` did not stop there: it ran on and took row
-          66's heading and half its rule with it, and the app showed a player
-          rolling 65 a rule that belongs to 66.
-        */
-        if (/^\d{2}([\s-]|$)/.test(t)) break;
-        if (/^(Wound|Head Wound X?|Campaign|Games|Patrons|Trauma Step)$/.test(t)) break;
-        if (isScrambled(t)) break;
-        text.push(t);
+  const strip = (slice) => {
+    const out = [];
+    for (let i = 0; i < slice.length; i++) {
+      const raw = slice[i];
+      const t = raw.trim();
+      if (!t) continue;
+      if (/^--\s*\d+\s+of\s+\d+\s*--$/.test(t)) { out.push(PAGE_BREAK); continue; }
+      if (/^\d{1,3}\t.*\tTrench Crusade$/.test(raw)) continue;   // running head
+      if (/^TRAUMA TABLE$/.test(t)) continue;
+      if (/^D66 Roll\s*\tInjury$/.test(raw)) continue;           // column header
+      /* The chapter sidebar, printed down the edge of every page in this
+         chapter: it starts `Campaign` / `Games` and ends `Trauma Step`. */
+      if (t === 'Campaign' && slice[i + 1]?.trim() === 'Games') {
+        while (i < slice.length && slice[i].trim() !== 'Trauma Step') i++;
+        continue;
       }
-      const description = text.join(' ').replace(/\s+/g, ' ').trim();
-      if (description && !isScrambled(description)) {
-        return { roll: String(roll), name: label, description, source: 'rulebook' };
-      }
+      out.push(raw.replace(/\t/g, COLUMN_BREAK).trim());
     }
-    return null;
+    return out;
   };
 
-  for (const [roll, label] of [['11', 'Dead'], ['12', 'Captured'], ['36', 'Robbed']]) {
-    const r = readRow(roll, label);
-    if (r && !rows.has(roll)) rows.set(roll, r);
-  }
+  const regions = starts.map((s, k) => strip(
+    lines.slice(s, k + 1 < starts.length ? starts[k + 1] : s + 220),
+  ).join(' ').replace(/[ \t]+/g, ' '));
 
-  // 41-63 Full Recovery prints its range split across two lines, so it is
-  // matched on its own rather than by the row pattern.
-  const fr = lines.findIndex((l) => /^\s*63\s+Full Recovery\s*$/.test(l));
-  if (fr >= 0) {
-    rows.set('41-63', {
-      roll: '41-63', name: 'Full Recovery',
-      description: [lines[fr + 1], lines[fr + 2]].map((l) => (l ?? '').trim()).join(' ')
-        .replace(/\s+/g, ' ').trim(),
-      source: 'rulebook',
-    });
-  }
+  const headings = (b) => (b.match(/(?:^|\s)\d{2}[\s\u0000]/g) ?? []).length;
+  return regions.reduce((best, b) => (headings(b) > headings(best) ? b : best), regions[0]);
+}
 
-  // A handful of catalogue entries carry the injury but no Description text.
-  // The book has it, so fall back rather than shipping a blank rule — an injury
-  // with no text is one a player cannot apply.
-  for (const [roll, row] of rows) {
-    if (row.description) continue;
-    const fromBook = readRow(roll, row.name);
-    if (fromBook) rows.set(roll, { ...row, description: fromBook.description, source: 'catalogue+rulebook' });
-  }
-
-  const out = [...rows.values()].sort((a, b) => parseInt(a.roll, 10) - parseInt(b.roll, 10));
-
+/**
+ * The rows are readable, complete, and not each other.
+ *
+ * Each of these fired on a real defect during this parser's life, and none of
+ * them is visible by eye in a twenty-two row table.
+ */
+function assertTraumaRowsUsable(out) {
   const blank = out.filter((r) => !r.description);
   if (blank.length) {
     throw new Error(
-      `parse-campaign: Trauma rows with no rules text: ${blank.map((r) => `${r.roll} ${r.name}`).join(', ')}. ` +
-      'An injury a player cannot read is one they cannot apply.');
+      `parse-campaign: Trauma rows with no rules text: ${blank.map((r) => `${r.roll} ${r.name}`).join(', ')}. `
+      + 'An injury a player cannot read is one they cannot apply.');
   }
+
+  /* A column of loose characters where prose should be — `Remove the 2 2 M 2 2`. */
+  const isScrambled = (t) => /(^|\s)[A-Z0-9](\s+[A-Z0-9]){2,}(\s|$)/.test(t);
   const dirty = out.filter((r) => isScrambled(r.description));
   if (dirty.length) {
     throw new Error(
-      `parse-campaign: Trauma rows whose text is scrambled column data: ` +
-      `${dirty.map((r) => `${r.roll} ${r.name}`).join(', ')}.`);
+      'parse-campaign: Trauma rows whose text is scrambled column data: '
+      + `${dirty.map((r) => `${r.roll} ${r.name}`).join(', ')}.`);
   }
 
   /*
-    A rule that stops mid-sentence, and a rule that has swallowed the next row.
-
-    Both shipped. `12 Captured` ended at "...transfer the 👑 from your Strongbox
-    to your opponent's," — cut at a comma, losing the clause that says paying
-    the ransom counts as a Full Recovery, so a player who paid would still have
-    removed the model. `65 Bitter Lessons` ran on into `66 Prominent Scar` and
-    showed a player rolling 65 a rule belonging to 66.
-
-    Neither is detectable by eye in a 22-row table, and neither was caught by
-    the blank and scrambled checks above, which is why they are their own.
+    A rule that stops mid-sentence. `12 Captured` once ended at "...transfer the
+    👑 from your Strongbox to your opponent's," — cut at a comma, losing the
+    clause that says paying the ransom counts as a Full Recovery. A player who
+    paid would still have removed the model.
   */
   const cut = out.filter((r) => /[,;–—]$|\b(and|or|the|a|to|with|from|for|of|if)$/i.test(r.description));
   if (cut.length) {
     throw new Error(
-      `parse-campaign: Trauma rows whose rules text stops mid-sentence: ` +
-      `${cut.map((r) => `${r.roll} ${r.name} (…"${r.description.slice(-40)}")`).join(', ')}. ` +
-      'A rule cut at a comma is a rule the player will act on wrongly.');
+      'parse-campaign: Trauma rows whose rules text stops mid-sentence: '
+      + `${cut.map((r) => `${r.roll} ${r.name} (…"${r.description.slice(-40)}")`).join(', ')}. `
+      + 'A rule cut at a comma is a rule the player will act on wrongly.');
   }
 
-  /* Another row's heading inside this row's text: `… Battle Scar. 66 Prominent Scar Write down …` */
-  const runOn = out.filter((r) => /\s\d{2}\s+[A-Z][a-z]+(\s+[A-Z][a-z]+)*\s+[A-Z]/.test(r.description)
-    && out.some((o) => o !== r && r.description.includes(`${o.roll} ${o.name}`)));
+  /* Another row's heading inside this row's text. */
+  const runOn = out.filter((r) => out.some((o) => o !== r && r.description.includes(`${o.roll} ${o.name}`)));
   if (runOn.length) {
     throw new Error(
-      `parse-campaign: Trauma rows carrying another row's heading and rule: ` +
-      `${runOn.map((r) => `${r.roll} ${r.name}`).join(', ')}. ` +
-      'The row boundary was missed, so this shows a player the wrong injury.');
+      "parse-campaign: Trauma rows carrying another row's heading and rule: "
+      + `${runOn.map((r) => `${r.roll} ${r.name}`).join(', ')}. `
+      + 'The row boundary was missed, so this shows a player the wrong injury.');
   }
 
-  // Every D66 result must land somewhere. A hole means a roll the app cannot
-  // resolve, which in a wizard reads as "nothing happened" — the worst outcome
-  // for an injury table.
+  /*
+    Every D66 result must land somewhere. A hole is a roll the app cannot
+    resolve, which in a wizard reads as "nothing happened" — the worst possible
+    outcome for an injury table.
+  */
   const covered = new Set();
   for (const r of out) {
     const [lo, hi] = r.roll.includes('-') ? r.roll.split('-').map(Number) : [Number(r.roll), Number(r.roll)];
@@ -680,7 +639,176 @@ export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
   if (missing.length) {
     throw new Error(`parse-campaign: the Trauma Table leaves D66 rolls uncovered: ${missing.join(', ')}.`);
   }
+}
 
+/**
+ * What the catalogue says, where it disagrees with the book.
+ *
+ * Reported rather than thrown: the catalogue being out of date is the expected
+ * state, not an error, and the whole point of this change is that the book
+ * wins. It is printed so that a real errata — the book changing under us —
+ * shows up as the count moving rather than as silence.
+ *
+ * A name that disagrees IS thrown, by the caller's lookup failing: names are
+ * how a row is located, so a mismatch there means the two sources are not
+ * describing the same table.
+ */
+function reportCatalogueDrift(out, catalogue) {
+  const norm = (s) => s.toLowerCase().replace(/[“”"’']/g, "'").replace(/\s+/g, ' ').trim();
+  const differs = out.filter((r) => {
+    const c = catalogue.get(r.roll);
+    return c && c.description && norm(c.description) !== norm(r.description);
+  });
+  if (differs.length) {
+    console.warn(
+      `parse-campaign: Trauma Table — ${differs.length} of ${catalogue.size} catalogue rows `
+      + `differ from the rulebook and were overridden by it: `
+      + `${differs.map((r) => `${r.roll} ${r.name}`).join(', ')}.`);
+  }
+}
+
+/**
+ * The Trauma Table, read from the rulebook.
+ *
+ * This used to read the eighteen "attaches something to a model" injuries from
+ * `Campaign Rules.cat` and only Dead, Captured, Robbed and Full Recovery from
+ * the book, on the reasoning that the catalogue is exact and machine-readable
+ * while the book's two-column page extracts badly. Both halves of that are
+ * true, and the conclusion was still wrong: it inverts the precedence this
+ * project states in docs/RULESET-MODEL.md section 6 — Dispatch, then rulebook,
+ * then catalogue — for the one table whose text is read back to a player as a
+ * rule they must apply.
+ *
+ * The catalogue is revision 5 of a community transcription and predates 1.0.2.
+ * Twelve of its eighteen rows differ from the book, and they are not all
+ * wording:
+ *
+ *   - **24 Dark Memory** was a different rule entirely. The catalogue makes the
+ *     model FEAR every enemy in a rematch; the book gives -1 DICE to Melee
+ *     Attacks against that Warband. A player following the app was playing an
+ *     injury the game does not have.
+ *   - **16 Chest Wound** said "+1 DICE" where the book says "+1 INJURY DICE" —
+ *     a different dice pool.
+ *   - **15 Lost an Eye** dropped "Treat this injury as a Full Recovery if it is
+ *     inflicted on a Sniper Priest", so a Sniper Priest lost an eye it keeps.
+ *   - **34 Muscle Damage** dropped "Any that it has when the Injury is suffered
+ *     is lost", which is the half with a cost.
+ *   - **35 Minor Wound** added a sentence the book does not print.
+ *   - 26 Lost Arm and 33 Possessed paraphrase conditions the book states exactly.
+ *
+ * The 1.0.2 changelog rewrites only Head Wound and Captured, so these are the
+ * catalogue drifting from 1.0.1 rather than errata the app is behind on.
+ *
+ * So all twenty-two rows now come from the book and the catalogue is a
+ * cross-check. What made that practical is that the page is only unreadable if
+ * you read it the way it prints. Three things make it tractable:
+ *
+ *   1. The heading is printed three times — twice as partial sidebar renderings
+ *      that carry a truncated `11 Dead` and a bare column of digits. The
+ *      rendering carrying the most row headings is the table; the others are
+ *      furniture. (The old reader took the first clean candidate, which is why
+ *      `11 Dead` shipped as "Remove the model from your Warband Roster",
+ *      missing "and its Battlekit" — the truncated sidebar copy.)
+ *   2. Row headings wrap in five different shapes — `35 Minor` / `Wound`,
+ *      `32` / `Expensive` / `Treatment`, `41-` / `63 Full Recovery`. Joining
+ *      the region into one string makes all five the same shape, and the row's
+ *      own name tells the reader where its heading ends.
+ *   3. A row's text never crosses a page boundary, which is what stops the last
+ *      row running on into the next chapter.
+ *
+ * The catalogue is still parsed, for the row names and for the drift report.
+ */
+export function parseTraumaTable(cat = CAMPAIGN_CAT, book = RULEBOOK_TXT) {
+  const catalogue = parseCatalogueInjuries(cat);
+  if (!catalogue.size) throw new Error('parse-campaign: no Injuries found in the campaign catalogue.');
+
+  const blob = traumaRegion(toLines(fs.readFileSync(book, 'utf8')));
+
+  /*
+    Headings the book tabs — `NN Name<TAB>rules text`. This derives the roll AND
+    the name, so sixteen of the twenty-two need nothing from the catalogue at
+    all. The rest wrap, and take their name from the catalogue below.
+  */
+  const tabbed = new Map();
+  for (const m of blob.matchAll(/(?:^|\s)(\d{2})\s+([A-Z][^\u0000]{0,30}?)\s*\u0000/g)) {
+    if (!tabbed.has(m[1])) tabbed.set(m[1], m[2].trim());
+  }
+
+  /* The one result the table prints as a range rather than a roll. */
+  const RANGE_ROLL = '41-63';
+
+  const nameFor = (roll) => (roll === RANGE_ROLL
+    ? 'Full Recovery'
+    : tabbed.get(roll) ?? catalogue.get(roll)?.name);
+
+  const rolls = [...new Set([...catalogue.keys(), ...tabbed.keys(), RANGE_ROLL])]
+    .sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+
+  /*
+    A heading pattern built from the row's own name. The name may have been
+    wrapped mid-heading, so every gap between its words matches any whitespace:
+    `Severe Nerve Damage` finds `13 Severe Nerve` / `Damage` across two lines.
+  */
+  const headPattern = (roll) => {
+    if (roll === RANGE_ROLL) return String.raw`41-\s*63\s+Full\s+Recovery`;
+    const name = nameFor(roll);
+    if (!name) {
+      throw new Error(
+        `parse-campaign: Trauma roll ${roll} has no name in either source, so its `
+        + 'row cannot be located in the rulebook.');
+    }
+    const loose = name.trim().split(/\s+/)
+      .map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join(String.raw`\s+`);
+    return String.raw`${roll}\s+${loose}`;
+  };
+
+  const findHead = (roll, from) => {
+    const re = new RegExp(String.raw`(?:^|\s)(${headPattern(roll)})(?=[\s\u0000]|$)`, 'g');
+    re.lastIndex = from;
+    return re.exec(blob);
+  };
+
+  const out = [];
+  let cursor = 0;
+  for (let i = 0; i < rolls.length; i++) {
+    const roll = rolls[i];
+    const head = findHead(roll, cursor);
+    if (!head) {
+      throw new Error(
+        `parse-campaign: Trauma row ${roll} ${nameFor(roll) ?? ''} is not in the `
+        + 'rulebook\'s Trauma Table. The catalogue is a cross-check here, not a '
+        + 'fallback, so this is not something to fill in from it.');
+    }
+    const from = head.index + head[0].length;
+
+    /* The next row's heading ends this one. */
+    let to = blob.length;
+    if (i + 1 < rolls.length) {
+      const next = findHead(rolls[i + 1], from);
+      if (!next) {
+        throw new Error(
+          `parse-campaign: Trauma row ${rolls[i + 1]} does not follow ${roll} in the `
+          + 'rulebook table, so the boundary between them cannot be found.');
+      }
+      to = next.index;
+    }
+
+    out.push({
+      roll,
+      name: nameFor(roll),
+      /* And a page boundary ends it too — which is what stops the last row,
+         66 Prominent Scar, running on into the Promotions and Experience Step. */
+      description: blob.slice(from, to)
+        .split(PAGE_BREAK)[0].split(COLUMN_BREAK).join(' ')
+        .replace(/\s+/g, ' ').trim(),
+      source: 'rulebook',
+    });
+    cursor = from;
+  }
+
+  assertTraumaRowsUsable(out);
+  reportCatalogueDrift(out, catalogue);
   return out;
 }
 

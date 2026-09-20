@@ -14,7 +14,7 @@ import {
   forceLimits, startingBudget, reinforcementAllowance,
   strongboxOf, reversible, type LedgerEntry,
   explorationDice, explorationTables, resolveExploration, explorationLedgerEntry,
-  hasPlayedAGame, canChangeVariant,
+  hasPlayedAGame, canChangeVariant, explorationBandFor,
 } from '../campaign';
 import { checkForceLimits } from '../validate';
 
@@ -384,5 +384,65 @@ describe('when the Variant stops being a choice', () => {
     // them would leave a Variant that can never be set.
     expect(hasPlayedAGame({})).toBe(false);
     expect(canChangeVariant({})).toBe(true);
+  });
+});
+
+/* ------------------------------------------ the band the wizard actually uses */
+
+describe('the Exploration band for a post-battle step', () => {
+  /*
+    RR-06. The wizard computed games-played as `campaignGameOf(...) - 1`.
+    `currentTurn` is only incremented when the step commits, so while the
+    wizard is open it already IS the number of the game just played. Every
+    band came out a game late, and loot is ten Ducats per pip.
+
+    The table below is the book's, indexed by the game just played — the state
+    the wizard is in when it opens.
+  */
+  const warband = { campaignId: 'c1' };
+  const after = (gameJustPlayed: number) =>
+    explorationBandFor(DATASET, warband, { id: 'c1', currentTurn: gameJustPlayed });
+
+  it('counts the game just played as played', () => {
+    for (const n of [1, 2, 3, 6, 10]) {
+      expect(after(n).gamesPlayed, `after game ${n}`).toBe(n);
+    }
+  });
+
+  it('matches the book band for band, not a game behind', () => {
+    /*
+      Each row: after this many games, this many dice. Read off the derived
+      table rather than typed — `explorationDice` is already tested against the
+      book above, so this asserts the WIRING, which is what was broken.
+    */
+    for (const n of [1, 2, 3, 4, 5, 6, 8, 10, 12]) {
+      expect(after(n).dice, `after game ${n}`).toBe(explorationDice(DATASET, n));
+      expect(after(n).tables, `after game ${n}`)
+        .toEqual(explorationTables(DATASET, n)?.tables);
+    }
+  });
+
+  it('is a strictly better deal than the old off-by-one, and differs', () => {
+    /*
+      Proves the fix is not a no-op. Somewhere in the first ten games the old
+      formula and the new one must disagree, or there was nothing to fix.
+      Checked as "they differ somewhere" rather than at a hardcoded game, so a
+      future band table change does not make this assert a stale boundary.
+    */
+    const differs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].filter(
+      (n) => after(n).dice !== explorationDice(DATASET, Math.max(1, n - 1 || 1)),
+    );
+    expect(differs.length).toBeGreaterThan(0);
+  });
+
+  it('reports no band rather than guessing when there is no dataset', () => {
+    // Rule 2: the wizard's own `?? 3` fallback is RR-10 and is not this.
+    const none = explorationBandFor(null, warband, { id: 'c1', currentTurn: 3 });
+    expect(none.dice).toBeNull();
+    expect(none.tables).toEqual([]);
+  });
+
+  it('treats a warband outside the campaign as its first game', () => {
+    expect(explorationBandFor(DATASET, { campaignId: undefined }, undefined).gamesPlayed).toBe(1);
   });
 });

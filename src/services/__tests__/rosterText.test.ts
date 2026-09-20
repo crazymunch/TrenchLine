@@ -100,7 +100,7 @@ describe('the three presets', () => {
 
   it('Full adds statlines, Keywords and everything the campaign wrote', () => {
     const out = text();
-    expect(out).toContain('MOV 6" · RNG +0 · MELEE +1 · SAVE 0');
+    expect(out).toContain('MOV 6" · RNG +0 · MELEE +1 · ARMOUR 0');
     expect(out).toContain('FEAR');
     expect(out).toContain('3 XP');
     expect(out).toContain('Advancements: +1 Melee');

@@ -376,7 +376,8 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       narrativeReport,
       mvpUnitName,
       opponentWarbandName,
-      notableMoments
+      notableMoments,
+      battleId
     ) => {
       const state = get();
       const activeWb = state.getActiveWarband();
@@ -387,6 +388,10 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         const adv = advancements.find((a) => a.unitId === u.id);
 
         const newInjuries = [...u.injuries];
+        /* Battle Scars, which nothing in this slice used to write at all — so
+           `unfitForDuty` counted only what a player had typed in by hand, and
+           retirement at the third scar was unreachable through play. */
+        const newScars = [...(u.scars ?? [])];
         let isDead = u.isDead;
         let currentRecords: UnitTitleRecord[] = u.titleRecords || (u.titles || []).map(t => ({
           title: t,
@@ -402,7 +407,15 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
             recovered from — and, under the duplicate-injury rule, stop it ever
             being captured again (RC-04).
           */
-          if (!cas.fullRecovery) newInjuries.push(cas.outcome);
+          /*
+            `records` is decided in the wizard from the Trauma row's own text.
+            Absent on a match recorded before that existed, and those keep the
+            old behaviour — write the injury, add no scar — rather than being
+            reinterpreted now against a table that has since changed.
+          */
+          const writesInjury = cas.records ? cas.records.injury : !cas.fullRecovery;
+          if (writesInjury) newInjuries.push(cas.outcome);
+          if (cas.records?.scar) newScars.push(cas.records.scar);
           if (cas.isDead) isDead = true;
 
           const norm = cas.outcome.toLowerCase();
@@ -477,16 +490,29 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           newAdvancements.push(adv.advancement);
         }
 
+        /*
+          Glorious Deeds only. "Match MVP" is not one (RR-24).
+
+          This used to prepend `Match MVP: <scenario> (<result>)` to the
+          chosen model's Deeds, so a mechanic the game does not have wrote a
+          Deed the game does not have onto the roster, sitting beside the real
+          ones that came off the scenario's own list. It also matched by a
+          two-way substring on the name, so "Anselm" and "Brother Anselm"
+          matched each other — and so did any two models whose names contained
+          one another.
+
+          The MVP is kept as what it always really was: a line in the battle
+          report, on the MatchRecord, where a narrative note belongs. Nothing
+          is written to the model.
+        */
         const newDeeds = u.deeds ? [...u.deeds] : [];
-        if (mvpUnitName && (u.customName.toLowerCase().includes(mvpUnitName.toLowerCase()) || mvpUnitName.toLowerCase().includes(u.customName.toLowerCase()))) {
-          newDeeds.unshift(`Match MVP: ${scenarioName} (${outcome})`);
-        }
 
         const activeTitles = currentRecords.filter(r => r.active).map(r => r.title);
 
         return {
           ...u,
           injuries: newInjuries,
+          scars: newScars,
           isDead,
           advancements: newAdvancements,
           deeds: newDeeds,
@@ -671,6 +697,26 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       };
 
       storage.saveCampaign(updatedCampaign);
+
+      /*
+        Join the two records of this one game.
+
+        Play Mode writes a scored `BattleRecord` to the Chronicle and this
+        writes a typed `MatchRecord` to the campaign; the Campaign Hub reads
+        the second and the Chronicle the first, and neither knew the other
+        existed. `BattleRecord.campaignMatchId` was built for exactly this —
+        it is in the type, the sync payload, the API schema and
+        `battleFromMatch`'s options — and no caller had ever set it (RR-23).
+
+        Read back and rewritten rather than held in memory, because the battle
+        was stored before this wizard opened and may have been pushed to the
+        cloud in between; `addBattle` replaces by id, so this updates the one
+        record rather than adding a second.
+      */
+      if (battleId) {
+        const battle = storage.getBattles().find((b) => b.id === battleId);
+        if (battle) storage.addBattle({ ...battle, campaignMatchId: matchId });
+      }
 
       set({
         warbands: updatedWarbands,

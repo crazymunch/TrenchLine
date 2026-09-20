@@ -69212,7 +69212,7 @@ export const DATASET: Dataset = {
       {
         "roll": "11",
         "name": "Dead",
-        "description": "The wound proved to be fatal. Remove the model from your Warband Roster.",
+        "description": "The wound proved to be fatal. Remove the model and its Battlekit from your Warband Roster.",
         "source": "rulebook"
       },
       {
@@ -69224,92 +69224,92 @@ export const DATASET: Dataset = {
       {
         "roll": "13",
         "name": "Severe Nerve Damage",
-        "description": "All ACTIONS this model takes (including melee and ranged attacks) are now classed as RISKY ACTIONS.",
-        "source": "catalogue"
+        "description": "All Success Rolls you take for this model are treated as being Risky Success Rolls, unless they are Risky Success Rolls already, in which case there is no additional penalty.",
+        "source": "rulebook"
       },
       {
         "roll": "14",
         "name": "Hand Wound",
-        "description": "The model suffers -1 DICE for all of its Melee Attack ACTIONS that use the injured hand.",
-        "source": "catalogue"
+        "description": "Randomly determine which hand has been injured. Add -1 DICE to rolls for attacks made for this model with a Melee Weapon that is held (or jointly held) by the injured hand.",
+        "source": "rulebook"
       },
       {
         "roll": "15",
         "name": "Lost an Eye",
-        "description": "The character suffers -1 DICE for all of its range attack ACTIONS. Suffering two such injuries blinds the model and it has to retire from the campaign.",
-        "source": "catalogue"
+        "description": "Add -1 DICE to rolls for Ranged Attacks made for this model. If this model receives this injury for a second time, they are blinded and you must remove them from your Warband Roster instead of re-rolling the result. Treat this injury as a Full Recovery if it is inflicted on a Sniper Priest.",
+        "source": "rulebook"
       },
       {
         "roll": "16",
         "name": "Chest Wound",
-        "description": "All injury rolls made against this character are resolved with +1 DICE.",
-        "source": "catalogue"
+        "description": "Add +1 INJURY DICE to Injury Rolls for attacks that target this model.",
+        "source": "rulebook"
       },
       {
         "roll": "21",
         "name": "Insomniac",
-        "description": "This character must always be deployed as the first model on your side in any battle it takes part in. It cannot use the Keyword INFILTRATOR if it has it.",
-        "source": "catalogue"
+        "description": "This model must always be the first model you deploy in any game it takes part in, and loses the INFILTRATOR Keyword if it has it.",
+        "source": "rulebook"
       },
       {
         "roll": "22",
         "name": "Head Wound",
         "description": "This model can no longer gain Experience Points. You can assign Promotion Dice to this model as if it were a Troop in the Promotions and Experience Step. If one of its assigned Promotion Dice rolls a “6”, it regains the ability to gain Experience Points, although the Battle Scar remains.",
-        "source": "catalogue"
+        "source": "rulebook"
       },
       {
         "roll": "23",
         "name": "Shell-shocked",
         "description": "Roll a D6 the first time this model is deployed during a game. On a 1-2, add -1 DICE to rolls for this model for the rest of the game.",
-        "source": "catalogue"
+        "source": "rulebook"
       },
       {
         "roll": "24",
         "name": "Dark Memory",
-        "description": "Mark down the opposing warband type that caused this injury, as well as the scenario. If you play the same scenario again, the model FEARS all enemy models if playing against the same type of warband, including all ranged and melee attacks.",
-        "source": "catalogue"
+        "description": "Write down the name of the Warband from the game where this injury was received. Add -1 DICE to rolls for Melee Attacks made by this model if the target is a model from the Warband you have written down.",
+        "source": "rulebook"
       },
       {
         "roll": "25",
         "name": "Paranoid",
-        "description": "This model cannot be deployed within 8” of a friendly model. Friendly models can be deployed as normal once this model is deployed.",
-        "source": "catalogue"
+        "description": "This model cannot be deployed within 8” of a friendly model. Friendly models can be deployed within 8” of this model after it has been deployed.",
+        "source": "rulebook"
       },
       {
         "roll": "26",
         "name": "Lost Arm",
-        "description": "The model has one less hand, which limits the types of weapons/equipment it can use.",
-        "source": "catalogue"
+        "description": "This model cannot use Battlekit that requires 2 hands, and can only use one piece of Battlekit that requires 1 hand.",
+        "source": "rulebook"
       },
       {
         "roll": "31",
         "name": "Leg Wound",
-        "description": "The model’s Movement Characteristic is reduced by 2” and it suffers -1 DICE to Dash.",
-        "source": "catalogue"
+        "description": "Subtract 2” from this model’s Movement Characteristic. In addition, add -1 DICE to the Risky Success Roll for this model when it takes a Dash ACTION.",
+        "source": "rulebook"
       },
       {
         "roll": "32",
         "name": "Expensive Treatment",
-        "description": "The character’s wounds require constant treatment. To deploy this model, you must deduct 10 ducats from your strongbox. This payment does not count towards your Warband’s Threshold Value",
-        "source": "catalogue"
+        "description": "The model’s wounds require constant treatment. Before you can deploy this model, you must deduct 10 👑 from your Warband’s Strongbox. This payment does not count towards your Warband’s Threshold Value.",
+        "source": "rulebook"
       },
       {
         "roll": "33",
         "name": "Possessed",
-        "description": "While unconscious, the model was possessed by a restless spirit of a dead soldier. If possible, this model must begin its Activation with a Dash and this Dash must cover a distance of at least 3” in a single direction. If this model is Down at the start of its Activation, it must instead first Stand and then attempt to Dash. If this model begins its Activation in melee combat, it may ignore these restrictions during that Activation.",
-        "source": "catalogue"
+        "description": "When this model is Activated, if it is more than 1” from any enemy models the first ACTION that it takes must take a Dash ACTION, even if another rule states that it cannot take a Dash ACTION. In addition, the first 3” of this move must be in a straight line directly away from its starting position, if it is possible for it to do so. If the model is Down at the start of the Activation, it will stand up if it can do so and must then attempt to move 3” in a straight line away from its starting position.",
+        "source": "rulebook"
       },
       {
         "roll": "34",
         "name": "Muscle Damage",
-        "description": "This model cannot carry HEAVY weapons.",
-        "source": "catalogue"
+        "description": "This model cannot have Battlekit that has the HEAVY Keyword. Any that it has when the Injury is suffered is lost.",
+        "source": "rulebook"
       },
       {
         "roll": "35",
         "name": "Minor Wound",
-        "description": "After receiving this injury, this model cannot be fielded next battle. It maintains this as a Scar.",
-        "source": "catalogue"
+        "description": "This model cannot be used in the next game.",
+        "source": "rulebook"
       },
       {
         "roll": "36",
@@ -69326,20 +69326,20 @@ export const DATASET: Dataset = {
       {
         "roll": "64",
         "name": "Hardened",
-        "description": "This model now ignores the effects of the Keyword FEAR. No Battle Scar is suffered.",
-        "source": "catalogue"
+        "description": "This model gains the NEGATE FEAR Keyword. It does not receive an Injury or a Battle Scar.",
+        "source": "rulebook"
       },
       {
         "roll": "65",
         "name": "Bitter Lessons",
         "description": "This model gains D3 extra Experience Points. It does not receive an Injury or a Battle Scar.",
-        "source": "catalogue+rulebook"
+        "source": "rulebook"
       },
       {
         "roll": "66",
         "name": "Prominent Scar",
         "description": "Write down the name of the Warband from the game where this injury was received. Add +1 DICE to rolls for Melee Attacks made by this model if the target is a model from the Warband you have written down. It does not receive an Injury or a Battle Scar.",
-        "source": "catalogue"
+        "source": "rulebook"
       }
     ],
     "traumaProcedure": {
