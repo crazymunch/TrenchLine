@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | `src/data/warbandLore.ts`, `prisma/seed.ts`, the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 07:20 UTC on 20 September
+### Landed, as of 08:20 UTC on 20 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -61,7 +61,9 @@ carry, and what these designs cover:
 | FD-05c, first half (a purchase over the balance refused; a sale rounds up; a Glory item debits Glory) | #73 | merged |
 | FD-05d (the Strongbox is the sum of its ledger; the account opened once from the stored balance) | #75 | merged, with the founding-ledger correction and FD-05e and FD-05f recorded below |
 | FD-11a (a min-only link and a nested min = max entry are fixed kit; a model's own gear profile costs zero) | #76 | merged, with three corrections recorded under FD-11 |
-| FD-11b part 1 (a layer op naming two entities edits neither; `all` for an item the dataset holds twice; FUMBLE reaches the shared Incendiary Grenades and Molotov Cocktail) | #77 | reviewed, correct; `check` running at 07:16 UTC; merge when green |
+| FD-11b part 1 (a layer op naming two entities edits neither; `all` for an item the dataset holds twice; FUMBLE reaches the shared Incendiary Grenades and Molotov Cocktail) | #77 | merged |
+| The review documents, the designs to FD-11, the two audit scripts | #58 | merged |
+| FD-11b part 2 (the Warbands-book layer: the Sister of Saint Cosmas by name, statline and Finish the Fallen; the Combat Biologist's abilities and Vivisector; `addBattlekit`; faction alignment parsed from the book; `allowedAlignment` resolved in the recruit list; the transcription test) | #79 | reviewed, correct, green; merge, with the stale `CATALOGUE_ALIASES` row in `scripts/rules-audit-book.mjs` removed, since the rename it compensated for has now happened |
 
 ## FD-00. PR #59 as it stands
 
