@@ -23,8 +23,11 @@ import bcrypt from 'bcryptjs';
  *   3. `authorize` below did not require a password from an account that had
  *      none, so anyone could then sign in as it.
  *
- * No step of that needed a credential. The account also ships in
- * `prisma/seed.ts`, so on a seeded database step 1 is unnecessary.
+ * No step of that needed a credential. The account also shipped in
+ * `prisma/seed.ts`, so on a seeded database step 1 was unnecessary. That seed
+ * is deleted (FD-14 AI-2), which stops new databases acquiring the row but
+ * does not remove it from one that already ran it — production still holds it,
+ * with no password, no admin role and nothing filed under it.
  *
  * All three steps are closed. `commander@trenchline.org` is off the list for
  * good — it is the identity the signed-out routes shared, so it must never be

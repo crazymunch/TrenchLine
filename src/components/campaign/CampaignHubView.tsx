@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { hasCampaign } from '../../store/seed';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '@/rules/useDataset';
 import { campaignVictoryPoints, byCampaignVictoryPoints } from '@/rules/campaign';
@@ -122,6 +123,210 @@ export const CampaignHubView: React.FC = () => {
   const leadingMember = sortedMembers[0];
   /* Which rules this campaign is played under — see the banner and the gauge. */
   const onCarcassFrontCampaign = frameworkOf(campaign) === 'carcass-front';
+
+  /*
+    The two modals, as a value rather than inline JSX.
+
+    They are the only things on this view that still work when there is no
+    campaign — creating one and joining one are precisely how a player stops
+    having none — so the empty state below renders them too, and neither
+    branch may own a private copy that drifts from the other.
+  */
+  const campaignModals = (
+    <>
+      <JoinCampaignModal
+        isOpen={isJoinOpen}
+        onClose={() => setIsJoinOpen(false)}
+        warbands={warbands}
+      />
+
+      {/* New Campaign Modal */}
+      {isNewCampaignModalOpen && (
+        <div ref={newCampaignRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
+          <div className="bg-theme-surface border-2 border-theme-border w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container max-h-[90dvh] flex flex-col">
+            
+            <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
+              <div className="flex items-center space-x-2">
+                <Trophy className="w-5 h-5 text-theme-primary" />
+                <h3 className="font-gothic font-bold text-lg text-theme-text">CREATE CRUSADE CAMPAIGN</h3>
+              </div>
+              <button
+                onClick={() => setIsNewCampaignModalOpen(false)}
+                className="tap text-theme-muted hover:text-theme-text p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateCampaignSubmit} className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
+                  Campaign Title
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Siege of the Iron Gates, The Golgotha Crusade"
+                  value={newCampaignName}
+                  onChange={(e) => setNewCampaignName(e.target.value)}
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none focus:border-theme-primary"
+                />
+              </div>
+
+              {/*
+                Fixed at creation and not shown again as an editable control:
+                the two frameworks disagree about what a territory is, what a
+                turn is and how the campaign is won.
+              */}
+              <div>
+                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
+                  Campaign Rules
+                </label>
+                <div className="space-y-2">
+                  {FRAMEWORKS.map((f) => {
+                    const unavailable = f.id === 'carcass-front' && !cfTerritories.length;
+                    return (
+                      <button
+                        key={f.id}
+                        type="button"
+                        disabled={unavailable}
+                        onClick={() => setNewFramework(f.id)}
+                        className={`w-full text-left p-3 min-h-[44px] rounded border transition-colors ${
+                          newFramework === f.id
+                            ? 'border-theme-primary bg-theme-base'
+                            : 'border-theme-border bg-theme-base hover:border-theme-muted'
+                        } ${unavailable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      >
+                        <span className="font-gothic font-bold text-xs text-theme-text block">
+                          {f.name}
+                        </span>
+                        <span className="text-[11px] font-mono text-theme-muted leading-relaxed block pt-0.5">
+                          {unavailable
+                            ? `Not available: the ruleset did not load${datasetError ? ` (${datasetError})` : ''}.`
+                            : f.summary}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-[11px] font-mono text-theme-muted leading-relaxed pt-2">
+                  {frameworkNamed(newFramework).detail}
+                </p>
+                <p className="text-[11px] font-mono text-theme-accent leading-relaxed pt-1">
+                  This cannot be changed once the campaign exists.
+                </p>
+              </div>
+
+              {/*
+                The Glory threshold decides the CLASSIC campaign and nothing in
+                the Carcass Front one, so it is not asked for there.
+              */}
+              <div>
+                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
+                  Max Warband Ducat Rating
+                </label>
+                <input
+                  type="number"
+                  min="500"
+                  max="2000"
+                  step="50"
+                  value={newMaxDucats}
+                  onChange={(e) => setNewMaxDucats(parseInt(e.target.value) || 700)}
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none"
+                />
+              </div>
+
+              <div className={newFramework === 'carcass-front' ? 'hidden' : ''}>
+                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
+                  Glory Points for Campaign Victory
+                </label>
+                <input
+                  type="number"
+                  min="10"
+                  max="100"
+                  step="5"
+                  value={newGloryGoal}
+                  onChange={(e) => setNewGloryGoal(parseInt(e.target.value) || 25)}
+                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none"
+                />
+              </div>
+
+              <div className="pt-4 border-t border-theme-border flex items-center justify-end space-x-3">
+                <button
+                  type="button"
+                  onClick={() => setIsNewCampaignModalOpen(false)}
+                  className="px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text font-mono text-xs font-bold uppercase rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow"
+                >
+                  Establish Crusade
+                </button>
+              </div>
+            </form>
+
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  /*
+    No campaign.
+
+    A device that has never made or joined one has no campaign, and says so.
+    It used to be handed `defaultFreshCampaign` instead: a crusade called
+    "Crusade for the Lands of the Great Powers", already on Turn 1, admin
+    "Commander", seated on all twelve world theatres, with the invite code
+    `TRENCH-1099` printed beside a copy button — a code no server ever issued,
+    for a campaign nobody could join. Everything on the banner below was a
+    statement about a campaign that did not exist.
+
+    The two buttons are the two real ways out of this state, and they are the
+    same two the banner carries.
+  */
+  if (!hasCampaign(campaign)) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24">
+        <div className="bg-theme-surface border-2 border-theme-border rounded-md p-6 sm:p-10 shadow-xl bevel-container text-center space-y-4">
+          <Trophy className="w-10 h-10 text-theme-muted mx-auto" />
+          <h1 className="font-gothic font-bold text-2xl text-theme-text tracking-wide">
+            NO CRUSADE UNDER WAY
+          </h1>
+          <p className="text-sm text-theme-muted max-w-md mx-auto">
+            A campaign tracks territory, standings and the record of every battle
+            fought in it. Establish one, or join a crusade with the invite code
+            its organiser gave you.
+          </p>
+          {/*
+            Stacked on a phone and side by side from `sm:`, both at the 44px
+            touch floor. `w-full` on the base so a thumb has the whole column.
+          */}
+          <div className="flex flex-col sm:flex-row sm:justify-center gap-3 pt-2">
+            <button
+              onClick={() => setIsNewCampaignModalOpen(true)}
+              className="flex items-center justify-center space-x-1.5 w-full sm:w-auto min-h-[44px] px-5 py-3 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded font-mono text-xs font-bold uppercase transition-colors shadow"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Campaign</span>
+            </button>
+            <button
+              onClick={() => setIsJoinOpen(true)}
+              className="flex items-center justify-center space-x-1.5 w-full sm:w-auto min-h-[44px] px-5 py-3 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border rounded font-mono text-xs font-bold uppercase transition-colors"
+            >
+              <LogIn className="w-4 h-4 text-theme-primary" />
+              <span>Join Campaign</span>
+            </button>
+          </div>
+        </div>
+        {campaignModals}
+      </div>
+    );
+  }
+
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 pb-24">
@@ -546,143 +751,7 @@ export const CampaignHubView: React.FC = () => {
         </div>
       )}
 
-      <JoinCampaignModal
-        isOpen={isJoinOpen}
-        onClose={() => setIsJoinOpen(false)}
-        warbands={warbands}
-      />
-
-      {/* New Campaign Modal */}
-      {isNewCampaignModalOpen && (
-        <div ref={newCampaignRef} className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-          <div className="bg-theme-surface border-2 border-theme-border w-full max-w-md rounded-md shadow-2xl overflow-hidden bevel-container max-h-[90dvh] flex flex-col">
-            
-            <div className="flex-shrink-0 flex items-center justify-between px-6 py-4 border-b border-theme-border bg-theme-base">
-              <div className="flex items-center space-x-2">
-                <Trophy className="w-5 h-5 text-theme-primary" />
-                <h3 className="font-gothic font-bold text-lg text-theme-text">CREATE CRUSADE CAMPAIGN</h3>
-              </div>
-              <button
-                onClick={() => setIsNewCampaignModalOpen(false)}
-                className="tap text-theme-muted hover:text-theme-text p-1"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreateCampaignSubmit} className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 space-y-4">
-              <div>
-                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
-                  Campaign Title
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Siege of the Iron Gates, The Golgotha Crusade"
-                  value={newCampaignName}
-                  onChange={(e) => setNewCampaignName(e.target.value)}
-                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none focus:border-theme-primary"
-                />
-              </div>
-
-              {/*
-                Fixed at creation and not shown again as an editable control:
-                the two frameworks disagree about what a territory is, what a
-                turn is and how the campaign is won.
-              */}
-              <div>
-                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
-                  Campaign Rules
-                </label>
-                <div className="space-y-2">
-                  {FRAMEWORKS.map((f) => {
-                    const unavailable = f.id === 'carcass-front' && !cfTerritories.length;
-                    return (
-                      <button
-                        key={f.id}
-                        type="button"
-                        disabled={unavailable}
-                        onClick={() => setNewFramework(f.id)}
-                        className={`w-full text-left p-3 min-h-[44px] rounded border transition-colors ${
-                          newFramework === f.id
-                            ? 'border-theme-primary bg-theme-base'
-                            : 'border-theme-border bg-theme-base hover:border-theme-muted'
-                        } ${unavailable ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      >
-                        <span className="font-gothic font-bold text-xs text-theme-text block">
-                          {f.name}
-                        </span>
-                        <span className="text-[11px] font-mono text-theme-muted leading-relaxed block pt-0.5">
-                          {unavailable
-                            ? `Not available: the ruleset did not load${datasetError ? ` (${datasetError})` : ''}.`
-                            : f.summary}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-                <p className="text-[11px] font-mono text-theme-muted leading-relaxed pt-2">
-                  {frameworkNamed(newFramework).detail}
-                </p>
-                <p className="text-[11px] font-mono text-theme-accent leading-relaxed pt-1">
-                  This cannot be changed once the campaign exists.
-                </p>
-              </div>
-
-              {/*
-                The Glory threshold decides the CLASSIC campaign and nothing in
-                the Carcass Front one, so it is not asked for there.
-              */}
-              <div>
-                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
-                  Max Warband Ducat Rating
-                </label>
-                <input
-                  type="number"
-                  min="500"
-                  max="2000"
-                  step="50"
-                  value={newMaxDucats}
-                  onChange={(e) => setNewMaxDucats(parseInt(e.target.value) || 700)}
-                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none"
-                />
-              </div>
-
-              <div className={newFramework === 'carcass-front' ? 'hidden' : ''}>
-                <label className="block text-xs font-mono uppercase text-theme-muted mb-1">
-                  Glory Points for Campaign Victory
-                </label>
-                <input
-                  type="number"
-                  min="10"
-                  max="100"
-                  step="5"
-                  value={newGloryGoal}
-                  onChange={(e) => setNewGloryGoal(parseInt(e.target.value) || 25)}
-                  className="w-full bg-theme-base border border-theme-border rounded p-2 text-sm text-theme-text focus:outline-none"
-                />
-              </div>
-
-              <div className="pt-4 border-t border-theme-border flex items-center justify-end space-x-3">
-                <button
-                  type="button"
-                  onClick={() => setIsNewCampaignModalOpen(false)}
-                  className="px-4 py-2 bg-theme-elevated hover:bg-theme-border text-theme-text font-mono text-xs font-bold uppercase rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-mono text-xs font-bold uppercase rounded shadow"
-                >
-                  Establish Crusade
-                </button>
-              </div>
-            </form>
-
-          </div>
-        </div>
-      )}
+      {campaignModals}
 
       {/* Log Match Modal */}
       {isLogMatchOpen && (

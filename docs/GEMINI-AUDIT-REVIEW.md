@@ -124,8 +124,13 @@ expect(await prisma.user.findUnique({ where: { email: 'commander@trenchline.org'
   .toBeNull();
 ```
 
-`prisma/seed.ts` creates that row, so any database that has been seeded fails
-the assertion. That much is correct.
+The Prisma seed script created that row, so any database that has been seeded
+fails the assertion. That much is correct. (That seed is deleted as of FD-14
+AI-2 — the file, prisma/seed.ts, is gone and the path is written plain here for
+the reason docs/DATABASE.md gives — so
+no new database acquires the row; one that already ran the seed still has it,
+and the review below is unaffected either way — the test was rewritten as a
+before/after snapshot, which is true whether the row is there or not.)
 
 **The proposed fix adds `commander@trenchline.org` to the `deleteMany`.** Do not
 do this. The suite constructs its Prisma client from the ambient environment:

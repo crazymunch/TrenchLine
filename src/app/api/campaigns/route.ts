@@ -133,45 +133,28 @@ export async function GET(req: NextRequest) {
   });
 }
 
-/**
- * The starting map.
- *
- * Four fixed territories, as before. These are the app's own scaffolding for a
- * new campaign rather than anything the rulebook publishes, which is why they
- * are here and not in the generated dataset.
- *
- * And why every `perk` is empty: each carried an invented mechanical effect
- * (`+5 Ducats supply bonus per round`, `+2 Glory on Victory when defending`)
- * shown in the campaign hub as a "Strategic Territory Perk" beside rules the
- * pipeline derives, with nothing to tell a player which was which. See
- * `src/store/seed.ts` for the same fix on the twelve world theatres.
- */
-const STARTING_TERRITORIES = [
-  {
-    name: 'North Trench Sector A-1',
-    type: 'Trench Line',
-    perk: '',
-    description: 'Heavily fortified firing step overlooking the crater field.',
-  },
-  {
-    name: 'Shrine of the Weeping Martyr',
-    type: 'Ruined Shrine',
-    perk: '',
-    description: 'Shattered marble chapel providing divine reassurance.',
-  },
-  {
-    name: 'The Iron Foundry Bunker',
-    type: 'Munitions Bunker',
-    perk: '',
-    description: 'Underground armory depot filled with unexploded ordinance.',
-  },
-  {
-    name: "Dead Man's Crater (Center)",
-    type: "No Man's Land",
-    perk: '',
-    description: 'Contested central wasteland strewn with barbed wire and ruined tanks.',
-  },
-];
+/*
+  There is no starting map here any more.
+
+  `STARTING_TERRITORIES` gave every new cloud campaign the same four
+  territories — `North Trench Sector A-1`, `Shrine of the Weeping Martyr`,
+  `The Iron Foundry Bunker`, `Dead Man's Crater (Center)` — scaffolding the app
+  invented, on a campaign the player had just named themselves. They were not
+  the map of anything: the classic framework is played on the twelve world
+  theatres and Carcass Front on its 32 published zones, so whichever framework
+  the campaign turned out to be, these four were wrong and had to be replaced.
+
+  The framework supplies the map, at the moment of creation, in the one place
+  that knows which framework was chosen — `createCampaign` in
+  `src/store/slices/campaign.ts`. A campaign created through this route has no
+  territories until its map is published up or a territory is claimed.
+
+  It also restores the premise `scripts/clear-example-campaigns.mjs` is built
+  on. That script offers a campaign for deletion when it carries exactly those
+  four names and has no matches, on the stated grounds that "the old API"
+  created them — which stayed false for as long as this route went on making
+  new ones. It is true again now.
+*/
 
 const CreateCampaign = z.object({
   action: z.literal('create'),
@@ -304,7 +287,6 @@ export async function POST(req: NextRequest) {
           adminId: actor.userId,
           maxWarbandDucats: body.maxWarbandDucats ?? 700,
           gloryVictoryThreshold: body.gloryVictoryThreshold ?? 25,
-          territories: { create: STARTING_TERRITORIES },
         },
         include: FULL,
       });
@@ -371,10 +353,12 @@ export async function POST(req: NextRequest) {
           maxWarbandDucats: body.maxWarbandDucats ?? 700,
           gloryVictoryThreshold: body.gloryVictoryThreshold ?? 25,
           /*
-            The client's map, verbatim. Not merged with STARTING_TERRITORIES
-            and not topped up to a minimum: a campaign that has been played on
-            a device has the map it has, and adding four territories nobody
-            put there would be the app inventing part of someone's campaign.
+            The client's map, verbatim. Not merged with anything and not
+            topped up to a minimum: a campaign that has been played on a device
+            has the map it has, and adding territories nobody put there would
+            be the app inventing part of someone's campaign. The `create`
+            action no longer builds four of its own either — see the note above
+            where `STARTING_TERRITORIES` used to be.
           */
           territories: { create: body.territories },
         },

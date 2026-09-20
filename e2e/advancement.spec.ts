@@ -157,6 +157,29 @@ test('the step offers the book’s Advancement Roll, not eight invented buttons'
 });
 
 test('a roll offers two Skills and takes the one the player picks', async ({ page }) => {
+  /*
+    The dice are pinned, because two of the eleven totals offer nothing — and
+    that is correct behaviour, not a defect.
+
+    `Roll 2D6 on both` calls `Math.random`, and on BOTH default tables (Melee
+    and Ranged) a total of 2 or 12 is the Patron Skill row. This warband has no
+    Patron recorded, so the step renders "nothing can be offered" for that
+    table rather than substituting a Skill from elsewhere — deliberately; see
+    the note beside `offer.offered.length === 0` in `PostBattleWizardModal`.
+
+    When BOTH tables land on a 2 or a 12 the step offers nothing at all, and
+    the unconditional assertion below fails on a dice roll rather than on a
+    bug. That is 4 outcomes in 1296, or 0.31% per model per run — rare enough
+    to look like a fluke and common enough to keep happening. It cost a red CI
+    run on #83, on `tablet` alone, while phone and desktop passed.
+
+    `Math.random` pinned to 0.5 makes each d6 read 4, so both tables roll 8.
+    The button, the roll and the offer rendering are all still exercised, and
+    the assertion still means what it says: on a total that IS on the table, an
+    offer must appear.
+  */
+  await page.addInitScript(() => { Math.random = () => 0.5; });
+
   await endAMatch(page);
   await toPromotionsStep(page);
 

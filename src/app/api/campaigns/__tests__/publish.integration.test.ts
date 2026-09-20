@@ -121,9 +121,14 @@ describeDb('publishing a campaign', () => {
 
   it('does not add territories of its own', async () => {
     /*
-      `action: 'create'` builds four fixed territories the app has never used.
       A published campaign has the map it has; topping it up would be the app
       inventing part of somebody's campaign.
+
+      This note used to read "`action: 'create'` builds four fixed territories
+      the app has never used" — the contrast being that `publish` did not do
+      what `create` did. `create` no longer builds any either (FD-14 AI-2), so
+      the two agree now and the assertion below stands for both: what is
+      created is what the client sent, and nothing else.
     */
     const cloudId = randomUUID();
     await post(publishBody(cloudId));

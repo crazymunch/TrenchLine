@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+import { DEFAULT_WORLD_THEATERS } from '../src/store/seed';
 
 /**
  * Open the app and wait for it to stop moving.
@@ -43,6 +44,44 @@ export async function seedWarband(page: Page, warband: unknown = TEST_WARBAND) {
     localStorage.setItem('tc_warbands_v1', JSON.stringify([wb]));
     localStorage.setItem('tc_active_warband_id', (wb as { id: string }).id);
   }, [warband]);
+}
+
+/**
+ * A campaign for the tests that need one, for the same reason as the warband.
+ *
+ * The app used to hand every browser a campaign — `defaultFreshCampaign`, a
+ * crusade nobody had made, on all twelve world theatres, with an invite code
+ * no server had issued — and the suite quietly relied on it, the same way it
+ * relied on the shipped warband. It does not any more (FD-14 AI-2): a fresh
+ * device has no campaign and the hub says so. So the harness supplies one.
+ *
+ * On the CLASSIC map, because the tests that need it are about the theatres —
+ * a territory's house rule, and the dossier opening on a phone. The theatres
+ * are imported rather than retyped: they are presentation data owned by
+ * `src/store/seed.ts`, and a copy here would be a second source of truth for
+ * the names these tests click.
+ */
+export const TEST_CAMPAIGN = {
+  id: 'camp-e2e',
+  name: 'E2E Test Crusade',
+  inviteCode: 'TRENCH-E2E001',
+  adminName: 'Commander',
+  status: 'active',
+  framework: 'classic',
+  currentTurn: 1,
+  maxWarbandDucats: 700,
+  gloryVictoryThreshold: 25,
+  members: [],
+  territories: DEFAULT_WORLD_THEATERS,
+  matches: [],
+  chronicleLogs: [],
+};
+
+/** Put it in place before any app code runs, like the warband above. */
+export async function seedCampaign(page: Page, campaign: unknown = TEST_CAMPAIGN) {
+  await page.addInitScript(([c]) => {
+    localStorage.setItem('tc_campaign_v1', JSON.stringify(c));
+  }, [campaign]);
 }
 
 /*

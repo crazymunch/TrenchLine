@@ -19,7 +19,7 @@
  * time, because a clipped element is still visible to Playwright.
  */
 import { test, expect } from '@playwright/test';
-import { openApp, goTo, expectReachable } from './helpers';
+import { openApp, goTo, expectReachable, seedCampaign } from './helpers';
 
 test('the muster dialog can be completed on a phone', async ({ page }) => {
   test.skip(test.info().project.name !== 'phone', 'the report is a phone one');
@@ -65,6 +65,8 @@ test('the campaign dialog can be completed on a phone', async ({ page }) => {
 test('the territory dossier can be read to the end on a phone', async ({ page }) => {
   test.skip(test.info().project.name !== 'phone', 'the report is a phone one');
 
+  // As in campaign.spec.ts: the dossier needs a territory to open.
+  await seedCampaign(page);
   await openApp(page);
   await goTo(page, 'Crusade');
   await page.getByRole('button', { name: 'CAMPAIGN WORLD MAP' }).click();

@@ -24,7 +24,7 @@ longer creates.
 
 | | the API creates | the store creates |
 |---|---|---|
-| territories | **4 fixed** — `North Trench Sector A-1`, `Shrine of the Weeping Martyr`, … | **12** world theatres, or **32** published Carcass Front zones |
+| territories | **4 fixed** — `North Trench Sector A-1`, `Shrine of the Weeping Martyr`, … *(removed Sep 2026 — see below)* | **12** world theatres, or **32** published Carcass Front zones |
 | ids | database cuids | `wt-*` in the seed, `cf-<slug>` derived from the zone name |
 | framework | no concept of one | `classic` or `carcass-front`, fixed at creation |
 | perk provenance | not modelled | `perkSource`: `published`, `campaign`, or absent |
@@ -52,6 +52,14 @@ discarded?**
 
 **Answered (Sep 2026): discarded.** No campaign is running; the rows are
 example data. Option 1 it is, and the model mismatch is no longer a blocker.
+
+**And the four fixed territories are gone (FD-14 AI-2).** Option 1 said "drop
+the four fixed territories", but only the store side of it was built: the
+`create` action went on making a new set of four for every campaign created
+through it, for a year after the decision. It no longer creates any. That also
+matters to `scripts/clear-example-campaigns.mjs`, whose deletion signature is
+those four names on the stated grounds that only "the old API" made them —
+which was not true while this route kept making more.
 
 ### What that decision has built so far
 
@@ -192,11 +200,16 @@ Carrying both is what lets a later `territory.perk` operation name a territory
 without the client keeping a server-id mapping, and the constraint is what
 makes that join single-valued rather than merely likely.
 
-The map is stored **as the client holds it**. Not merged with the four fixed
-`STARTING_TERRITORIES` the `create` action still builds, and not topped up to a
-minimum: a campaign that has been played on a device has the map it has, and
-adding territories nobody put there would be the app inventing part of
-somebody's campaign.
+The map is stored **as the client holds it**. Not merged with anything and not
+topped up to a minimum: a campaign that has been played on a device has the map
+it has, and adding territories nobody put there would be the app inventing part
+of somebody's campaign.
+
+The `create` action used to build four fixed territories of its own,
+`STARTING_TERRITORIES`. It no longer builds any: whichever framework a campaign
+turns out to be played under, those four were not its map, and the framework
+supplies the map at the moment of creation. A campaign created through the
+`create` action has no territories until its own map is published up.
 
 `perkSource: 'published'` is accepted here and nowhere else. The authority
 table below says a published perk is writable by nobody and the sync route

@@ -5,7 +5,7 @@
 import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import { storage } from '../../services/storage';
-import { defaultFreshCampaign } from '../seed';
+import { DEFAULT_WORLD_THEATERS } from '../seed';
 import type { Campaign, MatchRecord, CampaignMember } from '../../types/campaign';
 import type { Warband, WarbandSnapshot, UnitTitleRecord } from '../../types/warband';
 import type { InitialState } from '../init';
@@ -899,16 +899,24 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
             ]
           : [],
         /*
+          The framework supplies the map, and nothing else does.
+
           A Carcass Front campaign is played on its own 32 zones, which the
-          view passes in from the dataset. The app's twelve world theatres are
+          view passes in from the dataset; the app's twelve world theatres are
           the `classic` map and mean nothing under those rules.
 
-          An empty list would be a Carcass Front campaign with no map at all,
-          which is worse than the wrong one, so it falls back and the view says
-          the dataset did not load rather than silently seating the player
-          somewhere else.
+          This used to fall back to the theatres whenever the caller passed
+          none, on the reasoning that a Carcass Front campaign with no map is
+          worse than one with the wrong map. It is not: seating a Carcass Front
+          campaign on the classic map is the app inventing part of someone's
+          campaign, which is exactly what it must not do, and the hub already
+          refuses to submit the form when the dataset has not loaded
+          (`!cfTerritories.length`), so the fallback could only ever fire on
+          the way to a wrong answer.
         */
-        territories: territories?.length ? territories : defaultFreshCampaign.territories,
+        territories: territories?.length
+          ? territories
+          : (framework === 'carcass-front' ? [] : DEFAULT_WORLD_THEATERS),
         matches: [],
         chronicleLogs: [
           {
