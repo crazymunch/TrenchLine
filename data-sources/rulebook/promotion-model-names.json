@@ -1,0 +1,20 @@
+{
+  "_what": "Model names the rulebook and the BattleScribe catalogue spell differently, where no rule of spelling reconciles them.",
+  "_why": "The Promotions tables (rulebook pp.107, 111) name the models that may not be Promoted and the models whose Experience is capped, and they name them as the books do. Almost all resolve without help, because a unit carries its catalogue ENTRY name as well as its profile name and the books print the entry name: 'Anchorite Shrine' has the profile 'Anchorite', 'War Wolf Assault Beast' the profile 'War Wolf'. This file is only for what is left over. Each entry cites both sides so the claim can be checked against the sources rather than believed.",
+  "_not": "This is a name equivalence and nothing else. It never states a cost, a statline, a keyword or a constraint. rules-build fails if an entry here stops being needed, so it cannot quietly outlive the drift it records.",
+  "_shape": "Keys are '<faction slug>::<name exactly as the rulebook prints it>'. 'is' is the unit name in the dataset.",
+  "names": {
+    "cult-of-the-black-grail::Grail Thralls": {
+      "is": "Thrall",
+      "book": "warbands-of-trench-crusade.txt L7795, L7806 — the Warband Entry is 'Grail Thralls / Fly Thralls - Cost: 25' and prints two profiles, 'Grail Thrall Profile' and 'Fly Thrall Profile'. The rulebook's Cult of the Black Grail cannot-promote row (L6140) names both.",
+      "catalogue": "Black Grail.cat — selectionEntry type=\"model\" name=\"Grail Thrall\" (p.80) holds the two variants as OPTIONS, named 'Grounded' and 'Winged', and each option carries the Unit profile. A unit's entry name is therefore the option's — 'Grounded' — and not the model entry's, so the book's name is not reachable from either of the unit's two names.",
+      "note": "The grounded variant's profile is simply 'Thrall'."
+    },
+    "cult-of-the-black-grail::Fly Thralls": {
+      "is": "Winged Thrall",
+      "book": "warbands-of-trench-crusade.txt L7795, L7809 — 'Fly Thrall Profile', the flying half of the same Warband Entry.",
+      "catalogue": "Black Grail.cat — the 'Winged' option of selectionEntry name=\"Grail Thrall\" (p.80), carrying profile name=\"Winged Thrall\". The catalogue renamed this variant; 'Fly' appears nowhere in it.",
+      "note": "Its entry name is the option's, 'Winged', for the same reason as its grounded twin."
+    }
+  }
+}

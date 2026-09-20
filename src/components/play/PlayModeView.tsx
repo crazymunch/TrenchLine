@@ -1032,7 +1032,7 @@ export const PlayModeView: React.FC = () => {
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     onClick={handleRollWeather}
-                    className="flex items-center gap-1.5 px-3 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow min-h-[44px] sm:min-h-0"
+                    className="flex items-center gap-1.5 px-3 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow min-h-[44px] lg:min-h-0"
                   >
                     <CloudRain className="w-3.5 h-3.5" />
                     <span>Roll 2D6 each ({matchWarbandIds.length})</span>
@@ -1040,7 +1040,7 @@ export const PlayModeView: React.FC = () => {
                   {weatherRolls.length > 0 && (
                     <button
                       onClick={() => { setWeatherRolls([]); setActiveWeather(null); }}
-                      className="px-3 py-2 bg-theme-base text-theme-muted border border-theme-border rounded text-xs font-bold uppercase min-h-[44px] sm:min-h-0"
+                      className="px-3 py-2 bg-theme-base text-theme-muted border border-theme-border rounded text-xs font-bold uppercase min-h-[44px] lg:min-h-0"
                     >
                       Clear
                     </button>
@@ -1688,7 +1688,9 @@ export const PlayModeView: React.FC = () => {
                           }`}
                         >
                           <div className="flex items-start justify-between gap-2">
-                            <label className={`flex items-start space-x-2.5 flex-1 ${takenBy ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
+                            {/* `min-h-[44px]`: the label is the hit area, and a
+                                one-line Deed made it 20px tall. */}
+                            <label className={`flex min-h-[44px] items-start space-x-2.5 flex-1 py-1 ${takenBy ? 'cursor-not-allowed' : 'cursor-pointer'}`}>
                               <input
                                 type="checkbox"
                                 checked={isChecked}
@@ -2006,11 +2008,22 @@ export const PlayModeView: React.FC = () => {
                       }`}
                     >
                       <div className="flex items-center space-x-2.5">
+                        {/*
+                          An indicator, not a control: the card is the control,
+                          and this box has an empty `onChange` because the
+                          click handler is on the row. Marked as decoration
+                          rather than grown to 44px — a checkbox that big beside
+                          a model's name would be absurd, and the touch target
+                          the player actually needs is the whole row, which is
+                          what it already is.
+                        */}
                         <input
                           type="checkbox"
                           checked={isDep}
-                          onChange={() => {}}
-                          className="rounded border-theme-border text-theme-primary focus:ring-0"
+                          readOnly
+                          tabIndex={-1}
+                          aria-hidden="true"
+                          className="pointer-events-none rounded border-theme-border text-theme-primary focus:ring-0"
                         />
                         <div>
                           <strong className="block text-xs">{u.customName}</strong>

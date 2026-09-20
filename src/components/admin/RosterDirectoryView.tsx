@@ -394,7 +394,7 @@ export const RosterDirectoryView: React.FC = () => {
                       */}
                       <button
                         onClick={() => { setDeleteError(null); setWarbandToDelete(wb); }}
-                        className="col-span-2 py-1.5 px-2 bg-theme-base hover:bg-status-error/20 text-status-error border border-status-error/40 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors min-h-[44px] sm:min-h-0"
+                        className="col-span-2 py-1.5 px-2 bg-theme-base hover:bg-status-error/20 text-status-error border border-status-error/40 rounded font-bold uppercase flex items-center justify-center space-x-1 transition-colors min-h-[44px] lg:min-h-0"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                         <span>Delete warband</span>

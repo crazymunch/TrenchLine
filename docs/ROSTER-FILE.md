@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, advancements, XP, titles, snapshots, `isDead` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, titles, snapshots, `isDead`, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -135,6 +135,36 @@ markers, nothing acted. `isDead` is honoured.
   older readers drop it and say so.
 - A file never carries an account identifier. If that changes, it needs a
   privacy decision, not a schema bump.
+
+## Progression: `skills`, `advancementRolls`, and the legacy `advancements`
+
+A model's progression is recorded in three fields, and the distinction between
+them is load-bearing on restore.
+
+**`skills`** is what a model has learned: `{ name, category, roll?, effect? }`.
+A Skill from an Advancement Roll records the table it came from as `category`
+(`melee`, `ranged`, `stealth`, `wildcard`, or `Patron` for the roll of 2) and
+the 2D6 total as `roll`, so a roster can be checked against the table that
+produced it.
+
+**`advancementRolls`** is how many Advancement Rolls the model has taken. Its
+own field rather than `skills.length`, because a model can gain a Skill without
+a roll: a Patron grants them, and so do some Glory Items and the `65 Bitter
+Lessons` Trauma result. `advancementRollsDue` subtracts it from the thresholds
+the model's Experience has passed — so a restore that dropped it would hand the
+model every roll it had already made, a second time.
+
+**`advancements`** is a legacy free-text list, and nothing writes to it any
+more. The post-battle wizard used to put the label of whichever of eight
+buttons the player pressed here — and four of those buttons were characteristic
+advances (`+1 Melee`, `+1 Ranged`, `+1 Armour`, `+1" Move`) that Trench Crusade
+does not have, while three of the four named Skills do not exist. Existing
+rosters therefore carry strings for things that never happened.
+
+It stays `durable`, and it is still displayed. Those strings are the player's
+own record of what they did at their table, and clearing them on import or
+export would be a data change rather than a fix. New progression goes to
+`skills`.
 
 ## Not in this format
 

@@ -20,6 +20,7 @@ import { DATASET } from '@/data/generated/trenchline.generated';
 import type { SkillRow, SkillsTableName } from '@/types/catalogue';
 import {
   advancementRollsDue, nextAdvancementAt, offerFor, advancementRoll, experienceTrack,
+  patronSkillsFor, SKILL_TABLES, SKILL_TABLE_LABEL,
 } from '../advancement';
 
 const track = experienceTrack(DATASET)!;
@@ -201,5 +202,52 @@ describe('the tables the app used to invent', () => {
       expect(all, invented).not.toContain(invented);
     }
     expect(all).toContain('shadow walker');
+  });
+});
+
+describe('the Patron’s own list, for a roll of 2', () => {
+  const anyPatron = DATASET.patrons[0];
+
+  it('resolves the free text a player typed against the derived Patrons', () => {
+    /*
+      `warband.patron` predates the Patrons being derived at all: it is a
+      name a player typed into a box. So it is matched by name rather than
+      treated as an id, and the match ignores case and surrounding space.
+    */
+    expect(patronSkillsFor(DATASET, anyPatron.name).map((s) => s.name))
+      .toEqual(anyPatron.skills.map((s) => s.name));
+    expect(patronSkillsFor(DATASET, `  ${anyPatron.name.toLowerCase()}  `))
+      .toHaveLength(anyPatron.skills.length);
+  });
+
+  it('ships six Skills for every Patron, which is what the books print', () => {
+    for (const p of DATASET.patrons) {
+      expect(patronSkillsFor(DATASET, p.name).length, p.name).toBe(6);
+    }
+  });
+
+  it('offers nothing for a Patron nobody recorded', () => {
+    /*
+      Rule 2. An empty list makes `offerFor` report an empty Patron offer,
+      which is the honest answer; inventing one would hand the model a Skill
+      its Patron does not grant.
+    */
+    expect(patronSkillsFor(DATASET, '')).toEqual([]);
+    expect(patronSkillsFor(DATASET, undefined)).toEqual([]);
+    expect(patronSkillsFor(DATASET, 'The Patron Of Nothing At All')).toEqual([]);
+    expect(patronSkillsFor(null, anyPatron.name)).toEqual([]);
+  });
+
+  it('feeds the roll of 2 end to end', () => {
+    const offer = offerFor(DATASET, 'melee', 2, [], patronSkillsFor(DATASET, anyPatron.name));
+    expect(offer.substitution).toBe('patron');
+    expect(offer.offered.map((s) => s.name)).toEqual(anyPatron.skills.map((s) => s.name));
+  });
+});
+
+describe('the tables a player picks from', () => {
+  it('offers exactly the four the dataset carries, and labels them all', () => {
+    expect([...SKILL_TABLES].sort()).toEqual(Object.keys(DATASET.campaign.skills).sort());
+    for (const t of SKILL_TABLES) expect(SKILL_TABLE_LABEL[t]).toBeTruthy();
   });
 });

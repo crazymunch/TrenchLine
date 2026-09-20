@@ -62,6 +62,28 @@ describe('a profile row whose keywords wrap', () => {
     expect(e.keywords).toEqual(expect.arrayContaining(['CRITICAL', 'CUMBERSOME']));
     expect(e.rules[0]).toMatch(/^Melt Armour/);
   });
+  it('reads a wrapped run on an entry that has no rule under it', () => {
+    /*
+      The keyword-only case, which the three entries above do not cover.
+
+      The Titan Zulfiqar prints `1-Handed \t Melee \t +2 INJURY MODIFIER,` and
+      then `CRITICAL, HEAVY` on the next line, with no rule after it — so
+      before the comma gate it shipped one keyword of three, and the two it
+      lost are the ones that decide what the weapon does. It is also the case
+      that tells the gate apart from a reader that simply takes the next line:
+      with nothing of its own to find below the keywords, an over-eager scan
+      would reach the entry printed after it.
+    */
+    const e = find(warbands.entries, 'Titan Zulfiqar');
+    expect(e.keywords).toEqual(['+2 INJURY MODIFIER', 'CRITICAL', 'HEAVY']);
+    expect(e.rules).toEqual([]);
+  });
+
+  it('does not give the Corruption Belcher a neighbour’s rule either', () => {
+    const e = find(warbands.entries, 'Corruption Belcher');
+    expect(e.keywords).toEqual(['FLAMETHROWER', 'GAS', 'IGNORE ARMOUR']);
+    expect(e.rules).toEqual([]);
+  });
 });
 
 describe('what stops a row being read further', () => {

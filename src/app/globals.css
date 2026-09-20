@@ -655,6 +655,21 @@
 @media (max-width: 1023px) {
   button:not(.tap) {
     min-height: 44px;
+    /*
+      And 44px WIDE, for the same reason and with the same opt-out.
+
+      Height alone was half the rule. A thumb is round: a control 44px tall and
+      20px wide is as easy to miss as one 20px tall, and the ones that were
+      left are exactly the ones a player reaches for most — the `+`/`-` steppers
+      on every wound, Blood Marker and Blessing Marker row in Play Mode sat at
+      44x20, side by side, with dice in the other hand. A mis-tap there changes
+      a model's wounds mid-activation.
+
+      `min-width` rather than a fixed width so a button with a label is
+      unaffected; only the ones that were too narrow grow. Icon-only controls
+      that must stay visually small carry `.tap` and are opted out of both.
+    */
+    min-width: 44px;
   }
 }
 

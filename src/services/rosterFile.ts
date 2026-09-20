@@ -118,6 +118,11 @@ export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
   isElite: 'durable',
   advancements: 'durable',
   skills: 'durable',
+  /* How many Advancement Rolls the model has taken. Durable, and load-bearing
+     on restore: it is what `advancementRollsDue` subtracts from the thresholds
+     the model's Experience has passed, so losing it hands the model every roll
+     it has already made, a second time. */
+  advancementRolls: 'durable',
   injuries: 'durable',
   scars: 'durable',
   isDead: 'durable',

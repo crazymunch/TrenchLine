@@ -13,12 +13,20 @@ import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries, traumaWriteFor,
 } from '../../rules/trauma';
+import { cappedExperience, experienceCap } from '../../rules/promotions';
+import {
+  advancementRollsDue, nextAdvancementAt, advancementRoll, patronSkillsFor,
+  SKILL_TABLES, SKILL_TABLE_LABEL,
+  type SkillLearned, type SkillOffer,
+} from '../../rules/advancement';
 import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rules/capture';
 import type { MatchHandover } from '../../rules/matchHandover';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
-import type { ExplorationTableName } from '../../types/catalogue';
+import type { ExplorationTableName, SkillsTableName, SkillRow } from '../../types/catalogue';
 import { CasualtyRecord } from '../../types/campaign';
+import type { ActiveUnit } from '../../types/warband';
+import { soundEffects } from '../../services/soundEffects';
 import type { XpAward } from '../../store/state';
 import { 
   Dices, 
@@ -204,7 +212,19 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   );
 
   // Advancements
-  const [unitAdvancements, setUnitAdvancements] = useState<Record<string, string>>({});
+  /*
+    One Advancement Roll in progress, per model.
+
+    `tables` is the player's step-1 choice ("Pick two of the Skill Tables"),
+    `rolls` the two 2D6 totals, and `chosen` the step-3 decision. Held apart
+    from the submitted list so that re-rolling does not silently overwrite a
+    Skill the player already picked.
+  */
+  const [advRolls, setAdvRolls] = useState<Record<string, {
+    tables: [SkillsTableName, SkillsTableName];
+    rolls: [number, number] | null;
+  }>>({});
+  const [skillPicks, setSkillPicks] = useState<SkillLearned[]>([]);
 
   // Exploration roll
   const [selectedExplorationTable, setSelectedExplorationTable] = useState<ExplorationTableName>('common');
@@ -424,13 +444,29 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     const override = unitId in eliteOverrides
       ? { ...u, profileSnapshot: { ...u.profileSnapshot, elite: eliteOverrides[unitId] } }
       : u;
-    return earnsExperience(override, {
+    const verdict = earnsExperience(override, {
       tookPart: !satOut[unitId],
       /* An executed captive died; a ransomed one is a Full Recovery and earns
          its point like any other survivor. */
       died: diedInStep(unitId),
       xpBarringInjuries: barring,
     });
+    /*
+      Limited Potential: "The following models cannot have more than 7
+      Experience Points" (p.111). A model at its cap earns nothing, and is
+      listed with everyone else who earns nothing so the player can see why
+      rather than watching a number fail to move.
+    */
+    if (verdict.earns && cappedExperience(dataset, u, 1).withheld > 0) {
+      return { earns: false as const, blocked: 'at-experience-cap' as const };
+    }
+    return verdict;
+  };
+
+  /** The cap a model is sitting on, for the sentence that explains it. */
+  const capFor = (unitId: string) => {
+    const u = warband.units.find((x) => x.id === unitId);
+    return u ? experienceCap(dataset, u) : null;
   };
 
   /** Why a model earns nothing, in the rule's terms rather than the code's. */
@@ -440,6 +476,19 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     died: 'did not survive the game',
     'head-wound': 'Head Wound — can no longer gain Experience Points',
     'elite-unknown': 'ELITE status not recorded — resolve it in the Trauma Step',
+    'at-experience-cap': 'LIMITED POTENTIAL — already at its Experience maximum',
+  };
+
+  /**
+   * The sentence for a model that earns nothing, with the cap's own number in
+   * it where that is the reason. "already at its Experience maximum" invites
+   * the question the rule already answers.
+   */
+  const xpReasonFor = (unitId: string, blocked: string | undefined) => {
+    const base = XP_REASON[blocked ?? ''] ?? blocked;
+    if (blocked !== 'at-experience-cap') return base;
+    const cap = capFor(unitId);
+    return cap == null ? base : `LIMITED POTENTIAL — capped at ${cap} Experience Points`;
   };
 
   /**
@@ -483,6 +532,106 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     resolveExplorationRoll(total);
   };
 
+  /* ---------------------------------------------------------------- *
+   * Advancement Rolls (RR-03 / RR-04 / FD-04b)
+   *
+   * This step offered every model the same eight buttons — `+1 Melee`,
+   * `+1 Ranged`, `+1 Armour`, `+1" Move` and four named Skills — and wrote
+   * the label of whichever one was pressed onto the model. Trench Crusade has
+   * no characteristic advances at all, and three of those Skills do not exist.
+   * The buttons were also offered to every model on the roster, including the
+   * ones that had just earned no Experience.
+   *
+   * The book, page 105: a roll is earned when Experience reaches a circled box
+   * on the Roster Sheet, and then: pick two of the Skill Tables, roll 2D6 on
+   * each, and pick one of the two Skills. Where the circles are is derived —
+   * see `parseExperienceTrack`.
+   * ---------------------------------------------------------------- */
+
+  /** The Patron's own list, for a roll of 2. Empty if the Patron is unknown. */
+  const patronSkills = patronSkillsFor(dataset, warband.patron);
+
+  /**
+   * How many rolls this model is owed, counting the Experience it is about to
+   * gain in this very step.
+   *
+   * Counting only `unit.xp` would make the player commit the wizard and
+   * reopen it to spend a roll the same submission just earned.
+   */
+  const rollsDueFor = (unit: ActiveUnit) => {
+    /*
+      ELITE only, and this is not the same question as "does it earn a point
+      today". Advancement Rolls come off the Experience track, and page 105
+      gives Experience to ELITE models — so a Troop has none to spend, however
+      much its roster says it has.
+
+      That matters because rosters DO say it: the step this replaces granted a
+      point to every model on the roster for two years (RC-02), so a Warband
+      carried over from then has Troops sitting on double figures. Counting the
+      track alone would hand each of them three Skills on the first submission
+      after this ships.
+    */
+    if (eliteVerdict(unit).elite !== true) return 0;
+
+    const gain = experienceFor(unit.id).earns ? 1 : 0;
+    const taken = (unit.advancementRolls ?? 0)
+      + skillPicks.filter((p) => p.unitId === unit.id).length;
+    return advancementRollsDue(dataset, { xp: unit.xp + gain, advancementRolls: taken });
+  };
+
+  const rollStateFor = (unitId: string) =>
+    advRolls[unitId] ?? { tables: ['melee', 'ranged'] as [SkillsTableName, SkillsTableName], rolls: null };
+
+  const setTable = (unitId: string, which: 0 | 1, table: SkillsTableName) => {
+    const cur = rollStateFor(unitId);
+    const tables: [SkillsTableName, SkillsTableName] = which === 0
+      ? [table, cur.tables[1]] : [cur.tables[0], table];
+    /* Changing a table invalidates the roll made on the old one. */
+    setAdvRolls((p) => ({ ...p, [unitId]: { tables, rolls: null } }));
+  };
+
+  const rollAdvancement = (unitId: string) => {
+    const d6 = () => Math.floor(Math.random() * 6) + 1;
+    const two = (): number => d6() + d6();
+    setAdvRolls((p) => ({
+      ...p,
+      [unitId]: { ...rollStateFor(unitId), rolls: [two(), two()] },
+    }));
+    soundEffects.playDiceRoll();
+  };
+
+  /** A total entered by hand, for a player who rolled real dice at the table. */
+  const setRollTotal = (unitId: string, which: 0 | 1, value: number) => {
+    const cur = rollStateFor(unitId);
+    const base = cur.rolls ?? [7, 7];
+    const rolls: [number, number] = which === 0 ? [value, base[1]] : [base[0], value];
+    setAdvRolls((p) => ({ ...p, [unitId]: { ...cur, rolls } }));
+  };
+
+  /** The two offers for a model whose dice are on the table. */
+  const offersFor = (unit: ActiveUnit) => {
+    const st = rollStateFor(unit.id);
+    if (!st.rolls) return null;
+    const held = [
+      ...(unit.skills ?? []).map((sk) => sk.name),
+      ...skillPicks.filter((p) => p.unitId === unit.id).map((p) => p.name),
+    ];
+    return advancementRoll(dataset, st.tables, st.rolls, held, patronSkills);
+  };
+
+  const learnSkill = (unit: ActiveUnit, offer: SkillOffer, row: SkillRow) => {
+    setSkillPicks((p) => [...p, {
+      unitId: unit.id,
+      name: row.name,
+      table: offer.substitution === 'patron' ? 'patron' : offer.table,
+      roll: offer.rolled,
+      substitution: offer.substitution,
+      description: row.description ?? '',
+    }]);
+    /* The roll is spent; clear it so the next one due starts clean. */
+    setAdvRolls((p) => ({ ...p, [unit.id]: { ...rollStateFor(unit.id), rolls: null } }));
+  };
+
   const handleFinalSubmit = () => {
     /* The button is disabled while a capture is outstanding; this is the same
        refusal for anything that reaches the handler another way. */
@@ -520,9 +669,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       };
     });
 
-    const advancements = Object.entries(unitAdvancements)
-      .filter(([_, adv]) => adv.trim().length > 0)
-      .map(([unitId, advancement]) => ({ unitId, advancement }));
+    const skillsLearned = skillPicks;
 
     /*
       Every model gets a row, earning or not, and the ones earning nothing carry
@@ -534,7 +681,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       return {
         unitId: u.id,
         earns: verdict.earns,
-        ...(verdict.earns ? {} : { reason: XP_REASON[verdict.blocked ?? ''] ?? verdict.blocked }),
+        ...(verdict.earns ? {} : { reason: xpReasonFor(u.id, verdict.blocked) }),
       };
     });
 
@@ -558,7 +705,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       */
       explorationForfeited ? 0 : ducatsGained,
       casualties,
-      advancements,
+      skillsLearned,
       experience,
       tookReinforcements,
       narrativeLog,
@@ -1166,7 +1313,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
               <div className="space-y-3">
                 {warband.units.map((unit) => {
                   const xp = experienceFor(unit.id);
-                  const reason = xp.earns ? null : (XP_REASON[xp.blocked ?? ''] ?? xp.blocked);
+                  const reason = xp.earns ? null : xpReasonFor(unit.id, xp.blocked);
                   return (
                   <div key={unit.id} className="p-3 bg-theme-elevated border border-theme-border rounded space-y-2">
                     <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
@@ -1190,36 +1337,159 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                           type="checkbox"
                           checked={!!satOut[unit.id]}
                           onChange={(e) => setSatOut((p) => ({ ...p, [unit.id]: e.target.checked }))}
-                          className="h-4 w-4 accent-current"
+                          className="h-4 w-4 shrink-0 accent-current"
                         />
                         <span>Did not take part in this game</span>
                       </label>
                     )}
 
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                      {['+1 Melee', '+1 Ranged', '+1 Armour', '+1" Move', 'Eagle Eye (Skill)', 'Mighty Blow (Skill)', 'Diehard (Skill)', 'Shadow Walker (Skill)'].map((adv) => {
-                        const isSelected = unitAdvancements[unit.id] === adv;
-                        return (
-                          <button
-                            key={adv}
-                            type="button"
-                            onClick={() =>
-                              setUnitAdvancements({
-                                ...unitAdvancements,
-                                [unit.id]: isSelected ? '' : adv
-                              })
-                            }
-                            className={`py-1 px-2 rounded font-semibold transition-all truncate text-xs sm:text-[11px] ${
-                              isSelected
-                                ? 'bg-theme-primary text-theme-base font-bold'
-                                : 'bg-theme-base text-theme-muted hover:text-theme-text border border-theme-border'
-                            }`}
-                          >
-                            {adv}
-                          </button>
-                        );
-                      })}
-                    </div>
+                    {/*
+                      The Advancement Roll, in the book's three steps.
+
+                      Shown only for a model that has actually earned one. The
+                      eight buttons this replaces were offered to every model
+                      on the roster, including the ones the step above had just
+                      told the player earn nothing.
+                    */}
+                    {(() => {
+                      const due = rollsDueFor(unit);
+                      const mine = skillPicks.filter((p) => p.unitId === unit.id);
+                      const st = rollStateFor(unit.id);
+                      const offers = offersFor(unit);
+                      const nextAt = nextAdvancementAt(dataset, unit.xp + (xp.earns ? 1 : 0));
+                      /*
+                        Only an ELITE model is on the Experience track at all,
+                        so only an ELITE model has a next Advancement Roll. A
+                        Troop was being told "Next Advancement Roll at 10
+                        Experience" beside the line saying it gains none —
+                        an appointment it will never keep.
+                      */
+                      const onTheTrack = eliteVerdict(unit).elite === true;
+
+                      return (
+                        <div className="space-y-2">
+                          {mine.map((p, i) => (
+                            <p key={`${p.name}-${i}`} className="text-xs text-theme-primary">
+                              Learned <strong>{p.name}</strong>
+                              {p.table === 'patron'
+                                ? ' from the Patron’s list (rolled 2)'
+                                : ` — ${SKILL_TABLE_LABEL[p.table]}, rolled ${p.roll}`}
+                              {p.substitution === 'next-lowest' && ' (already had that Skill; took the next lowest)'}
+                              {p.substitution === 'next-highest' && ' (had every lower Skill; took the next highest)'}
+                            </p>
+                          ))}
+
+                          {due === 0 && onTheTrack && (
+                            <p className="text-xs sm:text-[11px] text-theme-muted">
+                              {nextAt === null
+                                ? 'At the end of the Experience track — no further Advancement Rolls.'
+                                : `Next Advancement Roll at ${nextAt} Experience.`}
+                            </p>
+                          )}
+
+                          {due > 0 && (
+                            <div className="space-y-2 rounded border border-theme-accent bg-theme-base p-2">
+                              <p className="text-xs text-theme-accent">
+                                <strong>{due}</strong> Advancement Roll{due > 1 ? 's' : ''} due.
+                                Pick two Skill Tables and roll 2D6 on each.
+                              </p>
+
+                              {/*
+                                Each table beside the total rolled on it, in
+                                one column per pick. The two were a row of
+                                selects and then a separate row of inputs, each
+                                input repeating its table's name to say which
+                                was which — three copies of "Melee & Strength"
+                                on a 375px screen, and the row overflowed.
+                              */}
+                              <div className="flex flex-col gap-2 sm:flex-row">
+                                {([0, 1] as const).map((which) => (
+                                  <div key={which} className="flex flex-1 gap-2">
+                                    <select
+                                      value={st.tables[which]}
+                                      onChange={(e) => setTable(unit.id, which, e.target.value as SkillsTableName)}
+                                      aria-label={`Skill Table ${which + 1}`}
+                                      className="min-h-[44px] min-w-0 flex-1 rounded border border-theme-border bg-theme-elevated px-2 text-base text-theme-text sm:text-xs"
+                                    >
+                                      {SKILL_TABLES.map((t) => (
+                                        <option key={t} value={t}>{SKILL_TABLE_LABEL[t]}</option>
+                                      ))}
+                                    </select>
+                                    {/*
+                                      Typed as well as rolled: this app is used
+                                      at a table, where the dice are real.
+                                    */}
+                                    <input
+                                      type="number"
+                                      min={2}
+                                      max={12}
+                                      value={st.rolls ? st.rolls[which] : ''}
+                                      onChange={(e) => setRollTotal(unit.id, which, Number(e.target.value))}
+                                      aria-label={`2D6 total on ${SKILL_TABLE_LABEL[st.tables[which]]}`}
+                                      placeholder="2D6"
+                                      className="h-[44px] w-16 shrink-0 rounded border border-theme-border bg-theme-elevated px-2 text-center text-base text-theme-text"
+                                    />
+                                  </div>
+                                ))}
+                              </div>
+
+                              <button
+                                type="button"
+                                onClick={() => rollAdvancement(unit.id)}
+                                className="min-h-[44px] w-full rounded bg-theme-primary px-3 text-xs font-bold uppercase text-theme-base"
+                              >
+                                Roll 2D6 on both
+                              </button>
+
+                              {offers && offers.map((offer, i) => (
+                                <div key={`${offer.table}-${i}`} className="space-y-1">
+                                  {offer.offered.length === 0 ? (
+                                    /*
+                                      Reported rather than filled in. A roll of
+                                      2 with no Patron recorded, or a table the
+                                      model has exhausted, is a real answer —
+                                      and substituting a Skill from elsewhere is
+                                      what this step used to do.
+                                    */
+                                    <p className="text-xs sm:text-[11px] text-theme-muted">
+                                      {SKILL_TABLE_LABEL[offer.table]} on {offer.rolled}:{' '}
+                                      {offer.substitution === 'patron'
+                                        ? 'Patron Skill — this Warband has no Patron recorded, so nothing can be offered.'
+                                        : offer.landedOn === null
+                                          ? 'that total is not on this table.'
+                                          : 'the model already has every Skill on this table.'}
+                                    </p>
+                                  ) : offer.offered.map((row) => (
+                                    <button
+                                      key={row.name}
+                                      type="button"
+                                      onClick={() => learnSkill(unit, offer, row)}
+                                      className="min-h-[44px] w-full rounded border border-theme-border bg-theme-elevated p-2 text-left hover:border-theme-accent"
+                                    >
+                                      <span className="block text-xs font-bold text-theme-text">
+                                        {row.name}
+                                      </span>
+                                      <span className="block text-xs sm:text-[11px] text-theme-muted">
+                                        {SKILL_TABLE_LABEL[offer.table]}, rolled {offer.rolled}
+                                        {offer.substitution === 'next-lowest' && ' — already held; next lowest'}
+                                        {offer.substitution === 'next-highest' && ' — had every lower; next highest'}
+                                        {offer.substitution === 'patron' && ' — from the Patron’s list'}
+                                      </span>
+                                    </button>
+                                  ))}
+                                </div>
+                              ))}
+
+                              {offers && (
+                                <p className="text-xs sm:text-[11px] text-theme-muted">
+                                  Pick one of the two.
+                                </p>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                   );
                 })}

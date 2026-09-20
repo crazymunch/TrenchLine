@@ -294,12 +294,65 @@ export interface ForcedBattlekit {
   profileId?: string;
 }
 
+/** A model the rulebook names in one of the Promotions tables. */
+export interface PromotionTableModel {
+  /** The name exactly as the rulebook prints it. */
+  name: string;
+  /** The dataset unit it resolves to; resolved at build time, never by name. */
+  unitId: string | null;
+  /** That unit's own name, where the book spells it differently. */
+  unitName: string | null;
+}
+
+/** One faction's row in a Promotions table. `models: []` is the book's `-`. */
+export interface PromotionTableRow {
+  /** The faction heading as the rulebook prints it: `The Sultanate of the Iron Wall`. */
+  faction: string;
+  factionId: string;
+  models: PromotionTableModel[];
+}
+
+/**
+ * The Promotions & Experience Step's eligibility rules (rulebook pp.105-111).
+ *
+ * The Promotion Dice Pool, its assignment rule and the miss counter are not
+ * here yet — they arrive with the step that rolls them.
+ */
+export interface PromotionRules {
+  /** The Promotion step is skipped at this many ELITE models. The book says 6. */
+  maxElites: number;
+  /** Models That Cannot Be Promoted, p.107. */
+  cannotPromote: PromotionTableRow[];
+  /**
+   * Limited Potential, p.111.
+   *
+   * Provenance and a cross-check, not the operative rule: the model lists are
+   * what the RULEBOOK says, and a Trench Dispatch keyword row outranks it.
+   * `experienceCap` reads the unit's LIMITED POTENTIAL keyword instead, and
+   * the build prints any model the two disagree about.
+   */
+  limitedPotential: { maxXp: number; factions: PromotionTableRow[] };
+}
+
 export interface UnitProfile {
   id: string;
   /** The containing selectionEntry's id — what roster exports and modifier
    *  conditions address. Distinct from `id`, which is the profile's own. */
   entryId?: string;
   name: string;
+  /**
+   * The containing selectionEntry's name, where it differs from `name`.
+   *
+   * The books print the ENTRY name and this carries the profile's, so the two
+   * are routinely different: `War Wolf Assault Beast` holds a profile called
+   * `War Wolf`, and `Anchorite Shrine` one called `Anchorite`. Without this,
+   * a model the rulebook names by its entry cannot be found from the rulebook's
+   * own words.
+   *
+   * Absent when the two agree, so its presence means "the books may call this
+   * model something else".
+   */
+  entryName?: string;
   factionId: string;
   /** From categoryLinks: 'Elite' | 'Troop' | 'Mercenary' … */
   roles: string[];
@@ -1494,6 +1547,15 @@ export interface Dataset {
      * distinguishable from "everyone on zero". See `campaignVictoryPoints`.
      */
     victoryPoints?: { win: number; loss: number; draw: number };
+    /**
+     * Who may be Promoted, and how much Experience a model may hold.
+     *
+     * Optional for the same reason as `traumaProcedure`: a ruleset built
+     * before this existed states nothing, and "no rules" must be
+     * distinguishable from "everyone may be promoted, without limit" — which
+     * is what the app did for two years, with a switch on the unit card.
+     */
+    promotions?: PromotionRules;
   };
   meta: {
     rulesetId: string;
