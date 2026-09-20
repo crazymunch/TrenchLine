@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, titles, snapshots, `isDead`, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, titles, snapshots, `isDead`, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -186,6 +186,49 @@ The step that reads it is `rollPromotions` in
 [`src/rules/promotions.ts`](../src/rules/promotions.ts); the numbers it applies
 are derived, not written here — see
 [`RULESET-MODEL.md`](RULESET-MODEL.md#campaignpromotions--who-may-be-promoted-and-how-much-experience).
+
+## `fallen` — the models the Roster no longer holds
+
+The Trauma Table's `11 Dead` reads *"Remove the model and its Battlekit from
+your Warband Roster"*, and `12 Captured` says the same of a model whose ransom
+went unpaid. The app set `isDead: true` and left the model in `units`.
+
+A flag is a rule enforced by remembering, and the remembering was not
+universal. Six readers checked it; three did not, and each of those three is a
+rule with the wrong answer: the builder summed a dead model's Ducats into the
+Warband total, `toRoster` handed it to the legality engine where it went on
+satisfying a faction minimum, and Play Mode deployed it, because the default
+is every model on the roster.
+
+So a removed model moves to `warband.fallen`. Every one of those readers is
+then correct without a filter — and so is the next one nobody has written yet,
+which is the argument for moving it rather than adding a tenth check.
+
+- **`durable`.** A campaign's dead are half of what its history means, and they
+  cannot be reconstructed from a file that dropped them.
+- **The Battlekit goes with the model.** The book removes both, and the
+  Arsenal does not get the gear back, so the whole `ActiveUnit` moves.
+- **`isDead` stays on the type and is still set** on a model on its way out.
+  Nothing in this app reads it any more, but a file this version writes is
+  read by versions that know no `fallen`, and to those the flag is the only
+  thing that says the model is gone.
+- **`diedInMatchId`** names the battle, where the caller knows it.
+
+### Reading a roster written before this
+
+Such a file holds its dead in `units` behind the flag. `migrateFallen` moves
+them, and runs at **both** doors a roster comes through — `storage.getWarbands`
+and `decodeRosterFile` — so nothing downstream has to know which one a roster
+arrived by.
+
+It is driven by the flag, not by `schemaVersion`: the flag is evidence, a
+version number is a claim an older writer may not have made. It is idempotent.
+And it invents no `diedInMatchId`, because those files never recorded one and a
+memorial naming the wrong battle is worse than one naming none.
+
+Both doors say so rather than doing it quietly. The model count and the Ducat
+total both change, and an import that silently revalues a roster is worse than
+one that explains itself.
 
 ## Not in this format
 

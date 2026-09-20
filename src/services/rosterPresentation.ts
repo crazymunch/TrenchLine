@@ -100,8 +100,19 @@ export function presentRoster(
       ducatLimit: warband.ducatLimit ?? 0,
       strongbox: warband.treasuryDucats ?? 0,
       gloryHeld: warband.gloryPoints ?? 0,
-      models: units.filter((u) => !u.isDead).length,
-      dead: units.filter((u) => u.isDead).length,
+      /*
+        `units` holds no dead model now — the Trauma Step moves it to
+        `fallen`, which is what "remove the model from your Warband Roster"
+        means. So the living are a plain count, and the dead are counted where
+        they actually live.
+
+        The `!u.isDead` filter that used to be here is kept in spirit by
+        `migrateFallen`, which runs on load: a roster written before the move
+        arrives with its dead already in `fallen`, so neither number is wrong
+        for an old file.
+      */
+      models: units.length,
+      dead: (warband.fallen ?? []).length,
     },
     models: units.map((u) => presentModel(u, priv)),
     stash: (warband.armoryStash ?? [])

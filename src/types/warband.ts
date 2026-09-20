@@ -59,7 +59,29 @@ export interface ActiveUnit {
   advancementRolls?: number;
   injuries: string[];
   scars?: { name: string; roll?: string; effect?: string }[];
+  /**
+   * **Legacy.** Nothing sets this any more; a dead model is moved to
+   * `Warband.fallen` instead.
+   *
+   * The Trauma Table's `11 Dead` says *"Remove the model and its Battlekit
+   * from your Warband Roster"*, and a flag is not a removal: it left the model
+   * in `units`, where three readers that did not check it went on counting its
+   * Ducats, offering it to the builder and deploying it. Six others did check,
+   * which is the shape of a rule enforced by remembering rather than by
+   * construction.
+   *
+   * It stays on the type, and `true` on a loaded roster still means what it
+   * meant — that is what moves the model to `fallen` on load.
+   */
   isDead: boolean;
+  /**
+   * The match that killed it, where the record knows.
+   *
+   * Set when the model moves to `fallen`, so the memorial can say which battle
+   * it was and the Chronicle record can be found again. Absent on a model
+   * moved by the load-time migration, which has a flag and no battle.
+   */
+  diedInMatchId?: string;
   totalCost: number; // calculated ducats
 
   /**
@@ -125,6 +147,26 @@ export interface WarbandSnapshot {
   gloryPoints: number;
   unitCount: number;
   units: ActiveUnit[];
+  /**
+   * Models removed from the Roster, and not coming back.
+   *
+   * *"Remove the model and its Battlekit from your Warband Roster"* (Trauma
+   * `11 Dead`, p.101) — and an unransomed capture, which the book executes.
+   * They are kept rather than deleted because a campaign's dead are the half
+   * of its history that a roster alone cannot tell, and because deleting a
+   * player's models on their behalf is a data decision the app does not get to
+   * make.
+   *
+   * **They are not in `units`, and that is the point.** A dead model left in
+   * `units` behind a flag is a model every reader has to remember to skip, and
+   * three of them did not: the builder summed its Ducats into the Warband
+   * total, `toRoster` offered it to the legality engine, and Play Mode put it
+   * on the table. Moving it makes those correct without a filter.
+   *
+   * The Battlekit goes with the model. The book removes both, and the
+   * Arsenal does not get the gear back.
+   */
+  fallen?: ActiveUnit[];
   armoryStash: StashedItem[];
   changesSummary: string[]; // Specific diff bullet points
   notes?: string;
@@ -210,6 +252,26 @@ export interface Warband {
    */
   promotionMisses?: number;
   units: ActiveUnit[];
+  /**
+   * Models removed from the Roster, and not coming back.
+   *
+   * *"Remove the model and its Battlekit from your Warband Roster"* (Trauma
+   * `11 Dead`, p.101) — and an unransomed capture, which the book executes.
+   * They are kept rather than deleted because a campaign's dead are the half
+   * of its history that a roster alone cannot tell, and because deleting a
+   * player's models on their behalf is a data decision the app does not get to
+   * make.
+   *
+   * **They are not in `units`, and that is the point.** A dead model left in
+   * `units` behind a flag is a model every reader has to remember to skip, and
+   * three of them did not: the builder summed its Ducats into the Warband
+   * total, `toRoster` offered it to the legality engine, and Play Mode put it
+   * on the table. Moving it makes those correct without a filter.
+   *
+   * The Battlekit goes with the model. The book removes both, and the
+   * Arsenal does not get the gear back.
+   */
+  fallen?: ActiveUnit[];
   armoryStash: StashedItem[];
   
   // Narrative & House Lore

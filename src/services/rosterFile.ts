@@ -36,6 +36,7 @@ import type {
   ActiveUnit, StashedItem, Warband, WarbandSnapshot,
 } from '../types/warband';
 import type { Dataset } from '../types/catalogue';
+import { migrateFallen } from '../rules/fallen';
 
 export const ROSTER_FILE_FORMAT = 'trenchline.roster';
 export const ROSTER_SCHEMA_VERSION = 1;
@@ -81,6 +82,10 @@ export const WARBAND_FIELDS: Record<keyof Warband, Disposition> = {
   promotionMisses: 'durable',
   gloryPoints: 'durable',
   units: 'durable',
+  /* The models removed by the Trauma Step, and their Battlekits.
+     Durable: a campaign's dead are half of what a roster's history means, and
+     they cannot be reconstructed from a file that dropped them. */
+  fallen: 'durable',
   armoryStash: 'durable',
   lore: 'durable',
   motto: 'durable',
@@ -110,6 +115,11 @@ export const WARBAND_FIELDS: Record<keyof Warband, Disposition> = {
  * and a restore that quietly brought it back would be inventing a model
  * (E2 — "do not accidentally remove persistent death because it sounds like
  * combat state").
+ *
+ * It is also now legacy: nothing sets it, because the model is moved to
+ * `Warband.fallen` instead. It stays durable because a file written before
+ * that carries the flag and nothing else, and reading it is the only way to
+ * know that model is dead.
  */
 export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
   id: 'identity',
@@ -131,6 +141,10 @@ export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
   injuries: 'durable',
   scars: 'durable',
   isDead: 'durable',
+  /* Which battle killed it. Durable: it is what lets the memorial name the
+     game, and it cannot be recovered from anywhere else once the roster
+     leaves this device. */
+  diedInMatchId: 'durable',
   totalCost: 'durable',
   grantedFree: 'durable',
   fireteam: 'durable',
@@ -439,7 +453,26 @@ function readRoster(value: Record<string, unknown>, warnings: string[]): RosterR
                 + `${dropped.join(', ')}. They were not imported.`);
   }
 
-  return { ok: true, roster: out };
+  /*
+    A file written before the dead left the Roster holds them in `units`
+    behind `isDead: true`. Moved here, so a roster that arrives by import is
+    in the same shape as one that arrives from storage — the alternative is
+    every reader downstream having to know which door the roster came through.
+
+    Said out loud rather than done quietly: the model count and the Ducat
+    total both change, and an import that silently revalues a roster is worse
+    than one that explains itself.
+  */
+  const before = (out.fallen ?? []).length;
+  const migrated = migrateFallen(out as unknown as Warband) as unknown as DurableWarband;
+  const moved = (migrated.fallen ?? []).length - before;
+  if (moved > 0) {
+    warnings.push(`${moved} model(s) marked dead were moved off the active roster. `
+                + 'The Trauma Table removes a dead model from the Warband Roster, so they '
+                + 'no longer count towards the Warband\u2019s Ducats or appear in the builder.');
+  }
+
+  return { ok: true, roster: migrated };
 }
 
 /* ------------------------------------------------- back into a live roster */

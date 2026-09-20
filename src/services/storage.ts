@@ -1,5 +1,6 @@
 import { Warband } from '../types/warband';
 import { repairInventedFormulae } from './repairSavedRosters';
+import { migrateFallen } from '../rules/fallen';
 import type { CloudResult } from './sync';
 import { Campaign } from '../types/campaign';
 import { parseCampaign } from './campaignFromCloud';
@@ -122,9 +123,33 @@ export const storage = {
         read, and reported rather than done quietly — a roster's Ducat total
         changing without explanation is worse than the bug.
       */
-      const { warbands, repairs } = repairInventedFormulae(JSON.parse(data));
-      if (repairs.length) {
+      const { warbands: repaired, repairs } = repairInventedFormulae(JSON.parse(data));
+
+      /*
+        A roster written before the dead left the Roster carries them in
+        `units` behind `isDead: true` — which is the state that let the
+        builder count a dead model's Ducats and Play Mode deploy it. Moving
+        them here means the rest of the app only ever sees one shape.
+
+        Driven by the flag rather than a `schemaVersion`, because the flag is
+        the evidence and a version number is a claim an older writer may not
+        have made. Idempotent, so a second read finds nothing to move.
+      */
+      const warbands = repaired.map(migrateFallen);
+      const moved = warbands.reduce(
+        (n, w, i) => n + Math.max(0, (w.fallen?.length ?? 0) - (repaired[i].fallen?.length ?? 0)), 0);
+      if (moved) {
+        console.warn(
+          `TrenchLine: moved ${moved} fallen model(s) out of the active roster. ` +
+          'The Trauma Table removes a dead model from the Warband Roster; they are ' +
+          'kept under `fallen` and no longer counted, offered or deployed.',
+        );
+      }
+
+      if (repairs.length || moved) {
         localStorage.setItem(WARBANDS_KEY, JSON.stringify(warbands));
+      }
+      if (repairs.length) {
         for (const r of repairs) {
           console.warn(
             `TrenchLine: removed ${r.removed.join(', ')} from ${r.unit} (${r.warband}) ` +

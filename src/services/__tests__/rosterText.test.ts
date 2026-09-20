@@ -69,10 +69,29 @@ describe('the totals, which used to be one line with one label', () => {
   });
 
   it('counts the dead separately from the models on the table', () => {
-    const w = warband({ units: [unit(), unit({ id: 'u2', isDead: true })] });
+    /*
+      The dead are in `fallen`, not in `units` behind a flag — the Trauma
+      Table removes the model from the Roster, and the app now does too. So
+      `models` is a plain count of `units` and `dead` is a plain count of
+      `fallen`, with no filter in either.
+    */
+    const w = warband({ units: [unit()], fallen: [unit({ id: 'u2', isDead: true })] });
     expect(rosterTotals(w)).toMatchObject({ models: 1, dead: 1 });
     expect(renderRosterText(w, ctx, { preset: 'summary', flavour: 'plain' }))
       .toContain('1 model · 1 lost to the campaign');
+  });
+
+  it('does not count a fallen model’s Ducats towards the list', () => {
+    /*
+      This is the defect the move fixes, stated as money. A Warband that lost
+      a 40-Ducat model used to read as though it still had it, so it looked as
+      expensive as one that had lost nothing — and had that much less room to
+      recruit a replacement.
+    */
+    const alive = rosterTotals(warband({ units: [unit()] })).listDucats;
+    const bereaved = rosterTotals(
+      warband({ units: [unit()], fallen: [unit({ id: 'u2' })] })).listDucats;
+    expect(bereaved).toBe(alive);
   });
 
   it('names the ruleset and the Variant, which legality is meaningless without', () => {

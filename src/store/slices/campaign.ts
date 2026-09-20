@@ -14,6 +14,7 @@ import {
   campaignOutbox, newOpId, pushCampaignOps, serverCampaign, serverTerritory,
   type CampaignOp, type CampaignSyncState,
 } from '../../services/campaignSync';
+import { removeFromRoster } from '../../rules/fallen';
 
 /* `Omit` over a union collapses it to the keys they share, which would lose
    `entityId` from the two territory operations. Distributed, it does not. */
@@ -578,9 +579,32 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         };
       });
 
+      /* Minted here rather than below, because the models removed a few lines
+         down record which battle it was that removed them. */
+      const matchId = `m-${Date.now()}`;
+
+      /*
+        The dead leave the Roster, rather than staying on it behind a flag.
+
+        "Remove the model and its Battlekit from your Warband Roster" (Trauma
+        `11 Dead`), and the same for a capture whose ransom went unpaid. The
+        app set `isDead` and left the model in `units`, where the builder
+        summed its Ducats, `toRoster` offered it to the legality engine and
+        Play Mode deployed it — three readers that did not think to check a
+        flag, which is what a flag costs. See `rules/fallen.ts`.
+      */
+      const { units: survivingUnits, fallen: fallenAfter, removed: justFallen } =
+        removeFromRoster(
+          { units: updatedUnits, fallen: activeWb.fallen },
+          updatedUnits.filter((u) => u.isDead).map((u) => u.id),
+          { diedInMatchId: matchId },
+        );
+
       const changesSummary: string[] = [
         `Match Result: ${outcome} in ${scenarioName} (+${gloryGained} Glory, +${ducatsGained} Ducats).`
       ];
+      justFallen.forEach((u) => changesSummary.push(
+        `Removed from the Roster: ${u.customName} and its Battlekit`));
       if (casualties.length > 0) {
         casualties.forEach((c) => changesSummary.push(`Casualty: ${c.unitName} - ${c.outcome}`));
       }
@@ -602,7 +626,6 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         changesSummary.push(`Match MVP: ${mvpUnitName}`);
       }
 
-      const matchId = `m-${Date.now()}`;
       /*
         Calling for Reinforcements has a price, and the app never charged it.
 
@@ -668,7 +691,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         matchId,
         scenarioName,
         outcome,
-        ducatCost: updatedUnits.reduce((s, u) => s + u.totalCost, 0),
+        ducatCost: survivingUnits.reduce((s, u) => s + u.totalCost, 0),
         /*
           The snapshot records what the warband IS after the step, so a player
           reading their history sees the Arsenal and Strongbox they actually
@@ -676,8 +699,10 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         */
         treasuryDucats: strongboxAfter,
         gloryPoints: activeWb.gloryPoints + gloryGained,
-        unitCount: updatedUnits.filter((u) => !u.isDead).length,
-        units: JSON.parse(JSON.stringify(updatedUnits)),
+        /* The dead are out of `units` now, so this is a plain count. It used
+           to filter, which is how the shape of the old bug looked from here. */
+        unitCount: survivingUnits.length,
+        units: JSON.parse(JSON.stringify(survivingUnits)),
         armoryStash: JSON.parse(JSON.stringify(stashAfter)),
         changesSummary,
         notes: narrativeReport || narrative
@@ -696,7 +721,8 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           writes back whatever it returned.
         */
         promotionMisses: promotions.misses || undefined,
-        units: updatedUnits,
+        units: survivingUnits,
+        ...(fallenAfter.length ? { fallen: fallenAfter } : {}),
         snapshots: [...existingSnapshots, matchSnapshot]
       };
 
