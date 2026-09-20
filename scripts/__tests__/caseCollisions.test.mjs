@@ -19,9 +19,25 @@ import path from 'node:path';
 
 const CODE = new Set(['.ts', '.tsx', '.mjs', '.js', '.jsx']);
 
-const tracked = execFileSync('git', ['ls-files'], { encoding: 'utf8' })
-  .split('\n')
-  .filter(Boolean);
+/*
+  Deduplicated, because `git ls-files` is not a list of paths during a merge.
+
+  While a conflict is unresolved it prints each conflicted path ONCE PER
+  STAGE — base, ours, theirs — so every unmerged file appears two or three
+  times. Both checks below then find a path that collides with itself, and
+  the guard fails on a conflict it has nothing to say about. It fired on
+  every conflicted merge in this repository until it was noticed.
+
+  `--stage` would filter to stage 0, but it changes the output format to
+  `<mode> <sha> <stage>\t<path>`, which means parsing. A Set is the same
+  answer with nothing to get wrong: a path is a path however many stages
+  claim it, and the checks are about the SET of tracked paths anyway.
+*/
+const tracked = [...new Set(
+  execFileSync('git', ['ls-files'], { encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean),
+)];
 
 describe('module specifiers are unambiguous on a case-insensitive disk', () => {
   it('has files to check', () => expect(tracked.length).toBeGreaterThan(100));
