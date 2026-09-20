@@ -30,12 +30,16 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
+import type { SideScore } from '@/rules/matchState';
 
 interface AllOutWarCardConsoleProps {
   warbands: Warband[];
   activeWarbandId: string;
   round: number;
-  warbandScores: Record<string, { vp: number; completedDeeds: Record<string, string> }>;
+  /* Only the Victory Points are read here, so only those are asked for: a
+     restated copy of the whole `SideScore` drifted from the real one when a
+     Deed's claim stopped being a bare string. */
+  warbandScores: Record<string, Pick<SideScore, 'vp'>>;
   onAdjustVp: (warbandId: string, delta: number) => void;
   onClose: () => void;
 }

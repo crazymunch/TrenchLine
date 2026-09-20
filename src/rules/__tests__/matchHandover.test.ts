@@ -208,3 +208,57 @@ describe('what it refuses to invent', () => {
     expect(matchHandover(battle(), opts())!.battleId).toBe('battle-1');
   });
 });
+
+/*
+  The models the post-battle step owes a second Experience Point.
+
+  "Any ELITE model that performed at least one Glorious Deed gains a second
+  Experience Point" (p.105). The wizard awarded a flat 1 because the claim
+  carried no model; it does now, so the set is derived from the record rather
+  than put to the player a second time.
+*/
+describe('which models performed a Glorious Deed', () => {
+  const by = (sideId: string, title: string, unitId?: string): DeedClaim => ({
+    title, description: '', sideId, sideName: sideId, ...(unitId ? { unitId } : {}),
+  });
+
+  const handoverWith = (deeds: DeedClaim[]) =>
+    matchHandover(battle({
+      sides: [side({ id: 'mine', vp: 9 }), side({ id: 'theirs', vp: 1 })],
+      deeds,
+    }), opts({ ownSideId: 'mine' }))!;
+
+  it('names the model on each of this side’s claims', () => {
+    const h = handoverWith([by('mine', 'First Blood', 'u1'), by('mine', 'Hold the Line', 'u2')]);
+    expect(h.deedUnitIds).toEqual(['u1', 'u2']);
+  });
+
+  it('counts a model once however many Deeds it took', () => {
+    // "at least one" — three Deeds is still one extra Experience Point.
+    const h = handoverWith([
+      by('mine', 'First Blood', 'u1'),
+      by('mine', 'Hold the Line', 'u1'),
+      by('mine', 'Last Man', 'u1'),
+    ]);
+    expect(h.deedUnitIds).toEqual(['u1']);
+    expect(h.deedsClaimed).toBe(3);
+  });
+
+  it('takes no model from a Deed the side claimed without naming one', () => {
+    const h = handoverWith([by('mine', 'First Blood'), by('mine', 'Hold the Line', 'u2')]);
+    expect(h.deedUnitIds).toEqual(['u2']);
+  });
+
+  it('never awards the opponent’s model', () => {
+    const h = handoverWith([by('theirs', 'First Blood', 'enemy-1'), by('mine', 'Hold the Line', 'u2')]);
+    expect(h.deedUnitIds).toEqual(['u2']);
+  });
+
+  it('names nobody for a record written before Deeds carried a model', () => {
+    // Those carry a name and no id, and a name is not something to match a
+    // roster against to manufacture an award.
+    const h = handoverWith([by('mine', 'First Blood')]);
+    expect(h.deedUnitIds).toEqual([]);
+    expect(h.deedsClaimed).toBe(1);
+  });
+});

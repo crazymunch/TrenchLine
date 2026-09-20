@@ -57,6 +57,17 @@ export interface MatchHandover {
   /** Glorious Deeds this side claimed, which is what the book scores Glory on. */
   deedsClaimed: number;
   /**
+   * The models that performed at least one of them.
+   *
+   * *"Any ELITE model that performed at least one Glorious Deed gains a second
+   * Experience Point"* (p.105). One entry per model however many Deeds it
+   * took — the book says *at least one*, and a model that took three does not
+   * earn three extra points. A Deed the side claimed without naming a model
+   * contributes nothing here, which is the book's other case rather than a
+   * gap: the step awards no second point for it, instead of picking a model.
+   */
+  deedUnitIds: string[];
+  /**
    * The Glory those Deeds earned.
    *
    * The whole of the book's between-game Glory award, and the app invented a
@@ -131,7 +142,15 @@ export function matchHandover(
         : 'Draw';
 
   const deployed = new Set(opts.deployedUnitIds);
-  const deeds = battle.deeds.filter((d) => d.sideId === own.id).length;
+  const ownDeeds = battle.deeds.filter((d) => d.sideId === own.id);
+  const deeds = ownDeeds.length;
+
+  /* Deduplicated, because the point is for having performed a Deed, not for
+     each one. A record written before Deeds carried a model has none, and
+     reports none rather than guessing from the name it does carry. */
+  const deedUnitIds = [...new Set(
+    ownDeeds.map((d) => d.unitId).filter((id): id is string => Boolean(id)),
+  )];
 
   return {
     battleId: battle.id,
@@ -141,6 +160,7 @@ export function matchHandover(
     opponentName: others.map((s) => s.name).join(', '),
     satOutUnitIds: opts.rosterUnitIds.filter((id) => !deployed.has(id)),
     deedsClaimed: deeds,
+    deedUnitIds,
     gloryEarned: deeds * GLORY_PER_DEED,
     ownPoints,
     bestOpponentPoints,

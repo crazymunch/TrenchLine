@@ -46,6 +46,18 @@ export type Navigate = (view: AppView, rosterId?: string) => void;
 export interface XpAward {
   unitId: string;
   earns: boolean;
+  /**
+   * How many Experience Points, where it earns any.
+   *
+   * 1 for surviving the game, 2 where the model also performed at least one
+   * Glorious Deed (p.105), and less than either where LIMITED POTENTIAL
+   * leaves less room than that. A number rather than a flag because the book
+   * awards two different points in the same step, and the slice that writes
+   * it must not have to work out which.
+   */
+  points: number;
+  /** Whether the second of those points is the Glorious Deed's. */
+  forDeed?: boolean;
   reason?: string;
 }
 

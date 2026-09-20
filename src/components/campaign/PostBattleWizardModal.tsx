@@ -456,9 +456,25 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   });
 
   const barring = xpBarringInjuries(dataset);
+
+  /*
+    The models that performed a Glorious Deed, from the match this wizard was
+    handed.
+
+    *"Any ELITE model that performed at least one Glorious Deed gains a second
+    Experience Point"* (p.105). The set is derived, not asked for: Play Mode
+    records the model against the claim, so putting the question to the player
+    again would be asking them to retype what the app already watched them do.
+
+    Empty where the wizard was opened without a match, and empty for a record
+    written before Deeds carried a model — in both cases nobody is awarded a
+    second point rather than somebody being guessed at.
+  */
+  const deedUnitIds = new Set(handover?.deedUnitIds ?? []);
+
   const experienceFor = (unitId: string) => {
     const u = warband.units.find((x) => x.id === unitId);
-    if (!u) return { earns: false as const, blocked: 'elite-unknown' as const };
+    if (!u) return { earns: false as const, points: 0, forDeed: false, blocked: 'elite-unknown' as const };
     const override = unitId in eliteOverrides
       ? { ...u, profileSnapshot: { ...u.profileSnapshot, elite: eliteOverrides[unitId] } }
       : u;
@@ -469,16 +485,27 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       died: diedInStep(unitId),
       xpBarringInjuries: barring,
     });
+    if (!verdict.earns) return { ...verdict, points: 0, forDeed: false };
+
+    /* The Deed's point rides on the survivor's point and is not a separate
+       entitlement: a model that earns nothing this game — dead, sat out, Head
+       Wound — earns nothing for its Deed either, which is why this is reached
+       only after the verdict above. */
+    const forDeed = deedUnitIds.has(unitId);
+    const want = 1 + (forDeed ? 1 : 0);
+
     /*
       Limited Potential: "The following models cannot have more than 7
-      Experience Points" (p.111). A model at its cap earns nothing, and is
-      listed with everyone else who earns nothing so the player can see why
+      Experience Points" (p.111). The cap trims the award rather than refusing
+      it, so a model one point short of its cap that also took a Deed gains the
+      one point it has room for. A model with no room at all earns nothing, and
+      is listed with everyone else who earns nothing so the player can see why
       rather than watching a number fail to move.
     */
-    if (verdict.earns && cappedExperience(dataset, u, 1).withheld > 0) {
-      return { earns: false as const, blocked: 'at-experience-cap' as const };
-    }
-    return verdict;
+    const { withheld } = cappedExperience(dataset, u, want);
+    const granted = want - withheld;
+    if (granted <= 0) return { earns: false as const, points: 0, forDeed, blocked: 'at-experience-cap' as const };
+    return { ...verdict, points: granted, forDeed };
   };
 
   /** The cap a model is sitting on, for the sentence that explains it. */
@@ -687,7 +714,10 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     */
     if (eliteVerdict(unit).elite !== true) return 0;
 
-    const gain = experienceFor(unit.id).earns ? 1 : 0;
+    /* Both points, where the model earned two: a Glorious Deed's second point
+       can carry a model across an Advancement Roll threshold on its own, and
+       counting one would hold back the roll the book has just given it. */
+    const gain = experienceFor(unit.id).points;
     const taken = (unit.advancementRolls ?? 0)
       + skillPicks.filter((p) => p.unitId === unit.id).length;
     return advancementRollsDue(dataset, { xp: unit.xp + gain, advancementRolls: taken });
@@ -795,6 +825,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       return {
         unitId: u.id,
         earns: verdict.earns,
+        points: verdict.points,
+        ...(verdict.forDeed ? { forDeed: true } : {}),
         ...(verdict.earns ? {} : { reason: xpReasonFor(u.id, verdict.blocked) }),
       };
     });
@@ -1381,7 +1413,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                 Promoted by a Promotion Die, out of a pool this Warband earned from
                 its Glorious Deeds. Then each <strong>ELITE</strong> model that took
                 part in this game and survived gains 1 Experience Point, including one
-                Promoted a moment ago. Troops gain none.
+                Promoted a moment ago, and a second for having performed at least one
+                Glorious Deed — taken from the match, not asked for again. Troops
+                gain none.
               </div>
 
               {/* ---------------- THE PROMOTION DICE POOL ---------------- */}
@@ -1608,12 +1642,25 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                       <span className="font-gothic font-bold text-sm text-theme-text">{unit.customName}</span>
                       <span className={`text-xs ${xp.earns ? 'text-theme-primary' : 'text-theme-muted'}`}>
-                        {xp.earns ? `${unit.xp} → ${unit.xp + 1} XP` : `${unit.xp} XP · no gain`}
+                        {xp.earns ? `${unit.xp} → ${unit.xp + xp.points} XP` : `${unit.xp} XP · no gain`}
                       </span>
                     </div>
                     {/* Why, in the rule's terms. "No XP" beside a Leader's name reads as a bug. */}
                     {reason && (
                       <p className="text-xs sm:text-[11px] text-theme-muted">{reason}</p>
+                    )}
+                    {/*
+                      Two points is the unusual case, so it says which rule
+                      gave the second — and the trimmed case says so too,
+                      because a Deed that earned nothing looks like the app
+                      forgetting rather than the cap working.
+                    */}
+                    {xp.earns && xp.forDeed && (
+                      <p className="text-xs sm:text-[11px] text-theme-primary">
+                        {xp.points >= 2
+                          ? '+1 for surviving, +1 for a Glorious Deed'
+                          : `+1 only — a Glorious Deed's second point would pass its cap of ${capFor(unit.id)}`}
+                      </p>
                     )}
                     {/*
                       The one condition the app cannot know on its own: it records
@@ -1645,7 +1692,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                       const mine = skillPicks.filter((p) => p.unitId === unit.id);
                       const st = rollStateFor(unit.id);
                       const offers = offersFor(unit);
-                      const nextAt = nextAdvancementAt(dataset, unit.xp + (xp.earns ? 1 : 0));
+                      const nextAt = nextAdvancementAt(dataset, unit.xp + xp.points);
                       /*
                         Only an ELITE model is on the Experience track at all,
                         so only an ELITE model has a next Advancement Roll. A

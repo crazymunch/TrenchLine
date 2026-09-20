@@ -82,23 +82,30 @@ export function battleFromMatch(input: BattleInput): BattleRecord | null {
   /*
     Deeds, attributed.
 
-    `completedDeeds` is keyed by title and says which turn it was claimed on;
-    the scenario supplies the text. Both are needed, and the text is COPIED:
-    the dataset is regenerated from upstream catalogues, so a record storing
-    only a title would silently re-describe a past battle whenever the wording
-    changed.
+    `completedDeeds` is keyed by title and carries what the table knew about
+    the claim: the model that performed it, and the turn if the tracker took
+    one. The scenario supplies the text, and the text is COPIED: the dataset
+    is regenerated from upstream catalogues, so a record storing only a title
+    would silently re-describe a past battle whenever the wording changed.
+
+    This loop used to read the mark as a turn and write the model's name into
+    `DeedClaim.turn`, because the mark was a bare string and its comment said
+    one thing while its writer wrote another. Each part now goes to the field
+    that is named for it.
   */
   const deeds: DeedClaim[] = [];
   for (const id of matchWarbandIds) {
     const claimed = scores[id]?.completedDeeds ?? {};
-    for (const [title, turn] of Object.entries(claimed)) {
+    for (const [title, mark] of Object.entries(claimed)) {
       const printed = scenarioDeeds.find((d) => d.title === title);
       deeds.push({
         title,
         description: printed?.description ?? '',
         sideId: id,
         sideName: sides.find((s) => s.id === id)?.name ?? id,
-        ...(typeof turn === 'string' && turn ? { turn } : {}),
+        ...(mark?.unitId ? { unitId: mark.unitId } : {}),
+        ...(mark?.unitName ? { unitName: mark.unitName } : {}),
+        ...(mark?.turn ? { turn: mark.turn } : {}),
       });
     }
   }

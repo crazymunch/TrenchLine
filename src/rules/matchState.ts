@@ -18,11 +18,55 @@ import type { WeatherRoll } from './weather';
 import type { CoalitionMap, CoalitionId } from './coalitions';
 import type { WeatherEvent } from '@/types/catalogue';
 
+/**
+ * A Glorious Deed this side claimed, and the model that did it.
+ *
+ * **This used to be a bare string, and three things read it as three
+ * different values.** Play Mode's performer picker wrote the model's
+ * `customName`; `matchState`'s own comment called it "the turn it was claimed
+ * on"; `battleFromMatch` believed that comment and wrote the name into
+ * `DeedClaim.turn`, so the Chronicle printed *"Bloodletting — The Red
+ * Company, turn Brother Aldric"*, and the battles API — whose `turn` is
+ * `z.string().max(8)` — rejected the whole record for any name longer than
+ * eight characters, `Entire Warband` (the picker's own default) included.
+ *
+ * A named field for each thing stops one value having to be three.
+ */
+export interface DeedMark {
+  /**
+   * The model that performed it, where a model was named.
+   *
+   * An id, not a name: a `customName` is editable and not unique, so a rename
+   * between the game and the post-battle step would lose the attribution that
+   * decides the model's second Experience Point. Absent means the Deed is the
+   * whole side's, which the book allows and the picker calls *Entire
+   * Warband* — absent is that answer, not a missing one.
+   */
+  unitId?: string;
+  /**
+   * The model's name as it read on the night, copied in beside the id.
+   *
+   * The same reason `DeedClaim.description` is copied: a record is history,
+   * and a model deleted from the roster next season would leave an id that
+   * resolves to nothing and a battle that no longer says who won it. The id
+   * is what the rules read; this is what a person reads.
+   *
+   * It is also what makes a save written before this change readable. Those
+   * carry a bare name and no id, so they restore as a name and no id — which
+   * is exactly what they knew. The second Experience Point needs the id and
+   * will not be awarded from a name; the step says so rather than guessing
+   * which model on today's roster that name meant.
+   */
+  unitName?: string;
+  /** The turn it was claimed on, where the tracker recorded one. */
+  turn?: string;
+}
+
 /** A side's running score. Keyed by warband or placeholder-opponent id. */
 export interface SideScore {
   vp: number;
-  /** Deed title -> the turn it was claimed on. */
-  completedDeeds: Record<string, string>;
+  /** Deed title -> what is known about the claim. */
+  completedDeeds: Record<string, DeedMark>;
   /** Turn number -> points scored that turn. */
   turnScores: Record<number, number>;
 }
@@ -84,11 +128,34 @@ const coalitionMap = (v: Record<string, unknown>): CoalitionMap => {
   return out;
 };
 
+/**
+ * One Deed's claim, from either shape a save can be in.
+ *
+ * A save written before `DeedMark` existed holds a bare string, and that
+ * string is the performer's name — that is what Play Mode's picker wrote,
+ * whatever the field's comment claimed. It restores as `unitName` and no id,
+ * which is the truth about what that save knows. Nothing here tries to match
+ * the name against today's roster to manufacture an id.
+ */
+const deedMark = (v: unknown): DeedMark => {
+  if (typeof v === 'string') return v ? { unitName: v } : {};
+  if (!isRecord(v)) return {};
+  return {
+    ...(typeof v.unitId === 'string' && v.unitId ? { unitId: v.unitId } : {}),
+    ...(typeof v.unitName === 'string' && v.unitName ? { unitName: v.unitName } : {}),
+    ...(typeof v.turn === 'string' && v.turn ? { turn: v.turn } : {}),
+  };
+};
+
 const score = (v: unknown): SideScore => {
   const r = isRecord(v) ? v : {};
+  const deeds: Record<string, DeedMark> = {};
+  if (isRecord(r.completedDeeds)) {
+    for (const [title, mark] of Object.entries(r.completedDeeds)) deeds[title] = deedMark(mark);
+  }
   return {
     vp: typeof r.vp === 'number' && Number.isFinite(r.vp) ? r.vp : 0,
-    completedDeeds: isRecord(r.completedDeeds) ? r.completedDeeds as Record<string, string> : {},
+    completedDeeds: deeds,
     turnScores: isRecord(r.turnScores) ? r.turnScores as Record<number, number> : {},
   };
 };
