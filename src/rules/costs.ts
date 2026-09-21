@@ -108,6 +108,20 @@ export interface RosterUnit {
    * Inhuman Strength gives a Homunculus STRONG — and several rules key on them.
    */
   keywords?: string[];
+  /**
+   * What the model is on THIS roster — `Elite`, `Troop`, `Leader`, `Mercenary`.
+   *
+   * FD-17 finding 2. The Armoury Tables state stipulations in all three forms
+   * interchangeably — a Keyword ("ELITE only"), a rank ("Elite"), an entry
+   * name ("Janissaries only") — and `matchesIdentity` checks all three. This
+   * was never populated, so the rank half answered for nobody.
+   *
+   * It is the MODEL's rank, not the entry's, because a Promotion changes it:
+   * the Iron Sultanate's Reinforced Armour reads "ELITE & Janissaries only",
+   * and Idris the Relic Hound is a Favoured Kavass — an Azeb promoted to
+   * Elite — which the book admits and the app refused.
+   */
+  roles?: string[];
 }
 
 export interface Roster {

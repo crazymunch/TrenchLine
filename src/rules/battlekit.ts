@@ -55,6 +55,12 @@ export function battlekitKeywords(profile: HasBattlekit): string[] {
  * Matched by entry id first, since the Armoury row and the forced link point at
  * the same catalogue entry, and by name as a fallback — the catalogues spell
  * the same item `Medikit` in one file and the Armoury Table prints `Medi-kit`.
+ *
+ * The name fallback reads `profileNames` as well as `name`, because a forced
+ * link names the ENTRY and a roster records the PROFILE. The Sultanate
+ * Sapper's kit is the shared `Shovel` entry (Warbands L4739) and NewRecruit
+ * writes `Weaponized Shovel`, the name of the profile nested inside it; on
+ * `name` alone the Sapper did not appear to carry its own Shovel.
  */
 export function carriesAsBattlekit(
   profile: HasBattlekit,
@@ -65,7 +71,8 @@ export function carriesAsBattlekit(
   const ids = new Set(kit.map((b) => b.id));
   if (item.id && ids.has(item.id)) return true;
   if (item.weaponId && ids.has(item.weaponId)) return true;
-  const names = new Set(kit.map((b) => nameKey(b.name)));
+  const names = new Set(kit.flatMap((b) => [b.name, ...(b.profileNames ?? [])])
+    .map((n) => nameKey(n)));
   return names.has(nameKey(item.name));
 }
 

@@ -33,6 +33,27 @@ export interface RosterConversion {
 const key = nameKey;
 
 /**
+ * De-duplicate a list of labels case-insensitively, keeping the first spelling.
+ *
+ * Both the Keywords and the roles below are unions of two sources that write
+ * the same word differently — the catalogue prints `SULTANATE` and a model's
+ * own snapshot carries `Sultanate` — so a plain `Set` keeps both and the
+ * model appears to have the Keyword twice.
+ */
+function dedupe(values: readonly (string | undefined)[]): string[] {
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const v of values) {
+    if (!v) continue;
+    const k = v.trim().toLowerCase();
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    out.push(v);
+  }
+  return out;
+}
+
+/**
  * Names drift: a saved model may hold the printed name a variant produced
  * ("Kavass") while the dataset holds the base entry ("Azeb"), and NewRecruit
  * prefixes an elite-promoted model ("Favoured Brazen Bull"). Try the exact
@@ -273,7 +294,47 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
         carries only ARTIFICIAL, so reading the entry alone told a legal model
         that its greatsword and sword needed three hands.
       */
-      keywords: effectiveKeywords(profile, traitsOf(u), dataset),
+      /*
+        The MODEL's Keywords, not only its entry's — FD-17 finding 2.
+
+        `effectiveKeywords` reads the dataset profile plus whatever the
+        model's options grant. Neither is where a Promotion lands: promoting
+        an Azeb to Elite writes `Elite` onto the model's own
+        `profileSnapshot.stats.keywords` and leaves the Azeb entry alone. So
+        Idris the Relic Hound — a Favoured Kavass, Elite by Promotion, with
+        `["Sultanate","Elite"]` on its snapshot — arrived at the validator
+        carrying `["SULTANATE"]`, and "ELITE & Janissaries only" refused it.
+
+        The gate was right; it was being handed the base entry. Both sources
+        are unioned rather than either replacing the other: the entry's are
+        what the model is by type, the snapshot's are what it has become.
+      */
+      keywords: effectiveKeywords(
+        {
+          keywords: dedupe([
+            ...(profile.keywords ?? []),
+            ...(u.profileSnapshot?.stats?.keywords ?? []),
+          ]),
+        },
+        traitsOf(u), dataset),
+      /*
+        And its rank, which `matchesIdentity` also reads and nothing ever set.
+
+        Two sources again, for the same reason as the Keywords above: the
+        entry's `roles` come from the catalogue's categoryLinks and say what
+        the entry is filed as, while `profileSnapshot.category` is what this
+        model became — an Elite Promotion writes `Elite` there and leaves the
+        Azeb entry filed as a Troop. Unioned, de-duplicated case-insensitively
+        so 'Elite' and 'ELITE' do not both appear.
+
+        `matchesIdentity` matches loosely, so the catalogue's 'Troop' and this
+        model's 'Trooper' both answer a "Troops only" requirement without
+        either spelling being normalised here.
+      */
+      roles: dedupe([
+        ...(profile.roles ?? []),
+        ...(u.profileSnapshot?.category ? [u.profileSnapshot.category] : []),
+      ]),
       extraLimb: hasExtraLimb(u) || undefined,
       fireteam: u.fireteam,
     });

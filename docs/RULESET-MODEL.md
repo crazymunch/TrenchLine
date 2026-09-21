@@ -1612,6 +1612,93 @@ and fewer than two combinations came out of it. The guard is checked against the
 sentence, not against a list of entries the reader keeps, so it cannot pass by
 agreeing with itself; reverting the connector reading makes it fire.
 
+## 7e. Who stocks a piece of kit
+
+The Armoury Table is what a faction may **buy**. It is not the only way gear
+reaches a model, and the legality engine used to treat it as though it were:
+everything a model carried that the table had no row for was reported as
+*"not in the Iron Sultanate Armoury Table"*. Driving the owner's August export
+through the real importer produced five such findings and none of them was a
+purchase (FD-17 finding 3, with Order 35's correction to finding 1):
+
+| Reported as unstocked | What actually stocks it |
+| --- | --- |
+| Weaponized Shovel | the Sapper's own fixed kit — *"A Sultanate Sapper always has a Shovel"*, Warbands L4739 |
+| Coordinated Engagement (×2) | the FIRETEAM profile a Fireteam option grants |
+| Secrets of Takwin | the Jabirean Alchemist's own entry, Warbands L5248 |
+| Fire Shield | the Human Hands Formula — *"It can also have a Trench Shield or a Fire Shield"*, L5382 |
+| Curative Fluids | an Exploration find, out of the Campaign Rules catalogue |
+
+The ruling: **entry-granted kit is stocked by the entry and is never measured
+against the Armoury Table.** `rules/entryGrants.ts` holds it, and it is
+consulted only *after* `stocks` and `stockedAnywhere` have both said no — so
+an item the faction really does buy is answered by the table first and the
+grant is never reached.
+
+Each granter is derived, never a list of item names:
+
+1. the model's own forced Battlekit, by entry id or by any name the kit entry
+   prints;
+2. an option the model holds, by name;
+3. an option the model holds whose own rules text says the model may have the
+   item;
+4. a Battlekit profile, which the Armoury Tables do not sell;
+5. the Campaign Rules catalogue, which is not a faction armoury.
+
+**4 and 5 are measured, not assumed,** and `rules/__tests__/entryGrants.test.ts`
+re-measures them on every run: of the 334 weapons the catalogues type
+`Battlekit`, exactly one is also an Armoury Table row (the Cult of the Black
+Grail's Compound Eyes Helmet, reached by `stocks` long before this), and of the
+155 entries in the Campaign Rules catalogue, none is a row in any faction.
+
+### A link names the entry; a roster records the profile
+
+Rule 1 needs `ForcedBattlekit.profileNames`, which is new. The shared `Shovel`
+entry (`Equipment.cat` L343) nests an `Include Weapon Profile?` child whose
+profile is called **`Weaponized Shovel`** — and that is the name NewRecruit
+writes. Matching the Sapper's kit on the link's name alone therefore missed the
+Sapper's own Shovel. `forcedKitOf` now carries every name a kit entry prints,
+its own and one level of children's; one level is enough, because the child
+exists to hold a profile rather than more children.
+
+### Reading a permission out of rules text
+
+Rule 3 matches on what the text **says**, not on the option's name: the options
+that grant gear are not a class the catalogue marks — Human Hands is an
+Alchemical Formula, filed beside Wings and Two Heads, which grant nothing.
+
+Two traps, both live in the catalogues:
+
+- **A clause that forbids is not a clause that permits.** The same paragraph
+  says *"It cannot use its Pummelling Blows ability if it is armed with any
+  Melee Weapons"*, and the House of Wisdom's copy grants and withholds in one
+  sentence — *"…though they cannot select ELITE only items, grenades or items
+  limited to specific units"*. A clause carrying a negation grants nothing.
+- **A name has to begin a noun phrase.** A word boundary is not enough: in
+  *"a Trench Shield or a Fire Shield"* the bare name `Shield` is preceded by a
+  space either way, so a boundary test lets an item called `Shield` collect a
+  grant written for two other ones. The word before the name must be a
+  determiner, a conjunction or the permitting verb.
+
+### What a model IS, for a restriction that names a kind of model
+
+FD-17 finding 2, in the same measurement. The Iron Sultanate's Reinforced
+Armour row reads *"ELITE & Janissaries only"*, and an `X & Y only` stipulation
+admits either — so a Favoured Kavass, an Azeb **promoted** to ELITE, may wear
+it. The gate agreed; it was being handed the wrong subject.
+
+`toRoster` set `keywords` from the dataset entry alone and never set `roles` at
+all. An Elite Promotion does not rewrite the entry — it writes `Elite` onto the
+model's own `profileSnapshot` — so no promoted model could satisfy a
+requirement naming ELITE, and the owner's Idris the Relic Hound was refused
+armour the book gives it.
+
+Both halves are **unioned**, never one replacing the other: the entry says what
+the model is by type, the model says what it has become. The `name` stays the
+entry's, because `matchesIdentity` matches loosely by containment and `u.name`
+is the player's own text — a model someone called *"Janissary Hunter"* would
+otherwise let itself through every Janissary-only row in the table.
+
 ## 8. Migration of saved warbands
 
 **Decided (Aug 2026):** existing saved warbands are not worth a general migration

@@ -246,6 +246,28 @@ function forcedKitOf(node, resolve) {
   const gearProfilesOf = (e) => arr(e?.profiles?.profile)
     .filter((pr) => GEAR.includes(attr(pr, 'typeName')));
 
+  /*
+    Every name this kit entry prints, its own and its children's.
+
+    A forced link names the ENTRY and the roster records the PROFILE, and the
+    two are routinely different. "A Sultanate Sapper always has a Shovel"
+    (Warbands L4739) links the shared `Shovel` entry in `Equipment.cat`, and
+    that entry nests an `Include Weapon Profile?` child whose profile is called
+    `Weaponized Shovel` — which is the name NewRecruit writes, so an imported
+    Sapper carried an item its own Battlekit did not appear to cover and the
+    Armoury Table was asked about it.
+
+    One level of nesting is enough for every case in the catalogues: the child
+    exists to hold a profile, not to hold more children.
+  */
+  const printedNames = (e) => [...new Set([
+    clean(attr(e, 'name')),
+    ...gearProfilesOf(e).map((pr) => clean(attr(pr, 'name'))),
+    ...arr(e?.selectionEntries?.selectionEntry).flatMap((c) => [
+      ...gearProfilesOf(c).map((pr) => clean(attr(pr, 'name'))),
+    ]),
+  ].filter(Boolean))];
+
   const push = (entry) => {
     if (!entry.id || seen.has(entry.id)) return;
     seen.add(entry.id);
@@ -297,6 +319,7 @@ function forcedKitOf(node, resolve) {
       */
       cost: costsOf(target),
       profileId: profiles[0] ? attr(profiles[0], 'id') : undefined,
+      profileNames: printedNames(target),
     });
   }
 
@@ -324,6 +347,7 @@ function forcedKitOf(node, resolve) {
       keywords: keywordsOf(profiles),
       cost: costsOf(e),
       profileId: attr(profiles[0], 'id'),
+      profileNames: printedNames(e),
     });
   }
 
