@@ -29,7 +29,7 @@ const full = process.argv.includes('--full');
 /* ------------------------------------------------------- the source of truth */
 
 const cat = parseCatalogues('data-sources/battlescribe');
-const armoury = parseArmouryTables();
+const { rows: armoury } = parseArmouryTables();
 
 const rulebookText = ['warbands-of-trench-crusade', 'trench-crusade-digital-rulebook', 'changelog-1.0.2']
   .map((f) => `data-sources/rulebook/extracted/${f}.txt`)

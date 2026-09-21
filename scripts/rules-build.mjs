@@ -94,7 +94,22 @@ function loadLayer(id) {
 
 const bookEntries = parseWarbandEntries();
 const variants = parseVariants();
-const armoury = parseArmouryTables();
+/*
+  The catalogue's Battlekit names, for the one Armoury Table row the PDF ran
+  together that the book itself cannot split — see `repairWrappedRow`. Parsed
+  once here rather than inside the per-ruleset pass, because the armoury is
+  read before any ruleset is assembled and the names are the same either way.
+*/
+const catalogueNames = (() => {
+  const cat = parseCatalogues(CAT_DIR);
+  return [...new Set([
+    ...cat.weapons.map((w) => w.name),
+    ...(cat.battlekit ?? []).map((b) => b.name),
+  ].filter(Boolean))];
+})();
+
+const { rows: armoury, unreadable: armouryUnreadable } = parseArmouryTables(
+  undefined, catalogueNames);
 const factionRules = parseFactionRules();
 const resolutions = loadResolutions();
 
@@ -1300,6 +1315,16 @@ for (const ruleset of RULESETS) {
   const rows = dataset.armouries.reduce((n, a) => n + a.rows.length, 0);
   console.log(`  armouries: ${dataset.armouries.length} factions, ${rows} priced rows` +
               (unmatchedRows ? `  (${unmatchedRows} row(s) name Battlekit the catalogues lack)` : ''));
+  /*
+    Armoury rows the book prints that `{ducats, glory}` cannot express — today
+    only Grail Devotee, priced "15 👑 or 2 ☼", a CHOICE where that shape means
+    "and". Reported rather than dropped: a row missing from an armoury reads
+    to the legality engine as "this faction does not stock it", which is the
+    false statement that hid three truncated tables for as long as it did.
+  */
+  for (const u of armouryUnreadable) {
+    console.log(`  NOT STOCKED: ${u.faction} ${u.section} "${u.name}" (L${u.line}) — ${u.reason}`);
+  }
   const mods = [...dataset.units, ...dataset.weapons]
     .reduce((n, e) => n + (e.modifiers?.length ?? 0), 0);
   const unmapped = [...dataset.units, ...dataset.weapons]
