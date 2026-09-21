@@ -537,7 +537,13 @@ export interface AppState {
   addUnitScar: (warbandId: string, unitId: string, scar: { name: string; roll?: string; effect?: string }) => void;
   removeUnitScar: (warbandId: string, unitId: string, scarName: string) => void;
   setUnitFireteam: (warbandId: string, unitId: string, fireteam?: string) => void;
-  toggleUnitSpecialUpgrade: (warbandId: string, unitId: string, upgrade: { id: string; name: string; cost: number; category: string }) => void;
+  /**
+   * Buy or sell back a unit option, charged to the Strongbox through the
+   * ledger. `price` is the whole `Cost`; `cost` is the Ducat half the legacy
+   * shape carries and is used only where `price` is absent, so a caller
+   * written before this keeps working.
+   */
+  toggleUnitSpecialUpgrade: (warbandId: string, unitId: string, upgrade: { id: string; name: string; cost: number; category: string; price?: Cost }) => void;
   /**
    * Claim a recruitment bound the Warband has earned in play.
    *

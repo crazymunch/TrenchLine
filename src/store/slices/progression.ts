@@ -8,6 +8,11 @@ import type { StateCreator } from 'zustand';
 import type { AppState } from '../state';
 import type { UnitTitleRecord } from '../../types/warband';
 import { persistWarbands } from '../persist';
+import { book, undoPurchases } from '../../rules/ledger';
+import { campaignGameOf } from '../../rules/campaign';
+import { isZero } from '../../rules/costs';
+import type { Cost } from '../../types/catalogue';
+import type { Warband } from '../../types/warband';
 import type { Dataset } from '../../types/catalogue';
 import { eligibility } from '../../rules/earnedRecruitment';
 
@@ -307,34 +312,76 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
       });
     },
 
+    /*
+      Buy or sell back a unit option, and MAKE THE STRONGBOX PAY FOR IT.
+
+      This added the option's price to the model's `totalCost` and charged
+      nobody — the same defect as FD-05e-2 (equipping Battlekit), FD-05g (a
+      Glory-priced item) and FD-05h (a Glory-priced model), one layer further
+      out and the last of them. **280 priced options across 18 groups** were
+      free: every Alchemical Formula, every Saga, every Goetic Power, the
+      Strains, the Arts of Assassination, and the Armour options at up to 50
+      Ducats each.
+
+      `charge` and `refund` are the same two the units slice uses, so an
+      option behaves exactly like a piece of Battlekit: booked through the
+      ledger with a reason, and reversible right up until the game it was
+      bought in has been played — "users can make any variations from the end
+      of one game to the start of the next". After that the purchase is
+      settled and removing the option refunds nothing, because the book sells
+      Battlekit and never a model's own upgrades.
+
+      `ref` is the MODEL and the option together. The same option id is on
+      every model that can take it, so keying on the option alone would let
+      one Homunculus's refund cancel another's purchase.
+
+      The whole `Cost` is spent, not its Ducat half. `Devouring Jaws` is the
+      one option in the ruleset priced in Glory (2 ☼), and FD-05g's lesson is
+      that an entry costing zero Ducats and some Glory is free to anything
+      reading only the first number.
+    */
     toggleUnitSpecialUpgrade: (warbandId, unitId, upgrade) => {
       set((state) => {
+        const price: Cost = upgrade.price
+          ?? { ducats: upgrade.cost ?? 0, glory: 0 };
+
         let updated = state.warbands.map((w) => {
           if (w.id !== warbandId) return w;
-          const updatedWb = {
+
+          const unit = w.units.find((u) => u.id === unitId);
+          const held = unit?.specialUpgrades ?? [];
+          const removing = held.some((x) => x.id === upgrade.id);
+          const ref = `${unitId}:${upgrade.id}`;
+          const game = campaignGameOf(w, state.campaign);
+
+          const updatedWb: Warband = {
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
               const current = u.specialUpgrades || [];
-              const exists = current.some(x => x.id === upgrade.id);
-              let nextUpgrades = [];
-              let costDelta = 0;
-              if (exists) {
-                nextUpgrades = current.filter(x => x.id !== upgrade.id);
-                costDelta = -upgrade.cost;
-              } else {
-                nextUpgrades = [...current, upgrade];
-                costDelta = upgrade.cost;
-              }
               return {
                 ...u,
-                specialUpgrades: nextUpgrades,
-                totalCost: Math.max(0, u.totalCost + costDelta)
+                specialUpgrades: removing
+                  ? current.filter((x) => x.id !== upgrade.id)
+                  : [...current, upgrade],
+                totalCost: Math.max(0, u.totalCost + (removing ? -price.ducats : price.ducats)),
               };
             }),
-            updatedAt: new Date().toISOString()
+            updatedAt: new Date().toISOString(),
           };
-          return updatedWb;
+
+          if (w.forceMode === 'unrestricted' || isZero(price)) return updatedWb;
+
+          if (removing) return undoPurchases(updatedWb, [ref], game).warband;
+
+          return book(updatedWb, {
+            reason: 'quartermaster',
+            ...(price.ducats > 0 ? { ducats: -price.ducats } : {}),
+            ...(price.glory > 0 ? { glory: -price.glory } : {}),
+            ref,
+            note: `${upgrade.name} for ${unit?.customName ?? 'a model'}.`,
+            game,
+          }, updatedWb.updatedAt);
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };

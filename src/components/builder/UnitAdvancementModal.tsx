@@ -105,18 +105,34 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const catalogueUnit = dataset?.units.find(
     (u) => u.name === unit.profileSnapshot?.name || u.name === unit.customName);
   const optionGroups = (catalogueUnit?.options ?? []).reduce<
-    Record<string, { id: string; name: string; group: string; cost: number; description: string }[]>
+    Record<string, {
+      id: string; name: string; group: string; cost: number; description: string;
+      /* The whole Cost, so the Strongbox spends both currencies. `cost` is
+         the Ducat half the legacy upgrade shape carries. */
+      price: { ducats: number; glory: number };
+    }[]>
   >((acc, o) => {
     (acc[o.group] ??= []).push({
       id: o.id,
       name: o.name,
-      // Carried onto the item as well as used as the key. It is the label the
-      // unit card shows for the section, and hard-coding it meant a Saga or a
-      // Strain was filed on the card as an "Alchemical Formula".
-      group: o.group,
+      /*
+        The group PATH where the option has one, the leaf otherwise.
+
+        Carried onto the item as well as used as the key. It is the label the
+        unit card shows for the section, and hard-coding it meant a Saga or a
+        Strain was filed on the card as an "Alchemical Formula".
+
+        The path, not the leaf, because `formulaeOf` asks whether the category
+        contains `Alchemical Formulae`: a Hawk Eyes bought here wrote
+        `Eye Options` and stopped being a Formula on the model that bought it.
+        The heading above is keyed on the leaf, so the player still reads
+        `Eye Options`.
+      */
+      group: o.groupPath ?? o.group,
       // The legacy upgrade shape carries one currency; Glory is surfaced in
       // the label rather than silently dropped to zero.
       cost: o.cost.ducats,
+      price: { ducats: o.cost.ducats, glory: o.cost.glory },
       description: o.cost.glory
         ? `${o.description} (${o.cost.glory} Glory)`
         : o.description,
@@ -356,6 +372,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                         id: formula.id,
                         name: formula.name,
                         cost: formula.cost,
+                        price: formula.price,
                         category: formula.group
                       })}
                       className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${

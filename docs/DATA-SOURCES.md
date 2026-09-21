@@ -225,6 +225,30 @@ It also proved the **Carcass Front path**: a new faction's PDF can be parsed the
 same way on the day it drops, months before the catalogues catch up. §4 is that
 path, used in anger.
 
+### A nested option group keeps its parent
+
+A unit's purchasable options are grouped, and the groups nest: `Alchemical
+Formulae` has an `Eye Options` sub-group, and `Goetic Powers` has one per Sin.
+The parser emitted only the **leaf** name, so `Eye Options` arrived with
+nothing saying it was a Formulae group at all.
+
+That is load-bearing rather than cosmetic. `rules/formulae.ts` decides whether
+something is an Alchemical Formula by asking whether its group *contains*
+`Alchemical Formulae`, and has documented the value as looking like
+`Alchemical Formulae::Eye Options` since it was written — so that "a sub-group
+counts as its parent — an Eye Option is a Formula, and the player buys it from
+the same allowance". The one sub-group that comment names was the single case
+the test could not answer: a Hawk Eyes bought in the app wrote `Eye Options` as
+its category, and the model that bought it then had no Formula by that name in
+`traitsOf`, in `chosenBy`, or in the card's Formula section.
+
+`UnitOption.groupPath` now carries the full ancestry, `::`-joined, **beside**
+the leaf rather than replacing it. `group` stays the leaf because it is the
+heading a player reads — `Eye Options`, not `Alchemical Formulae::Eye Options` —
+and because several readers compare it exactly. A top-level group has no path,
+rather than one repeating itself. It is the same shape
+`scripts/lib/newrecruit-paths.mjs` already uses for roster paths.
+
 ### Getting large PDFs in
 
 **Use a GitHub release asset.** Attach the PDF to a release on this repo — up to

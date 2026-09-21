@@ -28,6 +28,8 @@ export const ALCHEMICAL_FORMULAE = 'Alchemical Formulae';
 export interface Grouped {
   name: string;
   group?: string;
+  /** The group's full ancestry, where the pipeline emits one. */
+  groupPath?: string;
 }
 
 /**
@@ -35,9 +37,35 @@ export interface Grouped {
  * `Alchemical Formulae::Eye Options` for the sub-group Hawk Eyes and Hypnotic
  * Eyes sit in. Matched by containment so a sub-group counts as its parent —
  * an Eye Option is a Formula, and the player buys it from the same allowance.
+ *
+ * `groupPath` first, and that is the fix rather than a nicety. This function
+ * documented the `::` form from the day it was written and the pipeline never
+ * emitted one: `optionsOf` let a nested group REPLACE its parent's name, so
+ * the Eye Options arrived as the bare leaf `Eye Options`, and the one
+ * sub-group this comment names was the single case the predicate could not
+ * answer.
+ *
+ * `group` is still read, because it is all a top-level option carries and all
+ * an older saved roster carries.
  */
 export function isAlchemicalFormula(item: Grouped): boolean {
-  return (item.group ?? '').includes(ALCHEMICAL_FORMULAE);
+  return inFormulaGroup(item.groupPath ?? item.group);
+}
+
+/**
+ * Whether a catalogue group, or group path, is the Formulae group or under it.
+ *
+ * Shared by both of the places a Formula can be recorded, because they had
+ * the same bug and only one of them was obvious. `formulaeOf` reads
+ * `equippedEquipment` through `isAlchemicalFormula` and `specialUpgrades`
+ * through their `category` — and the category is the group the app or the
+ * import wrote, which is the LEAF. So an `Eye Options` category failed the
+ * containment test exactly as an `Eye Options` group did, and Hawk Eyes and
+ * Hypnotic Eyes were not Formulae on a model that had bought them: not in
+ * `traitsOf`, not in `chosenBy`, and not in the card's Formula section.
+ */
+export function inFormulaGroup(group: string | undefined | null): boolean {
+  return (group ?? '').includes(ALCHEMICAL_FORMULAE);
 }
 
 /**
@@ -110,7 +138,10 @@ export function formulaeOf(unit: UnitLike | undefined | null): string[] {
   return [
     ...(unit.equippedEquipment ?? []).filter(isAlchemicalFormula).map((e) => e.name),
     ...(unit.specialUpgrades ?? [])
-      .filter((u) => (u.category ?? '').includes(ALCHEMICAL_FORMULAE) || (u.category ?? '') === 'Alchemical Formula')
+      /* `Alchemical Formula`, singular, is what an older in-app purchase
+         wrote before the group was carried through. Kept so a saved roster
+         keeps its Formulae. */
+      .filter((u) => inFormulaGroup(u.category) || (u.category ?? '') === 'Alchemical Formula')
       .map((u) => u.name),
   ];
 }

@@ -148,6 +148,18 @@ export interface UnitOption {
    * whatever it had not heard of.
    */
   group: string;
+  /**
+   * The group's full ancestry, `::`-joined, where it has one.
+   *
+   * `group` is the LEAF, because that is the heading a player should read —
+   * `Eye Options`, not `Alchemical Formulae::Eye Options`. The path is what
+   * says the leaf belongs to a parent, and without it an `Eye Option` stopped
+   * being an Alchemical Formula anywhere in the app: `isAlchemicalFormula`
+   * decides that by asking whether the group contains `Alchemical Formulae`.
+   *
+   * Absent on a top-level group, where it would only repeat `group`.
+   */
+  groupPath?: string;
   cost: Cost;
   constraints: Constraint[];
   /** Rules text as published. */
