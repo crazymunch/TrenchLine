@@ -258,6 +258,18 @@ export interface AppState {
   addUnitToWarband: (warbandId: string, baseProfileId: string, customName?: string) => void;
   duplicateUnit: (warbandId: string, unitId: string) => void;
   removeUnitFromWarband: (warbandId: string, unitId: string) => void;
+  /**
+   * Settle a Re-creation offer left outstanding by the post-battle sequence.
+   *
+   * `recreateUnit` pays the offer's price from the Strongbox through the
+   * ledger and keeps the model; `letUnitFall` declines it and the model goes
+   * to `fallen` as it would have. Both no-op on a model with no offer, and
+   * `recreateUnit` also no-ops on one whose deadline has passed and on a
+   * Strongbox that cannot cover it — the Quartermaster refuses rather than
+   * clamps. See `ActiveUnit.awaitingRecreation` and `rules/recreation.ts`.
+   */
+  recreateUnit: (warbandId: string, unitId: string) => void;
+  letUnitFall: (warbandId: string, unitId: string) => void;
   updateUnitName: (warbandId: string, unitId: string, name: string) => void;
   updateUnitCategory: (warbandId: string, unitId: string, category: UnitCategory) => void;
   /**

@@ -14,31 +14,33 @@
  * > has any unassociated Takwin Homunculi, you must associate one of them with
  * > the new Alchemist.
  *
- * ## What this is NOT
+ * ## Re-creation is a separate rule, and it IS in the book
  *
- * FD-13b asked for a **Re-creation** offer: a killed Takwin Homunculus
- * offering *"Re-create for 40 Ducats in the Quartermaster Step"* instead of
- * going to `fallen`. **That rule is not in any source this repository
- * carries.** Searched across all seven extracted books — the Digital Rulebook,
- * Warbands, the Commentaries, All Out War, the weather and changelog files —
- * the only occurrence of "re-create" in any form is the Hegemon at Warbands
- * L8047, and it says the opposite: *"Each Hegemon is unique, thus when slain it
- * can never be re-created."*
+ * This comment used to say that FD-13b's **Re-creation** offer — a killed
+ * Takwin Homunculus offering *"Re-create for 40 Ducats in the Quartermaster
+ * Step"* — "is not in any source this repository carries", and the item was
+ * declined on that basis. **That was wrong.**
  *
- * The 40 Ducats appears to have come from the entry's purchase price (Warbands
- * L5309, *"Takwin Homunculus - Cost: 40 👑"*), which is what the model costs to
- * BUY, not evidence of a mechanic for rebuilding a dead one.
+ * It is at Warbands L5324 to L5327, in this entry's own Abilities:
  *
- * So it is not built. CLAUDE.md's first two rules are that game data is
- * derived and cited, and that the app fails loudly rather than inventing a
- * plausible-looking answer; a post-battle step offering a player a rule the
- * book does not contain is the second failure exactly. The finding is in the
- * pull request for a ruling.
+ * > **Re-creation:** If a Takwin Homunculus is killed in the post-battle
+ * > sequence, you do not have to remove it from your roster. Instead, you can
+ * > spend 40 👑 in the following Quartermaster Step to leave it on the Roster.
  *
- * What the book DOES say about a Takwin whose Alchemist has died is the
- * sentence above, and that is what this module derives. The design already
- * wanted half of it — FD-13a item 2 asks that *"a Takwin whose Alchemist has
- * died cannot buy"* — and the app implemented none of it.
+ * The search that missed it looked for the phrase "post-battle sequence" in
+ * the extracted PDF, which breaks the word across a line as `post-` /
+ * `battle`. The catalogue carries the same ability (`Iron Sultanate.cat`
+ * L3362) and the shipped dataset prints it six times. The 40 Ducats is this
+ * rule's own price and coincides with the entry's purchase price (L5309); the
+ * coincidence was read as the explanation.
+ *
+ * It lives in `rules/recreation.ts`, which reads it from the model's ability
+ * text rather than from a phrase search over PDF output — the dataset is the
+ * pipeline's own reconciled output and does not hyphenate across lines.
+ *
+ * This module is the OTHER Takwin rule, and the two are independent: an
+ * Alchemist's death restricts a Takwin that is alive, and Re-creation decides
+ * whether a killed one stays on the roster at all.
  */
 import type { Dataset } from '../types/catalogue';
 

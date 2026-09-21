@@ -10,6 +10,8 @@ import type { ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment } fr
 import { persistWarbands } from '../persist';
 import { book, undoPurchases } from '../../rules/ledger';
 import { campaignGameOf } from '../../rules/campaign';
+import { removeFromRoster } from '../../rules/fallen';
+import { recreationLapsed } from '../../rules/recreation';
 import type { Warband, StashedItem } from '../../types/warband';
 import type { Cost } from '../../types/catalogue';
 import { profileCost, isZero } from '../../rules/costs';
@@ -69,7 +71,7 @@ const refund = (w: Warband, refs: readonly string[], game: number) =>
     ? { warband: w, undone: new Set<string>() }
     : undoPurchases(w, refs, game);
 
-export type UnitsSlice = Pick<AppState, 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
+export type UnitsSlice = Pick<AppState, 'recreateUnit' | 'letUnitFall' | 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
 
 export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set, get) => ({
     addUnitToWarband: (warbandId, baseProfileId, customName) => {
@@ -283,6 +285,98 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
             ...going.equippedEquipment.map((i) => i.instanceId),
           ];
           return refund(updatedWb, refs, campaignGameOf(w, state.campaign)).warband;
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    /*
+      Settle a Re-creation offer the post-battle sequence left outstanding.
+
+      The offer is written by `applyPostBattleResults` when the sequence kills
+      a model whose own profile grants one — see `ActiveUnit.awaitingRecreation`
+      and `rules/recreation.ts`. It is settled HERE because the book puts the
+      payment in the Quartermaster Step, which in this app is the builder:
+
+      > **Re-creation:** If a Takwin Homunculus is killed in the post-battle
+      > sequence, you do not have to remove it from your roster. Instead, you
+      > can spend 40 👑 in the following Quartermaster Step to leave it on the
+      > Roster.  — Warbands L5324 to L5327
+
+      Paying charges the Strongbox through the ledger like any other
+      Quartermaster purchase, so the money leaves a record and the balance is
+      still the sum of its entries (FD-05d). `ref` is the model's id, which is
+      what would let the purchase be undone in the same muster — and it is
+      deliberately the same ref shape a hire uses, because this is the model
+      being paid for a second time.
+
+      Refused where the Strongbox cannot cover it, rather than clamped: the
+      Quartermaster's own rule since RR-12, and the alternative here is a model
+      resurrected for money the Warband does not have.
+    */
+    recreateUnit: (warbandId, unitId) => {
+      set((state) => {
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const unit = w.units.find((u) => u.id === unitId);
+          const offer = unit?.awaitingRecreation;
+          if (!unit || !offer) return w;
+
+          /* An expired offer buys nothing. `letUnitFall` is the only way out
+             of one, and the builder says so rather than taking the money. */
+          if (recreationLapsed(offer, campaignGameOf(w, state.campaign))) return w;
+
+          const short: Cost = {
+            ducats: Math.max(0, offer.cost.ducats - (w.treasuryDucats ?? 0)),
+            glory: Math.max(0, offer.cost.glory - (w.gloryPoints ?? 0)),
+          };
+          if (!isZero(short) && w.forceMode !== 'unrestricted') return w;
+
+          const restored = {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const { awaitingRecreation: _gone, ...rest } = u;
+              return { ...rest, isDead: false, status: 'Active' as const };
+            }),
+            updatedAt: new Date().toISOString(),
+          };
+          return charge(
+            restored,
+            offer.cost,
+            unit.id,
+            `${offer.ability}: ${unit.customName} stays on the Roster.`,
+            campaignGameOf(w, state.campaign),
+          );
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    /*
+      Decline a Re-creation offer, or clear one that has lapsed.
+
+      The model goes where it would have gone the moment it was killed, by the
+      same path everything else killed takes — `removeFromRoster`, which moves
+      it to `fallen` with its Battlekit and nothing deleted. Nothing is
+      refunded: the book sells Battlekit, never models.
+    */
+    letUnitFall: (warbandId, unitId) => {
+      set((state) => {
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const unit = w.units.find((u) => u.id === unitId);
+          if (!unit?.awaitingRecreation) return w;
+
+          const cleared = w.units.map((u) => {
+            if (u.id !== unitId) return u;
+            const { awaitingRecreation: _gone, ...rest } = u;
+            return { ...rest, isDead: true };
+          });
+          const { units, fallen } = removeFromRoster({ units: cleared, fallen: w.fallen }, [unitId]);
+          return { ...w, units, fallen, updatedAt: new Date().toISOString() };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };

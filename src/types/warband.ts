@@ -109,6 +109,40 @@ export interface ActiveUnit {
   benched?: boolean;
   isDead: boolean;
   /**
+   * Killed in the post-battle sequence, with a Re-creation offer outstanding.
+   *
+   * Two entries let you pay rather than lose the model — Warbands L5324 to
+   * L5327 for the Takwin Homunculus, the Book of Golems find for the Golem —
+   * and both say the payment happens AFTER the post-battle sequence: "in the
+   * following Quartermaster Step" for one, "at any time between battles" for
+   * the other. The Quartermaster Step is the builder, not the wizard, so the
+   * model cannot go to `fallen` when the wizard closes and cannot simply be
+   * alive either. This is that gap, written down.
+   *
+   * `isDead` stays FALSE while this is set: the model is still on the roster,
+   * which is what "you do not have to remove it from your roster" means, and
+   * `removeFromRoster` keys on `isDead`. Resolving the offer either clears
+   * this field or sets `isDead` and lets the model fall.
+   *
+   * Absent on every model that has not been killed, and on one killed with no
+   * such offer — absent is "nothing outstanding", never "unknown".
+   */
+  awaitingRecreation?: {
+    /** The ability that grants the offer, as printed. */
+    ability: string;
+    /** What it costs to take. Read from the sentence, not assumed Ducats. */
+    cost: Cost;
+    /**
+     * `quartermaster` lapses when the campaign moves past `sinceGame`;
+     * `between-battles` does not lapse at all. The two are printed
+     * differently and the difference is the whole of why this is stored
+     * rather than recomputed.
+     */
+    deadline: 'quartermaster' | 'between-battles';
+    /** The campaign game the model was killed in, from `campaignGameOf`. */
+    sinceGame: number;
+  };
+  /**
    * The match that killed it, where the record knows.
    *
    * Set when the model moves to `fallen`, so the memorial can say which battle
