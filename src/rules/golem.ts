@@ -223,3 +223,98 @@ export function golemCandidates(
 /** The one model to mark, or `null` where the roster cannot say. */
 export const soleGolem = (candidates: readonly GolemCandidate[]): GolemCandidate | null =>
   candidates.length === 1 ? candidates[0] : null;
+
+/**
+ * What the catalogue charges for each Alchemical Formula, by name.
+ *
+ * Read from the dataset rather than listed here, so the budget arithmetic is
+ * the catalogue's and not this file's (rule 1). Names are kept in the
+ * catalogue's own spelling and matched case-insensitively by the caller.
+ */
+export function formulaPrices(dataset: Dataset | null | undefined): Map<string, number> {
+  const out = new Map<string, number>();
+  const walk = (n: unknown) => {
+    if (!n || typeof n !== 'object') return;
+    if (Array.isArray(n)) return n.forEach(walk);
+    const node = n as { name?: unknown; cost?: unknown; baseCost?: unknown };
+    if (typeof node.name === 'string') {
+      const c = node.cost;
+      const ducats = typeof c === 'number'
+        ? c
+        : (c && typeof c === 'object' && typeof (c as { ducats?: unknown }).ducats === 'number')
+          ? (c as { ducats: number }).ducats
+          : typeof node.baseCost === 'number' ? node.baseCost : undefined;
+      const key = node.name.trim().toLowerCase();
+      if (ducats !== undefined && !out.has(key)) out.set(key, ducats);
+    }
+    for (const v of Object.values(n as object)) if (typeof v === 'object') walk(v);
+  };
+  walk(dataset);
+  return out;
+}
+
+/**
+ * Mark the Golem on a freshly imported roster, where the roster can say which.
+ *
+ * Kept here rather than in the importer: the importer's job is to turn a file
+ * into models and report what the `Campaign Rules > Enabled` subtree NAMES,
+ * and deciding what "Book of Golems" means — which model it created, and by
+ * which of the grant's clauses — is a rules question.
+ *
+ * Mutates nothing. Returns the index to mark and the reason, or `null` with
+ * the reason it could not say, so a caller can put that in front of the player
+ * instead of silently doing nothing.
+ */
+export function golemOnImport(
+  dataset: Dataset | null | undefined,
+  campaignRules: readonly string[],
+  units: readonly {
+    customName?: string;
+    profileSnapshot?: { name?: string; elite?: boolean; category?: string };
+    equippedEquipment?: readonly { name: string }[];
+    specialUpgrades?: readonly { name: string }[];
+    skills?: readonly { name: string }[];
+  }[],
+): { index: number; name: string; reason: string } | { index: null; reason: string } {
+  const grant = golemGrant(dataset);
+  if (!grant) return { index: null, reason: 'This ruleset carries no Book of Golems.' };
+
+  const held = campaignRules.some(
+    (r) => r.trim().toLowerCase() === grant.name.trim().toLowerCase());
+  if (!held) {
+    return { index: null, reason: `This roster does not hold the ${grant.name}.` };
+  }
+
+  const prices = formulaPrices(dataset);
+  const models = units.map((u) => {
+    const names = [
+      ...(u.equippedEquipment ?? []), ...(u.specialUpgrades ?? []), ...(u.skills ?? []),
+    ].map((x) => x.name).filter(Boolean);
+    return {
+      name: u.customName ?? u.profileSnapshot?.name ?? '',
+      promoted: u.profileSnapshot?.elite === true || u.profileSnapshot?.category === 'Elite',
+      formulas: names.map((n) => ({ name: n, ducats: prices.get(n.trim().toLowerCase()) ?? 0 })),
+    };
+  });
+
+  const found = golemCandidates(grant, models);
+  const one = soleGolem(found);
+  if (one) {
+    return {
+      index: one.index,
+      name: one.name,
+      reason: `${grant.name}: ${one.name} holds ${grant.startsWith} and `
+        + `${one.formulaDucats} Ducats of Formulas, within the grant's `
+        + `${grant.freeFormulaDucats}, and has not been Promoted.`,
+    };
+  }
+  return {
+    index: null,
+    reason: found.length === 0
+      ? `No model on this roster fits the ${grant.name}: the grant creates one holding `
+        + `${grant.startsWith}, never Promoted, with at most `
+        + `${grant.freeFormulaDucats} Ducats of Formulas.`
+      : `${found.length} models fit the ${grant.name} (${found.map((c) => c.name).join(', ')}), `
+        + 'so the roster cannot say which it created. Mark it by hand.',
+  };
+}
