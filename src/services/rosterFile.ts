@@ -127,6 +127,8 @@ export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
   id: 'identity',
   customName: 'durable',
   baseProfileId: 'durable',
+  /* Provenance: lose it and a Golem comes back a model that may be Promoted. */
+  grantedBy: 'durable',
   profileSnapshot: 'durable',
   equippedWeapons: 'durable',
   equippedArmour: 'durable',

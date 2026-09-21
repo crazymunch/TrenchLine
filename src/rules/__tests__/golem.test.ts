@@ -10,7 +10,9 @@ import { DATASET } from '@/data/generated/trenchline.generated';
 import {
   golemGrant, golemKeywords, freeFormulaBudgetLeft, isGolem, GOLEM_GRANTED_BY,
 } from '../golem';
+import { canBePromoted } from '../promotions';
 import type { Dataset } from '@/types/catalogue';
+import type { ActiveUnit } from '@/types/warband';
 
 const D = DATASET as unknown as Dataset;
 
@@ -110,5 +112,39 @@ describe('recognising a Golem on the roster', () => {
     expect(isGolem({ grantedBy: 'Weapon Collections' })).toBe(false);
     expect(isGolem({})).toBe(false);
     expect(isGolem(null)).toBe(false);
+  });
+});
+
+/**
+ * "The model is treated as an Ally that can never be Promoted."
+ *
+ * Its own block reason rather than the rulebook's Models That Cannot Be
+ * Promoted table: that table lists ENTRIES, and the Takwin Homunculus is not
+ * in it. What forbids this promotion is how the model arrived, so the same
+ * entry recruited out of the Armoury promotes normally.
+ */
+describe('a Golem is never Promoted', () => {
+  const troop = (over: Partial<ActiveUnit> = {}): ActiveUnit => ({
+    id: 'u1', customName: 'Al-Mudawwan', baseProfileId: '02c4-88da-ec78-8a33',
+    profileSnapshot: { name: 'Homunculus', category: 'Trooper', elite: false, stats: {} },
+    equippedWeapons: [], equippedArmour: [], equippedEquipment: [],
+    xp: 0, advancements: [], injuries: [], isDead: false, totalCost: 40,
+    ...over,
+  } as unknown as ActiveUnit);
+
+  const band = { units: [] as ActiveUnit[] };
+
+  it('refuses a granted Golem, naming the grant', () => {
+    const v = canBePromoted(D, troop({ grantedBy: GOLEM_GRANTED_BY }), band);
+    expect(v.eligible).toBe(false);
+    expect(v.reason).toBe('granted-ally');
+    expect(v.detail).toContain('Book of Golems');
+    expect(v.detail).toMatch(/never be Promoted/i);
+  });
+
+  /* The same entry, hired rather than granted, is untouched by the rule. */
+  it('leaves the same entry alone when it was simply recruited', () => {
+    const v = canBePromoted(D, troop(), band);
+    expect(v.reason).not.toBe('granted-ally');
   });
 });

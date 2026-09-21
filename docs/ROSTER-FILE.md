@@ -77,6 +77,16 @@ notices until they need the file.
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
 
+`grantedBy` is `durable`, and it is provenance rather than a Keyword. A model
+created by the Book of Golems (Exploration 17) carries `'Book of Golems'`, and
+the grant's standing restrictions — never Promoted, no further Alchemical
+Formulas, Battlekit from the host's own Armoury — key off it rather than off
+the GOLEM Keyword. The distinction is the point: GOLEM is what the model **is**,
+and this is how it **arrived**, so the same Takwin Homunculus entry recruited
+out of the Armoury is unaffected. Lose the field in a round-trip and a Golem
+comes back a model that may be Promoted, which is why it is durable and why
+`UNIT_FIELDS` makes every new field say so.
+
 `isDead` is `durable` and the distinction matters, because it reads like battle
 state and is not. A model removed by the Trauma Step is gone from the campaign;
 a restore that quietly brought it back would be inventing a model.
