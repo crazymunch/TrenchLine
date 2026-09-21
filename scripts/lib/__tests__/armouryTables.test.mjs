@@ -30,19 +30,40 @@ import os from 'node:os';
 import path from 'node:path';
 
 import { parseArmouryTables } from '../parse-warbands.mjs';
+import { parseCatalogues } from '../parse-battlescribe.mjs';
 
 const BOOK = 'data-sources/rulebook/extracted/warbands-of-trench-crusade.txt';
+const CATALOGUES = 'data-sources/battlescribe';
 const hasBook = fs.existsSync(BOOK);
+const hasSources = hasBook && fs.existsSync(CATALOGUES);
+
+/**
+ * The catalogue's Battlekit names, as `rules-build` passes them.
+ *
+ * Needed for exactly one row: the Heretic Legions' Hellbound Soul Contract
+ * wraps with no bullet, so it has no Battlekit heading, and the book states
+ * its name in no other column. Everything else parses from the book alone.
+ */
+let names = null;
+const catalogueNames = () => {
+  if (names) return names;
+  const cat = parseCatalogues(CATALOGUES);
+  names = [...new Set([
+    ...cat.weapons.map((w) => w.name),
+    ...(cat.battlekit ?? []).map((b) => b.name),
+  ].filter(Boolean))];
+  return names;
+};
 
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'armoury-'));
 afterAll(() => fs.rmSync(tmp, { recursive: true, force: true }));
 
 let n = 0;
 /** Write a fixture and parse it, so a test can state the exact lines it means. */
-const parse = (text) => {
+const parse = (text, knownNames = []) => {
   const file = path.join(tmp, `book-${n++}.txt`);
   fs.writeFileSync(file, text, 'utf8');
-  return parseArmouryTables(file);
+  return parseArmouryTables(file, knownNames);
 };
 
 /**
@@ -115,12 +136,71 @@ describe('a row the PDF wrapped', () => {
     ]);
   });
 
-  it('throws rather than guess when no Battlekit heading claims it', () => {
+  it('throws rather than guess when a BULLETED row has no heading', () => {
+    // The bullet is the book's promise that the item is reprinted under a
+    // heading. Its absence means the book or the extraction changed.
     expect(() => parse(book(
       'Armour',
       '• Ablative Plate Some Unit only, Limit: 4',
       'and something else 30 👑 ',
     ))).toThrow(/no Battlekit heading in the book claims it/);
+  });
+
+  it('keeps the table open when an UNBULLETED row cannot be split', () => {
+    /*
+      The Heretic Legions' Hellbound Soul Contract (L6068) wraps with no
+      bullet, so no heading claims it and the book states its name nowhere
+      else. Keying the whole branch on the bullet is what let this one close
+      its table and take nine properly-tabbed Equipment rows with it.
+    */
+    const { rows, unreadable } = parse(book(
+      'Equipment',
+      'Gas Mask \t 5 👑 ',
+      'Ablative Plate Some Troopers &',
+      'Other Troopers only, Limit: 3 5 👑 ',
+      'Shovel \t 5 👑 ',
+      'Troop Flag \t Limit: 1 \t 1 ☼',
+    ));
+
+    expect(rows.map((r) => r.name)).toEqual(['Gas Mask', 'Shovel', 'Troop Flag']);
+    expect(unreadable).toHaveLength(1);
+    expect(unreadable[0].reason).toMatch(/no bullet, so no Battlekit heading/);
+  });
+
+  it('splits an unbulleted row when another source states the name', () => {
+    // The catalogue holds Hellbound Soul Contract as a selectionEntry of its
+    // own (Equipment.cat L193). The name comes from there; the stipulations
+    // and the price stay the Armoury Table's.
+    const { rows, unreadable } = parse(book(
+      'Equipment',
+      'Ablative Plate Some Troopers &',
+      'Other Troopers only, Limit: 3 5 👑 ',
+    ), ['Ablative Plate']);
+
+    expect(unreadable).toEqual([]);
+    expect(rows[0]).toMatchObject({
+      name: 'Ablative Plate',
+      restrictions: 'Some Troopers & Other Troopers only, Limit: 3',
+      ducats: 5,
+    });
+  });
+
+  it('does not mistake the Battlekit chapter that follows a table for a row', () => {
+    /*
+      The Court's Equipment table is followed by "(▶ see Battlekit …)." and
+      then the chapter's first heading, "Arquebus | 8 👑" (L8576-L8577). A
+      buffer that collected tab-less lines until a cost swallowed both and
+      reported a row that does not exist. A pipe is the chapter, never a table.
+    */
+    const { rows, unreadable } = parse(book(
+      'Equipment',
+      'Gas Mask \t 5 👑 ',
+      '(▶ see Battlekit in the Trench Crusade Digital Rulebook).',
+      'Arquebus | 8 👑  | Limit: 2',
+    ));
+
+    expect(rows.map((r) => r.name)).toEqual(['Gas Mask']);
+    expect(unreadable).toEqual([]);
   });
 });
 
@@ -179,7 +259,7 @@ describe('the book as shipped', () => {
   });
 
   it.runIf(hasBook)('stocks the Black Grail with six of the seven Equipment rows', () => {
-    const { rows, unreadable } = parseArmouryTables(BOOK);
+    const { rows, unreadable } = parseArmouryTables(BOOK, catalogueNames());
     const kit = rows.filter((r) => r.faction === 'Cult of the Black Grail' && r.section === 'Equipment');
 
     // L7421-L7429. Grail Devotee is the seventh, and the one priced as a choice.
@@ -190,13 +270,30 @@ describe('the book as shipped', () => {
     expect(unreadable.map((u) => u.name)).toEqual(['Grail Devotee']);
   });
 
-  it.runIf(hasBook)('reads every faction table without losing one to a wrap', () => {
-    const { rows, unreadable } = parseArmouryTables(BOOK);
+  it.runIf(hasSources)('stocks the Heretic Legions with all twelve Equipment rows', () => {
+    const { rows } = parseArmouryTables(BOOK, catalogueNames());
+    const kit = rows.filter((r) => r.faction === 'Heretic Legions' && r.section === 'Equipment');
+
+    // L6065-L6077. Hellbound Soul Contract is the unbulleted wrap that closed
+    // this table; the nine rows beneath it went with it.
+    expect(kit.map((r) => r.name)).toEqual([
+      'Binoculars', 'Combat Helmet', 'Gas Mask', 'Hellbound Soul Contract',
+      'Incendiary Ammunition', 'Infernal Brand', 'Mountaineer Kit',
+      'Musical Instrument', 'Shovel', 'Troop Flag', 'Unholy Relic', 'Unholy Trinket',
+    ]);
+    expect(kit.find((r) => r.name === 'Hellbound Soul Contract')).toMatchObject({
+      restrictions: 'Heretic Troopers & Legionnaires only, Limit: 3',
+      ducats: 5,
+    });
+  });
+
+  it.runIf(hasSources)('reads every faction table without losing one to a wrap', () => {
+    const { rows, unreadable } = parseArmouryTables(BOOK, catalogueNames());
 
     // A count, not an assertion about any one row: a table that stops being
-    // stocked shows up here as a drop, which is the only way the three
+    // stocked shows up here as a drop, which is the only way the four
     // truncated tables would have been noticed.
-    expect(rows).toHaveLength(223);
+    expect(rows).toHaveLength(232);
     expect(unreadable).toHaveLength(1);
 
     // Every faction stocks every section the book gives it a heading for.
