@@ -171,21 +171,45 @@ sets** from it. Two consequences:
    excluding Mechanized Heavy Infantry 50 👑
    ```
 
-   Three rows in the book do this. Reading the continuation as the end of the
-   table truncated New Antioch's Shields and Armour tables and the Cult of the
-   Black Grail's Equipment table — eleven rows in total, including Standard
-   Armour, which wraps nothing and was lost to a wrap two lines above it.
+   Four rows in the book do this. Reading either half as the end of the table
+   truncated New Antioch's Shields and Armour tables, the Cult of the Black
+   Grail's Equipment table and the Heretic Legions' — **twenty rows in total**,
+   including Standard Armour, which wraps nothing and was lost to a wrap two
+   lines above it.
 
-   The bullet is what makes such a row recoverable. Each Armoury Table states
-   what it means (L1283–L1286): a bulleted item is reprinted in that faction's
-   own Battlekit section, under a heading that states the same three columns
-   with a pipe between them — `Machine Armour | 50 👑 | ELITE & Mechanized
-   Heavy Infantry only, Limit: 1 excluding Mechanized Heavy Infantry`. The
-   parser takes the **name** from there and nothing else; the restrictions and
-   the price stay the Armoury Table's, because two sources for one fact is how
-   a reprint conflict gets decided by whichever parser ran last. A bulleted row
-   no heading claims **throws**: splitting it by guess writes invented game
-   data into the table the legality engine enforces.
+   A wrap is recognised by **one line of lookahead**, not by a buffer: every
+   wrap in the book is exactly two lines and the second ends in a cost. That
+   also settles the case a buffer gets wrong — the Court's table is followed by
+   `(▶ see Battlekit …).` and then the Battlekit chapter's `Arquebus | 8 👑`
+   (L8576–L8577), which a buffer swallows and reports as a row that does not
+   exist. A pipe is the chapter, never a table.
+
+   Splitting the fused half needs a source, because *"Models wearing Machine
+   Armour"* is as plausible a name as *"Heavy Ballistic Shield"* is a
+   restriction, and a wrong split writes invented game data into the table the
+   legality engine enforces. Two sources supply it, in order:
+
+   1. **The faction's own Battlekit heading.** Each Armoury Table states that a
+      bulleted row is reprinted in that faction's Battlekit section
+      (L1283–L1286), under a heading giving the same three columns with a pipe
+      between them — `Machine Armour | 50 👑 | ELITE & Mechanized…`. Three of
+      the four wraps are bulleted and resolve here.
+   2. **The catalogue's entry names**, passed in by `rules-build`. The Heretic
+      Legions' Hellbound Soul Contract (L6068) wraps with **no bullet**, so it
+      has no heading, and the book states its name in no other column — the
+      restriction openers used elsewhere do not include "Heretic", so even a
+      vocabulary read from the book cannot place the boundary. `Equipment.cat`
+      L193 states it as a `selectionEntry` of its own.
+
+   Either way only the **name** is taken; the stipulations and the price stay
+   the Armoury Table's, because two sources for one fact is how a reprint
+   conflict ends up decided by whichever parser ran last.
+
+   What happens when neither source claims a row depends on the bullet, which
+   is the book's own promise that a heading exists. A **bulleted** row with no
+   heading **throws** — the book or the extraction changed. An **unbulleted**
+   one is reported, and the table stays open, because losing one row to a gap
+   the book leaves is a different thing from losing nine to a parser.
 
    One row the book prints cannot be expressed at all. The Black Grail's Grail
    Devotee is `15 👑 or 2 ☼` — a choice — and `{ducats, glory}` means *and*

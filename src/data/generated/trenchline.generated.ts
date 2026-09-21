@@ -46278,7 +46278,9 @@ export const DATASET: Dataset = {
         }
       ],
       "modifiers": [],
-      "restrictions": [],
+      "restrictions": [
+        "Heretic Troopers & Legionnaires only, Limit: 3"
+      ],
       "factionId": "Equipment",
       "sourceFile": "Equipment.cat"
     },
@@ -71770,6 +71772,108 @@ export const DATASET: Dataset = {
             "glory": 0
           },
           "restrictions": []
+        },
+        {
+          "name": "Hellbound Soul Contract",
+          "weaponId": "4fa4-3134-d167-8099",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": [
+            "Heretic Troopers & Legionnaires only, Limit: 3"
+          ]
+        },
+        {
+          "name": "Incendiary Ammunition",
+          "weaponId": "2eb8-75e4-b529-12ad",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Infernal Brand",
+          "weaponId": "e5d0-2e53-965c-1b78",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Mountaineer Kit",
+          "weaponId": "111a-02f4-8014-be04",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 3,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Shovel",
+          "weaponId": "41f3-4b8e-6736-1db8",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Unholy Relic",
+          "weaponId": "411f-228a-4117-3784",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Unholy Trinket",
+          "weaponId": "ab23-2c25-8507-9ca3",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
+          ]
         }
       ]
     },

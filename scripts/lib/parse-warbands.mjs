@@ -229,14 +229,27 @@ const COST_TAIL = /(\d+)\s*(\u{1F451}|☼)\s*$/u;
  * unrecognised row is a change in the book or in extraction, and silently
  * dropping it is how New Antioch lost its Armour table in the first place.
  */
-function repairWrappedRow(text, headings) {
+function repairWrappedRow(text, headings, knownNames = []) {
   const cost = text.match(COST_TAIL);
   if (!cost) return null;
   const body = text.slice(0, cost.index).trim();
 
-  // Longest match wins, so a name that is a prefix of another cannot shadow
-  // it. Nothing in the book relies on this today; it costs one sort.
-  const candidates = [...headings.values()]
+  /*
+    Both name sources, in one list. The Battlekit headings carry a price and
+    so can report a row priced as a choice; `knownNames` is a bare list from
+    the caller — the catalogue's own entry names — and carries none.
+
+    The catalogue is what settles the one row the book cannot: the Heretic
+    Legions' Hellbound Soul Contract (Warbands L6068) is not bulleted, so it
+    has no Battlekit heading, and no other column in the book states its name.
+    `Equipment.cat` L193 does, as a selectionEntry of its own. Same principle
+    as the heading: the NAME comes from a source that states it in a field of
+    its own, and the stipulations and the price stay the Armoury Table's.
+  */
+  const candidates = [
+    ...headings.values(),
+    ...knownNames.map((name) => ({ name, ducats: 0, glory: 0, alternativePrice: null })),
+  ]
     .filter((h) => nameKey(body).startsWith(nameKey(h.name)))
     .sort((a, b) => b.name.length - a.name.length);
   if (!candidates.length) return null;
@@ -261,7 +274,15 @@ function repairWrappedRow(text, headings) {
  * factions: the table ended at the first wrapped row and everything below it
  * vanished without a word.
  */
-export function parseArmouryTables(src = WARBANDS_TXT) {
+/**
+ * @param src        the extracted Warbands text.
+ * @param knownNames names of real Battlekit from another source — the
+ *                   catalogues — used only to split a row the PDF ran
+ *                   together that the book itself cannot split. Omitting it
+ *                   costs one row and reports it; it never changes a row the
+ *                   book states cleanly.
+ */
+export function parseArmouryTables(src = WARBANDS_TXT, knownNames = []) {
   if (!fs.existsSync(src)) return { rows: [], unreadable: [] };
   const lines = toLines(fs.readFileSync(src, 'utf8'));
   const headings = battlekitHeadings(lines);
@@ -269,28 +290,51 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
   const unreadable = [];
   let section = null;
   let faction = null;
-  /* A bulleted row whose tabs extraction lost, collected until its cost. */
-  let wrapped = null;
+  const emitWrapped = (wrapped) => {
+    const { text, line, bulleted } = wrapped;
 
-  const emitWrapped = (endLine) => {
-    if (!wrapped) return;
-    const { text, line } = wrapped;
-    wrapped = null;
-
-    const row = repairWrappedRow(text, headings);
+    const row = repairWrappedRow(text, headings, knownNames);
     if (!row) {
-      throw new Error(
-        `parseArmouryTables: ${src}:${line} is a bulleted ${faction} ${section} row `
-        + `whose columns extraction ran together, and no Battlekit heading in the `
-        + `book claims it:\n    ${text}\n`
-        + `  The bullet means the item is reprinted under a "Name | cost | restrictions" `
-        + `heading. Either the book changed or extraction did; splitting it by guess `
-        + `would write invented game data into the armoury.`
-      );
+      /*
+        A BULLETED row the book promises a heading for. Its absence means the
+        book changed or extraction did, and splitting it by guess would write
+        invented game data into the table the validator enforces.
+      */
+      if (bulleted) {
+        throw new Error(
+          `parseArmouryTables: ${src}:${line} is a bulleted ${faction} ${section} row `
+          + `whose columns extraction ran together, and no Battlekit heading in the `
+          + `book claims it:\n    ${text}\n`
+          + `  The bullet means the item is reprinted under a "Name | cost | restrictions" `
+          + `heading. Either the book changed or extraction did; splitting it by guess `
+          + `would write invented game data into the armoury.`
+        );
+      }
+      /*
+        An UNBULLETED one carries no such promise: not being unique to this
+        faction, it has no Battlekit heading of its own, and the book states
+        its name in no other column anywhere. The Heretic Legions' Hellbound
+        Soul Contract (L6068) is the only one, and nothing in the book says
+        where "Hellbound Soul Contract" ends and "Heretic Troopers &
+        Legionnaires only, Limit: 3" begins — the restriction openers used
+        elsewhere in the book do not include "Heretic", so even a vocabulary
+        read from the book cannot place the boundary.
+
+        Reported rather than guessed, and — the point of this branch — the
+        table stays OPEN, so the eight properly-tabbed rows beneath it are
+        read. Losing one row to a gap the book leaves is a different thing
+        from losing nine to a parser.
+      */
+      unreadable.push({
+        faction, section, name: text, line,
+        reason: 'the PDF ran its name and its stipulations together, and the book '
+          + 'states that name in no other column — no bullet, so no Battlekit heading',
+      });
+      return;
     }
     if (row.heading.alternativePrice) {
       unreadable.push({
-        faction, section, name: row.name, line: endLine,
+        faction, section, name: row.name, line,
         reason: `priced "${row.ducats || row.glory} ${row.ducats ? '\u{1F451}' : GLORY_GLYPH}`
           + ` or ${row.heading.alternativePrice}" — an armoury row carries one price, not a choice`,
       });
@@ -315,42 +359,62 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
     // faction — an Automatic Rifle is 40 Ducats in one armoury and 2 Glory in
     // another — so a row without its faction cannot be priced at all.
     const owner = bare.match(/^(.+?)\s+(?:Warbands\s+)?can have the following Battlekit/i);
-    if (owner) { emitWrapped(i + 1); faction = owner[1].trim(); section = null; continue; }
+    if (owner) { faction = owner[1].trim(); section = null; continue; }
 
-    if (SECTIONS.has(bare)) { emitWrapped(i + 1); section = bare; continue; }
+    if (SECTIONS.has(bare)) { section = bare; continue; }
     if (!section) continue;
 
     if (!line.includes('\t')) {
       /*
-        A line with no tab is either the start of a wrapped bulleted row, its
-        continuation, or the prose that follows the table.
+        A line with no tab is either a row the PDF wrapped, the second half of
+        one, or the prose that follows the table.
 
-        Reading it as "the table has ended" is what truncated three tables.
-        The continuation of a wrapped row looks exactly like ordinary prose —
-        "Limit: 1 excluding Mechanized Heavy Infantry 50 👑" begins with no
-        bullet and no capital — so the old rule cleared the section on it and
-        skipped every properly-tabbed row below, including Standard Armour,
-        which has no restrictions at all and wraps nothing.
+        Reading it as "the table has ended" is what truncated four tables.
+        The two halves of a wrapped row look exactly like ordinary prose —
+        "Limit: 1 excluding Mechanized Heavy Infantry 50 👑" starts with no
+        bullet and no capital — so the old rule cleared the section on one and
+        skipped every properly-tabbed row below it. Standard Armour has no
+        restrictions and wraps nothing; it was lost to a wrap two lines above.
+
+        Decided by ONE line of lookahead rather than by a buffer, because
+        every wrap in the book is exactly two lines and the second one ends in
+        a cost. That also settles the case a buffer got wrong: the Court's
+        table is followed by "(▶ see Battlekit in the Trench Crusade Digital
+        Rulebook)." and then the Battlekit chapter's "Arquebus | 8 👑"
+        (L8576-L8577), which a buffer would have swallowed and reported as an
+        unreadable row. A pipe is the chapter, never a table.
+
+        An earlier version keyed this on the bullet, on the reasoning that a
+        bulleted row is the one the book guarantees a heading for. True, and
+        not the question: the Heretic Legions' Hellbound Soul Contract wraps
+        with NO bullet (L6068), so the section died on it and nine Equipment
+        rows went with it. What the bullet decides is what happens when no
+        heading claims the row — see `emitWrapped`.
       */
-      if (/^[•·]/.test(bare)) {
-        emitWrapped(i);
-        wrapped = { text: bare.replace(/^[•·]\s*/, ''), line: i + 1 };
+      const next = (lines[i + 1] ?? '').replace(/\s+$/, '');
+      const wraps = Boolean(bare)
+        && !COST_TAIL.test(bare)
+        && !next.includes('\t')
+        && !next.includes('|')
+        && COST_TAIL.test(next.trim());
+
+      if (wraps) {
+        emitWrapped({
+          text: `${bare.replace(/^[•·]\s*/, '')} ${next.trim()}`.replace(/\s+/g, ' ').trim(),
+          line: i + 1,
+          bulleted: /^[•·]/.test(bare),
+        });
+        i += 1;             // the continuation is consumed, not re-read
         continue;
       }
-      if (wrapped) {
-        wrapped.text = `${wrapped.text} ${bare}`.replace(/\s+/g, ' ').trim();
-        if (COST_TAIL.test(wrapped.text)) emitWrapped(i + 1);
-        continue;
-      }
+
       // "or 2 ☼" (L7426) continues the row above with a second, alternative
-      // price. It is not the end of the table, and the row it belongs to has
-      // already been reported by `emitWrapped` or below.
+      // price. It is not the end of the table, and the row it belongs to is
+      // reported below.
       if (/^or\s+\d+\s*\S\s*$/.test(bare)) continue;
       if (bare) section = null;
       continue;
     }
-
-    emitWrapped(i);
 
     const cells = line.split('\t').map((c) => c.trim()).filter(Boolean);
     if (cells.length < 2) continue;
@@ -398,7 +462,6 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
     });
   }
 
-  emitWrapped(lines.length);
   return { rows: out, unreadable };
 }
 
