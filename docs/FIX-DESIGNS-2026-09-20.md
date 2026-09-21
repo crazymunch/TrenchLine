@@ -1935,6 +1935,20 @@ Test, on the September fixture: Al-Mudawwan is marked and Al-Masyukh is
 not; the marked model's budget left is zero with Human Hands excluded; it
 is absent from the promotion pool; its card shows GOLEM. Before pack C.
 
+**Landed by #107, reviewed on `main`.** The importer calls `golemOnImport`
+with the roster's campaign rules and marks the one model it names; where
+it names none or more than one, nothing is marked and the reason travels
+out on the import result to the import screen. `Warband.campaignRules` is
+a durable field now, which nothing had persisted since #95 read it. The
+card gains a "Created by the Book of Golems" action, offered only while
+the Warband holds the Book and the model's entry could be it; marking one
+model clears any other. The budget excludes the grant's own Formula
+wherever it is recorded, and the developer measured why it matters: on
+the owner's export Al-Mudawwan's upgrades sum to sixty with Human Hands
+among them, and the clamp to zero had hidden the ten. The tests run on
+the owner's export: Al-Mudawwan marked, Al-Masyukh not, budget left zero,
+Promotion refused on the grant's own sentence.
+
 **Ruling for the Formulas tab (FD-13a item 2).** The developer asked
 whether the tab replaces the advancement sheet's Formula groups or sits
 beside them. It replaces them: the sheet keeps its other groups (Goetic
@@ -2427,7 +2441,31 @@ After pack C.
 13. GOLEM-1 after #105 and before pack C, one PR: the import marks the
     Golem where the grant's rule finds one, the builder's action marks it
     where it cannot, the grant's own Formula is not counted, with the test
-    on the fixture. Then FD-17's acceptance test, then pack C.
+    on the fixture. Done in #107.
 14. EXP-1 after pack C, one PR: the classification above confirmed by
     measurement, the importer keeping the selection an item came from, and
     the acceptance test on the September fixture.
+
+**Parked for the week, 21 September 04:55 UTC.** The owner's usage is low
+and the seven-day limit resets on 25 September at 17:00 UTC, so after #107
+the developer was told to stop (Order 38). What resumes, in this order:
+
+1. **FD-17's acceptance test**, which the developer had already built and
+   verified before the order arrived and left open as #108, green on CI
+   and unmerged. It merges or is dropped on the owner's word; nothing
+   else depends on it. Its body records the three things the design got
+   wrong, measured: finding 2's cause was the validator being handed the
+   catalogue entry instead of the model, so no Promoted model could meet
+   a requirement naming ELITE; finding 3 needs five derived granters, not
+   one; and Curative Fluids, an Exploration find, was a sixth report the
+   design had not named.
+2. **Pack C**, FD-12 with FD-15, READY FOR TESTING 2 in its body.
+3. **EXP-1.** The developer measured one more correction: imported items
+   do not carry which selection they came from at all, so "an item keeps
+   the selection it came from" is importer work, not a read of existing
+   data.
+4. Item 9's AI-3 and AI-5, FD-08, FD-10, AI-4.
+
+Carried forward and not fixed: the store's `toggleUnitSpecialUpgrade`
+charges without checking the Strongbox, so a Strain or a Saga can still
+overdraw it through the advancement sheet, and the validator reports it.
