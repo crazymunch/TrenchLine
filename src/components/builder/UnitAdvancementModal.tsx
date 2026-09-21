@@ -11,6 +11,7 @@ import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { canBePromoted } from '../../rules/promotions';
 import { nextAdvancementAt } from '../../rules/advancement';
 import { inFormulaGroup } from '../../rules/formulae';
+import { catalogueUnitFor } from '../../rules/catalogueUnit';
 import { 
   Sparkles, 
   Skull, 
@@ -116,8 +117,12 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     real costs, real rules text. Matched on the profile name, which is what a
     saved warband stores.
   */
-  const catalogueUnit = dataset?.units.find(
-    (u) => u.name === unit.profileSnapshot?.name || u.name === unit.customName);
+  const warbandFaction = useStore(
+    (st) => st.warbands.find((w) => w.id === warbandId)?.factionId);
+  /* Id first, faction second, name last. The bare name lookup that stood
+     here answered with the Court of the Seven-Headed Serpent's `Homunculus`
+     for every Homunculus on any roster — six entries share the name (ID-1). */
+  const catalogueUnit = catalogueUnitFor(dataset, unit, warbandFaction);
   const optionGroups = (catalogueUnit?.options ?? []).reduce<
     Record<string, {
       id: string; name: string; group: string; cost: number; description: string;

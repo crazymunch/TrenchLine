@@ -9,6 +9,7 @@ import { canEquip } from '../../rules/equipGate';
 import { armouryFor } from '../../rules/armoury';
 import { traitsOf, chosenBy } from '../../rules/formulae';
 import { formulaShelf } from '../../rules/formulaShelf';
+import { catalogueUnitFor } from '../../rules/catalogueUnit';
 import { isGolem } from '../../rules/golem';
 import { alchemistAliveFor, takwinEntries } from '../../rules/takwin';
 import { formatCost } from '../../rules/costs';
@@ -384,10 +385,11 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     that a rules module has no business going looking for.
   */
   const takwinNames = React.useMemo(() => takwinEntries(dataset), [dataset]);
+  /* Id first, faction second, name last — six entries are called
+     `Homunculus` and a bare name lookup answered with the Court's (ID-1). */
   const catalogueUnit = React.useMemo(
-    () => dataset?.units.find(
-      (u) => u.name === unit?.profileSnapshot?.name || u.name === unit?.customName),
-    [dataset, unit]);
+    () => catalogueUnitFor(dataset, unit, factionId),
+    [dataset, unit, factionId]);
 
   /*
     Whether this model is one the association rule governs, and whether its
