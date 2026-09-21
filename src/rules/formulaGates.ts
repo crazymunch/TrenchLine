@@ -24,13 +24,31 @@
  * codebase keeps hitting: when they disagree, whichever ran last wins. The
  * exclusion carries its own exception, so the permission needs no code.
  *
- * ## Names are resolved, not trusted
+ * ## Names are resolved against THIS MODEL'S entry, not the ruleset
  *
- * Every name pulled out of a sentence is matched against the Formulae the
- * ruleset actually has. One that resolves to nothing is NOT enforced as a
- * phantom prerequisite — it is reported, so the screen can show the sentence
- * and let the player judge, which is this codebase's standing answer to a
- * rule it cannot read.
+ * The six Homunculus entries do not offer the same Formulae, and the
+ * difference is load-bearing. The Iron Sultanate's Takwin Homunculus offers
+ * **Two Heads** — *"This Takwin Homunculus can have both the Hawk Eyes and
+ * Hypnotic Eyes Alchemical Formulas."* The five Golem copies (Court, Heretic
+ * Legion, New Antioch, Trench Crusade, Trench Pilgrims) offer **Additional
+ * Head** instead — *"The Homunculus has two heads and therefore can have two
+ * sets of eyes via Alchemical Formula"* — and their Eye Options still say
+ * *"without Two Heads"*.
+ *
+ * So a name resolved against the whole ruleset finds a Two Heads the model
+ * can never buy, and a Golem holding Hawk Eyes and Additional Head is refused
+ * Hypnotic Eyes against the sentence on the Formula it is holding. `known` is
+ * therefore the Formulae the model's OWN entry offers.
+ *
+ * Where the exception names something that entry does not offer, the lifter
+ * is a Formula on that entry whose text grants the same permission — the two
+ * sentences quoted above. Where neither is found, the clause is a CAVEAT and
+ * never a refusal: an exception this cannot resolve must not become an
+ * unconditional refusal, which is the one direction of error that costs a
+ * player a legal purchase.
+ *
+ * A prerequisite name that resolves to nothing is likewise reported, never
+ * enforced as a phantom.
  */
 import { nameKey } from './names';
 
@@ -38,8 +56,16 @@ export interface FormulaGate {
   /** Formulae that must already be on the model before this one may be taken. */
   requires: string[];
   /**
-   * Formulae this one cannot sit beside, each with the Formula that lifts the
-   * refusal where the sentence names one. `null` means nothing lifts it.
+   * Formulae this one cannot sit beside.
+   *
+   * `unless` is the Formula that lifts the refusal, resolved against the
+   * model's own entry — by name where the sentence's name is on offer there,
+   * otherwise by the permission another Formula on that entry grants.
+   *
+   * `null` means the entry offers no lifter this could identify. That is NOT
+   * an unconditional refusal: `formulaVerdict` treats it as a caveat, because
+   * an exception it cannot resolve is a rule it cannot read, and refusing on
+   * a rule it cannot read costs a player a legal purchase.
    */
   excludes: { name: string; unless: string | null }[];
   /**
@@ -68,6 +94,51 @@ const EXCLUDES_UNLESS = /cannot be combined with\s+(?:the\s+)?(.+?)\s+without\s+
 /** "Cannot be combined with the Wings formula." */
 const EXCLUDES = /cannot be combined with\s+(?:the\s+)?(.+?)\s+(?:Alchemical\s+)?[Ff]ormulas?\b/i;
 
+/**
+ * The book's own wording, which the Iron Sultanate entry uses where the Court
+ * copies use the short form:
+ *
+ *   "A Homunculus cannot have the Hypnotic Eyes Alchemical Formula if it has
+ *    the Hawk Eyes Alchemical Formula unless it also has the Two Heads
+ *    Alchemical Formula"
+ *
+ * Same rule, same three parts, different sentence — so it is read here rather
+ * than the short form being treated as the only way a catalogue may say it.
+ * The subject is the Formula being taken; the name after "if it has" is the
+ * one that refuses it. No trailing period is required: the Takwin's Hypnotic
+ * Eyes text ends without one.
+ */
+const CANNOT_HAVE_IF = new RegExp(
+  'cannot have the\\s+(?:.+?)\\s+Alchemical Formula\\s+if it has the\\s+(.+?)\\s+Alchemical Formula'
+  + '(?:\\s+unless it also has the\\s+(.+?)\\s+Alchemical Formula)?',
+  'i',
+);
+
+/**
+ * A Formula whose own text grants the permission an exception depends on.
+ *
+ * Both sentences the ruleset uses, quoted, because this is the one place a
+ * regex stands in for a name:
+ *
+ *   Additional Head — "The Homunculus has two heads and therefore can have
+ *                      two sets of eyes via Alchemical Formula."
+ *   Two Heads       — "This Takwin Homunculus can have both the Hawk Eyes and
+ *                      Hypnotic Eyes Alchemical Formulas."
+ *
+ * Matched on what the Formula SAYS rather than on either name, so the five
+ * Golem entries and the one Takwin entry are handled by the same code, and a
+ * catalogue that renames either is still read.
+ */
+const GRANTS_TWO_SETS_OF_EYES =
+  /can have two sets of eyes|can have both the\s+.+?\s+and\s+.+?\s+Alchemical Formulas?/i;
+
+function permissionGranter(
+  offered: readonly { name: string; description?: string }[],
+): string | null {
+  const hit = offered.find((o) => GRANTS_TWO_SETS_OF_EYES.test(o.description ?? ''));
+  return hit ? hit.name : null;
+}
+
 /** `A, B and C` / `A and B` / `A` — the book's own list punctuation. */
 function names(list: string): string[] {
   return list
@@ -85,12 +156,18 @@ function names(list: string): string[] {
  */
 export function formulaGate(
   formula: { name: string; description?: string } | null | undefined,
-  known: readonly string[] = [],
+  /**
+   * The Formulae THIS MODEL'S catalogue entry offers, with their rules text.
+   * Not the ruleset's: see the header. A bare list of names is accepted for
+   * the cases that have no permission clause to resolve.
+   */
+  offered: readonly ({ name: string; description?: string } | string)[] = [],
 ): FormulaGate {
   const text = (formula?.description ?? '').trim();
   if (!text) return EMPTY;
 
-  const byKey = new Map(known.map((n) => [nameKey(n), n]));
+  const entries = offered.map((o) => (typeof o === 'string' ? { name: o } : o));
+  const byKey = new Map(entries.map((o) => [nameKey(o.name), o.name]));
   const unreadable: string[] = [];
   /** The ruleset's own spelling, or null with the name recorded. */
   const resolve = (raw: string): string | null => {
@@ -109,11 +186,28 @@ export function formulaGate(
   }
 
   const excludes: FormulaGate['excludes'] = [];
+  const bookForm = CANNOT_HAVE_IF.exec(text);
   const unless = EXCLUDES_UNLESS.exec(text);
-  if (unless) {
+  if (bookForm) {
+    const name = resolve(bookForm[1]);
+    const stated = bookForm[2];
+    const lift = stated
+      ? (byKey.get(nameKey(stated)) ?? permissionGranter(entries))
+      : null;
+    if (stated && !byKey.has(nameKey(stated)) && !lift) unreadable.push(stated);
+    if (name) excludes.push({ name, unless: lift ?? null });
+  } else if (unless) {
     const name = resolve(unless[1]);
-    const lift = resolve(unless[2]);
-    if (name) excludes.push({ name, unless: lift });
+    /*
+      The sentence's own name first; failing that, whatever on this entry
+      grants the same permission. A Golem's Eye Options say "without Two
+      Heads" and its entry offers Additional Head, so the name alone finds
+      nothing and the permission finds the Formula the player can actually
+      buy.
+    */
+    const lift = byKey.get(nameKey(unless[2])) ?? permissionGranter(entries);
+    if (!byKey.has(nameKey(unless[2])) && !lift) unreadable.push(unless[2]);
+    if (name) excludes.push({ name, unless: lift ?? null });
   } else {
     const ex = EXCLUDES.exec(text);
     if (ex) {
@@ -148,9 +242,9 @@ export interface FormulaVerdict {
 export function formulaVerdict(
   formula: { name: string; description?: string } | null | undefined,
   held: readonly string[],
-  known: readonly string[] = [],
+  offered: readonly ({ name: string; description?: string } | string)[] = [],
 ): FormulaVerdict {
-  const gate = formulaGate(formula, known);
+  const gate = formulaGate(formula, offered);
   const has = new Set(held.map(nameKey));
 
   const missing = gate.requires.filter((r) => !has.has(nameKey(r)));
@@ -161,6 +255,15 @@ export function formulaVerdict(
   for (const ex of gate.excludes) {
     if (!has.has(nameKey(ex.name))) continue;
     if (ex.unless && has.has(nameKey(ex.unless))) continue;
+    /*
+      An exception this could not resolve on the model's own entry. Refusing
+      here would turn "cannot be combined with X without Y" into "cannot be
+      combined with X", which is the one direction of error that costs a
+      player a legal purchase. The sentence is shown instead.
+    */
+    if (!ex.unless && gate.unreadable.length) {
+      return { allowed: true, caveat: gate.text };
+    }
     return { allowed: false, reason: gate.text };
   }
 
