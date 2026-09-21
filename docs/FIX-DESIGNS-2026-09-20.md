@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | src/data/warbandLore.ts (deleted by #82), prisma/seed.ts (deleted by #83), the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 19:15 UTC on 20 September
+### Landed, as of 02:10 UTC on 21 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -79,6 +79,13 @@ carry, and what these designs cover:
 | FD-05h (a model hired for Glory is charged it; the validator names the overdrawn currency) | #91 | merged |
 | FD-06d (Bitter Lessons rolls its D3 and blocks the commit until rolled; War Stories as one switch) | #92 | merged |
 | WIZ-2 (the end-to-end mock game spec; `docs/READY-FOR-TESTING.md`) | #93 | merged; READY FOR TESTING at 19:01 UTC |
+| The September export as a fixture; FD-16; FD-12's acceptance case; the designs caught up | #94 | merged |
+| Pack A: FD-13a and FD-13b's rules (the equip sheet asks the engine; the Golem; the associated-Alchemist rule; the importer reads `Campaign Rules > Enabled`) | #95 | merged, with the corrections recorded under FD-13 |
+| FD-17's five findings; #95's corrections | #96 | merged |
+| ARM-1 (a wrapped Armoury Table row no longer truncates its table; twenty rows restored across four factions; Grail Devotee reported as NOT STOCKED) | #97 | merged; reviewed on `main`, correct. Grail Devotee's ruling and ARM-2 are recorded under FD-17 |
+| FD-16 (the Battlekit a Weapon Collections grant reaches is offered, keyed by the armoury that priced it, gated by that armoury's stipulations) | #98 | merged; reviewed on `main`, correct. One deviation accepted and one hole found, WC-1, both recorded under FD-16 |
+| Pack A2, first half: Re-creation (two deadlines read from the ability text; the offer held on the roster; paid or declined in the builder; the Quartermaster one lapses when the campaign moves on) | #99 | merged; reviewed on `main`, correct. One hole found, RC-1, recorded under FD-13 |
+| FORM-1 (a nested option group keeps its parent: `groupPath`) and FORM-2 (a Formula's prerequisites and exclusions read from its sentence) | #100 | open on `claude/fd-13a-formulas-tab`. FORM-1 reviewed, correct. FORM-2 has one defect, FORM-3, recorded under FD-13 |
 
 ## FD-00. PR #59 as it stands
 
@@ -1749,6 +1756,76 @@ it from the search. Re-creation, the Formulas tab and the card's Formula
 text follow as pack A2. The developer also built the associated-Alchemist
 rule (L5294 to L5302) as src/rules/takwin.ts, which stays.
 
+**Landed by #99 (pack A2, first half: Re-creation).** Reviewed on `main`.
+The rule is read from the model's own ability text, not from a phrase
+search, and the two entries that carry it are not the same rule: the
+Takwin's payment is due "in the following Quartermaster Step" (L5324 to
+L5327) and the Golem's "at any time between battles" (the Book of Golems
+row). One lapses, the other never does, and an offer whose deadline cannot
+be read is not offered. The post-battle wizard writes the offer onto the
+model as `awaitingRecreation` with `isDead` false, which is the only way to
+keep it on the roster past the wizard, and the builder settles it through
+the ledger; the Quartermaster offer lapses, logged, when the campaign's
+counter moves past the game the model died in. The panel refuses the
+payment while the Strongbox is short and prints the shortfall: that is a
+visible refusal with its reason, which is what Order 29 asked of the
+validator, so it stands. One correction to FD-13b item 1: the wizard's
+Trauma step does not offer the choice, the builder does, because the book
+puts the payment after the post-battle sequence.
+
+**RC-1, a hole in #99.** A model awaiting Re-creation is fieldable. It is
+`isDead: false`, so `forceBudget` counts it in the Force and the Threshold,
+Play Mode's default Force includes it, `reinforcementCost` counts its cost,
+the `.ros` export writes it as living, and the wizard lists it among the
+models a battle can wound. Under the book it is a dead model whose owner
+may still pay; it is on the roster and on nothing else. The fix is one
+predicate, next to `removeFromRoster` or in the Re-creation module, read
+everywhere `isDead` or `benched` decides who takes the field: the Force and
+the Threshold, Play Mode's default, the reinforcement total, the export
+(left out with the same informational note a dead model gets), and the
+wizard's model list. The roster listing and the Re-creation panel keep
+showing it. Test: a Takwin awaiting Re-creation is not in the Force, not in
+the Threshold spend, not in the reinforcement total, not in the `.ros`, and
+not in the wizard's list; after `recreateUnit` it is in all five.
+
+**FORM-1, landed on #100's branch.** Reviewed, correct: `optionsOf` let a
+nested group replace its parent's name, so the Eye Options arrived as the
+bare leaf and were not Formulae to `isAlchemicalFormula`, whose comment had
+described the `::` form since it was written. `UnitOption.groupPath`
+carries the ancestry beside the leaf. The importer was never affected: the
+owner's export writes `Alchemical Formulae::Eye Options` as the group
+already. An in-app purchase wrote the leaf, and now writes the path.
+
+**FORM-2, on #100's branch, with one defect, FORM-3.** The prerequisites
+and exclusions are read from the sentences, which is right, and the survey
+test caught Hawk Eyes' own sentence. The defect: the names a sentence uses
+are resolved against every Formula in the ruleset, and the six Homunculus
+entries do not offer the same ones. The Iron Sultanate entry offers **Two
+Heads** ("This Takwin Homunculus can have both the Hawk Eyes and Hypnotic
+Eyes Alchemical Formulas"); the five Golem copies offer **Additional Head**
+instead ("The Homunculus has two heads and therefore can have two sets of
+eyes via Alchemical Formula"), and their Eye Options still say "without
+Two Heads". Resolved ruleset-wide, "Two Heads" is found, so a Golem holding
+Hawk Eyes and Additional Head is refused Hypnotic Eyes, against the
+sentence on the Formula it holds. And where the exception does not resolve,
+the code pushes the exclusion with no way out, which enforces a refusal the
+header promised not to. Ruling: resolve names against the Formulae the
+model's own entry offers; an exclusion whose exception cannot be resolved
+there is lifted by a held Formula on that entry whose text grants the same
+permission (two sets of eyes, or both Eye Formulas), cited; and where
+neither is found the clause is a caveat and never a refusal. Tests: a Golem
+with Hawk Eyes and Additional Head may take Hypnotic Eyes and without
+Additional Head is refused; the Takwin with Two Heads may and without it is
+refused; an exception that resolves to nothing is a caveat.
+
+**Ruling for the Formulas tab (FD-13a item 2).** The developer asked
+whether the tab replaces the advancement sheet's Formula groups or sits
+beside them. It replaces them: the sheet keeps its other groups (Goetic
+Powers, Strains, Sagas) and stops offering anything under `Alchemical
+Formulae`, so one surface writes the category. The tab spends the Golem's
+free budget before the Strongbox, books through the ledger, and refuses
+with the sentence FORM-2 reads.
+
 ## FD-14. The pass for invented content
 
 The owner asked for a pass over what the original generator seeded and the
@@ -2048,6 +2125,44 @@ without the Variant sees neither row; a Warband whose Variant states no
 grant records no collections; the New Antioch armoury carries the two rows
 with the book's stipulations.
 
+**Landed by #98, reviewed on `main`.** The data half came from ARM-1
+(#97), not from a hidden-link rule: the armouries are parsed from the
+Warbands book's tables, not from the catalogues, and the rows were missing
+because a wrapped row ended its table. Item 3 is built as designed: each
+granted armoury's rows are appended to the offer with `grantedBy` and the
+faction whose table priced them, keyed `granted:<faction>:<row>` so the
+same item from two armouries at two prices is two offers (Martyrdom Pills,
+1 Glory from New Antioch and 20 Ducats from the Trench Pilgrims), and the
+equip gate reads the stipulations from the granting armoury. Item 4 was
+already true. Two things differ from the design and are accepted:
+
+- **Item 2, `collections`, is not built.** The grant is offered whenever
+  the builder is open, and the ceiling of one from each armoury is
+  enforced at the roster door by `checkVariantGrants`. The book's "When
+  you create your starting Warband" is a founding lock the app does not
+  enforce, and "repurchase the Battlekit later" is a same-item rule it
+  does not enforce either. Accepted, because the owner's own case is a
+  Warband founded in NewRecruit and imported after it had played, whose
+  pick can only be recorded after the fact; the ceiling is the part a
+  roster can be wrong about, and it is enforced. The rest is the group's
+  to keep.
+- **Item 5, import, has nothing to read.** The owner's export carries no
+  Weapon Collections group, and a `.ros` pick is always a row the app now
+  offers, so the importer needs no change.
+
+**WC-1, a hole in #98.** The `.ros` export refuses the owner's roster once
+Machine Armour is on it. `rosReport` resolves every equipped name against
+the catalogue's reachable selections, and the Iron Sultanate catalogue's
+Weapon Collections group has no Armour (`docs/ROS-EXPORT.md` records this,
+and reads it as "will lose it"; it is fatal, no file is written). An item
+that carries `grantedBy` and cannot be reached in the catalogue is a
+warning that names the item and the rule, and the file is written without
+it, with the model's cost in the file lower than the app's stated in the
+same warning. Test: the September fixture as a House of Wisdom Warband
+with Machine Armour equipped on an ELITE model exports, with one warning
+naming Machine Armour and Weapon Collections, and the Anti-Tank Hammer
+written as a Trench Pilgrims pick.
+
 ## FD-17. The August import validates clean: five armoury-data findings
 
 Driving the owner's August export through the real importer (#95) reports
@@ -2080,6 +2195,33 @@ Acceptance: the August and September exports import and validate with no
 violation the book does not support, driven by a test on both files. Lands
 in pack B with FD-16.
 
+**Corrections, after #97 and #98.** Finding 1 is reclassified: the Fire
+Shield is not an Armoury Table row the parser dropped. Warbands L5490 is
+the Battlekit chapter's heading for it, and the Iron Sultanate Armoury
+Table does not list it; a Homunculus carries it because Human Hands grants
+it (L5382). It is entry-granted kit, finding 3's case, and is exempt from
+`wargear-not-stocked` on the same ground. The "hidden or nested link" rule
+this finding asked for does not exist to fix: `dataset.armouries` is parsed
+from the book's tables by `parseArmouryTables`, and what was missing was
+lost to a wrapped row, which ARM-1 (#97) repaired: twenty rows restored,
+New Antioch's Shields and Armour among them, so Machine Armour is now a row
+with the book's stipulation. The acceptance test on both exports is still
+owed and is the next thing pack B delivers.
+
+**ARM-2, filed by the developer, not fixed.** The War Pilgrimage of Saint
+Methodius armoury block is merged into the standard Trench Pilgrims table,
+which duplicates two rows. Pre-existing and equally visible to a plain
+Trench Pilgrims warband; it does not touch the owner's roster.
+
+**ARM-3, the Grail Devotee, reported and left.** The Court of the
+Seven-Headed Serpent's row is priced "15 Ducats or 2 Glory" (L7425 to
+L7426, the heading at L7495), a choice between currencies, and
+`ArmouryRow.cost` means both together. #97 reports it as NOT STOCKED at
+build time rather than guessing a price. That stands: a row with two prices
+needs a second cost on the row and a choice in the Arsenal, nobody at the
+table plays the Court, and a reported gap beats an invented one. Filed for
+the day someone does.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -2100,6 +2242,11 @@ in pack B with FD-16.
    phone-visible, so it may ride with WIZ-2 if the developer judges it fits.
 10. After READY FOR TESTING (#93, 19:01 UTC): the owner's next batch,
     packed at the owner's request: pack A, FD-13a with FD-13b's rules (#95);
-    pack A2, Re-creation, the Formulas tab and the card's Formula text;
-    pack B, FD-16 with FD-17; pack C, FD-12 with FD-15, READY FOR TESTING 2
-    in its body. Then AI-3 and AI-5, FD-08, FD-10, AI-4 as item 9 says.
+    pack A2, Re-creation (#99), the Formulas tab and the card's Formula
+    text (on #100's branch, after FORM-3); pack B, FD-16 (#98, with ARM-1
+    as #97) with FD-17's acceptance test still owed; pack C, FD-12 with
+    FD-15, READY FOR TESTING 2 in its body. Then AI-3 and AI-5, FD-08,
+    FD-10, AI-4 as item 9 says.
+11. The three holes the review of #98 to #100 found, before pack C: FORM-3
+    on #100's branch before it merges; RC-1 and WC-1 as one PR or two, the
+    developer's call, with the tests each ruling names.
