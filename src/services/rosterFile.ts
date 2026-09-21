@@ -67,6 +67,10 @@ export type Disposition = 'durable' | 'identity' | 'live' | 'local';
 export const WARBAND_FIELDS: Record<keyof Warband, Disposition> = {
   id: 'identity',
   name: 'durable',
+  /* What the import read from `Campaign Rules > Enabled`. Durable: it is what
+     the Warband EARNED, it cannot be reconstructed from the models, and the
+     Book of Golems action is offered on the strength of it (GOLEM-1). */
+  campaignRules: 'durable',
   factionId: 'durable',
   variantId: 'durable',
   allowThirdParty: 'durable',

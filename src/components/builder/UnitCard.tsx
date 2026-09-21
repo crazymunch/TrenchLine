@@ -13,6 +13,7 @@ import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
 import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
 import { formulaeHeld } from '../../rules/formulaShelf';
 import { catalogueUnitFor } from '../../rules/catalogueUnit';
+import { golemGrant, isGolem } from '../../rules/golem';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
@@ -39,6 +40,7 @@ import {
   Award,
   BookOpen,
   Flame,
+  FlaskConical,
   Users,
   Star,
   MoreVertical,
@@ -67,6 +69,7 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   const { 
     removeUnitFromWarband, 
     duplicateUnit,
+    setUnitAsGolem,
     updateUnitName, 
     updateUnitCategory,
     setUnitAsLeader,
@@ -108,9 +111,36 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
       && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
   const warbandFaction = useStore(
     (st) => st.warbands.find((w) => w.id === warbandId)?.factionId);
+  const warbandRules = useStore(
+    (st) => st.warbands.find((w) => w.id === warbandId)?.campaignRules);
+  const warbandUnitsHere = useStore(
+    (st) => st.warbands.find((w) => w.id === warbandId)?.units);
   const heldFormulae = React.useMemo(
     () => formulaeHeld(unit, catalogueUnitFor(cardDataset, unit, warbandFaction)),
     [cardDataset, unit, warbandFaction]);
+  /*
+    The Book of Golems, GOLEM-1.
+
+    Offered only where the Warband has EARNED the grant — `campaignRules`
+    carries what the roster's `Campaign Rules > Enabled` subtree said — and
+    only on a model whose entry could be the one the row adds, which is an
+    entry that offers Alchemical Formulae. The import marks the model where
+    the roster can say which one (`golemOnImport`); this is the other half,
+    for a roster where more than one model fits and for a Warband built in
+    the app rather than imported.
+  */
+  const golemGrantHere = React.useMemo(() => golemGrant(cardDataset), [cardDataset]);
+  const warbandHoldsBook = Boolean(golemGrantHere) && (warbandRules ?? []).some(
+    (r) => r.trim().toLowerCase() === golemGrantHere!.name.trim().toLowerCase());
+  const thisIsGolem = isGolem(unit);
+  const couldBeGolem = warbandHoldsBook
+    && (catalogueUnitFor(cardDataset, unit, warbandFaction)?.options ?? [])
+      .some(isAlchemicalFormula);
+  /* One grant, one model: another model already carrying the mark is named,
+     so marking this one reads as MOVING it rather than as a second grant. */
+  const golemElsewhere = (warbandUnitsHere ?? []).find(
+    (u) => u.id !== unit.id && isGolem(u));
+
   /* Everything in `specialUpgrades` that is NOT a Formula — Strains, Sagas,
      Goetic Powers — which keep their own pills below. */
   const formulaIds = new Set(heldFormulae.map((f) => f.id).filter(Boolean));
@@ -382,6 +412,42 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                     <Armchair className={`w-3.5 h-3.5 ${unit.benched ? 'text-theme-primary' : 'text-theme-muted'}`} />
                     <span>{unit.benched ? 'Bring back into the Force' : 'Sit this game out'}</span>
                   </button>
+
+                  {/*
+                    The Book of Golems, GOLEM-1.
+
+                    The mark is `grantedBy` and nothing else; everything the
+                    grant DOES — the free 50-Ducat Formula allowance, "can
+                    never be Promoted", the Keyword swap — is derived from it.
+                    Shown only where the Warband holds the grant and this
+                    entry could be the model it adds, so it is not a menu item
+                    on every warrior in the game.
+                  */}
+                  {couldBeGolem && (
+                    <button
+                      onClick={() => {
+                        setUnitAsGolem(warbandId, unit.id, !thisIsGolem);
+                        setIsActionMenuOpen(false);
+                      }}
+                      className="w-full px-3 py-2 text-left flex items-start space-x-2 text-theme-text hover:bg-theme-elevated hover:text-theme-primary transition-colors"
+                    >
+                      <FlaskConical className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${thisIsGolem ? 'text-theme-primary' : 'text-theme-muted'}`} />
+                      <span className="space-y-0.5">
+                        <span className="block">
+                          {thisIsGolem
+                            ? `Not the ${golemGrantHere!.name} model`
+                            : `Created by the ${golemGrantHere!.name}`}
+                        </span>
+                        {/* Which model already carries it, so marking this one
+                            reads as moving the grant rather than adding one. */}
+                        {!thisIsGolem && golemElsewhere && (
+                          <span className="block text-xs sm:text-[10px] text-theme-muted">
+                            Moves it from {golemElsewhere.customName}.
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                  )}
 
                   <button
                     onClick={() => {

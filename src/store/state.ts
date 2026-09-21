@@ -281,6 +281,13 @@ export interface AppState {
    */
   setUnitBenched: (warbandId: string, unitId: string, benched: boolean) => void;
   setUnitAsLeader: (warbandId: string, unitId: string) => void;
+  /**
+   * Mark, or unmark, the model the Book of Golems created (GOLEM-1).
+   *
+   * Writes `grantedBy` and nothing else; everything the grant does is derived
+   * from that mark. At most one model on a Warband carries it.
+   */
+  setUnitAsGolem: (warbandId: string, unitId: string, isGolem: boolean) => void;
   updateUnitLore: (warbandId: string, unitId: string, lore: string, quote?: string, titles?: string[], deeds?: string[]) => void;
   /**
    * Give a model a piece of Battlekit, and charge the Strongbox for it.

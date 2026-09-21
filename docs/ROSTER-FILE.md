@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -86,6 +86,31 @@ and this is how it **arrived**, so the same Takwin Homunculus entry recruited
 out of the Armoury is unaffected. Lose the field in a round-trip and a Golem
 comes back a model that may be Promoted, which is why it is durable and why
 `UNIT_FIELDS` makes every new field say so.
+
+**Who writes it** (GOLEM-1). Until now nothing did: `golemOnImport` was built
+with the rules and had no caller, so no model on any roster was ever marked,
+the grant's free-Formula allowance was unreachable, *"can never be Promoted"*
+never fired and `golemKeywords` had no live effect. Two paths write it now,
+and both write `grantedBy` and nothing else — everything the grant DOES stays
+derived from the mark:
+
+- **The import**, where the roster can say which model the grant created.
+  `golemOnImport` decides; the importer writes. Where more than one model
+  fits, or none, it marks **nothing** and carries the reason to the import
+  screen, because a guess hands a free 50 Ducats to the wrong model silently.
+- **The builder**, a *Created by the Book of Golems* action on the model's own
+  card, for the case the import could not decide and for a Warband built in
+  the app. Marking one model clears the mark from any other: one grant, one
+  model.
+
+`campaignRules` on the **Warband** is `durable` and new with the same change.
+It is what the roster's `Campaign Rules > Enabled` subtree said the Warband
+earned — the Book of Golems, a Ransacked Alchemist Workshop, a Reroll — read
+by the importer since #95 and, until now, dropped the moment the import screen
+closed. It has to survive, because the builder's action is offered only to a
+Warband that holds the grant. Names only, exactly as the roster spells them:
+what each one MEANS is a rules question, and `golemGrant` matches the Book by
+the sentence its Exploration row prints rather than by this string.
 
 `isDead` is `durable` and the distinction matters, because it reads like battle
 state and is not. A model removed by the Trauma Step is gone from the campaign;
