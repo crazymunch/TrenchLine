@@ -120,15 +120,39 @@ function heldFormulae(unit: ShelfUnit | null | undefined, offered: UnitOption[])
   ].filter(Boolean);
 }
 
-/** Ducats of Formulae this model has already charged to the free allowance. */
-function spentFromBudget(held: readonly string[], offered: readonly UnitOption[]): number {
+/**
+ * Ducats of Formulae this model has already charged to the free allowance.
+ *
+ * The one the grant SUPPLIES is excluded, wherever it is recorded: *"It has
+ * the Human Hands Alchemical Formula, **plus** Alchemical Formulas worth a
+ * total of up to 50 👑."* The word is "plus", so Human Hands is given and the
+ * 50 is separate.
+ *
+ * GOLEM-1. Excluding it only where it arrives as an innate ability was not
+ * enough: on an IMPORTED roster it arrives as an ordinary `specialUpgrade` at
+ * its list price, because that is how the file records a Formula the model
+ * holds. Measured on the owner's September export, Al-Mudawwan's upgrades sum
+ * to 60 — Enslaved Mind 10, Human Hands 10, Inhuman Strength 15, Additional
+ * Arm 15, Hawk Eyes 10 — where the four that are not the grant's sum to
+ * exactly 50. `Math.max(0, …)` in `freeFormulaBudgetLeft` clamped the −10 to
+ * zero and hid it there; a Golem that had spent LESS would simply have been
+ * told it had 10 Ducats less to spend than the grant gives it.
+ *
+ * `golem.ts`'s own `golemCandidates` already counts this way — its reason
+ * reads "holds Human Hands and 50 Ducats of Formulas, within the grant's 50" —
+ * so this brings the budget into line with the rule that identifies the model.
+ */
+function spentFromBudget(
+  held: readonly string[],
+  offered: readonly UnitOption[],
+  /** `grant.startsWith` — the Formula the grant hands over. */
+  given?: string,
+): number {
   const byName = new Map(offered.map((o) => [nameKey(o.name), o.cost.ducats ?? 0]));
-  /* The one the grant supplies is not spent out of the budget: "It has the
-     Human Hands Alchemical Formula, PLUS Alchemical Formulas worth a total of
-     up to 50 👑". Counted from the purchases only, which is what `held` minus
-     the innate names is — an innate name is on the model because the entry
-     prints it, not because a player spent anything. */
-  return held.reduce((n, name) => n + (byName.get(nameKey(name)) ?? 0), 0);
+  const free = given ? nameKey(given) : null;
+  return held.reduce(
+    (n, name) => (free && nameKey(name) === free ? n : n + (byName.get(nameKey(name)) ?? 0)),
+    0);
 }
 
 export function formulaShelf(
@@ -180,7 +204,9 @@ export function formulaShelf(
   /* Purchases only — see `spentFromBudget`. An innate Formula is the grant's
      own gift and does not eat the allowance it is given "plus". */
   const bought = (opts.unit?.specialUpgrades ?? []).map((u) => u.name);
-  const budgetLeft = grant ? freeFormulaBudgetLeft(grant, spentFromBudget(bought, offered)) : null;
+  const budgetLeft = grant
+    ? freeFormulaBudgetLeft(grant, spentFromBudget(bought, offered, grant.startsWith))
+    : null;
 
   const purse: Cost = {
     ducats: opts.strongbox?.ducats ?? 0,

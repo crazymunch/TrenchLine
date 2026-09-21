@@ -9,16 +9,48 @@ import {
   AlertCircle 
 } from 'lucide-react';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
+import { useDataset } from '@/rules/useDataset';
+import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
 
 interface ImportWarbandModalProps {
   onClose: () => void;
 }
+
+/**
+ * What the Book of Golems decided, as a note the player reads.
+ *
+ * Shown ONLY where it matters: a roster that does not hold the grant says
+ * nothing, because every import would otherwise carry a line about a rule the
+ * warband has never earned. Where the grant is held and the roster cannot say
+ * which model it created, the reason is the note — and the model is marked by
+ * hand on its card, never guessed at here.
+ */
+const golemNote = (
+  golem: { markedIndex: number | null; reason: string } | undefined,
+): string[] => {
+  if (!golem) return [];
+  /* "This ruleset carries no Book of Golems" and "This roster does not hold
+     the Book of Golems" are both silence: nothing was earned, so there is
+     nothing to report. */
+  if (golem.markedIndex === null && /carries no|does not hold/i.test(golem.reason)) return [];
+  return [golem.reason];
+};
 
 export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose }) => {
   // `units` already carries the dataset's profiles plus any custom ones. The
   // importer used to resolve against `defaultRules.ts` instead, which gave
   // every imported model a hand-written statline under a name that matched.
   const { units, factions, setActiveWarbandId } = useStore();
+
+  /*
+    The ruleset, for the rules that read a WHOLE roster rather than a line of
+    it. Today that is the Book of Golems (GOLEM-1): which model the grant
+    created is decided from the roster's campaign rules and every model's
+    Formulae at once, so `knownUnits` alone cannot answer it.
+  */
+  const { dataset: importDataset } = useDataset(
+    (typeof window !== 'undefined'
+      && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
 
   const [inputText, setInputText] = useState('');
   const [parsedWarband, setParsedWarband] = useState<Warband | null>(null);
@@ -81,9 +113,10 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     if (readRoster(inputText)) return;
 
     try {
-      const { warband, unmatched } = importNewRecruitRoster(inputText, units);
+      const { warband, unmatched, golem } = importNewRecruitRoster(
+        inputText, units, importDataset ?? undefined);
       setUnmatched(unmatched);
-      setFileNotes([]);
+      setFileNotes(golemNote(golem));
       if (warband.units.length === 0) {
         setErrorMsg('No units could be parsed from the input. Please check the export format.');
         setParsedWarband(null);
@@ -107,9 +140,11 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       setInputText(content);
       if (readRoster(content)) return;
       try {
-        const { warband, unmatched } = importNewRecruitRoster(content, units);
+        const { warband, unmatched, golem } = importNewRecruitRoster(
+          content, units, importDataset ?? undefined);
         setParsedWarband(warband);
         setUnmatched(unmatched);
+        setFileNotes(golemNote(golem));
         setErrorMsg(null);
       } catch (_err) {
         setErrorMsg('Error parsing uploaded file.');

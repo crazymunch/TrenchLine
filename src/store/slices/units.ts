@@ -12,6 +12,7 @@ import { book, undoPurchases } from '../../rules/ledger';
 import { campaignGameOf } from '../../rules/campaign';
 import { removeFromRoster } from '../../rules/fallen';
 import { recreationLapsed } from '../../rules/recreation';
+import { GOLEM_GRANTED_BY } from '../../rules/golem';
 import type { Warband, StashedItem } from '../../types/warband';
 import type { Cost } from '../../types/catalogue';
 import { profileCost, isZero } from '../../rules/costs';
@@ -71,7 +72,7 @@ const refund = (w: Warband, refs: readonly string[], game: number) =>
     ? { warband: w, undone: new Set<string>() }
     : undoPurchases(w, refs, game);
 
-export type UnitsSlice = Pick<AppState, 'recreateUnit' | 'letUnitFall' | 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
+export type UnitsSlice = Pick<AppState, 'recreateUnit' | 'letUnitFall' | 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'setUnitAsGolem' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
 
 export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set, get) => ({
     addUnitToWarband: (warbandId, baseProfileId, customName) => {
@@ -467,6 +468,54 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
 
     setUnitAsLeader: (warbandId, unitId) => {
       get().updateUnitCategory(warbandId, unitId, 'Leader');
+    },
+
+    /**
+     * Mark, or unmark, the model the Book of Golems created.
+     *
+     * GOLEM-1. The import marks it where the roster can say which model it is
+     * (`golemOnImport`); this is the other half, for the two cases it cannot:
+     * a roster where more than one model fits the grant, and one built in the
+     * app rather than imported.
+     *
+     * It writes `grantedBy` and nothing else. Everything the grant DOES is
+     * derived from that mark — the free Formula allowance in `formulaShelf`,
+     * *"can never be Promoted"* in `promotions`, the Keyword swap in
+     * `golemKeywords` — for the reason `golemKeywords` states: a stored copy
+     * of a derived fact stops agreeing with the entry the moment a layer
+     * changes it.
+     *
+     * At most one model carries it. Marking a second would hand two models
+     * one grant's allowance, so marking clears any other first rather than
+     * refusing, which is what a player correcting a wrong mark expects.
+     */
+    setUnitAsGolem: (warbandId, unitId, isGolem) => {
+      set((state) => {
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          return {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id === unitId) {
+                if (!isGolem) {
+                  const { grantedBy: _cleared, ...rest } = u;
+                  return rest as typeof u;
+                }
+                return { ...u, grantedBy: GOLEM_GRANTED_BY };
+              }
+              /* One grant, one model. */
+              if (isGolem && u.grantedBy === GOLEM_GRANTED_BY) {
+                const { grantedBy: _moved, ...rest } = u;
+                return rest as typeof u;
+              }
+              return u;
+            }),
+            updatedAt: new Date().toISOString(),
+          };
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
     },
 
     updateUnitLore: (warbandId, unitId, lore, quote, titles, deeds) => {

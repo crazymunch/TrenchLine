@@ -310,6 +310,21 @@ export interface WarbandSnapshot {
 
 export interface Warband {
   id: string;
+  /**
+   * What the roster's `Campaign Rules > Enabled` subtree said the Warband has
+   * earned — the Book of Golems, a Ransacked Alchemist Workshop, a Reroll.
+   *
+   * GOLEM-1. The importer has read this subtree since #95 and returned it in
+   * `ImportResult`, and the Warband then dropped it on the floor: nothing
+   * persisted it, so the moment the import modal closed the app no longer
+   * knew the Warband held the Book. The builder's Book of Golems action
+   * cannot be offered without it.
+   *
+   * Names only, exactly as the roster spells them. What each one MEANS is a
+   * rules question the rules modules answer — `golemGrant` matches the Book
+   * by the sentence its Exploration row prints, never by this string.
+   */
+  campaignRules?: string[];
   name: string;
   factionId: string;
   /**

@@ -1,6 +1,8 @@
 import { XMLParser } from 'fast-xml-parser';
 import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
 import { UnitProfile } from '../types/rules';
+import type { Dataset } from '../types/catalogue';
+import { golemOnImport, GOLEM_GRANTED_BY } from '../rules/golem';
 
 /**
  * Import a NewRecruit / BattleScribe roster.
@@ -25,6 +27,20 @@ export interface ImportResult {
   warband: Warband;
   /** Roster lines with no profile in the catalogues. Never guessed at. */
   unmatched: string[];
+  /**
+   * What the Book of Golems decided, where the roster holds it.
+   *
+   * GOLEM-1. `golemOnImport` was built with the rules in #95 and then had no
+   * caller at all, so no model on any roster was ever marked a Golem: the
+   * grant's free-Formula allowance was unreachable, *"can never be Promoted"*
+   * never fired, and `golemKeywords` had no live effect.
+   *
+   * It returns the index and the reason, or `null` and the reason, and
+   * deliberately mutates nothing — so this carries the reason out for the
+   * builder to show. A roster the grant cannot resolve to one model is NOT
+   * marked by guess; the player marks it, with this sentence in front of them.
+   */
+  golem?: { markedIndex: number | null; reason: string };
   /**
    * What the roster's `Campaign Rules > Enabled` subtree says the Warband holds.
    *
@@ -100,7 +116,18 @@ export function readCampaignRules(data: unknown): string[] {
 
 export function importNewRecruitRoster(
   rawInput: string,
-  knownUnits: UnitProfile[] = []
+  knownUnits: UnitProfile[] = [],
+  /**
+   * The ruleset, for the rules that read a roster rather than a line of it —
+   * today just the Book of Golems (GOLEM-1).
+   *
+   * Optional, and the importer works without it: `knownUnits` is still what
+   * resolves a model. Omitted, nothing is marked and the reason says why,
+   * which is the same answer a roster that does not hold the grant gets. That
+   * keeps every existing caller and test working unchanged rather than
+   * forcing a dataset through paths that have never needed one.
+   */
+  dataset?: Dataset,
 ): ImportResult {
   const trimmed = rawInput.trim();
   const allUnits = knownUnits;
@@ -109,7 +136,7 @@ export function importNewRecruitRoster(
   if (trimmed.startsWith('{') || trimmed.startsWith('[')) {
     try {
       const data = JSON.parse(trimmed);
-      return parseNewRecruitJson(data, allUnits);
+      return parseNewRecruitJson(data, allUnits, dataset);
     } catch (e) {
       console.warn('Failed JSON parse, trying XML/Text fallback:', e);
     }
@@ -118,7 +145,7 @@ export function importNewRecruitRoster(
   // 2. Try parsing as XML (.ros / BattleScribe / NewRecruit XML)
   if (trimmed.startsWith('<')) {
     try {
-      return parseNewRecruitXml(trimmed, allUnits);
+      return parseNewRecruitXml(trimmed, allUnits, dataset);
     } catch (e) {
       console.warn('Failed XML parse, trying Text fallback:', e);
     }
@@ -308,7 +335,9 @@ function innerModel(sel: NrSelection): NrSelection | undefined {
   return { ...models[0], customName: sel.customName ?? models[0].customName };
 }
 
-function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportResult {
+function parseNewRecruitJson(
+  data: NrDocument, allUnits: UnitProfile[], dataset?: Dataset,
+): ImportResult {
   const campaignRules = readCampaignRules(data);
   const rosterData = data.roster || data;
   const force: NrForce = rosterData.forces?.[0] || rosterData;
@@ -758,12 +787,41 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
       units,
       armoryStash,
       chronicleLog: [],
+      /* Kept on the Warband, not just returned: the builder's Book of Golems
+         action is offered on the strength of it, and until GOLEM-1 nothing
+         persisted it at all. */
+      campaignRules,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },
     unmatched,
     campaignRules,
+    golem: markGolem(dataset, campaignRules, units),
   };
+}
+
+/**
+ * Mark the model the Book of Golems created, where the roster can say which.
+ *
+ * The decision is `golemOnImport`'s — which model fits the grant is a rules
+ * question and belongs in `rules/golem.ts`. This does the one thing a rules
+ * module must not: it writes `grantedBy` onto the model.
+ *
+ * Mutates the array it is given, which is this function's own freshly built
+ * list and nothing else. Where the grant cannot resolve to exactly one model
+ * it marks NOTHING and passes the reason back, because a guess here would
+ * hand a player a free 50-Ducat allowance on the wrong model and never say so.
+ */
+function markGolem(
+  dataset: Dataset | null | undefined,
+  campaignRules: readonly string[],
+  units: ActiveUnit[],
+): ImportResult['golem'] {
+  const verdict = golemOnImport(dataset, campaignRules, units as never);
+  if (verdict.index != null && units[verdict.index]) {
+    units[verdict.index] = { ...units[verdict.index], grantedBy: GOLEM_GRANTED_BY };
+  }
+  return { markedIndex: verdict.index, reason: verdict.reason };
 }
 
 /*
@@ -835,7 +893,9 @@ function xmlSelectionToJson(node: XmlSelection): NrSelection {
   };
 }
 
-function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): ImportResult {
+function parseNewRecruitXml(
+  xmlContent: string, allUnits: UnitProfile[], dataset?: Dataset,
+): ImportResult {
   const parser = new XMLParser({
     ignoreAttributes: false,
     attributeNamePrefix: '@_',
@@ -885,7 +945,7 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
           .map(xmlSelectionToJson),
       }],
     },
-  }, allUnits);
+  }, allUnits, dataset);
 }
 
 function parseNewRecruitText(text: string, allUnits: UnitProfile[]): ImportResult {
@@ -952,7 +1012,8 @@ function parseNewRecruitText(text: string, allUnits: UnitProfile[]): ImportResul
       updatedAt: new Date().toISOString()
     },
     unmatched,
-    /* A plain-text roster carries no Campaign Rules subtree to read. */
+    /* A plain-text roster carries no Campaign Rules subtree to read, so the
+       grant cannot be found and nothing is marked. */
     campaignRules: [],
   };
 }
