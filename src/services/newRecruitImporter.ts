@@ -853,9 +853,6 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
   } & XmlRoster;
   const roster: XmlRoster = parsed.roster || parsed.gameSystem || parsed;
 
-  /* The same subtree the JSON path reads, in the `.ros` spelling. */
-  const campaignRules = readCampaignRules(parsed);
-
   const forceNode = roster.forces?.force;
   const force = Array.isArray(forceNode) ? forceNode[0] : forceNode;
   const rawSelections =
@@ -863,6 +860,10 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
 
   /*
     Handed to the JSON parser rather than walked again here.
+
+    That is also why this path reads no `Campaign Rules` subtree of its own:
+    the converted document carries it, and the JSON parser reads it there.
+    A second read here would be a second answer to the same question.
 
     That parser reads a selection's CHILDREN — weapons, armour, equipment,
     Alchemical Formulae, Experience, advancements and injuries — and this one

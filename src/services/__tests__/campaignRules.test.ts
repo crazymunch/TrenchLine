@@ -15,7 +15,10 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { readCampaignRules } from '../newRecruitImporter';
+import { DATASET } from '@/data/generated/trenchline.generated';
+import { recruitable } from '@/rules/recruitable';
+import { readCampaignRules, importNewRecruitRoster } from '../newRecruitImporter';
+import type { Dataset } from '@/types/catalogue';
 
 const read = (name: string) => JSON.parse(fs.readFileSync(
   path.join(process.cwd(), 'data-sources/fixtures/newrecruit', name), 'utf8'));
@@ -56,5 +59,27 @@ describe('a roster with no such subtree', () => {
     expect(readCampaignRules({})).toEqual([]);
     expect(readCampaignRules(null)).toEqual([]);
     expect(readCampaignRules({ roster: { selections: [] } })).toEqual([]);
+  });
+});
+
+/**
+ * And through the `.ros` path, which reaches it by a different route.
+ *
+ * `parseNewRecruitXml` converts the document and hands it to the JSON parser
+ * rather than walking it again, so the subtree is read once, there. This
+ * asserts that the delegation actually carries it — the first version of this
+ * change read it a second time in the XML path, and the second read was dead
+ * code that lint caught and this test would not have.
+ */
+describe('the same roster as `.ros`', () => {
+  const D = DATASET as unknown as Dataset;
+  const KNOWN = recruitable(D, 'iron-sultanate',
+    (D.armouries ?? []).map((a: { factionId: string }) => a.factionId)).units;
+
+  it('reports the same rewards as the JSON export', () => {
+    const ros = fs.readFileSync(path.join(
+      process.cwd(), 'data-sources/fixtures/newrecruit/al-qarn-rihla-august.ros'), 'utf8');
+    const res = importNewRecruitRoster(ros, KNOWN as never);
+    expect(res.campaignRules).toEqual(AUGUST);
   });
 });
