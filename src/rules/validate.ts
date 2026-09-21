@@ -21,6 +21,7 @@ import { variantLocks, unlockedBy } from './variantLocks';
 import { battlekitBreaches } from './battlekitLimits';
 import { groupBreaches } from './optionGroups';
 import { boundFor, entitlementOf } from './earnedRecruitment';
+import { stockedByEntry } from './entryGrants';
 
 export type Severity = 'error' | 'warning' | 'info';
 
@@ -192,6 +193,38 @@ export function factionMatches(a: string, b: string): boolean {
   return k(a) === k(b) || k(a).includes(k(b)) || k(b).includes(k(a));
 }
 
+/**
+ * What the model IS, for a restriction that names a kind of model.
+ *
+ * FD-17 finding 2. The Iron Sultanate's Reinforced Armour row reads "ELITE &
+ * Janissaries only", and an "X & Y only" stipulation admits either — so a
+ * Favoured Kavass, an Azeb promoted to ELITE, may wear it. The gate agreed;
+ * it was being handed the wrong subject. This call passed the DATASET ENTRY,
+ * whose Keywords are `["SULTANATE"]` and whose role is `Troop`, because that
+ * is what the Azeb entry is. An Elite Promotion does not rewrite the entry —
+ * it writes `Elite` onto the model — so no promoted model could ever satisfy
+ * a requirement naming ELITE, and Idris the Relic Hound was refused armour
+ * the book gives it.
+ *
+ * The entry's answers and the model's are UNIONED rather than either winning:
+ * the entry says what the model is by type, the model says what it has become.
+ *
+ * `name` stays the entry's. `u.name` is the player's own text — "Idris the
+ * Relic Hound" — and `matchesIdentity` matches loosely by containment, so a
+ * model someone called "Janissary Hunter" would let itself through every
+ * Janissary-only row in the table.
+ */
+function identityOf(
+  u: Roster['units'][number],
+  profile: UnitProfile,
+): { name: string; keywords: string[]; roles: string[] } {
+  return {
+    name: profile.name,
+    keywords: [...(profile.keywords ?? []), ...(u.keywords ?? [])],
+    roles: [...(profile.roles ?? []), ...(u.roles ?? [])],
+  };
+}
+
 /** Wargear legality from the Armoury Table restriction text. */
 function checkWargear(
   roster: Roster,
@@ -230,6 +263,28 @@ function checkWargear(
           ? stockedAnywhere(dataset, roster.factionId, variant, w)
           : { stocked: false, via: null };
         if (reach.stocked) continue;
+
+        /*
+          Nor is the Armoury Table the only thing that stocks kit. FD-17
+          finding 3: entry-granted kit — an entry's own option or fixed kit —
+          is stocked by the entry and is never measured against the Armoury
+          Table, and the same holds for a campaign award.
+
+          This sat below `stocks` and `stockedAnywhere` deliberately. An item
+          the faction really does buy is answered by the table first, so the
+          grant is only ever consulted for kit the table has no row for.
+
+          See `rules/entryGrants.ts` for each granter and the measurement
+          behind it. It is what made the owner's August roster report five
+          violations: the Sapper's own Shovel, a Fireteam's Coordinated
+          Engagement twice, the Alchemist's Secrets of Takwin and the Fire
+          Shield a Homunculus has because Human Hands grants it.
+        */
+        if (stockedByEntry(profile, u.traits ?? [], {
+          weaponId: item.weaponId, name: w.name,
+          type: (w as { type?: string }).type,
+          factionId: (w as { factionId?: string | null }).factionId,
+        })) continue;
 
         // Still advisory rather than blocking, and now for a narrower reason.
         // Two kinds of armoury rule remain unreadable: a variant with its own
@@ -275,7 +330,7 @@ function checkWargear(
           taken: u.options?.map((o) => o.name ?? '').filter(Boolean) ?? [],
         };
         if (r.kind === 'onlyFor' && profile) {
-          const verdict = onlyForVerdict(r.requires, profile, onlyForContext);
+          const verdict = onlyForVerdict(r.requires, identityOf(u, profile), onlyForContext);
           if (!verdict.met) {
             out.push(err({
               code: 'wargear-restricted',

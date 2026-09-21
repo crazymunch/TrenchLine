@@ -7364,7 +7364,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "33ed-6314-e75f-8982"
+          "profileId": "33ed-6314-e75f-8982",
+          "profileNames": [
+            "Reinforced Armour"
+          ]
         }
       ],
       "constraints": [
@@ -9166,7 +9169,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "e5d0-2e53-965c-1b78"
+          "profileId": "e5d0-2e53-965c-1b78",
+          "profileNames": [
+            "Infernal Brand"
+          ]
         },
         {
           "id": "a535-4fb6-c587-691a",
@@ -9180,7 +9186,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "33ed-6314-e75f-8982"
+          "profileId": "33ed-6314-e75f-8982",
+          "profileNames": [
+            "Reinforced Armour"
+          ]
         }
       ],
       "constraints": [
@@ -11999,7 +12008,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "a28d-5ed5-5c1e-3b58"
+          "profileId": "a28d-5ed5-5c1e-3b58",
+          "profileNames": [
+            "Byzantinium Hearth"
+          ]
         },
         {
           "id": "0aa4-71b3-4c9c-5848",
@@ -12013,7 +12025,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "ba85-939c-d69d-5734"
+          "profileId": "ba85-939c-d69d-5734",
+          "profileNames": [
+            "Thermal Shielding"
+          ]
         }
       ],
       "constraints": [
@@ -13914,7 +13929,11 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "41f3-4b8e-6736-1db8"
+          "profileId": "41f3-4b8e-6736-1db8",
+          "profileNames": [
+            "Shovel",
+            "Weaponized Shovel"
+          ]
         }
       ],
       "constraints": [
@@ -17828,7 +17847,10 @@ export const DATASET: Dataset = {
           "cost": {
             "ducats": 0,
             "glory": 0
-          }
+          },
+          "profileNames": [
+            "Cloak of Alamut"
+          ]
         },
         {
           "id": "808a-f077-4fec-ef82",
@@ -17844,7 +17866,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "b5a1-e8c3-24e5-a742"
+          "profileId": "b5a1-e8c3-24e5-a742",
+          "profileNames": [
+            "Sniper Rifle"
+          ]
         }
       ],
       "constraints": [
@@ -18062,7 +18087,11 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "41f3-4b8e-6736-1db8"
+          "profileId": "41f3-4b8e-6736-1db8",
+          "profileNames": [
+            "Shovel",
+            "Weaponized Shovel"
+          ]
         }
       ],
       "constraints": [
@@ -18566,7 +18595,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "33ed-6314-e75f-8982"
+          "profileId": "33ed-6314-e75f-8982",
+          "profileNames": [
+            "Reinforced Armour"
+          ]
         },
         {
           "id": "e89c-c62f-d3e0-6dfc",
@@ -18577,7 +18609,10 @@ export const DATASET: Dataset = {
           "cost": {
             "ducats": 0,
             "glory": 0
-          }
+          },
+          "profileNames": [
+            "Wind Amulet"
+          ]
         }
       ],
       "constraints": [
@@ -18986,7 +19021,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "29d4-73f4-67aa-ecbb"
+          "profileId": "29d4-73f4-67aa-ecbb",
+          "profileNames": [
+            "Gas Mask"
+          ]
         },
         {
           "id": "05b0-3aaa-2e29-c69f",
@@ -18998,7 +19036,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "cb36-de41-f960-6526"
+          "profileId": "cb36-de41-f960-6526",
+          "profileNames": [
+            "Medikit"
+          ]
         },
         {
           "id": "1fac-60d6-f476-9c4d",
@@ -19010,7 +19051,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "bd4b-593e-5a79-09fd"
+          "profileId": "bd4b-593e-5a79-09fd",
+          "profileNames": [
+            "Misericordia"
+          ]
         },
         {
           "id": "fc21-c383-cc54-c15c",
@@ -19024,7 +19068,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "71ec-000e-5999-ba1c"
+          "profileId": "71ec-000e-5999-ba1c",
+          "profileNames": [
+            "Standard Armour"
+          ]
         }
       ],
       "constraints": [
@@ -19123,7 +19170,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "1c55-92d4-5367-2e27"
+          "profileId": "1c55-92d4-5367-2e27",
+          "profileNames": [
+            "Polearm"
+          ]
         },
         {
           "id": "05b0-3aaa-2e29-c69f",
@@ -19135,7 +19185,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "cb36-de41-f960-6526"
+          "profileId": "cb36-de41-f960-6526",
+          "profileNames": [
+            "Medikit"
+          ]
         },
         {
           "id": "fc21-c383-cc54-c15c",
@@ -19149,7 +19202,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "71ec-000e-5999-ba1c"
+          "profileId": "71ec-000e-5999-ba1c",
+          "profileNames": [
+            "Standard Armour"
+          ]
         }
       ],
       "constraints": [
@@ -19250,7 +19306,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "037f-15ba-8ef3-332e"
+          "profileId": "037f-15ba-8ef3-332e",
+          "profileNames": [
+            "Anti-Material Rifle"
+          ]
         },
         {
           "id": "dd63-2453-14d7-7e00",
@@ -19264,7 +19323,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "f742-ff2c-671c-3e20"
+          "profileId": "f742-ff2c-671c-3e20",
+          "profileNames": [
+            "Combat Helmet"
+          ]
         }
       ],
       "constraints": [
@@ -19389,7 +19451,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "f742-ff2c-671c-3e20"
+          "profileId": "f742-ff2c-671c-3e20",
+          "profileNames": [
+            "Combat Helmet"
+          ]
         },
         {
           "id": "a535-4fb6-c587-691a",
@@ -19403,7 +19468,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "33ed-6314-e75f-8982"
+          "profileId": "33ed-6314-e75f-8982",
+          "profileNames": [
+            "Reinforced Armour"
+          ]
         },
         {
           "id": "fb45-9c9c-7cf1-6745",
@@ -19517,7 +19585,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "f742-ff2c-671c-3e20"
+          "profileId": "f742-ff2c-671c-3e20",
+          "profileNames": [
+            "Combat Helmet"
+          ]
         },
         {
           "id": "a535-4fb6-c587-691a",
@@ -19531,7 +19602,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "33ed-6314-e75f-8982"
+          "profileId": "33ed-6314-e75f-8982",
+          "profileNames": [
+            "Reinforced Armour"
+          ]
         },
         {
           "id": "4d1c-67e3-95cf-1169",
@@ -19546,7 +19620,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "c63d-fe53-a980-4a2a"
+          "profileId": "c63d-fe53-a980-4a2a",
+          "profileNames": [
+            "Tenderizer Maul"
+          ]
         }
       ],
       "constraints": [
@@ -19671,7 +19748,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "29d4-73f4-67aa-ecbb"
+          "profileId": "29d4-73f4-67aa-ecbb",
+          "profileNames": [
+            "Gas Mask"
+          ]
         }
       ],
       "constraints": [
@@ -20314,7 +20394,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "5f7a-f61c-c4cc-98ad"
+          "profileId": "5f7a-f61c-c4cc-98ad",
+          "profileNames": [
+            "Gas Grenades"
+          ]
         },
         {
           "id": "8927-946d-c993-14ee",
@@ -20328,7 +20411,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "29d4-73f4-67aa-ecbb"
+          "profileId": "29d4-73f4-67aa-ecbb",
+          "profileNames": [
+            "Gas Mask"
+          ]
         },
         {
           "id": "fc21-c383-cc54-c15c",
@@ -20342,7 +20428,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "71ec-000e-5999-ba1c"
+          "profileId": "71ec-000e-5999-ba1c",
+          "profileNames": [
+            "Standard Armour"
+          ]
         },
         {
           "id": "ee4b-f5d6-afa4-9e50",
@@ -20490,7 +20579,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "29d4-73f4-67aa-ecbb"
+          "profileId": "29d4-73f4-67aa-ecbb",
+          "profileNames": [
+            "Gas Mask"
+          ]
         },
         {
           "id": "05b0-3aaa-2e29-c69f",
@@ -20502,7 +20594,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "cb36-de41-f960-6526"
+          "profileId": "cb36-de41-f960-6526",
+          "profileNames": [
+            "Medikit"
+          ]
         }
       ],
       "constraints": [],
@@ -20949,7 +21044,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "33ed-6314-e75f-8982"
+          "profileId": "33ed-6314-e75f-8982",
+          "profileNames": [
+            "Reinforced Armour"
+          ]
         },
         {
           "id": "1e63-fd87-a6a7-eb5e",
@@ -20964,7 +21062,11 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "e8d8-c2a3-9a3e-b3b8"
+          "profileId": "e8d8-c2a3-9a3e-b3b8",
+          "profileNames": [
+            "Iron-Clawed Hands",
+            "Reaping Claws"
+          ]
         }
       ],
       "constraints": [
@@ -23445,7 +23547,11 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "41f3-4b8e-6736-1db8"
+          "profileId": "41f3-4b8e-6736-1db8",
+          "profileNames": [
+            "Shovel",
+            "Weaponized Shovel"
+          ]
         }
       ],
       "constraints": [
@@ -23663,7 +23769,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "29d4-73f4-67aa-ecbb"
+          "profileId": "29d4-73f4-67aa-ecbb",
+          "profileNames": [
+            "Gas Mask"
+          ]
         },
         {
           "id": "05b0-3aaa-2e29-c69f",
@@ -23675,7 +23784,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "cb36-de41-f960-6526"
+          "profileId": "cb36-de41-f960-6526",
+          "profileNames": [
+            "Medikit"
+          ]
         },
         {
           "id": "fc21-c383-cc54-c15c",
@@ -23689,7 +23801,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "71ec-000e-5999-ba1c"
+          "profileId": "71ec-000e-5999-ba1c",
+          "profileNames": [
+            "Standard Armour"
+          ]
         }
       ],
       "constraints": [
@@ -24387,7 +24502,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "a7b5-4e6d-1d0e-de50"
+          "profileId": "a7b5-4e6d-1d0e-de50",
+          "profileNames": [
+            "Atonement Bell"
+          ]
         }
       ],
       "constraints": [
@@ -28312,7 +28430,10 @@ export const DATASET: Dataset = {
             "ducats": 0,
             "glory": 0
           },
-          "profileId": "f742-ff2c-671c-3e20"
+          "profileId": "f742-ff2c-671c-3e20",
+          "profileNames": [
+            "Combat Helmet"
+          ]
         }
       ],
       "constraints": [

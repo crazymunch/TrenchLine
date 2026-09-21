@@ -694,6 +694,28 @@ describe('forced Battlekit', () => {
     expect(kitOf('Sultanate Sapper', 'Iron Sultanate')).toEqual(['Shovel']);
   });
 
+  /*
+    And every name that Shovel PRINTS, because a link names the entry while a
+    roster records the profile.
+
+    The shared `Shovel` entry (Equipment.cat L343) nests an `Include Weapon
+    Profile?` child whose profile is called `Weaponized Shovel`, and that is
+    the name NewRecruit writes. On the link's name alone the Sapper did not
+    appear to carry its own Shovel and the legality engine asked the Iron
+    Sultanate Armoury Table about it — FD-17 finding 3.
+  */
+  it('carries every name a kit entry prints, its children included', () => {
+    const shovel = unit('Sultanate Sapper', 'Iron Sultanate').battlekit[0];
+    expect(shovel.profileNames).toEqual(
+      expect.arrayContaining(['Shovel', 'Weaponized Shovel']));
+  });
+
+  it('names nothing a kit entry does not print', () => {
+    const medic = unit('Combat Medic', 'New Antioch').battlekit;
+    const mask = medic.find((b) => b.name === 'Gas Mask');
+    expect(mask.profileNames).toEqual(['Gas Mask']);
+  });
+
   it('leaves a model with no Battlekit line empty rather than guessing', () => {
     expect(kitOf('Trench Pilgrim')).toEqual([]);
   });

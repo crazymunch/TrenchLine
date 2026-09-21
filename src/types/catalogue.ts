@@ -314,6 +314,20 @@ export interface ForcedBattlekit {
    */
   cost: Cost;
   profileId?: string;
+  /**
+   * Every name this kit entry prints: its own, its gear profiles', and those
+   * of the child entries that exist only to carry a profile.
+   *
+   * A forced link names the ENTRY and a roster records the PROFILE. "A
+   * Sultanate Sapper always has a Shovel" (Warbands L4739) links the shared
+   * `Shovel` entry, whose nested child prints `Weaponized Shovel` — the name
+   * NewRecruit writes. Matching on `name` alone therefore missed the Sapper's
+   * own Shovel and sent it to the Armoury Table, which does not stock it.
+   *
+   * Optional: a warband saved before the pipeline emitted it has none, and
+   * `carriesAsBattlekit` must still answer for it from `name` and `id`.
+   */
+  profileNames?: string[];
 }
 
 /** A model the rulebook names in one of the Promotions tables. */

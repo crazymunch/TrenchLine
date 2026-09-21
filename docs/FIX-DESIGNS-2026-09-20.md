@@ -90,7 +90,9 @@ carry, and what these designs cover:
 | RC-1 (a model awaiting Re-creation takes the field nowhere: `takesTheField`, read at five sites) and WC-1 (a granted item the catalogues cannot name is a warning, and the file is written) | #102 | merged; reviewed, correct, with the WC-1 correction recorded under FD-16 and EXP-1 filed under FD-17 |
 | #100 and #102 recorded; ID-1 and EXP-1 filed | #103 | merged |
 | FD-13a item 2, the Formulas tab in the equip sheet (`formulaShelf`: the entry's own Formulae, the gates, the Golem's allowance, the dead Alchemist); ID-1 (six entries named Homunculus, the first one taken: `catalogueUnitFor` resolves by id, entry, name within the faction, then name); FORM-5 (an exclusion read from the held side too); FORM-6 (the prerequisite in the Sultanate entry's own wording); the advancement sheet's Formula groups and the empty Formulae chip deleted | #104 | merged; reviewed on `main`, correct, with two assumptions accepted and GOLEM-1 filed, recorded under FD-13 |
-| FD-13a item 3, the card's Formula text (`formulaeHeld` over the three routes a Formula is recorded; Play Mode's reference sheet gains the section) | #105 | open, `check` running on 366e740; reviewed on the branch, correct. The statline half is closed by measurement: no Formula carries a stat modifier, the effects are prose |
+| FD-13a item 3, the card's Formula text (`formulaeHeld` over the three routes a Formula is recorded; Play Mode's reference sheet gains the section) | #105 | merged. The statline half is closed by measurement: no Formula carries a stat modifier, the effects are prose |
+| GOLEM-1 (`golemOnImport` had no caller: the importer and the builder both write `grantedBy: 'Book of Golems'`; `Warband.campaignRules` persisted; the grant's own Formula counted as given, not spent) | #107 | merged |
+| FD-17's acceptance (finding 2: the identity gate was being handed the catalogue entry, not the model, at two sites; finding 3: `rules/entryGrants.ts`, five derived granters, two of them re-measured on every run; `ForcedBattlekit.profileNames` so a kit entry answers for every name it prints) | #108 | open |
 
 ## FD-00. PR #59 as it stands
 
@@ -2361,6 +2363,47 @@ lost to a wrapped row, which ARM-1 (#97) repaired: twenty rows restored,
 New Antioch's Shields and Armour among them, so Machine Armour is now a row
 with the book's stipulation. The acceptance test on both exports is still
 owed and is the next thing pack B delivers.
+
+**Accepted, and what the measurement changed.** Both exports now import and
+validate; the acceptance test is `src/services/__tests__/importAcceptance.test.ts`
+and it drives `recruitable` -> `importNewRecruitRoster` -> `toRoster` ->
+`validateRoster` over both files with the shipped dataset. August reports
+**nothing**. September reports **one** warning, and it is correct: the
+Scripture Guardian's entry says *"it must have either two 1-Handed Melee
+Weapons or one 2-Handed Melee Weapon"* and the export gives that model **no
+selections at all** — a Mercenary the owner recruited and has not armed. The
+violation list is asserted exactly rather than counted, so a new finding
+replacing an old one cannot pass.
+
+Three things the design got wrong, each found by measuring before building:
+
+1. **Finding 2's root cause is not the gate.** `onlyForVerdict` reads
+   `X & Y only` correctly. `toRoster` was setting `keywords` from the dataset
+   entry alone and never setting `roles`, and `checkWargear` then handed the
+   gate that entry rather than the model — so the subject of *"ELITE &
+   Janissaries only"* was an Azeb Troop, which is what the Azeb entry is. Both
+   sites are fixed and both sources are unioned. `restrictions.ts` is untouched.
+2. **Finding 3 needs five granters, not one.** Recorded in
+   `docs/RULESET-MODEL.md` §7e with the measurement behind each. Two of them
+   are re-measured on every test run rather than asserted: of the 334 weapons
+   typed `Battlekit`, exactly one is also an Armoury row; of the 155 Campaign
+   Rules entries, none is.
+3. **`Curative Fluids` was not in the five**, and neither was the Scripture
+   Guardian's warning. The first is a Ransacked Alchemist Workshop find and
+   falls to the same rule as the Sniper Scope; the second is book-supported and
+   stays.
+
+`Weaponized Shovel` also needed a pipeline change: a forced link names the
+ENTRY and a roster records the PROFILE, and the shared `Shovel` entry nests a
+child whose profile is called `Weaponized Shovel`. `ForcedBattlekit` now
+carries every name a kit entry prints.
+
+**Still reported, and correctly:** `toRoster` cannot join `Sniper Scope` or
+`Machine Armour` to any dataset entry on either file. Both are known — the
+first is EXP-1's campaign-level selection, the second reaches the Sultanate
+through a hidden entryLink the flat weapons list cannot express (WC-1) — and
+both are named rather than dropped. The acceptance test asserts that list
+exactly, so a third name appearing is a failure.
 
 **ARM-2, filed by the developer, not fixed.** The War Pilgrimage of Saint
 Methodius armoury block is merged into the standard Trench Pilgrims table,
