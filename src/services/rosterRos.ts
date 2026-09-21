@@ -32,6 +32,7 @@ import {
   type ResolvedSelection, type RosterPathLayer, type Selection,
 } from './rosterPaths';
 import type { Warband, ActiveUnit } from '../types/warband';
+import { takesTheField } from '../rules/recreation';
 
 export type IssueLevel = 'fatal' | 'warning' | 'informational';
 
@@ -134,6 +135,31 @@ type Priced = { name: string; cost?: number; gloryCost?: number };
  * carries only the first — a Sniper Scope is 2 Glory and 0 Ducats, and reading
  * `cost` alone would write it into the roster as free.
  */
+/**
+ * The Variant rule that put this item within a Warband's reach, if any.
+ *
+ * Only the three equipped lists, not `specialUpgrades`: `grantedBy` names an
+ * ARMOURY grant — the House of Wisdom's *Weapon Collections*, the Knights of
+ * Avarice's *Corrupt Merchants* — and a unit option is not one. Absent means
+ * the item is this faction's own, which is the ordinary case.
+ */
+function grantOf(unit: ActiveUnit, name: string): string | undefined {
+  const all = [
+    ...(unit.equippedWeapons ?? []), ...(unit.equippedArmour ?? []),
+    ...(unit.equippedEquipment ?? []),
+  ];
+  return all.find((x) => x.name === name)?.grantedBy;
+}
+
+/** `50 Ducats`, `2 Glory`, `15 Ducats + 2 Glory` — for a warning that owes a number. */
+function shortPrice(price: { ducats: number; glory: number }): string {
+  const parts = [
+    ...(price.ducats ? [`${price.ducats} Ducats`] : []),
+    ...(price.glory ? [`${price.glory} Glory`] : []),
+  ];
+  return parts.join(' + ') || 'nothing';
+}
+
 function priceOf(unit: ActiveUnit, name: string): { ducats: number; glory: number } {
   const all: Priced[] = [
     ...(unit.equippedWeapons ?? []), ...(unit.equippedArmour ?? []),
@@ -164,7 +190,16 @@ export function forceCatalogue(
   return { catalogueId: ranked[0]?.[0], spans: ranked.map(([id]) => id) };
 }
 
-const livingUnits = (warband: Warband) => (warband.units ?? []).filter((u) => !u.isDead);
+/**
+ * The models a `.ros` file is written from.
+ *
+ * `takesTheField` rather than `!u.isDead`, because a model held on the roster
+ * awaiting Re-creation is stored with `isDead` false and is dead all the same
+ * — the flag is false only so the roster keeps the entry the payment is made
+ * against. A `.ros` is a muster for a game, so it is left out, and counted in
+ * the same informational note a dead model gets.
+ */
+const livingUnits = (warband: Warband) => (warband.units ?? []).filter(takesTheField);
 
 /**
  * The catalogue entry a model is an instance of.
@@ -246,6 +281,42 @@ export function rosReport(
     const chosen = chosenNames(u);
     const id = modelIdentity(layer, paths.entryId, chosen);
     for (const name of id?.missing ?? chosen) {
+      /*
+        WC-1. A Variant grant reaches across the book in a way the catalogues
+        do not reach across themselves.
+
+        The House of Wisdom's *Weapon Collections* lets a Warband buy one
+        piece of Battlekit from the New Antioch Armoury and one from the
+        Trench Pilgrims Armoury, and the book's New Antioch Armoury Table
+        stocks Machine Armour at 50 Ducats. The Iron Sultanate catalogue has
+        no such selection under any Sultanate model — it has no reason to,
+        because the permission is a Variant rule in the Warbands book and not
+        a link in that catalogue. So the name resolves to nothing, and the
+        owner's roster stopped exporting at all the moment they equipped it.
+
+        Refusing the whole file over one legal item is the wrong trade: the
+        other twelve models are exactly what the catalogues can name. It is
+        written without the item, and the warning says which item, which rule
+        allows it, and what the file is therefore short by — a player handing
+        this to an opponent needs to be able to say "and 50 Ducats of Machine
+        Armour that NewRecruit has no box for".
+
+        An item with NO grant behind it stays fatal. There the app is naming
+        gear the catalogues do not offer that model and no rule says it may,
+        which is a roster that is not this warband.
+      */
+      const grant = grantOf(u, name);
+      if (grant) {
+        warnings.push({
+          level: 'warning',
+          model: named,
+          subject: name,
+          why: `${grant} allows this, and no catalogue selection under this model can `
+            + `name it; written without it, so this model costs `
+            + `${shortPrice(priceOf(u, name))} less in the file than in TrenchLine`,
+        });
+        continue;
+      }
       fatal.push({
         level: 'fatal',
         model: named,

@@ -16,6 +16,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 import { useStore } from '../useStore';
+import { fieldable } from '@/rules/recreation';
+import { forceBudget, reinforcementCost } from '@/rules/campaign';
+import { DATASET } from '@/data/generated/trenchline.generated';
 import type { ActiveUnit, Warband } from '@/types/warband';
 
 vi.mock('@/services/storage', async (orig) => {
@@ -242,5 +245,74 @@ describe('the deadline', () => {
     useStore.getState().recreateUnit(WB, 'g1');
     expect(ducats()).toBe(200);
     expect(on('g1')?.awaitingRecreation).toBeDefined();
+  });
+});
+
+/**
+ * RC-1: what a model awaiting Re-creation is out of.
+ *
+ * The offer is stored with `isDead` false, because `applyPostBattleResults`
+ * removes a model whose `isDead` is true and the offer would go with it. That
+ * flag was then read by every part of the app that asks who fights, so a
+ * killed Takwin was fielded, counted against the Threshold, counted against
+ * the next game's reinforcement allowance, written into a `.ros` muster and
+ * offered Experience for a battle it had not been at.
+ *
+ * Under the book it is on the roster and on nothing else: *"you do not have
+ * to remove it from your roster"* grants the ENTRY, so that there is
+ * something for the payment to be made against, and the model it names has
+ * been killed.
+ *
+ * These drive the store rather than the predicate: the model is killed by the
+ * real post-battle commit and re-created by the real store action, so what is
+ * pinned is the app's answer and not a hand-built flag. The `.ros` half needs
+ * a model the catalogue can name and is in `rosterRos.test.ts`.
+ */
+describe('a model awaiting Re-creation', () => {
+  beforeEach(() => killInPostBattle('u1', 'Qarin'));
+
+  /** Play Mode's default Force, and the post-battle wizard's model list. */
+  const fielded = () => fieldable(warband().units).map((u) => u.id);
+  const force = () => forceBudget(warband(), { threshold: 500 });
+  const reinforcements = () =>
+    reinforcementCost(DATASET, warband() as never, 2).warbandTotalCost;
+
+  it('is on the roster, holding its offer', () => {
+    expect(warband().units.map((u) => u.id)).toContain('u1');
+    expect(on('u1')?.awaitingRecreation).toBeDefined();
+  });
+
+  it('is in none of the four the app measures with', () => {
+    // Play Mode's default Force and the wizard's model list.
+    expect(fielded()).toEqual(['u2']);
+    // The Force, and what it spends against the Threshold.
+    expect(force().spend).toBe(40);
+    expect(force().awaitingRecreation).toBe(1);
+    // …and it is not called benched. Nobody chose to sit it out.
+    expect(force().benched).toBe(0);
+    // The total the next game's Threshold is measured against.
+    expect(reinforcements()).toBe(40);
+  });
+
+  it('is still counted in what the roster costs, because it is on the roster', () => {
+    expect(force().rosterCost).toBe(80);
+  });
+
+  it('is in all four again once it is paid for', () => {
+    useStore.getState().recreateUnit(WB, 'u1');
+
+    expect(on('u1')?.awaitingRecreation).toBeUndefined();
+    expect(fielded().sort()).toEqual(['u1', 'u2']);
+    expect(force().spend).toBe(80);
+    expect(force().awaitingRecreation).toBe(0);
+    expect(reinforcements()).toBe(80);
+  });
+
+  it('is in none of them ever again once its owner lets it fall', () => {
+    useStore.getState().letUnitFall(WB, 'u1');
+
+    expect(on('u1')).toBeUndefined();
+    expect(fielded()).toEqual(['u2']);
+    expect(force().rosterCost).toBe(40);
   });
 });

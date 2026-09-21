@@ -456,6 +456,94 @@ describe('the compatibility report, before anything is written', () => {
     expect(report.informational.map((i) => i.why).join(' '))
       .toMatch(/1 dead model\(s\) left out/);
   });
+
+  /*
+    RC-1. A model killed in a post-battle sequence and held on the roster
+    awaiting Re-creation is stored with `isDead` FALSE — that flag is false
+    only so the roster keeps the entry its 40 👑 is paid against — and a `.ros`
+    is a muster for a game. It was being written into the file as a living
+    model, so the owner's opponent would have seen a dead Takwin in the list.
+  */
+  /*
+    WC-1. A Variant grant reaches across the book in a way the catalogues do
+    not reach across themselves.
+
+    `Engineer Body Armour` is a New Antioch Armoury row (45 Ducats), and the
+    House of Wisdom's *Weapon Collections* lets a Sultanate Warband buy one
+    piece of New Antioch Battlekit. No Iron Sultanate entry can name it —
+    measured: of the seventeen entries in that catalogue, zero reach it — so
+    the export refused the whole roster the moment it was equipped.
+  */
+  describe('a pick a Variant grant allows and no catalogue can name', () => {
+    const granted = (name: string, cost: number) => ({
+      name, cost, gloryCost: 0, factionId: 'new-antioch', grantedBy: 'Weapon Collections',
+    });
+    const carrying = (item: ReturnType<typeof granted>) => {
+      const [first, ...rest] = warband.units;
+      return withUnits([{
+        ...first,
+        equippedArmour: [...(first.equippedArmour ?? []), item],
+      } as unknown as ActiveUnit, ...rest]);
+    };
+
+    it('is a warning naming the item and the rule, not a refusal', () => {
+      const wb = carrying(granted('Engineer Body Armour', 45));
+      const report = rosReport(layer, wb, UNITS);
+
+      expect(report.exportable).toBe(true);
+      expect(report.fatal).toEqual([]);
+      const warned = report.warnings.filter((w) => w.subject === 'Engineer Body Armour');
+      expect(warned).toHaveLength(1);
+      expect(warned[0].model).toBe(warband.units[0].customName);
+      // The rule that allows it, and what the file is short by. A player
+      // handing this to an opponent has to be able to say both.
+      expect(warned[0].why).toMatch(/Weapon Collections/);
+      expect(warned[0].why).toMatch(/45 Ducats less/);
+    });
+
+    it('writes the file, without that one selection', () => {
+      const wb = carrying(granted('Engineer Body Armour', 45));
+      const { xml } = toRos(layer, wb, UNITS);
+
+      expect(xml).not.toContain(xmlAttr('Engineer Body Armour'));
+      // Everything else this model carries is still in the file.
+      expect(xml).toContain(xmlAttr(warband.units[0].customName));
+      expect(selectionsOf(xml).length).toBeGreaterThan(warband.units.length);
+    });
+
+    it('stays FATAL where no grant is behind it', () => {
+      const [first, ...rest] = warband.units;
+      const wb = withUnits([{
+        ...first,
+        equippedArmour: [{ name: 'Engineer Body Armour', cost: 45, gloryCost: 0 }],
+      } as unknown as ActiveUnit, ...rest]);
+      const report = rosReport(layer, wb, UNITS);
+
+      expect(report.exportable).toBe(false);
+      expect(report.fatal.map((f) => f.subject)).toContain('Engineer Body Armour');
+    });
+  });
+
+  it('leaves out a model awaiting Re-creation, as it leaves out a dead one', () => {
+    const [first, ...rest] = warband.units;
+    const waiting = {
+      ...first,
+      awaitingRecreation: {
+        ability: 'Re-creation',
+        cost: { ducats: 40, glory: 0 },
+        deadline: 'quartermaster',
+        sinceGame: 3,
+      },
+    } as unknown as ActiveUnit;
+    const report = rosReport(layer, withUnits([waiting, ...rest]), UNITS);
+
+    expect(report.exportable).toBe(true);
+    expect(report.informational.map((i) => i.why).join(' '))
+      .toMatch(/1 dead model\(s\) left out/);
+
+    const xml = toRos(layer, withUnits([waiting, ...rest]), UNITS);
+    expect(xml).not.toContain(xmlAttr(first.customName));
+  });
 });
 
 /* ----------------------------------------------------------- the pieces --- */

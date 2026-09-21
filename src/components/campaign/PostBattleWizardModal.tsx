@@ -30,6 +30,7 @@ import { captureRuleIn, captureOutcome, type CaptureResolution } from '../../rul
 import type { MatchHandover } from '../../rules/matchHandover';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
+import { fieldable } from '../../rules/recreation';
 import {
   warStoriesOffer, warStoriesEligible, extraExperienceFor, isValidRoll,
   type ExtraExperienceRule,
@@ -178,8 +179,21 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   const [traumaRollMode, setTraumaRollMode] = useState<'digital' | 'manual'>('digital');
   const [explorationRollMode, setExplorationRollMode] = useState<'digital' | 'manual'>('digital');
 
+  /*
+    The models this battle could have involved.
+
+    A model killed in an earlier post-battle sequence and held on the roster
+    awaiting Re-creation is stored with `isDead` false — that flag is false
+    only so the roster keeps the entry its payment is made against — and it is
+    dead until it is paid for. It fought nothing, so it earns no Experience,
+    brings no Exploration die and no War Story, cannot be promoted, and cannot
+    be one of this battle's casualties. It stays on the roster and in the
+    Re-creation panel; it is out of every list here. See `takesTheField`.
+  */
+  const battleRoster = fieldable(warband?.units);
+
   // Casualties from match
-  const ooaUnits = warband?.units.filter((u) => u.status === 'Out of Action') || [];
+  const ooaUnits = battleRoster.filter((u) => u.status === 'Out of Action');
   const [casualtyOutcomes, setCasualtyOutcomes] = useState<Record<string, { outcome: string; isDead: boolean }>>({});
   /*
     Roll 12 Captured is the one result the table does not decide: two players
@@ -241,7 +255,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   */
   const [satOut, setSatOut] = useState<Record<string, boolean>>(() => Object.fromEntries([
     ...(handover?.satOutUnitIds ?? []).map((id) => [id, true] as const),
-    ...(warband?.units ?? []).filter((u) => u.benched).map((u) => [u.id, true] as const),
+    ...fieldable(warband?.units).filter((u) => u.benched)
+      .map((u) => [u.id, true] as const),
   ]));
 
   // Advancements
@@ -346,7 +361,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   */
   const explorationHeld = [
     ...(warband.explorationEffects ?? []),
-    ...explorationFromModels(dataset, warband.units, gamesPlayed),
+    ...explorationFromModels(dataset, battleRoster, gamesPlayed),
   ];
   const explorePool = explorationPool(dataset, band, explorationHeld);
   /*
@@ -574,7 +589,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     Skill and died in this game is not in the Warband any more, and a stored
     flag would go on paying the roster on its behalf.
   */
-  const warStories = warStoriesOffer(dataset, warband.units);
+  const warStories = warStoriesOffer(dataset, battleRoster);
 
   /** Whether one model may take the War Stories point, ELITE resolved as everywhere else. */
   const takesWarStories = (unitId: string) =>
@@ -587,7 +602,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
    * renumbers 65 changes nothing here. Only ELITE models reach the D66 chart
    * at all — a Troop takes the D6 Survival Roll — so this never meets one.
    */
-  const extraXpOwed = warband.units
+  const extraXpOwed = battleRoster
     .map((u) => ({
       unit: u,
       rule: extraExperienceFor(dataset, casualtyOutcomes[u.id]?.outcome),
@@ -844,8 +859,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
    * ---------------------------------------------------------------- */
 
   /** Troops this Warband may actually promote, by the book's two tables. */
-  const promotable = warband.units.filter((u) =>
-    !u.isDead && canBePromoted(dataset, u, warband).eligible);
+  const promotable = battleRoster.filter((u) =>
+    canBePromoted(dataset, u, warband).eligible);
 
   const pool = promotionPool(dataset, {
     deeds: handover?.deedsClaimed ?? 0,
@@ -1035,7 +1050,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       the rule that stopped them. The store used to award one point to all of
       them without asking any of these questions.
     */
-    const experience: XpAward[] = warband.units.map((u) => {
+    const experience: XpAward[] = battleRoster.map((u) => {
       const verdict = experienceFor(u.id);
       return {
         unitId: u.id,
@@ -1878,7 +1893,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                   <p className="text-xs text-theme-muted">{warStories.rule.text}</p>
                   <p className="text-xs text-theme-muted">
                     Held by{' '}
-                    {warband.units
+                    {battleRoster
                       .filter((u) => warStories.holderIds.has(u.id))
                       .map((u) => u.customName).join(', ')}
                     .
@@ -1980,7 +1995,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
               })}
 
               <div className="space-y-3">
-                {warband.units.map((unit) => {
+                {battleRoster.map((unit) => {
                   const xp = experienceFor(unit.id);
                   const reason = xp.earns ? null : xpReasonFor(unit.id, xp.blocked);
                   return (

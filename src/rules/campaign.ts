@@ -31,6 +31,7 @@ import type {
   Dataset, ExplorationLocation, ExplorationTableName, RollRange,
 } from '@/types/catalogue';
 import { variantById, factionOf } from './variants';
+import { takesTheField } from './recreation';
 
 export interface ThresholdRow {
   game: number;
@@ -175,13 +176,25 @@ export interface ForceBudget {
   rosterCost: number;
   /** Models left out of the Force. */
   benched: number;
+  /**
+   * Models on the roster that cannot be fielded at all: killed, and held only
+   * because their owner may still pay to Re-create them. Counted separately
+   * from `benched` so a screen can explain the gap between `rosterCost` and
+   * `spend` without calling a dead model benched.
+   */
+  awaitingRecreation: number;
   /** Which rule set the cap — for a screen that has to say why. */
   source: 'threshold' | 'founding-allowance';
 }
 
 export function forceBudget(
   warband: {
-    units: { totalCost?: number; benched?: boolean }[];
+    units: {
+      totalCost?: number;
+      benched?: boolean;
+      isDead?: boolean;
+      awaitingRecreation?: unknown;
+    }[];
     ducatLimit?: number;
     forceMode?: string;
   },
@@ -189,8 +202,16 @@ export function forceBudget(
 ): ForceBudget {
   const units = warband.units ?? [];
   const rosterCost = units.reduce((n, u) => n + (u.totalCost ?? 0), 0);
-  const fielded = units.filter((u) => !u.benched);
-  const spendAll = rosterCost;
+  /*
+    A model awaiting Re-creation is on the roster and nowhere else, so it is in
+    `rosterCost` and in neither spend. It is not benched either — the player
+    did not choose to leave it out, the book did — so it is taken out before
+    the bench is counted, and `benched` stays the number of models sat out.
+    See `takesTheField`.
+  */
+  const fieldable = units.filter(takesTheField);
+  const fielded = fieldable.filter((u) => !u.benched);
+  const spendAll = fieldable.reduce((n, u) => n + (u.totalCost ?? 0), 0);
   const spendForce = fielded.reduce((n, u) => n + (u.totalCost ?? 0), 0);
 
   const campaignForce = warband.forceMode !== 'unrestricted';
@@ -200,7 +221,8 @@ export function forceBudget(
     cap: useThreshold ? limits!.threshold : (warband.ducatLimit ?? 0),
     spend: campaignForce ? spendForce : spendAll,
     rosterCost,
-    benched: units.length - fielded.length,
+    benched: fieldable.length - fielded.length,
+    awaitingRecreation: units.length - fieldable.length,
     source: useThreshold ? 'threshold' : 'founding-allowance',
   };
 }
@@ -272,7 +294,7 @@ export interface ReinforcementCost {
 export function reinforcementCost(
   dataset: Dataset,
   warband: {
-    units: { totalCost: number; isDead?: boolean }[];
+    units: { totalCost: number; isDead?: boolean; awaitingRecreation?: unknown }[];
     armoryStash?: { id: string; name: string }[];
     treasuryDucats: number;
     variantId?: string;
@@ -282,10 +304,11 @@ export function reinforcementCost(
   /*
     Step 3 — "calculate the total Cost of all the models in your Warband". A
     model removed from the roster is not in the Warband, so a dead one does not
-    inflate the total and shrink the allowance.
+    inflate the total and shrink the allowance. Nor does one held on the roster
+    awaiting Re-creation, which is dead until it is paid for — `takesTheField`.
   */
   const warbandTotalCost = warband.units
-    .filter((u) => !u.isDead)
+    .filter(takesTheField)
     .reduce((sum, u) => sum + (u.totalCost || 0), 0);
 
   return {
