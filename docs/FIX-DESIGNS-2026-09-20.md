@@ -2493,21 +2493,21 @@ After pack C.
 and the seven-day limit resets on 25 September at 17:00 UTC, so after #107
 the developer was told to stop (Order 38). What resumes, in this order:
 
-1. **FD-17's acceptance test**, which the developer had already built and
-   verified before the order arrived and left open as #108, green on CI
-   and unmerged. It merges or is dropped on the owner's word; nothing
-   else depends on it. Its body records the three things the design got
-   wrong, measured: finding 2's cause was the validator being handed the
-   catalogue entry instead of the model, so no Promoted model could meet
-   a requirement naming ELITE; finding 3 needs five derived granters, not
-   one; and Curative Fluids, an Exploration find, was a sixth report the
-   design had not named.
-2. **Pack C**, FD-12 with FD-15, READY FOR TESTING 2 in its body.
-3. **EXP-1.** The developer measured one more correction: imported items
+FD-17's acceptance test, which the developer had already built and
+verified before the order arrived and left open as #108, was merged on
+the owner's word at 05:40 UTC ("Merge it then park for the week"); it is
+recorded under FD-17. What resumes:
+
+1. **Pack C**, FD-12 with FD-15, READY FOR TESTING 2 in its body.
+2. **EXP-1.** The developer measured one more correction: imported items
    do not carry which selection they came from at all, so "an item keeps
    the selection it came from" is importer work, not a read of existing
    data.
-4. Item 9's AI-3 and AI-5, FD-08, FD-10, AI-4.
+3. Item 9's AI-3 and AI-5, FD-08, FD-10, AI-4.
+
+The developer had scheduled itself to resume on 25 September at 17:05
+UTC; that schedule was removed, so nothing resumes until the owner says
+so. Resume by an order to the developer's session naming pack C first.
 
 Carried forward and not fixed: the store's `toggleUnitSpecialUpgrade`
 charges without checking the Strongbox, so a Strain or a Saga can still
