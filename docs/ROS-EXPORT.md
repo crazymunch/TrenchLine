@@ -142,15 +142,38 @@ L5883–L6473 gives Trench Pilgrims an Equipment, Weapons, Grenades and Shields
 group and New Antioch an Equipment, Ranged Weapons and Grenades group — **no
 Armour on either side**, and no New Antioch melee weapons or shields.
 
-So a warband whose collection pick is Machine Armour — the owner's own choice —
-is legal by the book and has no `entryId` in the catalogue's Weapon Collections
-group to be written to. Round-tripping it through NewRecruit will lose it. The
-import direction is unaffected: a `.ros` can only ever carry a pick from that
-subset, and every one of those is a row in the armoury the app now offers.
+So a warband whose collection pick is one of the rows that subset omits is
+legal by the book and has no `entryId` in the catalogue's Weapon Collections
+group to be written to. The import direction is unaffected: a `.ros` can only
+ever carry a pick from that subset, and every one of those is a row in the
+armoury the app now offers.
 
-A model carrying one of these is **fatal**, not silently short. Whether the
-campaign half should be written at all is an open question: a `.ros` can express
-it, TrenchLine holds it somewhere else, and nobody has asked for it yet.
+**Two corrections to what this section used to say** (WC-1), both from
+measuring rather than reading the groups:
+
+- It named **Machine Armour** as the case. That one is not a case: the Iron
+  Sultanate catalogue carries its own `Machine Armour` entryLink at 50 Ducats
+  (`Iron Sultanate.cat` L2667), hidden behind a modifier, and `modelIdentity`
+  resolves a name against everything the MODEL's entry reaches rather than
+  against the Weapon Collections group alone. It exports, under `Armour`.
+  The rows that genuinely reach no Iron Sultanate entry are **Blunderbuss,
+  Heavy Ballistic Shield, Engineer Body Armour, Blessed Icon and Iron
+  Capirote** — zero of the catalogue's seventeen entries each. Several more
+  reach only some entries and are fine on the rest.
+- It said such a model is **fatal**. It was, and that was the wrong trade:
+  one legal item refused the whole file, so the other twelve models — exactly
+  what the catalogues can name — went nowhere either.
+
+An item that carries `grantedBy` and cannot be reached is now a **warning**:
+the file is written without it, and the warning names the item, the Variant
+rule that allows it, and what the model therefore costs in the file against
+what it costs in TrenchLine. An item with **no** grant behind it stays fatal —
+there the app is naming gear the catalogues do not offer that model and no rule
+says it may, which is a roster that is not this warband.
+
+Whether the campaign half should be written at all is still an open question: a
+`.ros` can express it, TrenchLine holds it somewhere else, and nobody has asked
+for it yet.
 
 ## Checking it
 
