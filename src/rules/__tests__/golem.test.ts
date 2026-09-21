@@ -9,6 +9,7 @@ import { describe, it, expect } from 'vitest';
 import { DATASET } from '@/data/generated/trenchline.generated';
 import {
   golemGrant, golemKeywords, freeFormulaBudgetLeft, isGolem, GOLEM_GRANTED_BY,
+  golemCandidates, soleGolem,
 } from '../golem';
 import { canBePromoted } from '../promotions';
 import type { Dataset } from '@/types/catalogue';
@@ -146,5 +147,88 @@ describe('a Golem is never Promoted', () => {
   it('leaves the same entry alone when it was simply recruited', () => {
     const v = canBePromoted(D, troop(), band);
     expect(v.reason).not.toBe('granted-ally');
+  });
+});
+
+/**
+ * Finding the Golem, by the grant's own rules rather than by a guess.
+ *
+ * The owner's August export, priced from the dataset: Al-Mudawwan holds
+ * Enslaved Mind 10, Inhuman Strength 15, Additional Arm 15, Hawk Eyes 10 —
+ * fifty Ducats to the Ducat — plus the granted Human Hands. Al-Masyukh holds
+ * more and is Promoted besides.
+ */
+describe('which model the grant created', () => {
+  const g = golemGrant(D)!;
+  const mudawwan = {
+    name: 'Al-Mudawwan, the Inscribed',
+    promoted: false,
+    formulas: [
+      { name: 'Human Hands', ducats: 10 },
+      { name: 'Enslaved Mind', ducats: 10 },
+      { name: 'Inhuman Strength', ducats: 15 },
+      { name: 'Additional Arm', ducats: 15 },
+      { name: 'Hawk Eyes', ducats: 10 },
+    ],
+  };
+  const masyukh = {
+    name: 'Al-Masyukh, Hunter of Hunters',
+    promoted: true,
+    formulas: [
+      { name: 'Human Hands', ducats: 10 },
+      { name: 'Massive Size', ducats: 20 },
+      { name: 'Inhuman Strength', ducats: 15 },
+      { name: 'Additional Arm', ducats: 15 },
+      { name: 'Two Heads', ducats: 15 },
+      { name: 'Hawk Eyes', ducats: 10 },
+    ],
+  };
+
+  it('picks Al-Mudawwan out of the owner’s two Homunculi', () => {
+    const found = golemCandidates(g, [masyukh, mudawwan]);
+    expect(found).toHaveLength(1);
+    expect(found[0].name).toMatch(/Mudawwan/);
+    /* The budget, to the Ducat. */
+    expect(found[0].formulaDucats).toBe(50);
+  });
+
+  /* "can never be Promoted" — the discriminator is the rule, not the name. */
+  it('excludes a promoted Homunculus because the grant forbids promotion', () => {
+    expect(golemCandidates(g, [masyukh])).toHaveLength(0);
+  });
+
+  it('excludes one holding more Formulas than the budget', () => {
+    const rich = { name: 'Too rich', promoted: false, formulas: [
+      { name: 'Human Hands', ducats: 10 }, { name: 'Massive Size', ducats: 60 },
+    ] };
+    expect(golemCandidates(g, [rich])).toHaveLength(0);
+  });
+
+  it('excludes one that does not hold the granted Formula at all', () => {
+    const bare = { name: 'No hands', promoted: false, formulas: [
+      { name: 'Hawk Eyes', ducats: 10 },
+    ] };
+    expect(golemCandidates(g, [bare])).toHaveLength(0);
+  });
+
+  /*
+    Two that both fit is a roster that cannot say which is the Golem. Marking
+    one by coin-toss would be the invented answer rule 2 forbids; the caller
+    marks neither and the player uses the manual action.
+  */
+  it('marks nobody when two models both fit', () => {
+    const twin = { ...mudawwan, name: 'A twin' };
+    const both = golemCandidates(g, [mudawwan, twin]);
+    expect(both).toHaveLength(2);
+    expect(soleGolem(both)).toBeNull();
+  });
+
+  it('marks the one when exactly one fits', () => {
+    expect(soleGolem(golemCandidates(g, [masyukh, mudawwan]))?.name)
+      .toMatch(/Mudawwan/);
+  });
+
+  it('finds nobody without a grant', () => {
+    expect(golemCandidates(null, [mudawwan])).toEqual([]);
   });
 });

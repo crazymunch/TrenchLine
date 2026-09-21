@@ -156,3 +156,70 @@ export const freeFormulaBudgetLeft = (
   grant: GolemGrant | null,
   spent: number,
 ): number => Math.max(0, (grant?.freeFormulaDucats ?? 0) - (Number.isFinite(spent) ? spent : 0));
+
+/* ------------------------------------------------------------------ *
+ * Finding the Golem on an imported roster
+ * ------------------------------------------------------------------ */
+
+export interface GolemCandidate {
+  /** Index into the list handed in, so the caller marks its own object. */
+  index: number;
+  name: string;
+  /** Ducats of Formulas held beyond the one the grant supplies. */
+  formulaDucats: number;
+}
+
+/**
+ * Which imported model the Book of Golems created, where that can be KNOWN.
+ *
+ * The design identifies it as "the Homunculus that has no Alchemist
+ * association". The export records no association anywhere — searched, it is
+ * absent from both Homunculi — so that test cannot be applied to a real file.
+ * What CAN be applied is the grant's own rule:
+ *
+ *   - **"can never be Promoted"**, so a Homunculus carrying a promotion is not
+ *     the Golem. This is the discriminator, and it is a rule rather than a
+ *     guess.
+ *   - **"Alchemical Formulas worth a total of up to 50 👑 for free"**, so one
+ *     holding more than the budget beyond the granted Formula is not it
+ *     either.
+ *
+ * Returns every model that passes both. The caller marks one only when there
+ * is exactly one — with two, the roster cannot say which, and the honest
+ * answer is to mark neither and let the player use the manual action rather
+ * than pick by coin-toss (rule 2: fail loudly, never invent a plausible
+ * answer).
+ *
+ * On the owner's August export this returns exactly one: Al-Mudawwan, the
+ * Inscribed, holding Enslaved Mind, Inhuman Strength, Additional Arm and Hawk
+ * Eyes — 10 + 15 + 15 + 10 = **50 Ducats**, the budget to the Ducat. Its
+ * companion Al-Masyukh is excluded by its Elite Promotion.
+ */
+export function golemCandidates(
+  grant: GolemGrant | null,
+  models: readonly {
+    name?: string;
+    promoted?: boolean;
+    /** Every Formula the model holds, with the Ducats the catalogue prices it at. */
+    formulas?: readonly { name: string; ducats: number }[];
+  }[] = [],
+): GolemCandidate[] {
+  if (!grant) return [];
+  const out: GolemCandidate[] = [];
+  models.forEach((m, index) => {
+    if (grant.neverPromoted && m.promoted) return;
+    const held = m.formulas ?? [];
+    /* The granted Formula is supplied by the grant, so it is not spent. */
+    const beyond = held
+      .filter((f) => f.name.trim().toLowerCase() !== grant.startsWith.toLowerCase())
+      .reduce((sum, f) => sum + (Number.isFinite(f.ducats) ? f.ducats : 0), 0);
+    if (beyond > grant.freeFormulaDucats) return;
+    if (!held.some((f) => f.name.trim().toLowerCase() === grant.startsWith.toLowerCase())) return;
+    out.push({ index, name: m.name ?? '', formulaDucats: beyond });
+  });
+  return out;
+}
+
+/** The one model to mark, or `null` where the roster cannot say. */
+export const soleGolem = (candidates: readonly GolemCandidate[]): GolemCandidate | null =>
+  candidates.length === 1 ? candidates[0] : null;
