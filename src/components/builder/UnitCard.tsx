@@ -11,6 +11,10 @@ import { ConfirmModal } from '../ui/ConfirmModal';
 import { forcedBattlekit, battlekitProfile } from '../../rules/battlekit';
 import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
 import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
+import { formulaeHeld } from '../../rules/formulaShelf';
+import { catalogueUnitFor } from '../../rules/catalogueUnit';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
 import { KeywordText, KeywordChip } from '../ui/KeywordText';
 import { DATASET } from '@/data/generated/trenchline.generated';
@@ -83,8 +87,34 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
     contains any of those words, so every one of them rendered here as ordinary
     gear — `Additional Arm` under "Protection & Gear", beside a Gas Mask.
   */
-  const formulaEquipment = unit.equippedEquipment.filter(isAlchemicalFormula);
+  /* Gear is everything equipped that is NOT a Formula; the Formulae
+     themselves come from `heldFormulae` below, with their rules text. */
   const gear = unit.equippedEquipment.filter((e) => !isAlchemicalFormula(e));
+
+  /*
+    FD-13a item 3. The Formulae this model holds, each with the sentence the
+    catalogue prints for it.
+
+    Until now the card showed a bought Formula's NAME and PRICE and nothing
+    else — `specialUpgrades` is `{ id, name, cost, category }` and has no
+    description field — and an imported one's text only in a `title`
+    attribute, which is a hover tooltip on an app built for a 375px phone
+    with no pointer. `formulaeHeld` resolves the text from the model's own
+    entry instead of storing a copy, so a Dispatch that rewrites a Formula
+    rewrites it here too.
+  */
+  const { dataset: cardDataset } = useDataset(
+    (typeof window !== 'undefined'
+      && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
+  const warbandFaction = useStore(
+    (st) => st.warbands.find((w) => w.id === warbandId)?.factionId);
+  const heldFormulae = React.useMemo(
+    () => formulaeHeld(unit, catalogueUnitFor(cardDataset, unit, warbandFaction)),
+    [cardDataset, unit, warbandFaction]);
+  /* Everything in `specialUpgrades` that is NOT a Formula — Strains, Sagas,
+     Goetic Powers — which keep their own pills below. */
+  const formulaIds = new Set(heldFormulae.map((f) => f.id).filter(Boolean));
+  const otherUpgrades = (unit.specialUpgrades ?? []).filter((u) => !formulaIds.has(u.id));
 
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameVal, setNameVal] = useState(unit.customName);
@@ -739,35 +769,78 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
             </div>
           )}
 
-          {/* Alchemical Formulae and other faction upgrades */}
-          {((unit.specialUpgrades?.length ?? 0) > 0 || formulaEquipment.length > 0) && (
+          {/*
+            ALCHEMICAL FORMULAE — FD-13a item 3.
+
+            A row each rather than a strip of pills, because a Formula is a
+            RULE and a rule needs its sentence. The pills carried a name and a
+            price; the text was either nowhere (a Formula bought in the app)
+            or in a `title` tooltip (one imported), and a tooltip is not
+            reachable on the phone this layout is built for.
+          */}
+          {heldFormulae.length > 0 && (
             <div className="space-y-1">
               <span className="text-xs sm:text-[10px] font-mono font-bold text-theme-primary uppercase tracking-wider flex items-center space-x-1">
                 <Flame className="w-3 h-3" />
-                {/*
-                  Named by the catalogue group when the Formulae were imported,
-                  and only otherwise by whatever category an in-app upgrade was
-                  filed under.
-                */}
-                <span>{formulaEquipment.length > 0 ? ALCHEMICAL_FORMULAE : unit.specialUpgrades![0].category}:</span>
+                <span>{ALCHEMICAL_FORMULAE} ({heldFormulae.length}):</span>
+              </span>
+              <div className="space-y-1">
+                {heldFormulae.map((f) => (
+                  <div
+                    key={`${f.from}-${f.instanceId ?? f.id ?? f.name}`}
+                    className="rounded border border-theme-primary/40 bg-theme-primary/10 px-2 py-1 space-y-0.5"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-xs sm:text-[10px] font-mono font-bold text-theme-primary">
+                        {f.name}
+                        {' '}
+                        <span className="text-theme-muted">
+                          {/* The entry's own, not a purchase: it cost nothing. */}
+                          {f.from === 'innate'
+                            ? '(from its entry)'
+                            : `(${formatUnitCost(f.price.ducats, f.price.glory)})`}
+                        </span>
+                      </span>
+                      {f.instanceId && (
+                        <button
+                          onClick={() => removeEquipment(warbandId, unit.id, f.instanceId!)}
+                          className="tap text-theme-muted hover:text-status-error shrink-0"
+                          aria-label={`Remove ${f.name}`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      )}
+                    </div>
+                    {/*
+                      The published sentence, with its Keywords tappable — the
+                      statline effects a Formula gives are stated IN this text
+                      ("base size of 32mm", "+1 DICE to its Melee
+                      characteristic", "gains the Keyword TOUGH"), not in the
+                      catalogue's modifiers, which carry only `hidden` and
+                      `category`. Showing the sentence is what lets a player
+                      apply them; deriving a statline from prose would be
+                      inventing game data.
+                    */}
+                    {f.description && (
+                      <KeywordText className="text-xs sm:text-[10px] text-theme-text leading-relaxed">
+                        {f.description}
+                      </KeywordText>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Strains, Sagas, Goetic Powers — everything bought that is not a Formula */}
+          {otherUpgrades.length > 0 && (
+            <div className="space-y-1">
+              <span className="text-xs sm:text-[10px] font-mono font-bold text-theme-primary uppercase tracking-wider flex items-center space-x-1">
+                <Flame className="w-3 h-3" />
+                <span>{otherUpgrades[0].category}:</span>
               </span>
               <div className="flex flex-wrap gap-1">
-                {formulaEquipment.map((eq) => (
-                  <span
-                    key={eq.instanceId}
-                    title={eq.effect}
-                    className="inline-flex items-center space-x-1 text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary/15 border border-theme-primary/40 text-theme-primary font-bold"
-                  >
-                    <span>{eq.name} ({formatUnitCost(eq.cost, eq.gloryCost ?? 0)})</span>
-                    <button
-                      onClick={() => removeEquipment(warbandId, unit.id, eq.instanceId)}
-                      className="tap text-theme-muted hover:text-status-error ml-1"
-                    >
-                      <X className="w-3 h-3" />
-                    </button>
-                  </span>
-                ))}
-                {(unit.specialUpgrades ?? []).map((upg) => (
+                {otherUpgrades.map((upg) => (
                   <span
                     key={upg.id}
                     className="text-xs sm:text-[10px] font-mono px-2 py-0.5 rounded bg-theme-primary/15 border border-theme-primary/40 text-theme-primary font-bold"
