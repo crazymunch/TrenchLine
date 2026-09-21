@@ -26,13 +26,14 @@
  * never a plausible default.
  */
 import type {
-  Dataset, UnitProfile as CatalogueUnit, WeaponProfile as CatalogueWeapon, Armoury,
+  Dataset, UnitProfile as CatalogueUnit, WeaponProfile as CatalogueWeapon, Armoury, ArmouryRow,
 } from '@/types/catalogue';
 import type {
   UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, UnitCategory, Ability,
 } from '@/types/rules';
 import { nameKey } from './names';
 import { sameFaction, variantById } from './variants';
+import { variantArmoury } from './variantArmoury';
 import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
 import { unobtainable, variantLocks } from './variantLocks';
 import { variantLimits, variantForbids, variantReveals } from './validate';
@@ -390,13 +391,79 @@ export function recruitable(
   const armour: ArmourProfile[] = [];
   const equipment: EquipmentItem[] = [];
 
-  for (const row of armoury.rows) {
+  /*
+    The shelves this Warband may buy from: its own faction's table, and then
+    any foreign Armoury a Variant rule opens to it.
+
+    The House of Wisdom's *Weapon Collections* is the case the owner asked
+    for — Warbands of Trench Crusade L5303-L5308:
+
+      "When you create your starting Warband, you can purchase 1 piece of
+       Battlekit from the New Antioch Armoury, and 1 piece of Battlekit from
+       the Trench Pilgrims Armoury. Any stipulations that apply to it are
+       followed … You can repurchase the Battlekit later during the campaign
+       if it is lost for any reason."
+
+    `variantArmoury` has read these grants since RULES-2 and `validate`'s
+    `checkVariantGrants` has counted them since — but nothing ever OFFERED
+    them. The rule was enforced against a purchase the builder gave the player
+    no way to make: the equip sheet is built from one armoury, so a House of
+    Wisdom player could be told they had exceeded an allowance they could not
+    spend in the first place.
+
+    "Battlekit", not "weapons". The book's own word for the whole table — its
+    heading is "…can have the following Battlekit" and its sections are Ranged
+    Weapons, Melee Weapons, Grenades, Shields, Armour and Equipment — so
+    Machine Armour is as valid a pick as a Machine Gun. The BattleScribe
+    catalogue models Weapon Collections as a hand-picked subset with no Armour
+    group at all (Iron Sultanate.cat L5883-L6473), and no New Antioch melee
+    weapons or shields either; precedence puts the rulebook above the
+    catalogue, so the whole table is offered.
+
+    A row the Warband's own faction already stocks is NOT repeated from a
+    foreign shelf. It would be a second offer of the same item at a different
+    price, and taking it would spend an allowance for nothing —
+    `checkVariantGrants` makes the same exclusion ("stocked at home: not
+    spending anybody's allowance"), so the offer and the count agree.
+  */
+  const shelves: { row: ArmouryRow; from: Armoury; grantedBy?: string }[] =
+    armoury.rows.map((row) => ({ row, from: armoury }));
+
+  const stockedAtHome = new Set(armoury.rows.map((r) => nameKey(r.name)));
+  const known = (dataset.armouries ?? []).map((a) => a.factionId);
+  for (const grant of variantArmoury(variant, factionId ?? '', known).grants) {
+    const foreign = (dataset.armouries ?? []).find((a) =>
+      nameKey(a.factionId) === nameKey(grant.factionId));
+    if (!foreign) continue;
+    for (const row of foreign.rows) {
+      if (stockedAtHome.has(nameKey(row.name))) continue;
+      shelves.push({ row, from: foreign, grantedBy: grant.rule });
+    }
+  }
+
+  for (const { row, from, grantedBy } of shelves) {
     const k = nameKey(row.name);
     const b = chapter.get(k);
     const p = profiles.get(k);
     if (row.cost.glory) gloryPriced.push({ name: row.name, glory: row.cost.glory });
 
-    const id = row.weaponId || `${armoury.factionId}-${k}`;
+    /*
+      A granted offer is keyed by the Armoury it came from, because the same
+      item can be on offer from two of them at different prices. The House of
+      Wisdom can buy Martyrdom Pills from New Antioch for 1 Glory or from the
+      Trench Pilgrims for 20 Ducats (Warbands L1357 and L2812), and four of
+      the eight names both granted Armouries carry differ in price or
+      stipulation. One row would make the app pick which, so there are two.
+
+      Only granted rows are keyed this way. An item a Warband stocks in its
+      own right keeps the id it has always had, so nothing already saved to a
+      roster has to be migrated. Both forms are resolved by NAME everywhere
+      that matters — `fromWarband` for the validator, `rosterRos` for the
+      export — so the id is a handle for the builder, not an identity.
+    */
+    const id = grantedBy
+      ? `granted:${from.factionId}:${row.weaponId || k}`
+      : (row.weaponId || `${from.factionId}-${k}`);
     const section = b?.section ?? row.section;
 
     if (section === 'Armour' || section === 'Shields') {
@@ -409,7 +476,8 @@ export function recruitable(
         keywords: b?.keywords ?? p?.keywords ?? [],
         description: p?.lore || b?.description,
         category: section,
-        factionId: appId(armoury.factionId),
+        factionId: appId(from.factionId),
+        grantedBy,
       });
       continue;
     }
@@ -438,7 +506,8 @@ export function recruitable(
         keywords: b?.keywords ?? p?.keywords ?? [],
         description: p?.lore || b?.description,
         category: section,
-        factionId: appId(armoury.factionId),
+        factionId: appId(from.factionId),
+        grantedBy,
       });
       continue;
     }
@@ -458,7 +527,8 @@ export function recruitable(
       description: p?.lore || b?.description,
       hands: b?.type === '2-Handed' ? 2 : b?.type === '1-Handed' ? 1 : undefined,
       category: section,
-      factionId: appId(armoury.factionId),
+      factionId: appId(from.factionId),
+      grantedBy,
       // The armoury row's own restrictions — "ELITE only", "Limit: 2". These are
       // legality, and `wargear-not-stocked` reads them from the armoury directly.
     });

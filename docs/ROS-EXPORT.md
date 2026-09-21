@@ -124,6 +124,22 @@ the layer's wargear vocabulary, and not one is an oversight:
 | `Sniper Scope` | an exploration find from `Campaign Rules.cat` |
 | `Fierce Lion` | an ability, not armoury gear |
 
+### A Weapon Collections pick NewRecruit does not offer
+
+Since FD-16 the builder offers the House of Wisdom the whole New Antioch and
+Trench Pilgrims Armoury Tables, because the rule says *"1 piece of Battlekit"*
+and Battlekit is the book's word for the whole table (Warbands L5303–L5308).
+The catalogue models the same rule as a hand-picked subset: `Iron Sultanate.cat`
+L5883–L6473 gives Trench Pilgrims an Equipment, Weapons, Grenades and Shields
+group and New Antioch an Equipment, Ranged Weapons and Grenades group — **no
+Armour on either side**, and no New Antioch melee weapons or shields.
+
+So a warband whose collection pick is Machine Armour — the owner's own choice —
+is legal by the book and has no `entryId` in the catalogue's Weapon Collections
+group to be written to. Round-tripping it through NewRecruit will lose it. The
+import direction is unaffected: a `.ros` can only ever carry a pick from that
+subset, and every one of those is a row in the armoury the app now offers.
+
 A model carrying one of these is **fatal**, not silently short. Whether the
 campaign half should be written at all is an open question: a `.ros` can express
 it, TrenchLine holds it somewhere else, and nobody has asked for it yet.

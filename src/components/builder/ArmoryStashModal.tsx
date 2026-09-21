@@ -58,8 +58,12 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
     /* Optional, because not every catalogue row carries one — an Armour
        entry with no modifier is a real entry, not a missing field. */
     id: string; name: string; detail?: string;
+    /* The Variant rule that puts a foreign Armoury's Battlekit on offer —
+       the House of Wisdom's *Weapon Collections*, and the like. Absent for
+       everything the Warband stocks in its own right. */
+    via?: string;
     type: 'Weapon' | 'Armour' | 'Equipment'; price: Cost;
-  }> = ({ id, name, detail, type, price }) => {
+  }> = ({ id, name, detail, via, type, price }) => {
     const short: Cost = {
       ducats: Math.max(0, price.ducats - held.ducats),
       glory: Math.max(0, price.glory - held.glory),
@@ -72,6 +76,11 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
           <strong className="text-theme-text">{name}</strong>
           {detail && (
             <span className="text-xs sm:text-[10px] text-theme-muted block">{detail}</span>
+          )}
+          {/* Buying this spends a once-per-campaign allowance, not just
+              Ducats, so the row says so rather than looking like any other. */}
+          {via && (
+            <span className="text-xs sm:text-[10px] text-theme-accent block">via {via}</span>
           )}
         </div>
         <button
@@ -260,6 +269,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   key={w.id}
                   id={w.id}
                   name={w.name}
+                  via={w.grantedBy}
                   detail={`${w.range} | ${w.damage}`}
                   type="Weapon"
                   price={profileCost(w)}
@@ -271,6 +281,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   key={a.id}
                   id={a.id}
                   name={a.name}
+                  via={a.grantedBy}
                   detail={a.armourModifier}
                   type="Armour"
                   price={profileCost(a)}
@@ -282,6 +293,7 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                   key={e.id}
                   id={e.id}
                   name={e.name}
+                  via={e.grantedBy}
                   detail={e.effect}
                   type="Equipment"
                   price={profileCost(e)}
