@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -90,6 +90,18 @@ comes back a model that may be Promoted, which is why it is durable and why
 `isDead` is `durable` and the distinction matters, because it reads like battle
 state and is not. A model removed by the Trauma Step is gone from the campaign;
 a restore that quietly brought it back would be inventing a model.
+
+`awaitingRecreation` is `durable`, and it is the one state that is neither
+alive nor fallen. Two entries let a Warband pay rather than lose a model the
+post-battle sequence killed — Warbands L5324–L5327 for the Takwin Homunculus,
+the Book of Golems find for the Golem — and both put the payment *after* that
+sequence, in a step this app locates in the builder. So a roster saved between
+the battle and the Quartermaster carries a model in limbo, and dropping the
+field would silently restore it to full health. `isDead` stays **false** while
+it is set, which is what *"you do not have to remove it from your roster"*
+means. The deadline is stored rather than recomputed because the two entries
+are printed with different ones: the Takwin's expires with the following
+Quartermaster Step, the Golem's does not expire at all.
 
 `ledger` is `durable`, and it is now the Strongbox itself rather than a note
 beside it. `treasuryDucats` and `gloryPoints` stay in the file — they are a

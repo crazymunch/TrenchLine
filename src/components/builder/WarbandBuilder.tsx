@@ -8,6 +8,7 @@ import { UnitCard } from './UnitCard';
 import { AddUnitModal } from './AddUnitModal';
 import { ExportModal } from './ExportModal';
 import { ArmoryStashModal } from './ArmoryStashModal';
+import { RecreationPanel } from './RecreationPanel';
 import { WarbandChronicleModal } from './WarbandChronicleModal';
 import { WarbandChangelogModal } from './WarbandChangelogModal';
 import { soundEffects } from '../../services/soundEffects';
@@ -657,6 +658,14 @@ export const WarbandBuilder: React.FC = () => {
           />
         </div>
       )}
+
+      {/*
+        A Re-creation offer the post-battle sequence left outstanding.
+
+        Renders nothing unless one is owed. Above the roster because it is a
+        decision, not a warrior — see `RecreationPanel`.
+      */}
+      <RecreationPanel warband={warband} />
 
       {/* Category Filter Pills, and the roster-wide collapse. */}
       <div className="flex items-center gap-2">
