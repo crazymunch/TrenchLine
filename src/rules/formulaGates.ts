@@ -10,6 +10,14 @@
  *   "This formula cannot be combined with the Wings formula."  — Massive Size
  *   "Cannot be combined with Hawk Eyes without Two Heads."     — Hypnotic Eyes
  *
+ * Those four are the GOLEM COPIES' wording. The Iron Sultanate's own Takwin
+ * Homunculus states the same rules at greater length — "A Takwin Homunculus
+ * can only have this Alchemical Formula if it already has …", "A Homunculus
+ * cannot have the X Alchemical Formula if it has the Y Alchemical Formula
+ * unless it also has the Z Alchemical Formula" — and both wordings are read.
+ * Taking the short form for the ruleset's is how the prerequisite came to be
+ * enforced on five entries and not on the sixth (FORM-3).
+ *
  * Derived from the sentence, never from the name, for the reason the rest of
  * this codebase derives: a Dispatch that reprices or renames a Formula needs
  * no edit here, and one that removes a restriction stops enforcing it rather
@@ -79,8 +87,30 @@ export interface FormulaGate {
 
 const EMPTY: FormulaGate = { requires: [], excludes: [], unreadable: [], text: '' };
 
-/** "Can only be bought if the Homunculus already has the A, B and C Formulas." */
-const REQUIRES = /only be (?:bought|taken)[^.]*?already has(?:\s+the)?\s+(.+?)\s+(?:Alchemical\s+)?Formulas?\b/i;
+/**
+ * A prerequisite, in both the wordings the ruleset uses.
+ *
+ *   "Can only be bought if the Homunculus already has the Human Hands,
+ *    Inhuman Strength and Massive Size Formulas."        — the Golem copies
+ *   "A Takwin Homunculus can only have this Alchemical Formula if it already
+ *    has the Human Hands, Inhuman Strength, and Massive Size Alchemical
+ *    Formulas."                                          — the Iron Sultanate
+ *
+ * FORM-3. This read only the first, and this file's header quoted only the
+ * first as though it were the ruleset's wording — which it is not: the Iron
+ * Sultanate's Takwin Homunculus, the one entry the rule was written for, uses
+ * the second. Gargantuan Size is the only Formula in the ruleset with a
+ * prerequisite, so the effect was that `requires` was EMPTY for that entry
+ * and the prerequisite was enforced on the five copies and not on the
+ * original. Found by building the Formulas tab on top of it, which is exactly
+ * what a rule with no caller hides.
+ *
+ * The two openings are an alternation over a shared tail, rather than two
+ * regexes, because they are one rule written twice: "already has <list>
+ * Formulas" is the part that carries the meaning.
+ */
+const REQUIRES =
+  /only (?:be (?:bought|taken)|have this [^.]*?)[^.]*?already has(?:\s+the)?\s+(.+?)\s+(?:Alchemical\s+)?Formulas?\b/i;
 
 /**
  * "Cannot be combined with Hawk Eyes without Two Heads."
@@ -232,12 +262,61 @@ export interface FormulaVerdict {
 }
 
 /**
+ * One exclusion, weighed against what the model holds.
+ *
+ * `null` where the clause does not bite. Split out because it is asked twice
+ * — of the Formula being taken, and of each one already held — see
+ * `formulaVerdict`.
+ */
+function excluded(
+  gate: FormulaGate, has: ReadonlySet<string>, name: string,
+): FormulaVerdict | null {
+  for (const ex of gate.excludes) {
+    if (nameKey(ex.name) !== nameKey(name)) continue;
+    if (ex.unless && has.has(nameKey(ex.unless))) continue;
+    /*
+      An exception this could not resolve on the model's own entry. Refusing
+      here would turn "cannot be combined with X without Y" into "cannot be
+      combined with X", which is the one direction of error that costs a
+      player a legal purchase. The sentence is shown instead.
+    */
+    if (!ex.unless && gate.unreadable.length) return { allowed: true, caveat: gate.text };
+    return { allowed: false, reason: gate.text };
+  }
+  return null;
+}
+
+/**
  * May this model take this Formula, given the ones it already has?
  *
  * Refuses on a stated prerequisite it does not meet, and on a stated exclusion
  * whose exception it does not have. An unreadable clause is a caveat and never
  * a refusal: a rule this cannot parse is not a rule to enforce by guess, and a
  * player who can see the sentence can apply it themselves.
+ *
+ * ## An exclusion is a fact about a PAIR, and the catalogue states it once
+ *
+ * FORM-5. This used to read the sentence on the Formula being taken and no
+ * other, which is only half of a symmetric rule — and on the Iron Sultanate's
+ * own entry, the half that is not written down.
+ *
+ * That entry states Wings ⊥ Massive Size on **Wings** ("A Homunculus cannot
+ * have the Wings Alchemical Formula if it has the Massive Size Alchemical
+ * Formula") and Human Hands ⊥ Wings on **Human Hands** ("A Homunculus cannot
+ * have the Human Hands Alchemical Formula if it has the Wings Alchemical
+ * Formula"). Neither pair is stated twice. So a Homunculus already holding
+ * Human Hands was offered Wings without a word, because Wings' own sentence
+ * says nothing about Human Hands — and the app would have sold a player a
+ * combination the page in front of them forbids.
+ *
+ * Found by opening the tab on the owner's own September roster, where
+ * Al-Masyukh holds Human Hands. No test found it: every test asked the
+ * question from the side the sentence is written on.
+ *
+ * So each held Formula's own gate is read too, for an exclusion naming the
+ * one being taken. The sentence returned is the one that actually refuses,
+ * whichever Formula carries it, because that is the line the player has to be
+ * able to find on the page.
  */
 export function formulaVerdict(
   formula: { name: string; description?: string } | null | undefined,
@@ -253,18 +332,22 @@ export function formulaVerdict(
   }
 
   for (const ex of gate.excludes) {
-    if (!has.has(nameKey(ex.name))) continue;
-    if (ex.unless && has.has(nameKey(ex.unless))) continue;
-    /*
-      An exception this could not resolve on the model's own entry. Refusing
-      here would turn "cannot be combined with X without Y" into "cannot be
-      combined with X", which is the one direction of error that costs a
-      player a legal purchase. The sentence is shown instead.
-    */
-    if (!ex.unless && gate.unreadable.length) {
-      return { allowed: true, caveat: gate.text };
+    const verdict = has.has(nameKey(ex.name)) ? excluded(gate, has, ex.name) : null;
+    if (verdict) return verdict;
+  }
+
+  /* The other half of the pair: what the HELD Formulae say about this one. */
+  const taking = (formula?.name ?? '').trim();
+  if (taking) {
+    for (const name of held) {
+      const entry = offered.find(
+        (o) => typeof o !== 'string' && nameKey(o.name) === nameKey(name));
+      if (!entry || typeof entry === 'string') continue;
+      const verdict = excluded(formulaGate(entry, offered), has, taking);
+      /* A caveat from a held Formula is not worth raising over the one the
+         player is reading; only a refusal is. */
+      if (verdict && !verdict.allowed) return verdict;
     }
-    return { allowed: false, reason: gate.text };
   }
 
   return gate.unreadable.length

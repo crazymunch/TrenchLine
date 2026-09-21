@@ -10,6 +10,8 @@ import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { canBePromoted } from '../../rules/promotions';
 import { nextAdvancementAt } from '../../rules/advancement';
+import { inFormulaGroup } from '../../rules/formulae';
+import { catalogueUnitFor } from '../../rules/catalogueUnit';
 import { 
   Sparkles, 
   Skull, 
@@ -18,8 +20,7 @@ import {
   Crown, 
   Flame, 
   BookOpen, 
-  Users, 
-  FlaskConical
+  Users
 } from 'lucide-react';
 
 interface UnitAdvancementModalProps {
@@ -68,14 +69,28 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   } = useStore();
 
 
-  const isHomunculus = Boolean(
-    /homunculus|takwin/i.test(unit.profileSnapshot.name) ||
-    /homunculus|takwin/i.test(unit.customName) ||
-    unit.profileSnapshot.innateAbilities?.some(a => /homunculus|takwin/i.test(a.name) || /homunculus|takwin/i.test(a.description))
-  );
+  /*
+    The Alchemical Formulas tab that stood here is gone — FD-13a item 2, and
+    Order 35's ruling that the equip sheet's Formulas tab REPLACES it rather
+    than sitting beside it.
 
-  const [activeTab, setActiveTab] = useState<'advancement' | 'skills' | 'injuries' | 'formulas' | 'upgrades'>(
-    isHomunculus ? 'formulas' : 'advancement'
+    Two surfaces writing one category is the failure this codebase keeps
+    finding: they disagree and whichever ran last wins. This one also opened
+    on a `/homunculus|takwin/i` test over the model's NAME and abilities —
+    the habit `rules/formulae.ts` documents — and then listed EVERY option
+    group flattened, Formulae and Sagas and Strains alike, under a heading
+    that called all of them Alchemical Formulas.
+
+    What it could not do is the part that matters: it had no prerequisite,
+    no exclusion, no Book of Golems allowance and no dead-Alchemist rule.
+    `AddEquipmentModal` reads all four through `rules/formulaShelf.ts`.
+
+    This sheet keeps everything that is not a Formula — Goetic Powers,
+    Strains, Sagas, Martial Disciplines, Arts of Assassination — under
+    `factionUpgradeGroups` below.
+  */
+  const [activeTab, setActiveTab] = useState<'advancement' | 'skills' | 'injuries' | 'upgrades'>(
+    'advancement'
   );
   const [selectedSkillCategory, setSelectedSkillCategory] = useState<'melee' | 'ranged' | 'stealth' | 'wildcard'>('melee');
   const [selectedSkillName, setSelectedSkillName] = useState<string>('');
@@ -102,8 +117,12 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     real costs, real rules text. Matched on the profile name, which is what a
     saved warband stores.
   */
-  const catalogueUnit = dataset?.units.find(
-    (u) => u.name === unit.profileSnapshot?.name || u.name === unit.customName);
+  const warbandFaction = useStore(
+    (st) => st.warbands.find((w) => w.id === warbandId)?.factionId);
+  /* Id first, faction second, name last. The bare name lookup that stood
+     here answered with the Court of the Seven-Headed Serpent's `Homunculus`
+     for every Homunculus on any roster — six entries share the name (ID-1). */
+  const catalogueUnit = catalogueUnitFor(dataset, unit, warbandFaction);
   const optionGroups = (catalogueUnit?.options ?? []).reduce<
     Record<string, {
       id: string; name: string; group: string; cost: number; description: string;
@@ -175,7 +194,14 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     rather than listed twice.
   */
   const factionUpgradeGroups = Object.entries(optionGroups)
-    .filter(([group]) => group !== 'Fireteams');
+    .filter(([group]) => group !== 'Fireteams')
+    /*
+      Formulae are the equip sheet's, not this sheet's (Order 35's ruling).
+      Filtered on the option's own `group`, which carries the PATH — the key
+      is the leaf, so an `Eye Options` key would not answer
+      `inFormulaGroup` and both Eye Formulae would have stayed here.
+    */
+    .filter(([, opts]) => !opts.every((o) => inFormulaGroup(o.group)));
 
   /*
     The rules that govern a whole group, which the app did not have.
@@ -277,19 +303,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         {/* Tab Navigation */}
         <div className="flex flex-wrap items-center gap-1 px-4 pt-3 border-b border-theme-border bg-theme-surface">
           
-          {isHomunculus && (
-            <button
-              onClick={() => setActiveTab('formulas')}
-              className={`flex items-center space-x-1.5 px-3 py-2 text-xs font-mono font-bold uppercase tracking-wider border-b-2 transition-colors whitespace-nowrap ${
-                activeTab === 'formulas' 
-                  ? 'border-theme-primary text-theme-primary bg-theme-elevated/80 rounded-t' 
-                  : 'border-transparent text-theme-muted hover:text-theme-text'
-              }`}
-            >
-              <FlaskConical className="w-3.5 h-3.5 text-theme-primary" />
-              <span>Alchemical Formulas</span>
-            </button>
-          )}
 
           <button
             onClick={() => setActiveTab('advancement')}
@@ -342,71 +355,6 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
         {/* Tab Content */}
           
-          {/* TAB 0: HOMUNCULUS ALCHEMICAL FORMULAS */}
-          {activeTab === 'formulas' && isHomunculus && (
-            <div className="space-y-4">
-              <div className="p-3.5 bg-theme-base rounded border border-theme-primary/50 space-y-1">
-                <div className="flex items-center space-x-2">
-                  <FlaskConical className="w-4 h-4 text-theme-primary" />
-                  <strong className="text-xs uppercase text-theme-primary font-bold block">
-                    Takwin Homunculus Alchemical Formulations
-                  </strong>
-                </div>
-                <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
-                  Homunculi created through the Secrets of Takwin or discovered via the Book of Golems may be infused with experimental alchemical formulas upon recruitment and between campaign battles.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                {Object.entries(optionGroups).flatMap(([, opts]) => opts).length === 0 && (
-                  <p className="text-xs text-theme-muted leading-relaxed">
-                    This model has no purchasable options in the current ruleset.
-                  </p>
-                )}
-                {Object.entries(optionGroups).flatMap(([, opts]) => opts).map((formula) => {
-                  const isSelected = unitUpgrades.some(u => u.id === formula.id);
-                  return (
-                    <div
-                      key={formula.id}
-                      onClick={() => toggleUnitSpecialUpgrade(warbandId, unit.id, {
-                        id: formula.id,
-                        name: formula.name,
-                        cost: formula.cost,
-                        price: formula.price,
-                        category: formula.group
-                      })}
-                      className={`p-3 rounded border cursor-pointer flex items-start justify-between gap-3 transition-all ${
-                        isSelected
-                          ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40 shadow'
-                          : 'bg-theme-base border-theme-border hover:border-theme-primary/50'
-                      }`}
-                    >
-                      <div className="space-y-1 flex-1">
-                        <div className="flex items-center space-x-2">
-                          <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => {}}
-                            className="rounded border-theme-border text-theme-primary focus:ring-0"
-                          />
-                          <strong className={`text-xs ${isSelected ? 'text-theme-primary font-bold' : 'text-theme-text'}`}>
-                            {formula.name}
-                          </strong>
-                          <span className="text-xs sm:text-[10px] font-bold text-theme-primary">
-                            +{formula.cost} Ducats
-                          </span>
-                        </div>
-                        <p className="text-xs sm:text-[11px] text-theme-muted pl-6 leading-relaxed">
-                          {formula.description}
-                        </p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
           {/* TAB 1: ADVANCEMENT & XP */}
           {activeTab === 'advancement' && (
             <div className="space-y-4">

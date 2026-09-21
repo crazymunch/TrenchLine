@@ -8,6 +8,11 @@ import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
 import { canEquip } from '../../rules/equipGate';
 import { armouryFor } from '../../rules/armoury';
 import { traitsOf, chosenBy } from '../../rules/formulae';
+import { formulaShelf } from '../../rules/formulaShelf';
+import { catalogueUnitFor } from '../../rules/catalogueUnit';
+import { isGolem } from '../../rules/golem';
+import { alchemistAliveFor, takwinEntries } from '../../rules/takwin';
+import { formatCost } from '../../rules/costs';
 import { battlekitBreaches } from '../../rules/battlekitLimits';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
@@ -178,16 +183,33 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     equipWeapon, 
     equipArmour, 
     equipEquipment, 
+    toggleUnitSpecialUpgrade,
     removeWeapon,
     removeArmour,
     removeEquipment,
     getActiveWarband 
   } = useStore();
 
-  const [tab, setTab] = useState<'weapons' | 'armour' | 'equipment'>('weapons');
+  const [tab, setTab] = useState<'weapons' | 'armour' | 'equipment' | 'formulas'>('weapons');
 
   const [weaponSubCategory, setWeaponSubCategory] = useState<'all' | 'melee' | 'ranged' | 'shield' | 'grenade'>('all');
-  const [equipmentSubCategory, setEquipmentSubCategory] = useState<'all' | 'formulae' | 'headgear' | 'relic' | 'gear'>('all');
+  /*
+    `formulae` is gone from this list, and it is a deletion rather than a
+    rename.
+
+    The chip filtered `equipment` — the Armoury offer — for things whose name
+    matched `/formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i`
+    or whose category was `Formula`. Measured on the shipped dataset, it
+    matched NOTHING and always had: `recruitable` builds `equipment` from
+    Armoury Table rows, and an Alchemical Formula is never an Armoury row —
+    it is an option on a model's own catalogue entry. So the chip was a
+    filter over a list that cannot contain the thing it filtered for, and it
+    showed an empty panel every time it was pressed.
+
+    The name regex is the same habit `formulae.ts` was written to document:
+    not one of the fifteen real Formulae matches it.
+  */
+  const [equipmentSubCategory, setEquipmentSubCategory] = useState<'all' | 'headgear' | 'relic' | 'gear'>('all');
   const [searchFilter, setSearchFilter] = useState<string>('');
 
   const activeWarband = getActiveWarband();
@@ -353,6 +375,58 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
     });
   }, [dataset, factionId, carriedNow, unit]);
 
+  /*
+    FD-13a item 2. The Alchemical Formulae a model may buy.
+
+    The whole of the rules half is `formulaShelf`: which of this ENTRY's
+    options are Formulae, what each one's own sentence requires and refuses,
+    the Book of Golems' free 50-Ducat allowance, and the House of Wisdom's
+    dead-Alchemist rule. Here we only supply the two facts about the roster
+    that a rules module has no business going looking for.
+  */
+  const takwinNames = React.useMemo(() => takwinEntries(dataset), [dataset]);
+  /* Id first, faction second, name last — six entries are called
+     `Homunculus` and a bare name lookup answered with the Court's (ID-1). */
+  const catalogueUnit = React.useMemo(
+    () => catalogueUnitFor(dataset, unit, factionId),
+    [dataset, unit, factionId]);
+
+  /*
+    Whether this model is one the association rule governs, and whether its
+    Alchemist is still alive.
+
+    The rule is one-to-one — "An Alchemist can only have a single Takwin
+    Homunculus associated with it and vice versa" — and the app has never
+    recorded WHICH. So the counts are what there is, and `alchemistAliveFor`
+    turns them into the three answers the rule can honestly give. A Golem is
+    excluded from both counts: the Book of Golems creates it with no
+    Alchemist at all, and `formulaShelf` reads the grant for it instead.
+  */
+  const nameIs = (u: { profileSnapshot?: { name?: string } }, name?: string) =>
+    Boolean(name) && u.profileSnapshot?.name === name;
+  const isTakwin = Boolean(unit && nameIs(unit, takwinNames?.homunculus));
+  const rosterUnits = activeWarband?.units;
+  const alchemistAlive = React.useMemo(() => {
+    const roster = rosterUnits ?? [];
+    return alchemistAliveFor({
+      alchemists: roster.filter((u) => nameIs(u, takwinNames?.alchemist) && !u.isDead).length,
+      homunculi: roster.filter(
+        (u) => nameIs(u, takwinNames?.homunculus) && !u.isDead && !isGolem(u)).length,
+    });
+  }, [rosterUnits, takwinNames]);
+
+  const shelf = React.useMemo(() => formulaShelf(dataset, {
+    unit,
+    catalogueUnit,
+    alchemistAlive,
+    isTakwin,
+    strongbox: {
+      ducats: activeWarband?.treasuryDucats ?? 0,
+      glory: activeWarband?.gloryPoints ?? 0,
+    },
+  }), [dataset, unit, catalogueUnit, alchemistAlive, isTakwin,
+    activeWarband?.treasuryDucats, activeWarband?.gloryPoints]);
+
   const sameItem = (a: { id?: string; name: string }, b: { id?: string; name: string }) =>
     (b.id != null && a.id === b.id) || a.name === b.name;
   const ownedIn = (
@@ -391,14 +465,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   let displayedArmour = armour.filter((a) => !alreadyCarried(a));
 
   let displayedEquipment = equipment.filter((e) => !alreadyCarried(e));
-  if (equipmentSubCategory === 'formulae') {
-    displayedEquipment = displayedEquipment.filter(e => 
-      e.category === 'Formula' || 
-      /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i.test(e.name) || 
-      e.keywords?.includes('FORMULA') || 
-      e.keywords?.includes('ELIXIR')
-    );
-  } else if (equipmentSubCategory === 'headgear') {
+  if (equipmentSubCategory === 'headgear') {
     displayedEquipment = displayedEquipment.filter(e => /helmet|gas mask|mask|goggles|hood|crown/i.test(e.name));
   } else if (equipmentSubCategory === 'relic') {
     displayedEquipment = displayedEquipment.filter(e => /relic|amulet|icon|tome|scripture|chalice|shrine|cross/i.test(e.name));
@@ -437,7 +504,10 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
       label="Equip warrior"
       footer={<div className="flex items-center justify-between w-full gap-3">
             <span>
-              {tab === 'weapons' ? `${displayedWeapons.length} weapons available` : tab === 'armour' ? `${displayedArmour.length} armour/shields available` : `${displayedEquipment.length} gear items & formulae available`}
+              {tab === 'weapons' ? `${displayedWeapons.length} weapons available`
+                : tab === 'armour' ? `${displayedArmour.length} armour/shields available`
+                : tab === 'formulas' ? `${shelf.offers.length} Alchemical Formulae on this entry`
+                : `${displayedEquipment.length} gear items available`}
             </span>
             <button
               onClick={onClose}
@@ -488,11 +558,20 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           )}
         </div>
 
-        {/* Fixed Main Category Tabs: Large, Prominent, Clear */}
-        <div className="flex border-b border-theme-border bg-theme-base px-4 pt-2.5 gap-2 flex-shrink-0">
+        {/*
+          Fixed Main Category Tabs.
+
+          `overflow-x-auto` with `shrink-0` tabs, because four of them do not
+          fit across a 375px phone and the fourth was rendering with its label
+          cut off at the edge. Scrolling the row is the mobile answer; the
+          alternative — letting the bar clip — is the thing docs/MOBILE.md
+          forbids, and shrinking the labels would put them under the 44px
+          touch floor.
+        */}
+        <div className="flex overflow-x-auto border-b border-theme-border bg-theme-base px-4 pt-2.5 gap-2 flex-shrink-0">
           <button
             onClick={() => setTab('weapons')}
-            className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
+            className={`px-4 sm:px-5 py-2.5 shrink-0 whitespace-nowrap font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'weapons'
                 ? 'bg-theme-elevated text-theme-primary border-t-2 border-x border-theme-border border-t-theme-primary'
                 : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
@@ -504,7 +583,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
           <button
             onClick={() => setTab('armour')}
-            className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
+            className={`px-4 sm:px-5 py-2.5 shrink-0 whitespace-nowrap font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'armour'
                 ? 'bg-theme-elevated text-theme-primary border-t-2 border-x border-theme-border border-t-theme-primary'
                 : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
@@ -516,15 +595,40 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
           <button
             onClick={() => setTab('equipment')}
-            className={`px-5 py-2.5 font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
+            className={`px-4 sm:px-5 py-2.5 shrink-0 whitespace-nowrap font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
               tab === 'equipment'
                 ? 'bg-theme-elevated text-theme-primary border-t-2 border-x border-theme-border border-t-theme-primary'
                 : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
             }`}
           >
             <Package className="w-4 h-4 text-theme-primary" />
-            <span>GEAR & FORMULAE ({displayedEquipment.length})</span>
+            <span>GEAR ({displayedEquipment.length})</span>
           </button>
+
+          {/*
+            FD-13a item 2. Shown only where the model's catalogue entry
+            carries Formulae, or where a rule refuses them — six entries in
+            the shipped ruleset, all of them Homunculi. A tab that appeared
+            empty on every other model would be the old chip again.
+
+            Its own tab rather than a chip under GEAR because a Formula is
+            not Battlekit: it is bought from the model's entry, not from an
+            Armoury Table, it is charged as an option rather than as gear,
+            and the rules that govern it are its own sentences.
+          */}
+          {(shelf.open || shelf.refusal) && (
+            <button
+              onClick={() => setTab('formulas')}
+              className={`px-4 sm:px-5 py-2.5 shrink-0 whitespace-nowrap font-bold uppercase flex items-center space-x-2 transition-all text-xs rounded-t ${
+                tab === 'formulas'
+                  ? 'bg-theme-elevated text-theme-primary border-t-2 border-x border-theme-border border-t-theme-primary'
+                  : 'text-theme-muted hover:text-theme-text hover:bg-theme-surface'
+              }`}
+            >
+              <FlaskConical className="w-4 h-4 text-theme-primary" />
+              <span>FORMULAE ({shelf.offers.length})</span>
+            </button>
+          )}
         </div>
 
         {/* Fixed Sub-Category Filter & Search Toolbar */}
@@ -586,15 +690,6 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                 }`}
               >
                 All
-              </button>
-              <button
-                onClick={() => setEquipmentSubCategory('formulae')}
-                className={`px-2.5 py-1 rounded font-bold uppercase text-xs sm:text-[10px] transition-colors flex items-center space-x-1 ${
-                  equipmentSubCategory === 'formulae' ? 'bg-theme-primary text-theme-base font-extrabold' : 'bg-theme-elevated text-theme-muted hover:text-theme-text'
-                }`}
-              >
-                <FlaskConical className="w-3 h-3 text-status-error" />
-                <span>🧪 Formulae & Elixirs</span>
               </button>
               <button
                 onClick={() => setEquipmentSubCategory('headgear')}
@@ -781,11 +876,20 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
             </div>
           )}
 
-          {/* EQUIPMENT, RELICS & FORMULAE LIST */}
+          {/*
+            EQUIPMENT & RELICS — the Armoury's gear.
+
+            The `isFormula` predicate that styled a row here is gone with the
+            chip above it, and for the same reason: an Alchemical Formula is
+            never an Armoury row, so no row in this list was ever one. What
+            it did instead was tint whatever matched
+            `/formula|elixir|salve|phial|.../` — a name pattern deciding game
+            data, which is the habit `rules/formulae.ts` exists to document.
+            Formulae have their own tab, fed from the model's entry.
+          */}
           {tab === 'equipment' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {displayedEquipment.map((e) => {
-                const isFormula = e.category === 'Formula' || /formula|elixir|salve|phial|alkahest|vitriol|brimstone|cinnabar/i.test(e.name) || Boolean(e.keywords?.includes('FORMULA')) || Boolean(e.keywords?.includes('ELIXIR'));
                 const gate = gateFor(e);
                 const legal = gate.allowed;
 
@@ -793,9 +897,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                   <div
                     key={e.id}
                     className={`p-3 rounded border flex flex-col justify-between space-y-2 transition-all ${
-                      isFormula
-                        ? 'bg-theme-surface border-theme-primary/50 ring-1 ring-theme-primary/20 hover:border-theme-primary'
-                        : legal
+                      legal
                         ? 'bg-theme-base border-theme-border hover:border-theme-primary'
                         : 'bg-theme-base/50 border-theme-accent/40 opacity-70'
                     }`}
@@ -804,14 +906,9 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="flex items-center space-x-2">
-                            <strong className={`text-xs block ${isFormula ? 'text-theme-primary' : 'text-theme-text'}`}>
+                            <strong className="text-xs block text-theme-text">
                               {e.name}
                             </strong>
-                            {isFormula && (
-                              <span className="text-xs sm:text-[9px] px-1.5 py-0.2 rounded bg-theme-accent text-white font-bold uppercase">
-                                Formula
-                              </span>
-                            )}
                           </div>
                           <span className="text-xs sm:text-[10px] text-theme-muted block">
                             Faction: {e.factionId || 'Universal'}
@@ -845,7 +942,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
 
                     <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
                       <span className="text-xs sm:text-[10px] text-theme-muted">
-                        {isFormula ? 'Alchemical Infusion' : 'Gear / Relic'}
+                        Gear / Relic
                       </span>
                       <EquipControl
                         gate={gate}
@@ -855,15 +952,135 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                           const id = lastInstanceIn(currentEquipment as never, e);
                           if (id) removeEquipment(warbandId, unitId, id);
                         }}
-                        addLabel={isFormula ? 'Infuse Formula' : 'Equip'}
-                        addClassName={isFormula && gate.allowed
-                          ? 'px-3 py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-colors flex items-center space-x-1 bg-theme-accent hover:bg-status-error text-white'
-                          : undefined}
                       />
                     </div>
                   </div>
                 );
               })}
+            </div>
+          )}
+
+          {/*
+            ALCHEMICAL FORMULAE — FD-13a item 2.
+
+            Every decision here is `formulaShelf`'s; this renders its answers.
+            A refused Formula is SHOWN with the sentence that refuses it,
+            never hidden: a player looking for Gargantuan Size and not finding
+            it cannot tell whether the app is enforcing a rule or has lost the
+            entry, which is the same reasoning as the gear lists above.
+
+            Mobile first: one column at 375px, two from `md:`, and the buy
+            control keeps the 44px floor until `lg:`.
+          */}
+          {tab === 'formulas' && (
+            <div className="space-y-3">
+              {shelf.refusal && (
+                <p className="p-3 rounded border border-status-error/50 bg-theme-surface text-xs sm:text-[11px] text-status-error font-bold leading-relaxed">
+                  ⚠️ {shelf.refusal}
+                </p>
+              )}
+              {shelf.caveat && (
+                <p className="p-3 rounded border border-theme-accent/50 bg-theme-surface text-xs sm:text-[11px] text-theme-accent font-bold leading-relaxed">
+                  ⚠️ {shelf.caveat}
+                </p>
+              )}
+
+              {/* What the Book of Golems is paying for, while it lasts. */}
+              {shelf.freeBudgetLeft !== null && (
+                <p className="p-3 rounded border border-theme-primary/50 bg-theme-surface text-xs sm:text-[11px] text-theme-text leading-relaxed">
+                  <strong className="text-theme-primary">Book of Golems:</strong>{' '}
+                  {shelf.freeBudgetLeft} Ducats of free Formulae left. Anything
+                  within that is taken at no cost to the Strongbox.
+                </p>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {shelf.offers.map((offer) => {
+                  const { option, verdict } = offer;
+                  const short = offer.short.ducats || offer.short.glory;
+                  /* A held Formula can always be given back, whatever the
+                     gate says about buying it again and whatever the
+                     Strongbox holds — a refund puts money IN. */
+                  const actionable = offer.held || (verdict.allowed && !short);
+                  return (
+                    <div
+                      key={option.id}
+                      className={`p-3 rounded border flex flex-col justify-between gap-2 transition-all ${
+                        offer.held
+                          ? 'bg-theme-elevated border-theme-primary ring-1 ring-theme-primary/40'
+                          : verdict.allowed
+                            ? 'bg-theme-base border-theme-border hover:border-theme-primary'
+                            : 'bg-theme-base/50 border-theme-accent/40 opacity-70'
+                      }`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-start justify-between gap-2">
+                          <strong className={`text-xs ${offer.held ? 'text-theme-primary' : 'text-theme-text'}`}>
+                            {option.name}
+                          </strong>
+                          <span className="font-bold text-xs text-theme-primary px-2 py-0.5 rounded bg-theme-surface border border-theme-border flex-shrink-0">
+                            {offer.free
+                              ? `Free (${formatCost(offer.listPrice)})`
+                              : formatCost(offer.listPrice)}
+                          </span>
+                        </div>
+                        {/* The group as the catalogue files it — `Eye Options`
+                            reads as itself, not as its parent. */}
+                        <span className="text-xs sm:text-[10px] text-theme-muted block">
+                          {option.group}
+                        </span>
+                        <p className="text-xs sm:text-[11px] text-theme-text leading-relaxed pt-0.5">
+                          {option.description}
+                        </p>
+                        <GateNote gate={verdict} />
+                        {/*
+                          Short of money is not the same as forbidden, and it
+                          is not rendered as one: the sentence on the entry
+                          still permits this, and the next Quartermaster Step
+                          may pay for it. Refused rather than clamped, with
+                          the number, which is RR-12's rule and the one
+                          `RecreationPanel` follows.
+                        */}
+                        {!offer.held && verdict.allowed && short > 0 && (
+                          <span className="text-xs sm:text-[10px] text-theme-accent block font-bold">
+                            The Strongbox holds {formatCost({
+                              ducats: activeWarband?.treasuryDucats ?? 0,
+                              glory: activeWarband?.gloryPoints ?? 0,
+                            })} — short {formatCost(offer.short)}.
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between gap-2">
+                        <span className="text-xs sm:text-[10px] text-theme-muted">
+                          Alchemical Formula
+                        </span>
+                        <button
+                          disabled={!actionable}
+                          onClick={() => toggleUnitSpecialUpgrade(warbandId, unitId, {
+                            id: option.id,
+                            name: option.name,
+                            cost: offer.price.ducats,
+                            price: offer.price,
+                            /* The PATH, so `formulaeOf` still reads an Eye
+                               Option as a Formula — FORM-1's reason. */
+                            category: option.groupPath ?? option.group,
+                          })}
+                          className={`px-3 min-h-[44px] lg:min-h-0 lg:py-1 rounded text-xs sm:text-[11px] font-bold uppercase transition-colors ${
+                            offer.held
+                              ? 'bg-theme-elevated text-theme-text border border-theme-border hover:border-status-error'
+                              : actionable
+                                ? 'bg-theme-primary hover:bg-theme-primary-hover text-theme-base'
+                                : 'bg-theme-elevated text-theme-muted cursor-not-allowed'
+                          }`}
+                        >
+                          {offer.held ? 'Remove' : 'Infuse'}
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
 
