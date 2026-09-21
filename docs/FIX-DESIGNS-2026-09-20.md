@@ -1726,6 +1726,29 @@ and their roster file, so that "Formulas not showing up properly" and
 "wrong rules on the card" are reproduced against the real model before
 FD-13a is built.
 
+**Landed and corrected by #95 (pack A: FD-13a and FD-13b's rules).** The
+equip sheet asks `battlekitBreaches`, the validator's engine, and prints the
+sentence a loadout breaks; Al-Masyukh as exported validates and three
+2-Handed weapons are refused. `carryAllowances` already carried the book's
+allowance sentence (L5385 to L5391, not L5388) and NEGATE HEAVY against
+HEAVY's one-piece limit was already implemented, so those two prescriptions
+were true before the PR. The Golem is read from the Exploration row's own
+sentences in src/rules/golem.ts (on #95's branch until it merges); never Promoted is enforced through
+`grantedBy`, a durable field, with its own block reason because the book's
+cannot-promote table lists entries and the Takwin is not in it; the
+importer finds Al-Mudawwan by the grant's rule (Human Hands and fifty
+Ducats of Formulas, not Promoted), marks neither where two fit, and reads
+the `Campaign Rules > Enabled` subtree at last. Two corrections: the Golem
+ruling cannot live in `data-sources/resolutions.json`, a typed table of
+field-level conflicts that the build applies, so it is recorded at
+src/rules/golem.ts beside the code that acts on it and in
+`docs/ROSTER-FILE.md`; and the developer read Re-creation as absent from
+every source, which is wrong: it is Warbands L5324 to L5327, in the
+entry's Abilities, and the extract's line break inside "post-battle" hid
+it from the search. Re-creation, the Formulas tab and the card's Formula
+text follow as pack A2. The developer also built the associated-Alchemist
+rule (L5294 to L5302) as src/rules/takwin.ts, which stays.
+
 ## FD-14. The pass for invented content
 
 The owner asked for a pass over what the original generator seeded and the
@@ -2025,6 +2048,38 @@ without the Variant sees neither row; a Warband whose Variant states no
 grant records no collections; the New Antioch armoury carries the two rows
 with the book's stipulations.
 
+## FD-17. The August import validates clean: five armoury-data findings
+
+Driving the owner's August export through the real importer (#95) reports
+five violations the app has been showing as "wrong rules on the card". Each
+checked against the book:
+
+1. **Fire Shield "not stocked in the Iron Sultanate Armoury Table."** It is
+   stocked: Warbands L5490, "Fire Shield | 20 👑 | Shield Combo, Limit: 2".
+   The dataset's Sultanate armoury has no such row, the same parser gap
+   FD-16 found for New Antioch's Machine Armour: a link the catalogue hides
+   or nests is dropped. One generalised fix, in FD-16's pack: hidden or
+   dropped armoury links emitted as rows carrying the catalogue's condition
+   as their stipulation, across every faction, with `rules:check` printing
+   every row the change adds, and every faction's armoury audited against
+   the book's tables in the same PR.
+2. **"Azeb cannot take Reinforced Armour."** The Sultanate row reads "ELITE
+   & Janissaries only" and Idris is a Favoured Kavass, ELITE by Promotion.
+   A stipulation "ELITE & X only" admits an ELITE model, Promotion
+   included, or an X; the gate reads it so.
+3. **Secrets of Takwin, the Sapper's Shovel and Coordinated Engagement "not
+   stocked."** None is an armoury purchase. Secrets of Takwin is an
+   Alchemist's own option, Warbands L5248, at 20 Ducats; "A Sultanate
+   Sapper always has a Shovel", L4739, which the catalogue prints as the
+   Weaponized Shovel profile; Coordinated Engagement is the FIRETEAM
+   Battlekit profile the catalogue grants through an entry's Fireteam
+   option. Entry-granted kit, an entry's own option or fixed kit, is stocked
+   by the entry and is never measured against the Armoury Table.
+
+Acceptance: the August and September exports import and validate with no
+violation the book does not support, driven by a test on both files. Lands
+in pack B with FD-16.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -2043,7 +2098,8 @@ with the book's stipulations.
    FD-12, then FD-14's AI-3 and AI-5, then FD-08 and FD-10, then FD-14's
    AI-4. The Experience track component in FD-12 item 1 is small and
    phone-visible, so it may ride with WIZ-2 if the developer judges it fits.
-10. After READY FOR TESTING (#93, 19:01 UTC): the owner's next batch, in
-    this order, one PR each, against the September fixture: FD-13a, FD-13b,
-    FD-16, FD-12, FD-15. Then AI-3 and AI-5, FD-08, FD-10, AI-4 as item 9
-    says.
+10. After READY FOR TESTING (#93, 19:01 UTC): the owner's next batch,
+    packed at the owner's request: pack A, FD-13a with FD-13b's rules (#95);
+    pack A2, Re-creation, the Formulas tab and the card's Formula text;
+    pack B, FD-16 with FD-17; pack C, FD-12 with FD-15, READY FOR TESTING 2
+    in its body. Then AI-3 and AI-5, FD-08, FD-10, AI-4 as item 9 says.

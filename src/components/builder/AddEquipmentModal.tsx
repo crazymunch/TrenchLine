@@ -130,6 +130,24 @@ const EquipControl: React.FC<{
  * On screen, not in a `title`: a tooltip does not exist on the phone this app
  * is used on.
  */
+/**
+ * Where an offer comes from, when it is not this Warband's own Armoury.
+ *
+ * A House of Wisdom player opening the equip sheet now sees New Antioch's and
+ * Trench Pilgrims' Battlekit mixed in with the Sultanate's, and nothing on the
+ * row would otherwise say which is which — or that taking one spends a
+ * once-per-campaign allowance rather than just Ducats. The rule is named
+ * rather than described, because it is the sentence the player can look up.
+ */
+const GrantNote: React.FC<{ rule?: string; armoury?: string }> = ({ rule, armoury }) => {
+  if (!rule) return null;
+  return (
+    <p className="text-xs sm:text-[10px] text-theme-accent pt-0.5">
+      {armoury ? `${armoury} Armoury` : 'Another Armoury'} — via {rule}
+    </p>
+  );
+};
+
 const GateNote: React.FC<{ gate: { allowed: boolean; reason?: string; caveat?: string } }> =
   ({ gate }) => {
     if (!gate.allowed) {
@@ -269,11 +287,28 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   ] as { id?: string; name: string }[]).map((g) => ({ name: g.name, weaponId: g.id })),
   [unit]);
 
-  const gateFor = React.useCallback((item: { id?: string; name: string }) => {
+  /*
+    The armoury whose stipulations apply to this item.
+
+    Usually the Warband's own. Where a Variant rule opens a foreign Armoury —
+    the House of Wisdom's *Weapon Collections*, the Knights of Avarice's
+    *Corrupt Merchants* — the offer comes from that table and carries its
+    conditions, not ours: "Any stipulations that apply to it are followed"
+    (Warbands L5305). Reading our own table for a foreign item finds no row
+    at all, which returns no restrictions, which is an item silently exempt
+    from the sentence the book prints beside it. `recruitable` stamps each
+    offer with the faction whose table priced it, so this is a lookup rather
+    than a guess.
+  */
+  const armouryOf = React.useCallback((item: { factionId?: string }) =>
+    (dataset ? armouryFor(dataset, item.factionId || factionId) : undefined),
+  [dataset, factionId]);
+
+  const gateFor = React.useCallback((item: { id?: string; name: string; factionId?: string }) => {
     if (!dataset) return { allowed: true };
     return canEquip(item, {
       dataset,
-      armoury: armouryFor(dataset, factionId),
+      armoury: armouryOf(item),
       carried: carriedNow,
       unit: {
         name: unitProfileName,
@@ -290,7 +325,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
       taken: chosenBy(unit),
       extraLimb: hasExtraLimb(unit),
     });
-  }, [dataset, factionId, carriedNow, unitProfileName, unit]);
+  }, [dataset, armouryOf, carriedNow, unitProfileName, unit]);
 
   /*
     How many of a thing the model already carries, and which instance to drop.
@@ -649,6 +684,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       )}
 
                       <GateNote gate={gate} />
+                      <GrantNote rule={w.grantedBy} armoury={armouryOf(w)?.faction} />
                     </div>
 
                     <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
@@ -722,6 +758,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         in no book and was shown whenever a name regex fired.
                       */}
                       <GateNote gate={gate} />
+                      <GrantNote rule={a.grantedBy} armoury={armouryOf(a)?.faction} />
                     </div>
 
                     <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
@@ -803,6 +840,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       )}
 
                       <GateNote gate={gate} />
+                      <GrantNote rule={e.grantedBy} armoury={armouryOf(e)?.faction} />
                     </div>
 
                     <div className="pt-2 border-t border-theme-border/60 flex items-center justify-between">
