@@ -25,6 +25,16 @@ export interface ImportResult {
   warband: Warband;
   /** Roster lines with no profile in the catalogues. Never guessed at. */
   unmatched: string[];
+  /**
+   * What the roster's `Campaign Rules > Enabled` subtree says the Warband holds.
+   *
+   * The importer used to drop this whole subtree with the rest of the
+   * Configuration nodes, so a roster that had earned the Book of Golems, a
+   * Ransacked Alchemist Workshop and a Reroll imported as though it had earned
+   * nothing. Names only, exactly as the roster spells them — what each one
+   * MEANS is a rules question, and the rules modules answer it.
+   */
+  campaignRules: string[];
 }
 
 /*
@@ -38,6 +48,55 @@ export interface ImportResult {
 */
 const OPTION_GROUP =
   /^(Alchemical Formulae|Eye Options|Strains|Sagas|Martial Disciplines|Fireteams|Goetic Power|Arts of Assassination|Training Choice|Pride|Envy|Gluttony|Lust|Greed|Wrath|Butcher Knight Rank)$/i;
+
+/**
+ * The names under `Campaign Rules > Enabled`, where a roster carries them.
+ *
+ * A separate pass over the document rather than a branch inside the model
+ * walk: that walk's job is to turn selections into models, and the rewards are
+ * not models. Threading a second kind of output through it is how the walk
+ * grew the Configuration special-case it already carries.
+ *
+ * Shallow by intent — the names, in the roster's own spelling. A reward's
+ * meaning belongs to the rules modules (`rules/golem.ts` reads the Book of
+ * Golems from the rulebook's own Exploration row), not to a parser.
+ */
+export function readCampaignRules(data: unknown): string[] {
+  const out: string[] = [];
+  const named = (n: unknown): n is { name?: string; selections?: unknown } =>
+    typeof n === 'object' && n !== null;
+
+  const collect = (node: unknown) => {
+    if (!named(node)) return;
+    if (Array.isArray(node)) return node.forEach(collect);
+    const box = node as { selections?: unknown; selection?: unknown };
+    const kids = box.selections ?? box.selection;
+    const list = Array.isArray(kids)
+      ? kids
+      : named(kids) ? Object.values(kids as object) : [];
+    for (const k of list) {
+      if (!named(k)) continue;
+      /* JSON spells it `name`; the `.ros` XML spells it `@_name`. */
+      const kn = (k as { name?: string; '@_name'?: string });
+      const label = (kn.name ?? kn['@_name'] ?? '').trim();
+      if (label) out.push(label);
+    }
+  };
+
+  const find = (node: unknown) => {
+    if (!named(node)) return;
+    if (Array.isArray(node)) return node.forEach(find);
+    const n = node as { name?: string; '@_name'?: string };
+    const name = n.name ?? n['@_name'];
+    if (typeof name === 'string' && /^Enabled$/i.test(name.trim())) collect(node);
+    for (const v of Object.values(node as object)) {
+      if (typeof v === 'object' && v !== null) find(v);
+    }
+  };
+
+  find(data);
+  return [...new Set(out)];
+}
 
 export function importNewRecruitRoster(
   rawInput: string,
@@ -250,6 +309,7 @@ function innerModel(sel: NrSelection): NrSelection | undefined {
 }
 
 function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportResult {
+  const campaignRules = readCampaignRules(data);
   const rosterData = data.roster || data;
   const force: NrForce = rosterData.forces?.[0] || rosterData;
   const warbandName = force.customName || rosterData.customName || rosterData.name || 'Imported Warband';
@@ -702,6 +762,7 @@ function parseNewRecruitJson(data: NrDocument, allUnits: UnitProfile[]): ImportR
       updatedAt: new Date().toISOString()
     },
     unmatched,
+    campaignRules,
   };
 }
 
@@ -791,6 +852,9 @@ function parseNewRecruitXml(xmlContent: string, allUnits: UnitProfile[]): Import
     roster?: XmlRoster; gameSystem?: XmlRoster;
   } & XmlRoster;
   const roster: XmlRoster = parsed.roster || parsed.gameSystem || parsed;
+
+  /* The same subtree the JSON path reads, in the `.ros` spelling. */
+  const campaignRules = readCampaignRules(parsed);
 
   const forceNode = roster.forces?.force;
   const force = Array.isArray(forceNode) ? forceNode[0] : forceNode;
@@ -887,5 +951,7 @@ function parseNewRecruitText(text: string, allUnits: UnitProfile[]): ImportResul
       updatedAt: new Date().toISOString()
     },
     unmatched,
+    /* A plain-text roster carries no Campaign Rules subtree to read. */
+    campaignRules: [],
   };
 }
