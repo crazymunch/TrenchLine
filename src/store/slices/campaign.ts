@@ -15,6 +15,7 @@ import {
   type CampaignOp, type CampaignSyncState,
 } from '../../services/campaignSync';
 import { removeFromRoster } from '../../rules/fallen';
+import { recreationOffer, recreationLapsed } from '../../rules/recreation';
 import { bookAll, bookReinforcements, strongbox } from '../../rules/ledger';
 import { campaignGameOf } from '../../rules/campaign';
 
@@ -554,11 +555,43 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
 
         const activeTitles = currentRecords.filter(r => r.active).map(r => r.title);
 
+        /*
+          A model the sequence killed that may be paid for rather than lost.
+
+          Warbands L5324 to L5327 gives the Takwin Homunculus *"Re-creation:
+          If a Takwin Homunculus is killed in the post-battle sequence, you do
+          not have to remove it from your roster. Instead, you can spend 40 👑
+          in the following Quartermaster Step to leave it on the Roster."* The
+          Book of Golems gives the Golem the same offer with a different
+          deadline — *"at any time between battles"*.
+
+          The payment is not this step's: the Quartermaster Step is the
+          builder. So the model neither falls here nor walks away healthy —
+          `isDead` stays false, which is what keeps it on the roster and out
+          of `removeFromRoster` below, and the offer is written down for the
+          builder to settle. Resolving it there either clears the field or
+          sets `isDead` and lets the model fall.
+
+          Only where the model's own profile states the offer. Everything else
+          the sequence kills falls exactly as it did.
+        */
+        const offer = isDead && !u.awaitingRecreation ? recreationOffer(u) : null;
+
         return {
           ...u,
           injuries: newInjuries,
           scars: newScars,
-          isDead,
+          isDead: offer ? false : isDead,
+          ...(offer
+            ? {
+              awaitingRecreation: {
+                ability: offer.ability,
+                cost: offer.cost,
+                deadline: offer.deadline,
+                sinceGame: campaignGameOf(activeWb, get().campaign),
+              },
+            }
+            : {}),
           ...(justPromoted
             ? {
               /*
@@ -580,7 +613,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           xp: newXp,
           currentWounds: u.maxWounds,
           bloodMarkers: 0,
-          status: isDead ? ('Out of Action' as const) : ('Active' as const),
+          status: (isDead && !offer) ? ('Out of Action' as const) : ('Active' as const),
           hasActedThisTurn: false
         };
       });
@@ -1244,8 +1277,67 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           data: { currentTurn: next },
         });
 
-        storage.saveCampaign(queued);
-        return { campaign: queued, ...queuedState(queued, state.campaignSync) };
+        /*
+          A Re-creation offer that was never taken runs out here.
+
+          The Takwin's is *"in the following Quartermaster Step"* — the one
+          after the game it died in — so the moment the campaign moves past
+          that game the offer is spent and the model is simply dead, which is
+          what it was before anyone chose not to pay. Enforced at the instant
+          the deadline passes rather than by a roster-door check, because that
+          is the instant the book describes, and a model quietly carried on
+          the roster for the rest of a campaign is the outcome nobody wants.
+
+          The Golem's *"at any time between battles"* sets no limit, so
+          `recreationLapsed` leaves it alone and it stays on offer.
+
+          Each one is logged: a model leaving the Roster because a deadline
+          passed is exactly the kind of change a player must be able to find
+          again later.
+        */
+        const lapsedLog: string[] = [];
+        const warbandsAfter = state.warbands.map((w) => {
+          const lapsed = w.units.filter(
+            (u) => recreationLapsed(u.awaitingRecreation, next));
+          if (!lapsed.length) return w;
+
+          const cleared = w.units.map((u) => {
+            if (!recreationLapsed(u.awaitingRecreation, next)) return u;
+            const { awaitingRecreation: _gone, ...rest } = u;
+            return { ...rest, isDead: true };
+          });
+          const { units, fallen } = removeFromRoster(
+            { units: cleared, fallen: w.fallen }, lapsed.map((u) => u.id));
+          for (const u of lapsed) {
+            lapsedLog.push(
+              `${u.customName} was not re-created before Game ${next}, and leaves the Roster.`);
+          }
+          return { ...w, units, fallen, updatedAt: new Date().toISOString() };
+        });
+
+        const withLapses: Campaign = lapsedLog.length
+          ? {
+            ...queued,
+            chronicleLogs: [
+              ...lapsedLog.map((text, i) => ({
+                id: `c-${Date.now()}-r${i}`,
+                timestamp: 'Just now',
+                text,
+                category: 'territory' as const,
+              })),
+              ...queued.chronicleLogs,
+            ],
+          }
+          : queued;
+
+        storage.saveCampaign(withLapses);
+        return {
+          campaign: withLapses,
+          warbands: lapsedLog.length
+            ? persistWarbands(warbandsAfter, state.warbands)
+            : state.warbands,
+          ...queuedState(withLapses, state.campaignSync),
+        };
       });
       return true;
     },

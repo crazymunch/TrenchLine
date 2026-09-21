@@ -150,3 +150,26 @@ export function recreationEntries(
   }
   return out;
 }
+
+/**
+ * Has an outstanding offer run out?
+ *
+ * The two entries are printed with different deadlines, and this is the whole
+ * of the difference. The Takwin's is *"in the following Quartermaster Step"* —
+ * the step after the game it died in — so once the campaign has moved past
+ * that game the offer is gone. The Golem's is *"at any time between battles"*,
+ * which sets no limit, so it never lapses.
+ *
+ * `sinceGame` is the game the model was killed in. The following Quartermaster
+ * Step belongs to that same game number — `campaignGameOf` advances when the
+ * next game is played, not when the post-battle closes — so the offer stands
+ * while the counter still reads `sinceGame` and is spent once it does not.
+ */
+export function recreationLapsed(
+  offer: { deadline: RecreationDeadline; sinceGame: number } | null | undefined,
+  currentGame: number,
+): boolean {
+  if (!offer) return false;
+  if (offer.deadline === 'between-battles') return false;
+  return currentGame > offer.sinceGame;
+}

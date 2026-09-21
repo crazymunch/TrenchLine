@@ -151,6 +151,13 @@ export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
      Threshold with no sign of why. */
   benched: 'durable',
   isDead: 'durable',
+  /* An outstanding Re-creation offer on a model the post-battle sequence
+     killed. Durable, and load-bearing: a roster saved between the battle and
+     the Quartermaster Step carries a model that is neither alive nor fallen,
+     and dropping the field would silently restore it to full health. The
+     deadline is stored rather than recomputed because the two entries that
+     grant it are printed with different ones. */
+  awaitingRecreation: 'durable',
   /* Which battle killed it. Durable: it is what lets the memorial name the
      game, and it cannot be recovered from anywhere else once the roster
      leaves this device. */
