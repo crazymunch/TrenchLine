@@ -47,6 +47,15 @@ export interface WeaponProfile {
   factionId?: string;
   allowedUnits?: string[];
   allowedFactions?: string[];
+  /**
+   * The Variant rule that puts this on offer, where it is not this faction's
+   * own Battlekit. The House of Wisdom's *Weapon Collections* and the Knights
+   * of Avarice's *Corrupt Merchants* each let a Warband buy from a named
+   * foreign Armoury; `factionId` then says whose table priced it, and this
+   * says which sentence allows it. Absent for everything a Warband stocks in
+   * its own right — absent is "mine", not "unknown".
+   */
+  grantedBy?: string;
   isCustom?: boolean;
 }
 
@@ -69,6 +78,15 @@ export interface ArmourProfile {
   factionId?: string;
   allowedUnits?: string[];
   allowedFactions?: string[];
+  /**
+   * The Variant rule that puts this on offer, where it is not this faction's
+   * own Battlekit. The House of Wisdom's *Weapon Collections* and the Knights
+   * of Avarice's *Corrupt Merchants* each let a Warband buy from a named
+   * foreign Armoury; `factionId` then says whose table priced it, and this
+   * says which sentence allows it. Absent for everything a Warband stocks in
+   * its own right — absent is "mine", not "unknown".
+   */
+  grantedBy?: string;
   isCustom?: boolean;
 }
 
@@ -101,6 +119,15 @@ export interface EquipmentItem {
   factionId?: string;
   allowedUnits?: string[];
   allowedFactions?: string[];
+  /**
+   * The Variant rule that puts this on offer, where it is not this faction's
+   * own Battlekit. The House of Wisdom's *Weapon Collections* and the Knights
+   * of Avarice's *Corrupt Merchants* each let a Warband buy from a named
+   * foreign Armoury; `factionId` then says whose table priced it, and this
+   * says which sentence allows it. Absent for everything a Warband stocks in
+   * its own right — absent is "mine", not "unknown".
+   */
+  grantedBy?: string;
   isCustom?: boolean;
 }
 
