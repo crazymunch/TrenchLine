@@ -173,3 +173,60 @@ export function recreationLapsed(
   if (offer.deadline === 'between-battles') return false;
   return currentGame > offer.sinceGame;
 }
+
+/**
+ * Whether this model takes the field.
+ *
+ * ## Why a predicate and not `!u.isDead`
+ *
+ * A model holding a Re-creation offer is stored with `isDead` false. That is
+ * not a claim that it is alive — it is the only way to keep it on the roster
+ * past the post-battle sequence, because `applyPostBattleResults` removes a
+ * model whose `isDead` is true and the offer would go with it.
+ *
+ * Under the book the model is dead. *"If a Takwin Homunculus is killed in the
+ * post-battle sequence, you do not have to remove it from your roster"* — the
+ * permission is to keep the ROSTER ENTRY, so that the payment has something to
+ * be made against. It says nothing about fielding it, and the model it names
+ * has been killed. It is on the roster and on nothing else.
+ *
+ * Every place that asks who fights reads this instead of `isDead`, so the two
+ * cannot drift apart:
+ *
+ * - `forceBudget` — the Force and what it spends against the Threshold.
+ * - `reinforcementCost` — the total the next game's Threshold is measured
+ *   against.
+ * - Play Mode's default Force.
+ * - `rosterRos` — the `.ros` export, which leaves it out with the note a dead
+ *   model gets.
+ * - The post-battle wizard's model list: Experience, Exploration, War Stories,
+ *   promotion, and the casualties a battle can produce.
+ *
+ * The roster listing and `RecreationPanel` deliberately do NOT read this: the
+ * whole point of the offer is that the model is still on the roster and still
+ * visible, waiting to be paid for.
+ *
+ * Structural parameter rather than `ActiveUnit`, because two of the five
+ * callers are given a narrowed shape — `forceBudget` takes costs and benches,
+ * `reinforcementCost` takes costs and deaths — and neither should have to
+ * widen to a full unit to ask this question.
+ */
+export function takesTheField(
+  unit: { isDead?: boolean; awaitingRecreation?: unknown } | null | undefined,
+): boolean {
+  return Boolean(unit) && !unit!.isDead && !unit!.awaitingRecreation;
+}
+
+/**
+ * The models of a roster that take the field, in roster order.
+ *
+ * The two callers that need a LIST rather than a test are both components —
+ * Play Mode's Force and the post-battle wizard's model list — and a component
+ * has no test in this repository. Naming the list here gives both of them the
+ * same one line and gives that line somewhere to be pinned.
+ */
+export function fieldable<T extends { isDead?: boolean; awaitingRecreation?: unknown }>(
+  units: readonly T[] | null | undefined,
+): T[] {
+  return (units ?? []).filter(takesTheField);
+}

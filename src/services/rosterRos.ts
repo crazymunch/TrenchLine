@@ -32,6 +32,7 @@ import {
   type ResolvedSelection, type RosterPathLayer, type Selection,
 } from './rosterPaths';
 import type { Warband, ActiveUnit } from '../types/warband';
+import { takesTheField } from '../rules/recreation';
 
 export type IssueLevel = 'fatal' | 'warning' | 'informational';
 
@@ -164,7 +165,16 @@ export function forceCatalogue(
   return { catalogueId: ranked[0]?.[0], spans: ranked.map(([id]) => id) };
 }
 
-const livingUnits = (warband: Warband) => (warband.units ?? []).filter((u) => !u.isDead);
+/**
+ * The models a `.ros` file is written from.
+ *
+ * `takesTheField` rather than `!u.isDead`, because a model held on the roster
+ * awaiting Re-creation is stored with `isDead` false and is dead all the same
+ * — the flag is false only so the roster keeps the entry the payment is made
+ * against. A `.ros` is a muster for a game, so it is left out, and counted in
+ * the same informational note a dead model gets.
+ */
+const livingUnits = (warband: Warband) => (warband.units ?? []).filter(takesTheField);
 
 /**
  * The catalogue entry a model is an instance of.

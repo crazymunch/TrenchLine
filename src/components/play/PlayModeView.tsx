@@ -68,6 +68,7 @@ import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { matchSides, isControllable, firstControllableId } from '@/rules/matchSides';
 import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch, type SideScore } from '@/rules/matchState';
 import { battleFromMatch } from '@/rules/battleFromMatch';
+import { fieldable } from '@/rules/recreation';
 import {
   COALITIONS, COALITION_NAME, coalitionScore, hasCoalitions, leader,
   pruneCoalitions, suggestCoalitions, type CoalitionMap,
@@ -398,9 +399,17 @@ export const PlayModeView: React.FC = () => {
     the game out", so putting it on the table by default undoes the choice
     they made in the builder. An explicit selection still wins over both.
   */
+  /*
+    A model killed in a post-battle sequence and held on the roster awaiting
+    Re-creation cannot be put on the table at all — it is dead until it is paid
+    for (`takesTheField`). It is taken out before the bench is read, and before
+    a stored selection is resolved, so a Force recorded while it was alive does
+    not field it afterwards.
+  */
+  const fieldableUnits = fieldable(viewingWarband.units);
   const currentDeployedIds = deployedUnitIds[viewingWarband.id]
-    || viewingWarband.units.filter((u) => !u.benched).map((u) => u.id);
-  const deployedUnits = viewingWarband.units.filter((u) => currentDeployedIds.includes(u.id));
+    || fieldableUnits.filter((u) => !u.benched).map((u) => u.id);
+  const deployedUnits = fieldableUnits.filter((u) => currentDeployedIds.includes(u.id));
   const deployedCost = deployedUnits.reduce((sum, u) => sum + u.totalCost, 0);
 
   // Statistics
@@ -652,7 +661,7 @@ export const PlayModeView: React.FC = () => {
 
   const handleToggleDeployUnit = (unitId: string) => {
     setDeployedUnitIds((prev) => {
-      const currentList = prev[viewingWarband.id] || viewingWarband.units.map((u) => u.id);
+      const currentList = prev[viewingWarband.id] || fieldableUnits.map((u) => u.id);
       const nextList = currentList.includes(unitId)
         ? currentList.filter((id) => id !== unitId)
         : [...currentList, unitId];
@@ -666,7 +675,7 @@ export const PlayModeView: React.FC = () => {
   const handleSelectAllSquad = () => {
     setDeployedUnitIds((prev) => ({
       ...prev,
-      [viewingWarband.id]: viewingWarband.units.map((u) => u.id)
+      [viewingWarband.id]: fieldableUnits.map((u) => u.id)
     }));
   };
 
@@ -950,7 +959,8 @@ export const PlayModeView: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {matchWarbandIds.map((wbId, idx) => {
                 const wb = side(wbId);
-                const depIds = deployedUnitIds[wbId] || wb?.units.map((u) => u.id) || [];
+                const depIds = deployedUnitIds[wbId]
+                  || fieldable(wb?.units).map((u) => u.id);
                 const depCost = wb?.units.filter((u) => depIds.includes(u.id)).reduce((s, u) => s + u.totalCost, 0) || 0;
 
                 return (
@@ -2095,7 +2105,7 @@ export const PlayModeView: React.FC = () => {
               </div>
 
               <div className="space-y-2">
-                {viewingWarband.units.map((u) => {
+                {fieldableUnits.map((u) => {
                   const isDep = currentDeployedIds.includes(u.id);
                   return (
                     <div

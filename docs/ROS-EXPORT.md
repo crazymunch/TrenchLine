@@ -35,6 +35,14 @@ Fatal on:
 - a warband with nothing living in it;
 - no catalogue derivable from the models.
 
+Which models a `.ros` is written from is decided by `takesTheField`
+(`src/rules/recreation.ts`), not by `isDead` alone. A model killed in a
+post-battle sequence and held on the roster awaiting Re-creation carries
+`isDead: false` — that flag is false only so the roster keeps the entry the
+payment is made against — and it is dead until it is paid for. A `.ros` is a
+muster for a game, so it is left out, counted in the same informational note a
+dead model gets.
+
 ## What it writes
 
 ```xml

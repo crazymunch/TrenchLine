@@ -456,6 +456,34 @@ describe('the compatibility report, before anything is written', () => {
     expect(report.informational.map((i) => i.why).join(' '))
       .toMatch(/1 dead model\(s\) left out/);
   });
+
+  /*
+    RC-1. A model killed in a post-battle sequence and held on the roster
+    awaiting Re-creation is stored with `isDead` FALSE — that flag is false
+    only so the roster keeps the entry its 40 👑 is paid against — and a `.ros`
+    is a muster for a game. It was being written into the file as a living
+    model, so the owner's opponent would have seen a dead Takwin in the list.
+  */
+  it('leaves out a model awaiting Re-creation, as it leaves out a dead one', () => {
+    const [first, ...rest] = warband.units;
+    const waiting = {
+      ...first,
+      awaitingRecreation: {
+        ability: 'Re-creation',
+        cost: { ducats: 40, glory: 0 },
+        deadline: 'quartermaster',
+        sinceGame: 3,
+      },
+    } as unknown as ActiveUnit;
+    const report = rosReport(layer, withUnits([waiting, ...rest]), UNITS);
+
+    expect(report.exportable).toBe(true);
+    expect(report.informational.map((i) => i.why).join(' '))
+      .toMatch(/1 dead model\(s\) left out/);
+
+    const xml = toRos(layer, withUnits([waiting, ...rest]), UNITS);
+    expect(xml).not.toContain(xmlAttr(first.customName));
+  });
 });
 
 /* ----------------------------------------------------------- the pieces --- */
