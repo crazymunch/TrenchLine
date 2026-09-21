@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | src/data/warbandLore.ts (deleted by #82), prisma/seed.ts (deleted by #83), the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 03:05 UTC on 21 September
+### Landed, as of 04:05 UTC on 21 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -87,7 +87,10 @@ carry, and what these designs cover:
 | Pack A2, first half: Re-creation (two deadlines read from the ability text; the offer held on the roster; paid or declined in the builder; the Quartermaster one lapses when the campaign moves on) | #99 | merged; reviewed on `main`, correct. One hole found, RC-1, recorded under FD-13 |
 | FORM-1 (a nested option group keeps its parent: `groupPath`), FORM-2 (a Formula's prerequisites and exclusions read from its sentence), FORM-3 (280 priced unit options were free: option purchases now charge the Strongbox through the ledger), FORM-4 (names resolved against the model's own entry; an unresolvable exception is a caveat; the book's own wording read) | #100 | merged; reviewed on `main`, correct. The numbering is the developer's: what #101 called FORM-3 is FORM-4 here, recorded under FD-13 |
 | The review of #97 to #100: three holes, four rulings | #101 | merged |
-| RC-1 (a model awaiting Re-creation takes the field nowhere: `takesTheField`, read at five sites) and WC-1 (a granted item the catalogues cannot name is a warning, and the file is written) | #102 | open, `check` green on 7f27952; reviewed, correct, with the WC-1 correction recorded under FD-16 and EXP-1 filed under FD-17 |
+| RC-1 (a model awaiting Re-creation takes the field nowhere: `takesTheField`, read at five sites) and WC-1 (a granted item the catalogues cannot name is a warning, and the file is written) | #102 | merged; reviewed, correct, with the WC-1 correction recorded under FD-16 and EXP-1 filed under FD-17 |
+| #100 and #102 recorded; ID-1 and EXP-1 filed | #103 | merged |
+| FD-13a item 2, the Formulas tab in the equip sheet (`formulaShelf`: the entry's own Formulae, the gates, the Golem's allowance, the dead Alchemist); ID-1 (six entries named Homunculus, the first one taken: `catalogueUnitFor` resolves by id, entry, name within the faction, then name); FORM-5 (an exclusion read from the held side too); FORM-6 (the prerequisite in the Sultanate entry's own wording); the advancement sheet's Formula groups and the empty Formulae chip deleted | #104 | merged; reviewed on `main`, correct, with two assumptions accepted and GOLEM-1 filed, recorded under FD-13 |
+| FD-13a item 3, the card's Formula text (`formulaeHeld` over the three routes a Formula is recorded; Play Mode's reference sheet gains the section) | #105 | open, `check` running on 366e740; reviewed on the branch, correct. The statline half is closed by measurement: no Formula carries a stat modifier, the effects are prose |
 
 ## FD-00. PR #59 as it stands
 
@@ -1871,6 +1874,67 @@ catalogues cannot reach under the owner's Takwin, which is what a Takwin on
 the wrong entry looks like. Measure first: the entry the importer assigns
 each, from the fixture; then, if either is wrong, the link id decides.
 
+**Measured and fixed by #104; the premise was wrong.** Both links target
+the same shared entry in the Iron Sultanate catalogue, so the link chooses
+the provenance (the House of Wisdom's, or the Book of Golems'), not the
+entry, and the Campaign Rules "Takwin Homunculus" is a third entry neither
+link reaches. The importer was right. The defect was downstream: both
+modals resolved a model's entry by name with `find`, six dataset units are
+called Homunculus, and the first is the Court of the Seven-Headed Serpent's,
+so every Homunculus on every roster resolved to the Court's entry and FORM-4
+weighed the Eyes' exception against a list with no Two Heads on it.
+`catalogueUnitFor` now resolves by id, then entry id, then the name within
+the faction, then the name alone; both of the owner's Homunculi land on the
+Iron Sultanate unit. Two Heads stays on EXP-1's list: it is a real option
+of that entry, and the roster-path layer cannot name it, which is the
+export's question.
+
+**Landed by #104: the tab, and two more findings.** The tab sits in the
+equip sheet beside Weapons, Armour and Gear, since a Formula is bought from
+the entry and not from an Armoury Table, and the advancement sheet's own
+Formula groups and the empty Formulae chip are gone, as ruled. FORM-5: the
+catalogue states an exclusion once, on one side of the pair, so a model
+holding Human Hands was offered Wings; each held Formula's gate is read
+too. FORM-6 (the developer's PR calls it FORM-3, a number already used):
+the Iron Sultanate entry states Gargantuan Size's prerequisite in its own
+wording, "can only have this Alchemical Formula if it already has", which
+FORM-2's pattern did not read, so the one prerequisite in the ruleset was
+empty on the owner's entry. Two assumptions the developer named, accepted:
+
+- **The Golem's free budget is its whole Formula allowance.** "An Ally that
+  can never be Promoted or receive additional Alchemical Formulas": what
+  the fifty Ducats will not stretch to is refused, not offered for Ducats.
+  A Golem therefore cannot reach Gargantuan Size. Recorded beside the code.
+- **The tab refuses a purchase the Strongbox cannot cover, with the
+  shortfall shown, and the store does not.** The same visible refusal the
+  Re-creation panel gives; the advancement sheet's Strains and Sagas can
+  still overdraw through the store, and the validator's
+  `strongbox-overdrawn` reports it, which is Order 29's arrangement.
+
+**GOLEM-1, filed by the developer from #104: nothing marks a Golem.**
+`golemOnImport` has no caller, and no code path writes the Book of Golems
+as a model's `grantedBy`, so on the owner's roster the free budget, the
+never-Promoted rule and the GOLEM keyword all have nothing to act on. The
+design at FD-13b item 2 already named both paths; they were not built.
+
+1. **Import.** The importer calls `golemOnImport` with the roster's
+   campaign rules and its models. One index returned: that model gets
+   `grantedBy: 'Book of Golems'`. None or ambiguous: nothing is marked, and
+   the reason is kept for the builder to show.
+2. **The builder.** A "Book of Golems" action on a Homunculus's card,
+   offered only while the Warband holds the Book and no model is marked,
+   which writes `grantedBy` and nothing else, with its inverse. Where the
+   import could not decide, the action's text carries the reason.
+3. **The grant's own Formula is given, not spent.** The budget counts
+   purchases only; the Formula the grant starts with (Human Hands) is not
+   counted whether it arrived innate or as an imported upgrade. On the
+   owner's Golem the four purchases sum to fifty and Human Hands sits
+   beside them, so the budget reads as spent, not over.
+
+Test, on the September fixture: Al-Mudawwan is marked and Al-Masyukh is
+not; the marked model's budget left is zero with Human Hands excluded; it
+is absent from the promotion pool; its card shows GOLEM. Before pack C.
+
 **Ruling for the Formulas tab (FD-13a item 2).** The developer asked
 whether the tab replaces the advancement sheet's Formula groups or sits
 beside them. It replaces them: the sheet keeps its other groups (Goetic
@@ -1878,6 +1942,16 @@ Powers, Strains, Sagas) and stops offering anything under `Alchemical
 Formulae`, so one surface writes the category. The tab spends the Golem's
 free budget before the Strongbox, books through the ledger, and refuses
 with the sentence FORM-2 reads.
+
+**Item 3 landed on #105's branch, reviewed.** `formulaeHeld` reads the
+three places a Formula is recorded (an in-app purchase, an imported
+equipment row, an innate ability) and resolves each one's text from the
+model's entry by option id and then by name, derived rather than stored;
+the card prints each Formula's sentence with its Keywords tappable, and
+Play Mode's reference sheet gains the section it lacked. The statline half
+of item 3 is closed by measurement: no Formula in the Iron Sultanate entry
+carries a stat modifier, only visibility and filing ones, and the effects
+are prose, so the sentence is what the player applies.
 
 ## FD-14. The pass for invented content
 
@@ -2349,6 +2423,11 @@ After pack C.
 12. ID-1 before the Formulas tab is finished: the entry each of the owner's
     Homunculi resolves to, measured from the fixture, and the link id made
     to decide if either is wrong. The tab's offer is that entry's list.
-13. EXP-1 after pack C, one PR: the classification above confirmed by
+    Done in #104, by the name-collision fix rather than the link.
+13. GOLEM-1 after #105 and before pack C, one PR: the import marks the
+    Golem where the grant's rule finds one, the builder's action marks it
+    where it cannot, the grant's own Formula is not counted, with the test
+    on the fixture. Then FD-17's acceptance test, then pack C.
+14. EXP-1 after pack C, one PR: the classification above confirmed by
     measurement, the importer keeping the selection an item came from, and
     the acceptance test on the September fixture.
