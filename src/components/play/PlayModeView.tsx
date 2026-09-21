@@ -69,6 +69,7 @@ import { matchSides, isControllable, firstControllableId } from '@/rules/matchSi
 import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch, type SideScore } from '@/rules/matchState';
 import { battleFromMatch } from '@/rules/battleFromMatch';
 import { fieldable } from '@/rules/recreation';
+import { catalogueUnitFor } from '@/rules/catalogueUnit';
 import {
   COALITIONS, COALITION_NAME, coalitionScore, hasCoalitions, leader,
   pruneCoalitions, suggestCoalitions, type CoalitionMap,
@@ -2176,6 +2177,12 @@ export const PlayModeView: React.FC = () => {
         <ModelReferenceSheet
           unit={referenceUnit}
           keywords={playDataset?.keywords}
+          /* The model's own entry, so its Alchemical Formulae can print the
+             rules text the catalogue gives them — six entries are called
+             `Homunculus`, so this is resolved by id and faction, not by
+             name (ID-1). */
+          catalogueUnit={catalogueUnitFor(
+            playDataset, referenceUnit, viewingWarband?.factionId)}
           /* The Trauma table, so a Leg Wound's -2" comes from the catalogue
              rather than being written into the component. */
           traumaTable={playDataset?.campaign?.trauma}

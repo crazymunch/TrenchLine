@@ -42,7 +42,7 @@
  * conflicts and cannot hold a rules reading keyed to no field.
  */
 import type { Cost, Dataset, UnitOption } from '../types/catalogue';
-import { isAlchemicalFormula } from './formulae';
+import { isAlchemicalFormula, inFormulaGroup } from './formulae';
 import { formulaVerdict, type FormulaVerdict } from './formulaGates';
 import { freeFormulaBudgetLeft, golemGrant, isGolem } from './golem';
 import { takwinRestrictions, takwinRuleText } from './takwin';
@@ -260,4 +260,106 @@ export function formulaShelf(
     offers,
     freeBudgetLeft: budgetLeft,
   };
+}
+
+/**
+ * The Formulae a model is holding, each with the text the catalogue prints.
+ *
+ * FD-13a item 3. A Formula can be recorded three ways and only one of them
+ * carried its rules anywhere:
+ *
+ * - **`specialUpgrades`** — bought in the app, now through the Formulas tab.
+ *   The shape is `{ id, name, cost, category }` and has **no description
+ *   field at all**, so the card showed a name and a price and nothing else.
+ * - **`equippedEquipment`** — imported from a BattleScribe roster. It carries
+ *   `effect`, which the card put in a `title` attribute: a hover tooltip, on
+ *   an app whose base layout targets a 375px phone with no pointer.
+ * - **`innateAbilities`** — the entry's own, which already render as rules.
+ *
+ * Resolved from the model's catalogue entry rather than stored on the model,
+ * for the reason `golemKeywords` gives: a stored copy is a second source of
+ * truth that stops agreeing with the entry the moment a Dispatch rewrites it.
+ * The option id is matched first and the name second, the same two-sided rule
+ * used everywhere else here.
+ *
+ * A Formula whose text cannot be resolved keeps its name and price and says
+ * nothing, rather than showing a remembered or guessed description.
+ */
+export interface HeldFormula {
+  /** The option id where the purchase recorded one. */
+  id?: string;
+  name: string;
+  /** What it cost, as recorded on the model. */
+  price: Cost;
+  /** The published rules text, where the entry still has it. */
+  description?: string;
+  /** The catalogue's group, for the heading a card prints. */
+  group?: string;
+  /** Where it is recorded, which decides whether a card can remove it. */
+  from: 'upgrade' | 'equipment' | 'innate';
+  /** For the equipped route, which instance to drop. */
+  instanceId?: string;
+}
+
+export function formulaeHeld(
+  unit: (ShelfUnit & {
+    specialUpgrades?: { id: string; name: string; cost: number; category?: string }[];
+    equippedEquipment?: {
+      name: string; group?: string; groupPath?: string; effect?: string;
+      cost?: number; gloryCost?: number; instanceId?: string;
+    }[];
+  }) | null | undefined,
+  catalogueUnit: { options?: UnitOption[] } | null | undefined,
+): HeldFormula[] {
+  const offered = (catalogueUnit?.options ?? []).filter(isAlchemicalFormula);
+  const byId = new Map(offered.map((o) => [o.id, o]));
+  const byName = new Map(offered.map((o) => [nameKey(o.name), o]));
+  const entryFor = (id: string | undefined, name: string) =>
+    (id ? byId.get(id) : undefined) ?? byName.get(nameKey(name));
+
+  const out: HeldFormula[] = [];
+
+  for (const u of unit?.specialUpgrades ?? []) {
+    /* Only the Formulae. `specialUpgrades` also holds Strains, Sagas and
+       Goetic Powers, which are this sheet's but not this section's. */
+    const entry = entryFor(u.id, u.name);
+    if (!entry && !inFormulaGroup(u.category)) continue;
+    out.push({
+      id: u.id,
+      name: u.name,
+      price: { ducats: u.cost ?? 0, glory: 0 },
+      description: entry?.description,
+      group: entry?.group ?? u.category,
+      from: 'upgrade',
+    });
+  }
+
+  for (const e of unit?.equippedEquipment ?? []) {
+    if (!isAlchemicalFormula(e)) continue;
+    const entry = entryFor(undefined, e.name);
+    out.push({
+      name: e.name,
+      price: { ducats: e.cost ?? 0, glory: e.gloryCost ?? 0 },
+      /* The import's own `effect` first: it is what that roster recorded,
+         and the entry is the fallback where the import carried none. */
+      description: e.effect || entry?.description,
+      group: e.groupPath ?? e.group ?? entry?.group,
+      from: 'equipment',
+      instanceId: e.instanceId,
+    });
+  }
+
+  for (const a of unit?.profileSnapshot?.innateAbilities ?? []) {
+    const entry = entryFor(undefined, a.name);
+    if (!entry) continue;
+    out.push({
+      name: a.name,
+      price: { ducats: 0, glory: 0 },
+      description: a.description || entry.description,
+      group: entry.group,
+      from: 'innate',
+    });
+  }
+
+  return out;
 }

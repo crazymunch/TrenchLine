@@ -14,7 +14,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { DATASET } from '@/data/generated/trenchline.generated';
-import { formulaShelf } from '../formulaShelf';
+import { formulaShelf, formulaeHeld } from '../formulaShelf';
 import { alchemistAliveFor, takwinEntries, takwinRuleText } from '../takwin';
 import { GOLEM_GRANTED_BY, golemGrant } from '../golem';
 import type { Dataset, UnitOption } from '@/types/catalogue';
@@ -381,5 +381,110 @@ describe('reading the association off the roster', () => {
     expect(alchemistAliveFor({ alchemists: 1, homunculi: 2 })).toBeNull();
     // No Homunculus, no question.
     expect(alchemistAliveFor({ alchemists: 0, homunculi: 0 })).toBeNull();
+  });
+});
+
+/**
+ * FD-13a item 3: what a card and a reference sheet can print about a Formula
+ * the model is already holding.
+ */
+describe('the Formulae a model holds', () => {
+  const entry = SULTANATE as { options?: UnitOption[] };
+  const held = (over: Record<string, unknown>) => formulaeHeld(model(over) as never, entry);
+
+  it('gives a bought Formula the text its entry prints', () => {
+    /*
+      `specialUpgrades` is `{ id, name, cost, category }` — no description
+      field at all — so the card had a name and a price and nothing else.
+      Resolved from the entry rather than stored, so a Dispatch that rewrites
+      a Formula rewrites it here.
+    */
+    const option = (SULTANATE.options as UnitOption[]).find((o) => o.name === 'Human Hands')!;
+    const rows = held({
+      specialUpgrades: [{
+        id: option.id, name: 'Human Hands', cost: option.cost.ducats, category: 'Alchemical Formulae',
+      }],
+    });
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0].from).toBe('upgrade');
+    expect(rows[0].description).toBe(option.description);
+    /* The Iron Sultanate entry's own wording — the Golem copies say "can buy
+       and wield any weapon", which is the quotation FORM-3 was caught on. */
+    expect(rows[0].description).toMatch(/can have Ranged and Melee Weapons from the Iron Sultanate Armoury/i);
+    expect(rows[0].price).toEqual({ ducats: option.cost.ducats, glory: 0 });
+  });
+
+  it('resolves by the option id, and by name where an older purchase has none', () => {
+    const option = (SULTANATE.options as UnitOption[]).find((o) => o.name === 'Wings')!;
+    const byName = held({
+      specialUpgrades: [{ id: 'an-id-no-entry-has', name: 'Wings', cost: 30, category: 'Alchemical Formulae' }],
+    });
+    expect(byName[0].description).toBe(option.description);
+  });
+
+  it('leaves Strains, Sagas and Goetic Powers out', () => {
+    const rows = held({
+      specialUpgrades: [
+        { id: 'x', name: 'Some Strain', cost: 10, category: 'Strains' },
+        { id: 'y', name: 'Wings', cost: 30, category: 'Alchemical Formulae' },
+      ],
+    });
+    expect(rows.map((r) => r.name)).toEqual(['Wings']);
+  });
+
+  it('keeps an imported Formula’s own effect, and falls back to the entry', () => {
+    const withEffect = held({
+      equippedEquipment: [{
+        name: 'Wings', group: 'Alchemical Formulae', effect: 'what that roster recorded',
+        cost: 30, gloryCost: 0, instanceId: 'e1',
+      }],
+    });
+    expect(withEffect[0].from).toBe('equipment');
+    expect(withEffect[0].description).toBe('what that roster recorded');
+    // The instance id, so a card knows it can drop this one.
+    expect(withEffect[0].instanceId).toBe('e1');
+
+    const withoutEffect = held({
+      equippedEquipment: [{
+        name: 'Wings', group: 'Alchemical Formulae', cost: 30, gloryCost: 0, instanceId: 'e2',
+      }],
+    });
+    expect(withoutEffect[0].description)
+      .toBe((SULTANATE.options as UnitOption[]).find((o) => o.name === 'Wings')!.description);
+  });
+
+  it('counts an innate Formula, at no cost, only where the entry offers it', () => {
+    const rows = held({
+      profileSnapshot: {
+        innateAbilities: [
+          { name: 'Human Hands', description: 'as the entry prints it' },
+          // Not a Formula on this entry: an ordinary ability stays out.
+          { name: 'Pummelling Blows', description: 'something else entirely' },
+        ],
+      },
+    });
+    expect(rows.map((r) => r.name)).toEqual(['Human Hands']);
+    expect(rows[0].from).toBe('innate');
+    expect(rows[0].price).toEqual({ ducats: 0, glory: 0 });
+  });
+
+  it('keeps a Formula whose text cannot be resolved, without inventing one', () => {
+    const rows = formulaeHeld(
+      model({
+        specialUpgrades: [{
+          id: 'gone', name: 'A Formula The Ruleset Dropped', cost: 20,
+          category: 'Alchemical Formulae',
+        }],
+      }) as never,
+      { options: [] },
+    );
+    expect(rows).toHaveLength(1);
+    expect(rows[0].name).toBe('A Formula The Ruleset Dropped');
+    expect(rows[0].description).toBeUndefined();
+  });
+
+  it('is empty for a model holding none', () => {
+    expect(held({})).toEqual([]);
   });
 });

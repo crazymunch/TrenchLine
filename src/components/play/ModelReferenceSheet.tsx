@@ -25,7 +25,7 @@
  */
 import React from 'react';
 import {
-  Activity, Award, Backpack, HeartCrack, Shield, Sparkles, Swords,
+  Activity, Award, Backpack, FlaskConical, HeartCrack, Shield, Sparkles, Swords,
 } from 'lucide-react';
 
 import { Sheet } from '../ui/Sheet';
@@ -34,12 +34,20 @@ import type { ActiveUnit } from '../../types/warband';
 import type { Keyword } from '../../types/catalogue';
 import { readRange } from '@/rules/weaponRange';
 import { effectiveMovement, type TraumaRow } from '@/rules/effectiveStats';
+import { formulaeHeld } from '@/rules/formulaShelf';
+import type { UnitOption } from '../../types/catalogue';
 
 interface Props {
   unit: ActiveUnit;
   keywords?: Keyword[];
   /** The Trauma table, so an injury's effect comes from the catalogue. */
   traumaTable?: TraumaRow[];
+  /**
+   * The model's catalogue entry, for the rules text its Alchemical Formulae
+   * print. Resolved by the caller with `catalogueUnitFor`, so this sheet does
+   * not have to know how a roster records an entry.
+   */
+  catalogueUnit?: { options?: UnitOption[] } | null;
   onClose: () => void;
 }
 
@@ -56,9 +64,21 @@ const Section: React.FC<{
 );
 
 export const ModelReferenceSheet: React.FC<Props> = ({
-  unit, keywords, traumaTable = [], onClose,
+  unit, keywords, traumaTable = [], catalogueUnit, onClose,
 }) => {
   const p = unit.profileSnapshot;
+  /*
+    FD-13a item 3. The Alchemical Formulae this model holds, with their text.
+
+    This sheet rendered `innateAbilities`, weapons, armour and equipment, and
+    never `specialUpgrades` — so a Formula BOUGHT in the app was invisible in
+    Play Mode entirely, on a screen whose whole job is "a unit must show all
+    its rules, keywords and abilities" (PLAY-1). An imported one arrived
+    through `equippedEquipment` and did render, which is why the gap was easy
+    to miss: the same Formula was visible or not depending on where it had
+    been bought.
+  */
+  const formulae = formulaeHeld(unit, catalogueUnit);
 
   /*
     Movement with the model's injuries counted.
@@ -270,6 +290,30 @@ export const ModelReferenceSheet: React.FC<Props> = ({
             )}
           </div>
         </Section>
+
+        {/* --------------------------------------------- alchemical formulae */}
+        {formulae.length > 0 && (
+          <Section icon={<FlaskConical className="h-3.5 w-3.5" />} title="Alchemical Formulae">
+            <div className="space-y-1.5">
+              {formulae.map((f) => (
+                <div
+                  key={`${f.from}-${f.instanceId ?? f.id ?? f.name}`}
+                  className="rounded border border-theme-border bg-theme-base p-2.5"
+                >
+                  <div className="flex items-center gap-2">
+                    <FlaskConical className="h-3.5 w-3.5 shrink-0 text-theme-primary" />
+                    <span className="text-xs font-bold text-theme-text">{f.name}</span>
+                  </div>
+                  {f.description && (
+                    <KeywordText keywords={keywords} className="mt-1 text-xs text-theme-muted">
+                      {f.description}
+                    </KeywordText>
+                  )}
+                </div>
+              ))}
+            </div>
+          </Section>
+        )}
 
         {/* ------------------------------------------------------ injuries */}
         {(unit.injuries?.length > 0 || (unit.scars?.length ?? 0) > 0) && (
