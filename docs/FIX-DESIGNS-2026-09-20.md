@@ -39,7 +39,7 @@ carry, and what these designs cover:
 | FD-13 | the Homunculi: the Takwin and the Book of Golems | `AddEquipmentModal`, `UnitAdvancementModal`, `src/rules/battlekitLimits.ts`, the wizard's Trauma and Quartermaster steps |
 | FD-14 | invented content: one player's lore injected into imports and cloud pulls, the seed, hand-typed Codex rules, fallbacks, residue | src/data/warbandLore.ts (deleted by #82), prisma/seed.ts (deleted by #83), the campaigns API, `CodexView`, the importer |
 
-### Landed, as of 02:10 UTC on 21 September
+### Landed, as of 03:05 UTC on 21 September
 
 | Design | PR | State |
 | --- | --- | --- |
@@ -85,7 +85,9 @@ carry, and what these designs cover:
 | ARM-1 (a wrapped Armoury Table row no longer truncates its table; twenty rows restored across four factions; Grail Devotee reported as NOT STOCKED) | #97 | merged; reviewed on `main`, correct. Grail Devotee's ruling and ARM-2 are recorded under FD-17 |
 | FD-16 (the Battlekit a Weapon Collections grant reaches is offered, keyed by the armoury that priced it, gated by that armoury's stipulations) | #98 | merged; reviewed on `main`, correct. One deviation accepted and one hole found, WC-1, both recorded under FD-16 |
 | Pack A2, first half: Re-creation (two deadlines read from the ability text; the offer held on the roster; paid or declined in the builder; the Quartermaster one lapses when the campaign moves on) | #99 | merged; reviewed on `main`, correct. One hole found, RC-1, recorded under FD-13 |
-| FORM-1 (a nested option group keeps its parent: `groupPath`) and FORM-2 (a Formula's prerequisites and exclusions read from its sentence) | #100 | open on `claude/fd-13a-formulas-tab`. FORM-1 reviewed, correct. FORM-2 has one defect, FORM-3, recorded under FD-13 |
+| FORM-1 (a nested option group keeps its parent: `groupPath`), FORM-2 (a Formula's prerequisites and exclusions read from its sentence), FORM-3 (280 priced unit options were free: option purchases now charge the Strongbox through the ledger), FORM-4 (names resolved against the model's own entry; an unresolvable exception is a caveat; the book's own wording read) | #100 | merged; reviewed on `main`, correct. The numbering is the developer's: what #101 called FORM-3 is FORM-4 here, recorded under FD-13 |
+| The review of #97 to #100: three holes, four rulings | #101 | merged |
+| RC-1 (a model awaiting Re-creation takes the field nowhere: `takesTheField`, read at five sites) and WC-1 (a granted item the catalogues cannot name is a warning, and the file is written) | #102 | open, `check` green on 7f27952; reviewed, correct, with the WC-1 correction recorded under FD-16 and EXP-1 filed under FD-17 |
 
 ## FD-00. PR #59 as it stands
 
@@ -1788,6 +1790,15 @@ showing it. Test: a Takwin awaiting Re-creation is not in the Force, not in
 the Threshold spend, not in the reinforcement total, not in the `.ros`, and
 not in the wizard's list; after `recreateUnit` it is in all five.
 
+**Landed by #102, reviewed.** `takesTheField` and `fieldable` in the
+Re-creation module, read by `forceBudget` (which counts the model apart
+from `benched`, since nobody chose to sit it out), `reinforcementCost`,
+Play Mode's default Force and its deploy list, the export's living models,
+and the wizard's roster for Experience, Exploration, War Stories,
+promotion and casualties. The roster listing and the panel still show it.
+The store tests drive the real post-battle commit and the real
+`recreateUnit`.
+
 **FORM-1, landed on #100's branch.** Reviewed, correct: `optionsOf` let a
 nested group replace its parent's name, so the Eye Options arrived as the
 bare leaf and were not Formulae to `isAlchemicalFormula`, whose comment had
@@ -1796,7 +1807,7 @@ carries the ancestry beside the leaf. The importer was never affected: the
 owner's export writes `Alchemical Formulae::Eye Options` as the group
 already. An in-app purchase wrote the leaf, and now writes the path.
 
-**FORM-2, on #100's branch, with one defect, FORM-3.** The prerequisites
+**FORM-2, on #100's branch, with one defect, FORM-4.** The prerequisites
 and exclusions are read from the sentences, which is right, and the survey
 test caught Hawk Eyes' own sentence. The defect: the names a sentence uses
 are resolved against every Formula in the ruleset, and the six Homunculus
@@ -1817,6 +1828,48 @@ neither is found the clause is a caveat and never a refusal. Tests: a Golem
 with Hawk Eyes and Additional Head may take Hypnotic Eyes and without
 Additional Head is refused; the Takwin with Two Heads may and without it is
 refused; an exception that resolves to nothing is a caveat.
+
+**Numbering.** The paragraph above was written as FORM-3. The developer had
+already used FORM-3 on the same branch for a finding of its own, below, and
+built the ruling as FORM-4; the commits and #100's body say FORM-4, so this
+document does too.
+
+**FORM-3, the developer's finding, landed by #100.** Every unit option
+bought from the advancement sheet was free: `toggleUnitSpecialUpgrade` added
+the price to the model's cost and charged nobody, across 280 priced options
+in eighteen groups, every Formula among them. The same defect FD-05e-2,
+FD-05g and FD-05h closed for Battlekit and models, one layer out. Now
+booked through the ledger with the model and the option together as the
+ref, so one model's refund cannot cancel another's purchase, reversible
+until the game it was bought in has been played, and the whole Cost spent
+(Devouring Jaws is priced in Glory). Reviewed on `main`, correct. One
+consequence for the Golem: until the Formulas tab lands, a Golem's Formula
+bought from the sheet is charged to the Strongbox rather than to its free
+budget, so the tab must spend the budget first, as FD-13b says.
+
+**FORM-4, landed by #100.** Reviewed on `main`: `formulaGate` takes the
+Formulae the model's own entry offers, with their text; the lifter is the
+sentence's name where the entry offers it and otherwise the entry's Formula
+whose text grants the permission, matched on the two shipped sentences; an
+exception that resolves to nothing is a caveat in the verdict. A third
+shape found by the test: the Iron Sultanate entry states the Eyes' rule in
+the book's own wording ("cannot have the Hypnotic Eyes Alchemical Formula
+if it has the Hawk Eyes Alchemical Formula unless it also has the Two Heads
+Alchemical Formula"), which FORM-2 neither read nor noticed; read now.
+
+**ID-1, filed from #102's note: which entry the owner's Homunculi resolve
+to.** The owner's export carries two Homunculi on one shared catalogue
+entry reached through two links: the Takwin through the Iron Sultanate's
+link, the Golem through the Campaign Rules link. The dataset carries one
+Homunculus unit per link, and they do not offer the same Formulae: the Iron
+Sultanate's offers Two Heads and Regenerative Tissue, the others Additional
+Head and Regenerative. FORM-4 resolves a Formula's names against the entry
+the model resolved to, and the tab will offer that entry's list, so the
+owner's Takwin must resolve to the Iron Sultanate unit and the Golem to the
+Campaign Rules one. #102's export note lists Two Heads among the names the
+catalogues cannot reach under the owner's Takwin, which is what a Takwin on
+the wrong entry looks like. Measure first: the entry the importer assigns
+each, from the fixture; then, if either is wrong, the link id decides.
 
 **Ruling for the Formulas tab (FD-13a item 2).** The developer asked
 whether the tab replaces the advancement sheet's Formula groups or sits
@@ -2163,6 +2216,19 @@ with Machine Armour equipped on an ELITE model exports, with one warning
 naming Machine Armour and Weapon Collections, and the Anti-Tank Hammer
 written as a Trench Pilgrims pick.
 
+**Landed by #102, with the example corrected.** The hole is real and the
+named case was not it. The Iron Sultanate catalogue carries its own Machine
+Armour link under the model's entry, hidden behind a modifier, and the
+exporter resolves a name against everything the model's entry reaches, so
+Machine Armour exports; so does the Anti-Tank Hammer, through the shared
+Melee Weapons catalogue. The developer measured instead: of the thirty-five
+rows the grant offers, five reach no Iron Sultanate entry at all
+(Blunderbuss, Heavy Ballistic Shield, Engineer Body Armour, Blessed Icon,
+Iron Capirote). Those are now a warning naming the item, the rule, and the
+cost the file is short by; the file is written. An item with no grant
+behind it stays fatal. `docs/ROS-EXPORT.md` carried both wrong claims and
+is corrected in the same PR.
+
 ## FD-17. The August import validates clean: five armoury-data findings
 
 Driving the owner's August export through the real importer (#95) reports
@@ -2222,6 +2288,36 @@ needs a second cost on the row and a choice in the Arsenal, nobody at the
 table plays the Court, and a reported gap beats an invented one. Filed for
 the day someone does.
 
+**EXP-1, from #102's note: the owner's roster cannot be exported.** Driving
+the September export through the importer and then through the `.ros`
+report gives eight fatal findings before any grant is involved: Sniper
+Scope, Coordinated Engagement twice, Titan Zulfiqar, Two Heads, Fierce
+Lion, Weaponized Shovel and Polearm. The export half of FD-17's finding 3:
+what an entry grants is not a selection, and the importer materialises it
+as one. By class, from the fixture:
+
+- **Kit the entry grants, materialised from a profile.** Weaponized Shovel
+  is the Sapper's fixed Shovel (L4739), Coordinated Engagement the FIRETEAM
+  profile a Fireteam option grants; the importer names the item after the
+  profile, and no selection carries that name. An imported item keeps the
+  selection it came from, name and entry id, and kit with no selection
+  behind it is not an item on the model at all: the entry implies it, and
+  NewRecruit derives it.
+- **An ability recorded as an item.** Fierce Lion on the Lion of Jabir. The
+  importer's classification, not the exporter's.
+- **A campaign-level selection.** Sniper Scope is an exploration find from
+  the Campaign Rules catalogue on the Alchemist. Left out with a warning
+  naming it until the campaign half of a `.ros` is designed, which is the
+  open question `docs/ROS-EXPORT.md` already records.
+- **Entry identity.** Two Heads is an option of the Iron Sultanate
+  Homunculus entry, so its being unreachable under the owner's Takwin is
+  ID-1 above, not an export defect. Titan Zulfiqar, on the Brazen Bull and
+  the Takwin, and Polearm are unclassified until measured.
+
+Acceptance: the September fixture imports and exports with no fatal
+finding, and every warning names something NewRecruit has no box for.
+After pack C.
+
 ## Order
 
 1. Merge PR #59 when its check is green (FD-00). No further findings on it.
@@ -2247,6 +2343,12 @@ the day someone does.
     as #97) with FD-17's acceptance test still owed; pack C, FD-12 with
     FD-15, READY FOR TESTING 2 in its body. Then AI-3 and AI-5, FD-08,
     FD-10, AI-4 as item 9 says.
-11. The three holes the review of #98 to #100 found, before pack C: FORM-3
-    on #100's branch before it merges; RC-1 and WC-1 as one PR or two, the
-    developer's call, with the tests each ruling names.
+11. The three holes the review of #98 to #100 found, before pack C: FORM-4
+    on #100's branch before it merges (#100); RC-1 and WC-1 as one PR or
+    two, the developer's call, with the tests each ruling names (#102).
+12. ID-1 before the Formulas tab is finished: the entry each of the owner's
+    Homunculi resolves to, measured from the fixture, and the link id made
+    to decide if either is wrong. The tab's offer is that entry's list.
+13. EXP-1 after pack C, one PR: the classification above confirmed by
+    measurement, the importer keeping the selection an item came from, and
+    the acceptance test on the September fixture.
