@@ -119,3 +119,58 @@ export function takwinRestrictions(
  */
 export const takwinAllowance = (alchemists: number): number =>
   Math.max(0, Number.isFinite(alchemists) ? Math.floor(alchemists) : 0);
+
+/**
+ * The two entries the association rule names, read from its own sentence.
+ *
+ * *"A House of Wisdom Warband can include one **Takwin Homunculus** for each
+ * **Jabirean Alchemist** in the Warband."*
+ *
+ * Parsed rather than typed here, for rule 1: a Dispatch that renames either
+ * entry renames it in this sentence too, and a build whose text loses the
+ * sentence returns `null` — the rule stops being applied — rather than going
+ * on matching two remembered names.
+ */
+const ASSOCIATION =
+  /can include one ([A-Z][A-Za-zÀ-ɏ'’ -]*?) for each ([A-Z][A-Za-zÀ-ɏ'’ -]*?) in the Warband/i;
+
+export function takwinEntries(
+  dataset: Dataset | null | undefined,
+): { homunculus: string; alchemist: string } | null {
+  const hay = JSON.stringify(
+    (dataset as unknown as { variants?: unknown })?.variants ?? null);
+  const m = hay ? ASSOCIATION.exec(hay) : null;
+  return m ? { homunculus: m[1].trim(), alchemist: m[2].trim() } : null;
+}
+
+/**
+ * Whether THIS Homunculus still has its Alchemist, from the roster's counts.
+ *
+ * The association is real and one-to-one — *"Each Takwin Homunculus must be
+ * associated with a Jabirean Alchemist when it is added to the Warband. An
+ * Alchemist can only have a single Takwin Homunculus associated with it and
+ * vice versa"* — and the app has never recorded WHICH Alchemist. So the
+ * counts are all there is, and they answer the question exactly twice:
+ *
+ * - **No living Alchemist at all, and a Homunculus on the roster.** Every
+ *   Homunculus has lost the one it was bound to. `false`, and the rule bites.
+ * - **At least as many living Alchemists as Homunculi.** One-to-one and
+ *   enough to go round, so none of them has lost anything. `true`.
+ *
+ * Between those, some have and some have not, and nothing on the roster says
+ * which. That is `null` — *unknown* — and `takwinRestrictions` deliberately
+ * does not treat `null` as a dead Alchemist. Refusing all of them would
+ * bench models whose Alchemist is alive, which is the one direction of error
+ * that costs a player a model they still own; the caller shows the sentence
+ * as a caveat instead and the player applies it.
+ *
+ * A Golem is not counted here by any caller: it is created by the Book of
+ * Golems with no Alchemist at all, and the grant governs it instead.
+ */
+export function alchemistAliveFor(
+  counts: { alchemists: number; homunculi: number },
+): boolean | null {
+  if (counts.homunculi <= 0) return null;
+  if (counts.alchemists <= 0) return false;
+  return counts.homunculi <= counts.alchemists ? true : null;
+}
