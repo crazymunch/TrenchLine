@@ -2771,6 +2771,7 @@ export const DATASET: Dataset = {
           "id": "2dbd-0b65-e9f7-2a6d",
           "name": "Hypnotic Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -2792,6 +2793,7 @@ export const DATASET: Dataset = {
           "id": "4074-5e11-5f6c-1982",
           "name": "Hawk Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -3250,6 +3252,7 @@ export const DATASET: Dataset = {
           "id": "62e8-2201-bf47-9ce4",
           "name": "Proud Defiance",
           "group": "Pride",
+          "groupPath": "Goetic Powers::Pride",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -3286,6 +3289,7 @@ export const DATASET: Dataset = {
           "id": "4d5b-7911-9dd5-c162",
           "name": "Envious Eyes",
           "group": "Envy",
+          "groupPath": "Goetic Powers::Envy",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -3334,6 +3338,7 @@ export const DATASET: Dataset = {
           "id": "4259-ef97-260c-09fd",
           "name": "Belly of the Beast",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -3370,6 +3375,7 @@ export const DATASET: Dataset = {
           "id": "c333-2591-5b6e-e20b",
           "name": "Eater of the Flesh",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -3425,6 +3431,7 @@ export const DATASET: Dataset = {
           "id": "041a-6dec-d0f5-112f",
           "name": "Forbidden Pleasures",
           "group": "Lust",
+          "groupPath": "Goetic Powers::Lust",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -3473,6 +3480,7 @@ export const DATASET: Dataset = {
           "id": "2ba1-8469-e3dc-4a0a",
           "name": "Body of Gold",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -3530,6 +3538,7 @@ export const DATASET: Dataset = {
           "id": "c266-b78b-c656-aca7",
           "name": "Greedy Hearts",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -3573,6 +3582,7 @@ export const DATASET: Dataset = {
           "id": "c456-4e7d-3c7a-50cc",
           "name": "Charge of Hatred",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -3616,6 +3626,7 @@ export const DATASET: Dataset = {
           "id": "647a-a5b2-f767-2c3d",
           "name": "Lesser Mark of Cain",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 20,
             "glory": 0
@@ -3659,6 +3670,7 @@ export const DATASET: Dataset = {
           "id": "2603-c881-7cca-44d9",
           "name": "Blind Rage",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -3934,6 +3946,7 @@ export const DATASET: Dataset = {
           "id": "62e8-2201-bf47-9ce4",
           "name": "Proud Defiance",
           "group": "Pride",
+          "groupPath": "Goetic Powers::Pride",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -3970,6 +3983,7 @@ export const DATASET: Dataset = {
           "id": "4d5b-7911-9dd5-c162",
           "name": "Envious Eyes",
           "group": "Envy",
+          "groupPath": "Goetic Powers::Envy",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -4018,6 +4032,7 @@ export const DATASET: Dataset = {
           "id": "4259-ef97-260c-09fd",
           "name": "Belly of the Beast",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -4054,6 +4069,7 @@ export const DATASET: Dataset = {
           "id": "c333-2591-5b6e-e20b",
           "name": "Eater of the Flesh",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -4109,6 +4125,7 @@ export const DATASET: Dataset = {
           "id": "041a-6dec-d0f5-112f",
           "name": "Forbidden Pleasures",
           "group": "Lust",
+          "groupPath": "Goetic Powers::Lust",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -4157,6 +4174,7 @@ export const DATASET: Dataset = {
           "id": "2ba1-8469-e3dc-4a0a",
           "name": "Body of Gold",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -4214,6 +4232,7 @@ export const DATASET: Dataset = {
           "id": "c266-b78b-c656-aca7",
           "name": "Greedy Hearts",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -4257,6 +4276,7 @@ export const DATASET: Dataset = {
           "id": "c456-4e7d-3c7a-50cc",
           "name": "Charge of Hatred",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -4300,6 +4320,7 @@ export const DATASET: Dataset = {
           "id": "647a-a5b2-f767-2c3d",
           "name": "Lesser Mark of Cain",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 20,
             "glory": 0
@@ -4343,6 +4364,7 @@ export const DATASET: Dataset = {
           "id": "2603-c881-7cca-44d9",
           "name": "Blind Rage",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -5246,6 +5268,7 @@ export const DATASET: Dataset = {
           "id": "62e8-2201-bf47-9ce4",
           "name": "Proud Defiance",
           "group": "Pride",
+          "groupPath": "Goetic Powers::Pride",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -5282,6 +5305,7 @@ export const DATASET: Dataset = {
           "id": "4d5b-7911-9dd5-c162",
           "name": "Envious Eyes",
           "group": "Envy",
+          "groupPath": "Goetic Powers::Envy",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -5330,6 +5354,7 @@ export const DATASET: Dataset = {
           "id": "4259-ef97-260c-09fd",
           "name": "Belly of the Beast",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -5366,6 +5391,7 @@ export const DATASET: Dataset = {
           "id": "c333-2591-5b6e-e20b",
           "name": "Eater of the Flesh",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -5421,6 +5447,7 @@ export const DATASET: Dataset = {
           "id": "041a-6dec-d0f5-112f",
           "name": "Forbidden Pleasures",
           "group": "Lust",
+          "groupPath": "Goetic Powers::Lust",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -5469,6 +5496,7 @@ export const DATASET: Dataset = {
           "id": "2ba1-8469-e3dc-4a0a",
           "name": "Body of Gold",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -5526,6 +5554,7 @@ export const DATASET: Dataset = {
           "id": "c266-b78b-c656-aca7",
           "name": "Greedy Hearts",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -5569,6 +5598,7 @@ export const DATASET: Dataset = {
           "id": "c456-4e7d-3c7a-50cc",
           "name": "Charge of Hatred",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -5612,6 +5642,7 @@ export const DATASET: Dataset = {
           "id": "647a-a5b2-f767-2c3d",
           "name": "Lesser Mark of Cain",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 20,
             "glory": 0
@@ -5655,6 +5686,7 @@ export const DATASET: Dataset = {
           "id": "2603-c881-7cca-44d9",
           "name": "Blind Rage",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -6158,6 +6190,7 @@ export const DATASET: Dataset = {
           "id": "62e8-2201-bf47-9ce4",
           "name": "Proud Defiance",
           "group": "Pride",
+          "groupPath": "Goetic Powers::Pride",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -6194,6 +6227,7 @@ export const DATASET: Dataset = {
           "id": "4d5b-7911-9dd5-c162",
           "name": "Envious Eyes",
           "group": "Envy",
+          "groupPath": "Goetic Powers::Envy",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -6242,6 +6276,7 @@ export const DATASET: Dataset = {
           "id": "4259-ef97-260c-09fd",
           "name": "Belly of the Beast",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -6278,6 +6313,7 @@ export const DATASET: Dataset = {
           "id": "c333-2591-5b6e-e20b",
           "name": "Eater of the Flesh",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -6333,6 +6369,7 @@ export const DATASET: Dataset = {
           "id": "041a-6dec-d0f5-112f",
           "name": "Forbidden Pleasures",
           "group": "Lust",
+          "groupPath": "Goetic Powers::Lust",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -6381,6 +6418,7 @@ export const DATASET: Dataset = {
           "id": "2ba1-8469-e3dc-4a0a",
           "name": "Body of Gold",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -6438,6 +6476,7 @@ export const DATASET: Dataset = {
           "id": "c266-b78b-c656-aca7",
           "name": "Greedy Hearts",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -6481,6 +6520,7 @@ export const DATASET: Dataset = {
           "id": "c456-4e7d-3c7a-50cc",
           "name": "Charge of Hatred",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -6524,6 +6564,7 @@ export const DATASET: Dataset = {
           "id": "647a-a5b2-f767-2c3d",
           "name": "Lesser Mark of Cain",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 20,
             "glory": 0
@@ -6567,6 +6608,7 @@ export const DATASET: Dataset = {
           "id": "2603-c881-7cca-44d9",
           "name": "Blind Rage",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -7662,6 +7704,7 @@ export const DATASET: Dataset = {
           "id": "62e8-2201-bf47-9ce4",
           "name": "Proud Defiance",
           "group": "Pride",
+          "groupPath": "Goetic Powers::Pride",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -7698,6 +7741,7 @@ export const DATASET: Dataset = {
           "id": "4d5b-7911-9dd5-c162",
           "name": "Envious Eyes",
           "group": "Envy",
+          "groupPath": "Goetic Powers::Envy",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -7746,6 +7790,7 @@ export const DATASET: Dataset = {
           "id": "4259-ef97-260c-09fd",
           "name": "Belly of the Beast",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 5,
             "glory": 0
@@ -7782,6 +7827,7 @@ export const DATASET: Dataset = {
           "id": "c333-2591-5b6e-e20b",
           "name": "Eater of the Flesh",
           "group": "Gluttony",
+          "groupPath": "Goetic Powers::Gluttony",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -7837,6 +7883,7 @@ export const DATASET: Dataset = {
           "id": "041a-6dec-d0f5-112f",
           "name": "Forbidden Pleasures",
           "group": "Lust",
+          "groupPath": "Goetic Powers::Lust",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -7885,6 +7932,7 @@ export const DATASET: Dataset = {
           "id": "2ba1-8469-e3dc-4a0a",
           "name": "Body of Gold",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -7942,6 +7990,7 @@ export const DATASET: Dataset = {
           "id": "c266-b78b-c656-aca7",
           "name": "Greedy Hearts",
           "group": "Greed",
+          "groupPath": "Goetic Powers::Greed",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -7985,6 +8034,7 @@ export const DATASET: Dataset = {
           "id": "c456-4e7d-3c7a-50cc",
           "name": "Charge of Hatred",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -8028,6 +8078,7 @@ export const DATASET: Dataset = {
           "id": "647a-a5b2-f767-2c3d",
           "name": "Lesser Mark of Cain",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 20,
             "glory": 0
@@ -8071,6 +8122,7 @@ export const DATASET: Dataset = {
           "id": "2603-c881-7cca-44d9",
           "name": "Blind Rage",
           "group": "Wrath",
+          "groupPath": "Goetic Powers::Wrath",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -12415,6 +12467,7 @@ export const DATASET: Dataset = {
           "id": "d76d-a2f2-be44-29e1",
           "name": "Hypnotic Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -12436,6 +12489,7 @@ export const DATASET: Dataset = {
           "id": "7db6-6b99-81a9-064e",
           "name": "Hawk Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -13095,6 +13149,7 @@ export const DATASET: Dataset = {
           "id": "db99-520c-11a3-a10a",
           "name": "Hypnotic Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -13116,6 +13171,7 @@ export const DATASET: Dataset = {
           "id": "387f-21f7-517f-003e",
           "name": "Hawk Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -13173,6 +13229,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -13638,6 +13695,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -14065,6 +14123,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -14441,6 +14500,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -15215,6 +15275,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -15601,6 +15662,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -16122,6 +16184,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -16692,6 +16755,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -17312,6 +17376,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -17520,6 +17585,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -17752,6 +17818,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -18033,6 +18100,7 @@ export const DATASET: Dataset = {
           "id": "8a1e-a662-247a-2c2b",
           "name": "Alchemical Ammunition",
           "group": "Special Ammunitions",
+          "groupPath": "Equipment::Special Ammunitions",
           "cost": {
             "ducats": 3,
             "glory": 0
@@ -21110,6 +21178,7 @@ export const DATASET: Dataset = {
           "id": "a475-7b81-8681-720f",
           "name": "Hypnotic Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -21131,6 +21200,7 @@ export const DATASET: Dataset = {
           "id": "5e49-cff8-3d14-cff5",
           "name": "Hawk Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -24558,6 +24628,7 @@ export const DATASET: Dataset = {
           "id": "7128-e3c5-7ebe-af37",
           "name": "Hypnotic Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -24579,6 +24650,7 @@ export const DATASET: Dataset = {
           "id": "804f-e412-ea03-aa6d",
           "name": "Hawk Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 10,
             "glory": 0
@@ -25132,6 +25204,7 @@ export const DATASET: Dataset = {
           "id": "fa11-4a87-00a2-b36e",
           "name": "Hypnotic Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 15,
             "glory": 0
@@ -25153,6 +25226,7 @@ export const DATASET: Dataset = {
           "id": "2546-a2d9-1305-5ce9",
           "name": "Hawk Eyes",
           "group": "Eye Options",
+          "groupPath": "Alchemical Formulae::Eye Options",
           "cost": {
             "ducats": 10,
             "glory": 0

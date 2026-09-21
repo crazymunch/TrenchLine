@@ -110,10 +110,20 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     (acc[o.group] ??= []).push({
       id: o.id,
       name: o.name,
-      // Carried onto the item as well as used as the key. It is the label the
-      // unit card shows for the section, and hard-coding it meant a Saga or a
-      // Strain was filed on the card as an "Alchemical Formula".
-      group: o.group,
+      /*
+        The group PATH where the option has one, the leaf otherwise.
+
+        Carried onto the item as well as used as the key. It is the label the
+        unit card shows for the section, and hard-coding it meant a Saga or a
+        Strain was filed on the card as an "Alchemical Formula".
+
+        The path, not the leaf, because `formulaeOf` asks whether the category
+        contains `Alchemical Formulae`: a Hawk Eyes bought here wrote
+        `Eye Options` and stopped being a Formula on the model that bought it.
+        The heading above is keyed on the leaf, so the player still reads
+        `Eye Options`.
+      */
+      group: o.groupPath ?? o.group,
       // The legacy upgrade shape carries one currency; Glory is surfaced in
       // the label rather than silently dropped to zero.
       cost: o.cost.ducats,

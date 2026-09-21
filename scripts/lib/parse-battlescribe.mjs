@@ -123,7 +123,28 @@ function optionsOf(node, nameOf, fieldNameOf, isConstraint, resolve) {
   const out = [];
   const seen = new Set();
 
-  const fromGroup = (g, groupName) => {
+  /*
+    A group's full ancestry, `::`-joined, as BattleScribe writes a group path.
+
+    The leaf alone is not enough. `Alchemical Formulae` has an `Eye Options`
+    sub-group holding Hawk Eyes and Hypnotic Eyes, and emitting only the leaf
+    made those two stop being Alchemical Formulae anywhere in the app:
+    `rules/formulae.ts` decides that by asking whether the group CONTAINS
+    `Alchemical Formulae`, and documents the value as looking exactly like
+    `Alchemical Formulae::Eye Options` so that "a sub-group counts as its
+    parent — an Eye Option is a Formula, and the player buys it from the same
+    allowance". No group in the shipped dataset contained `::`, so the one
+    sub-group that comment names was the one case the predicate got wrong: an
+    imported Hawk Eyes rendered under ordinary gear rather than in the card's
+    Alchemical Formula section, and `toRoster` did not hand it to the
+    validator as a Formula at all.
+
+    Carried BESIDE the leaf rather than replacing it. `group` is what the
+    builder prints as a section heading — a player should read `Eye Options`,
+    not `Alchemical Formulae::Eye Options` — and what several exact-match
+    readers compare against.
+  */
+  const fromGroup = (g, groupName, groupPath = groupName) => {
     for (const e of arr(g?.selectionEntries?.selectionEntry)) {
       if (attr(e, 'type') !== 'upgrade') continue;
       // An entry may inline its profile or reach it through an infoLink, and
@@ -154,6 +175,9 @@ function optionsOf(node, nameOf, fieldNameOf, isConstraint, resolve) {
         id: attr(e, 'id'),
         name: clean(attr(e, 'name')),
         group: groupName,
+        /* Only where it says something the leaf does not, so the dataset does
+           not grow a field repeating `group` on every top-level option. */
+        ...(groupPath && groupPath !== groupName ? { groupPath } : {}),
         cost: costsOf(e),
         // The id of the profile carrying the rules, so the gear post-pass can
         // recognise an option that is really an armoury entry.
@@ -163,9 +187,11 @@ function optionsOf(node, nameOf, fieldNameOf, isConstraint, resolve) {
         modifiers: modifiersOf(e, nameOf, fieldNameOf, isConstraint),
       });
     }
-    // Groups nest: "Vile Corpus" sits inside a wrapper group.
+    // Groups nest: "Vile Corpus" sits inside a wrapper group. The leaf wins
+    // for `group`, and the path keeps what the leaf drops.
     for (const inner of arr(g?.selectionEntryGroups?.selectionEntryGroup)) {
-      fromGroup(inner, clean(attr(inner, 'name')) || groupName);
+      const name = clean(attr(inner, 'name'));
+      fromGroup(inner, name || groupName, name ? [groupPath, name].filter(Boolean).join('::') : groupPath);
     }
   };
 
