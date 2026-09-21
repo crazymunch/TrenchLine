@@ -50,6 +50,16 @@ export interface ActiveUnit {
   advancements: string[];
   skills?: { name: string; category: string; roll?: string; effect?: string }[];
   /**
+   * The grant that put this model on the roster, where one did.
+   *
+   * `'Book of Golems'` for a model created by Exploration 17. It is the
+   * model's provenance, not a Keyword: GOLEM is what the model is, and this
+   * is how it arrived — which is what the grant's standing restrictions key
+   * off, so the same entry recruited out of the Armoury is unaffected by
+   * them. Absent on every model that was simply hired.
+   */
+  grantedBy?: string;
+  /**
    * How many Advancement Rolls this model has taken.
    *
    * Its own field rather than `skills.length`, because a model can gain a

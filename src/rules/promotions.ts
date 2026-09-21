@@ -33,6 +33,7 @@
 import type { Dataset } from '../types/catalogue';
 import type { ActiveUnit, Warband } from '../types/warband';
 import { eliteVerdict } from './trauma';
+import { golemGrant, isGolem } from './golem';
 
 /** The derived rules, or `null` for a ruleset built before they existed. */
 export const promotionRules = (dataset: Dataset | null | undefined) =>
@@ -60,7 +61,16 @@ export type PromotionBlock =
   /** Named in the rulebook's Models That Cannot Be Promoted table. */
   | 'cannot-be-promoted'
   /** The ruleset carries no promotion rules, so nothing can be checked. */
-  | 'no-rules';
+  | 'no-rules'
+  /**
+   * Created by a grant whose own text forbids it — the Book of Golems.
+   *
+   * Its own clause rather than `cannot-be-promoted`: that one is the
+   * rulebook's table of ENTRIES, and this model's entry is not in it. What
+   * forbids the promotion is how this particular model came to be on the
+   * roster, so a Takwin Homunculus recruited normally is unaffected.
+   */
+  | 'granted-ally';
 
 export interface PromotionEligibility {
   eligible: boolean;
@@ -100,6 +110,24 @@ export function canBePromoted(
       eligible: false,
       reason: 'already-elite',
       detail: 'This model already has the ELITE Keyword.',
+    };
+  }
+
+  /*
+    A Golem is an Ally, and the grant that created it says so (FD-13b).
+
+    "The model is treated as an Ally that can never be Promoted or receive
+    additional Alchemical Formulas" — Exploration 17, Digital Rulebook L6902
+    to L6912. Read from the grant's own text rather than from the keyword,
+    because GOLEM is what the model IS and this is a rule about how it
+    ARRIVED: the same entry recruited out of the Armoury promotes normally.
+  */
+  const grant = golemGrant(dataset);
+  if (grant?.neverPromoted && isGolem(unit)) {
+    return {
+      eligible: false,
+      reason: 'granted-ally',
+      detail: `${grant.name} creates this model as an Ally that can never be Promoted.`,
     };
   }
 
