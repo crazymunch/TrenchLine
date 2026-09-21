@@ -90,7 +90,9 @@ carry, and what these designs cover:
 | RC-1 (a model awaiting Re-creation takes the field nowhere: `takesTheField`, read at five sites) and WC-1 (a granted item the catalogues cannot name is a warning, and the file is written) | #102 | merged; reviewed, correct, with the WC-1 correction recorded under FD-16 and EXP-1 filed under FD-17 |
 | #100 and #102 recorded; ID-1 and EXP-1 filed | #103 | merged |
 | FD-13a item 2, the Formulas tab in the equip sheet (`formulaShelf`: the entry's own Formulae, the gates, the Golem's allowance, the dead Alchemist); ID-1 (six entries named Homunculus, the first one taken: `catalogueUnitFor` resolves by id, entry, name within the faction, then name); FORM-5 (an exclusion read from the held side too); FORM-6 (the prerequisite in the Sultanate entry's own wording); the advancement sheet's Formula groups and the empty Formulae chip deleted | #104 | merged; reviewed on `main`, correct, with two assumptions accepted and GOLEM-1 filed, recorded under FD-13 |
-| FD-13a item 3, the card's Formula text (`formulaeHeld` over the three routes a Formula is recorded; Play Mode's reference sheet gains the section) | #105 | open, `check` running on 366e740; reviewed on the branch, correct. The statline half is closed by measurement: no Formula carries a stat modifier, the effects are prose |
+| FD-13a item 3, the card's Formula text (`formulaeHeld` over the three routes a Formula is recorded; Play Mode's reference sheet gains the section) | #105 | merged. The statline half is closed by measurement: no Formula carries a stat modifier, the effects are prose |
+| GOLEM-1 (`golemOnImport` had no caller: the importer and the builder both write `grantedBy: 'Book of Golems'`; `Warband.campaignRules` persisted; the grant's own Formula counted as given, not spent) | #107 | merged |
+| FD-17's acceptance (finding 2: the identity gate was being handed the catalogue entry, not the model, at two sites; finding 3: `rules/entryGrants.ts`, five derived granters, two of them re-measured on every run; `ForcedBattlekit.profileNames` so a kit entry answers for every name it prints) | #108 | open |
 
 ## FD-00. PR #59 as it stands
 
