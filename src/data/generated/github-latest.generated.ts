@@ -30135,7 +30135,9 @@ export const DATASET: Dataset = {
           "scope": "model"
         }
       ],
-      "restrictions": [],
+      "restrictions": [
+        "ELITE & Heralds only, Headgear, Limit: 3"
+      ],
       "factionId": "Black Grail",
       "sourceFile": "Black Grail.cat"
     },
@@ -44953,6 +44955,7 @@ export const DATASET: Dataset = {
       ],
       "modifiers": [],
       "restrictions": [
+        "ELITE & Mechanized Heavy Infantry only",
         "ELITE only",
         "ELITE & Janissaries only",
         "Anointed & ELITE only"
@@ -66245,6 +66248,30 @@ export const DATASET: Dataset = {
           ]
         },
         {
+          "name": "Heavy Ballistic Shield",
+          "weaponId": null,
+          "section": "Shields",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Models wearing Machine Armour only, Shield Combo"
+          ]
+        },
+        {
+          "name": "Trench Shield",
+          "weaponId": "0691-b648-ac01-3dc7",
+          "section": "Shields",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "Shield Combo"
+          ]
+        },
+        {
           "name": "Engineer Body Armour",
           "weaponId": "7c61-1bc1-44c7-6c9f",
           "section": "Armour",
@@ -66255,6 +66282,40 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Combat Engineer only"
           ]
+        },
+        {
+          "name": "Machine Armour",
+          "weaponId": null,
+          "section": "Armour",
+          "cost": {
+            "ducats": 50,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Mechanized Heavy Infantry only, Limit: 1 excluding Mechanized Heavy Infantry"
+          ]
+        },
+        {
+          "name": "Reinforced Armour",
+          "weaponId": "33ed-6314-e75f-8982",
+          "section": "Armour",
+          "cost": {
+            "ducats": 40,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Mechanized Heavy Infantry only"
+          ]
+        },
+        {
+          "name": "Standard Armour",
+          "weaponId": "71ec-000e-5999-ba1c",
+          "section": "Armour",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": []
         },
         {
           "name": "Binoculars",
@@ -68004,6 +68065,64 @@ export const DATASET: Dataset = {
           },
           "restrictions": [
             "Headgear"
+          ]
+        },
+        {
+          "name": "Compound Eyes Helmet",
+          "weaponId": "fe5c-8b4d-7a52-73d0",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "restrictions": [
+            "ELITE & Heralds only, Headgear, Limit: 3"
+          ]
+        },
+        {
+          "name": "Field Shrine",
+          "weaponId": "5b7d-4bc2-5a44-43ce",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": []
+        },
+        {
+          "name": "Musical Instrument",
+          "weaponId": "ed7c-0353-5a9d-b903",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Troop Flag",
+          "weaponId": "2b17-59ef-7e74-fd47",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Unholy Trinket",
+          "weaponId": "ab23-2c25-8507-9ca3",
+          "section": "Equipment",
+          "cost": {
+            "ducats": 15,
+            "glory": 0
+          },
+          "restrictions": [
+            "Consumable"
           ]
         }
       ]

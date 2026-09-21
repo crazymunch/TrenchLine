@@ -148,15 +148,166 @@ const SECTIONS = new Set([
   'Battlekit', 'Glory Items', 'Relics',
 ]);
 
+const nameKey = (n) => String(n ?? '').trim().toLowerCase().replace(/\s+/g, ' ');
+
+/**
+ * The faction Battlekit headings: `Name | 50 👑 | ELITE only, Limit: 1`.
+ *
+ * Each Armoury Table says what its bullet means:
+ *
+ *   "Battlekit with a bullet point [•] is unique to New Antioch Warbands, and
+ *    its rules can be found in the New Antioch Battlekit section after the
+ *    Armoury."   — Warbands L1283-L1286, and once per faction after it.
+ *
+ * So every bulleted armoury row is reprinted under a heading of this shape,
+ * and the heading states the same three columns the row does — but delimited
+ * by a pipe instead of by a tab. That is what makes a wrapped row recoverable
+ * (see `repairWrappedRow`): the book itself says where the name ends.
+ *
+ * Only the NAME column is read from here. The restrictions and the price of
+ * an armoury row are the Armoury Table's own — the heading's third column
+ * wraps too (Heavy Ballistic Shield's runs onto L1405), and two sources for
+ * one fact is how a reprint conflict gets decided by whichever parser ran
+ * last. The exception is a heading that prints a CHOICE of price, which the
+ * table folds into one cell and this is the only place that states cleanly.
+ */
+function battlekitHeadings(lines) {
+  // `u`, because the currency is astral: without it `(\S)` captures half of
+  // U+1F451 and the pipe that follows never matches. Every heading in the
+  // book was dropped for exactly that reason on the first run of this.
+  const HEADING = /^(.{2,60}?)\s*\|\s*(\d+)\s*(\S)\s*(?:or\s+(\d+)\s*(\S)\s*)?\|\s*(.+)$/u;
+  const index = new Map();
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (!line.includes('|')) continue;
+    const m = line.match(HEADING);
+    if (!m) continue;
+    const name = m[1].trim();
+    if (!name || name.includes('\t')) continue;
+
+    index.set(nameKey(name), {
+      name,
+      ducats: m[3] === GLORY_GLYPH ? 0 : Number(m[2]),
+      glory: m[3] === GLORY_GLYPH ? Number(m[2]) : 0,
+      // "15 👑 or 2 ☼" — a price that may be paid EITHER way. `{ducats,
+      // glory}` means "and": `formatCost` renders it "15 Ducats + 2 Glory".
+      // A row priced like this cannot be expressed by that shape, so it is
+      // reported rather than guessed at.
+      alternativePrice: m[4] ? `${m[4]} ${m[5]}` : null,
+      line: i + 1,
+    });
+  }
+  return index;
+}
+
+/** A cost at the end of a cell: `40 👑`, `2 ☼`. */
+const COST_TAIL = /(\d+)\s*(\u{1F451}|☼)\s*$/u;
+
+/**
+ * Split a bulleted armoury row that extraction ran together into one string.
+ *
+ * Three rows in the book are long enough that the PDF wraps them, and the
+ * wrap takes the tabs with it — the name and the restriction column arrive
+ * fused, with no delimiter left to split on:
+ *
+ *     • Machine Armour ELITE & Mechanized Heavy Infantry only, Limit: 1
+ *       excluding Mechanized Heavy Infantry 50 👑           (L1350-L1351)
+ *     • Heavy Ballistic Shield Models wearing Machine Armour only,
+ *       Shield Combo 15 👑                                  (L1345-L1346)
+ *     • Compound Eyes Helmet ELITE & Heralds only, Headgear, Limit: 3 10 👑
+ *                                                           (L7423-L7424)
+ *
+ * The name cannot be recovered from the row alone: "Models wearing Machine
+ * Armour" is as plausible a name as "Heavy Ballistic Shield" is a restriction,
+ * and a guess here writes wrong game data into the armoury that the legality
+ * engine then enforces. The bullet is what makes it recoverable — it means
+ * the item is reprinted under a Battlekit heading in the same book, and that
+ * heading states the name in a column of its own.
+ *
+ * Returns null when no heading claims the row, and the caller throws: an
+ * unrecognised row is a change in the book or in extraction, and silently
+ * dropping it is how New Antioch lost its Armour table in the first place.
+ */
+function repairWrappedRow(text, headings) {
+  const cost = text.match(COST_TAIL);
+  if (!cost) return null;
+  const body = text.slice(0, cost.index).trim();
+
+  // Longest match wins, so a name that is a prefix of another cannot shadow
+  // it. Nothing in the book relies on this today; it costs one sort.
+  const candidates = [...headings.values()]
+    .filter((h) => nameKey(body).startsWith(nameKey(h.name)))
+    .sort((a, b) => b.name.length - a.name.length);
+  if (!candidates.length) return null;
+
+  const heading = candidates[0];
+  return {
+    name: heading.name,
+    restrictions: body.slice(heading.name.length).replace(/^[\s,]+/, '').trim(),
+    ducats: cost[2] === GLORY_GLYPH ? 0 : Number(cost[1]),
+    glory: cost[2] === GLORY_GLYPH ? Number(cost[1]) : 0,
+    heading,
+  };
+}
+
+/**
+ * Parse every faction's Armoury Table.
+ *
+ * Returns `{ rows, unreadable }`. `unreadable` carries the rows the book
+ * prints that this shape cannot express, so the build can report them —
+ * the same contract `carcassFrontMap.unreadable` already uses. A row that is
+ * neither parsed nor reported is the failure this function had for three
+ * factions: the table ended at the first wrapped row and everything below it
+ * vanished without a word.
+ */
 export function parseArmouryTables(src = WARBANDS_TXT) {
-  if (!fs.existsSync(src)) return [];
+  if (!fs.existsSync(src)) return { rows: [], unreadable: [] };
   const lines = toLines(fs.readFileSync(src, 'utf8'));
+  const headings = battlekitHeadings(lines);
   const out = [];
+  const unreadable = [];
   let section = null;
   let faction = null;
+  /* A bulleted row whose tabs extraction lost, collected until its cost. */
+  let wrapped = null;
 
-  for (const raw of lines) {
-    const line = raw.replace(/\s+$/, '');
+  const emitWrapped = (endLine) => {
+    if (!wrapped) return;
+    const { text, line } = wrapped;
+    wrapped = null;
+
+    const row = repairWrappedRow(text, headings);
+    if (!row) {
+      throw new Error(
+        `parseArmouryTables: ${src}:${line} is a bulleted ${faction} ${section} row `
+        + `whose columns extraction ran together, and no Battlekit heading in the `
+        + `book claims it:\n    ${text}\n`
+        + `  The bullet means the item is reprinted under a "Name | cost | restrictions" `
+        + `heading. Either the book changed or extraction did; splitting it by guess `
+        + `would write invented game data into the armoury.`
+      );
+    }
+    if (row.heading.alternativePrice) {
+      unreadable.push({
+        faction, section, name: row.name, line: endLine,
+        reason: `priced "${row.ducats || row.glory} ${row.ducats ? '\u{1F451}' : GLORY_GLYPH}`
+          + ` or ${row.heading.alternativePrice}" — an armoury row carries one price, not a choice`,
+      });
+      return;
+    }
+    out.push({
+      name: row.name,
+      faction,
+      section,
+      restrictions: row.restrictions,
+      ducats: row.ducats,
+      glory: row.glory,
+    });
+  };
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].replace(/\s+$/, '');
     const bare = line.trim();
 
     // Each faction's Armoury Table announces itself. This is the only thing
@@ -164,25 +315,78 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
     // faction — an Automatic Rifle is 40 Ducats in one armoury and 2 Glory in
     // another — so a row without its faction cannot be priced at all.
     const owner = bare.match(/^(.+?)\s+(?:Warbands\s+)?can have the following Battlekit/i);
-    if (owner) { faction = owner[1].trim(); section = null; continue; }
+    if (owner) { emitWrapped(i + 1); faction = owner[1].trim(); section = null; continue; }
 
-    if (SECTIONS.has(bare)) { section = bare; continue; }
+    if (SECTIONS.has(bare)) { emitWrapped(i + 1); section = bare; continue; }
     if (!section) continue;
+
     if (!line.includes('\t')) {
-      // A run of non-row lines means the table has ended.
-      if (bare && !/^[•·]/.test(bare)) section = null;
+      /*
+        A line with no tab is either the start of a wrapped bulleted row, its
+        continuation, or the prose that follows the table.
+
+        Reading it as "the table has ended" is what truncated three tables.
+        The continuation of a wrapped row looks exactly like ordinary prose —
+        "Limit: 1 excluding Mechanized Heavy Infantry 50 👑" begins with no
+        bullet and no capital — so the old rule cleared the section on it and
+        skipped every properly-tabbed row below, including Standard Armour,
+        which has no restrictions at all and wraps nothing.
+      */
+      if (/^[•·]/.test(bare)) {
+        emitWrapped(i);
+        wrapped = { text: bare.replace(/^[•·]\s*/, ''), line: i + 1 };
+        continue;
+      }
+      if (wrapped) {
+        wrapped.text = `${wrapped.text} ${bare}`.replace(/\s+/g, ' ').trim();
+        if (COST_TAIL.test(wrapped.text)) emitWrapped(i + 1);
+        continue;
+      }
+      // "or 2 ☼" (L7426) continues the row above with a second, alternative
+      // price. It is not the end of the table, and the row it belongs to has
+      // already been reported by `emitWrapped` or below.
+      if (/^or\s+\d+\s*\S\s*$/.test(bare)) continue;
+      if (bare) section = null;
       continue;
     }
+
+    emitWrapped(i);
 
     const cells = line.split('\t').map((c) => c.trim()).filter(Boolean);
     if (cells.length < 2) continue;
 
     const costCell = cells.at(-1);
     const m = costCell.match(/^(\d+)\s*(\S)?/);
-    if (!m) continue;
-
     const name = cells[0].replace(/^[•·]\s*/, '').trim();
     if (!name || /^\d/.test(name)) continue;
+
+    if (!m) {
+      /*
+        A tabbed row whose cost extraction folded into the restriction cell:
+        "• Grail Devotee \t ELITE only, Limit: 2 15 👑" with "or 2 ☼" beneath
+        (L7425-L7426). The Battlekit heading states both prices (L7495), and
+        `{ducats, glory}` reads as "and" — `formatCost` renders it "15 Ducats
+        + 2 Glory" — so there is no honest way to record a choice between them
+        in this shape. Reported, not guessed.
+      */
+      const tail = costCell.match(COST_TAIL);
+      const heading = headings.get(nameKey(name));
+      unreadable.push({
+        faction, section, name, line: i + 1,
+        reason: heading?.alternativePrice
+          ? `priced "${heading.ducats || heading.glory} `
+            + `${heading.ducats ? '\u{1F451}' : GLORY_GLYPH} or ${heading.alternativePrice}"`
+            + ` — an armoury row carries one price, not a choice`
+          : `no cost could be read from its last column: "${costCell}"`,
+      });
+      if (!tail && !heading) {
+        throw new Error(
+          `parseArmouryTables: ${src}:${i + 1} is a ${faction} ${section} row with no `
+          + `readable cost and no Battlekit heading to price it:\n    ${bare}`
+        );
+      }
+      continue;
+    }
 
     out.push({
       name,
@@ -193,7 +397,9 @@ export function parseArmouryTables(src = WARBANDS_TXT) {
       glory: m[2] === GLORY_GLYPH ? Number(m[1]) : 0,
     });
   }
-  return out;
+
+  emitWrapped(lines.length);
+  return { rows: out, unreadable };
 }
 
 /**

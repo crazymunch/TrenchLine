@@ -162,6 +162,37 @@ sets** from it. Two consequences:
    ```
 
    Name, restrictions, cost — the exact inputs the roster validator needs.
+
+   **Not every row keeps its tabs.** A row long enough to wrap loses them, and
+   arrives as two lines with the name and the restriction column fused:
+
+   ```
+   • Machine Armour ELITE & Mechanized Heavy Infantry only, Limit: 1
+   excluding Mechanized Heavy Infantry 50 👑
+   ```
+
+   Three rows in the book do this. Reading the continuation as the end of the
+   table truncated New Antioch's Shields and Armour tables and the Cult of the
+   Black Grail's Equipment table — eleven rows in total, including Standard
+   Armour, which wraps nothing and was lost to a wrap two lines above it.
+
+   The bullet is what makes such a row recoverable. Each Armoury Table states
+   what it means (L1283–L1286): a bulleted item is reprinted in that faction's
+   own Battlekit section, under a heading that states the same three columns
+   with a pipe between them — `Machine Armour | 50 👑 | ELITE & Mechanized
+   Heavy Infantry only, Limit: 1 excluding Mechanized Heavy Infantry`. The
+   parser takes the **name** from there and nothing else; the restrictions and
+   the price stay the Armoury Table's, because two sources for one fact is how
+   a reprint conflict gets decided by whichever parser ran last. A bulleted row
+   no heading claims **throws**: splitting it by guess writes invented game
+   data into the table the legality engine enforces.
+
+   One row the book prints cannot be expressed at all. The Black Grail's Grail
+   Devotee is `15 👑 or 2 ☼` — a choice — and `{ducats, glory}` means *and*
+   (`formatCost` renders it `15 Ducats + 2 Glory`). `parseArmouryTables`
+   returns it in `unreadable` and `rules:build` prints it as `NOT STOCKED`, so
+   it is a named gap rather than a silent drop. Making it takeable means giving
+   a price an alternative, which reaches `Cost` and the Strongbox.
 4. **Faction Special Rules sections parse too** (New Antioch Fireteams /
    Concentrated Attack), and some of them constrain roster construction rather
    than being flavour.

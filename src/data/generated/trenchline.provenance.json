@@ -9608,7 +9608,8 @@
     },
     "restrictions": {
       "layer": "base",
-      "source": "battlescribe:Black Grail.cat@1b463a8"
+      "source": "rulebook:warbands-of-trench-crusade#armoury",
+      "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
       "layer": "base",
