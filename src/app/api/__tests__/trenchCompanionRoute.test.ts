@@ -94,6 +94,22 @@ describe('POST /api/import/trench-companion', () => {
     expect(res.body.error).toMatch(/warband_data is not JSON/);
   });
 
+  it('does not follow a redirect, wherever it points', async () => {
+    /* Following one would send this server to an address the user could never
+       reach themselves. A 3xx is reported with its status instead. */
+    const seen: string[] = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      seen.push(`${url} redirect=${init.redirect}`);
+      return new Response('', { status: 302, headers: { location: 'http://169.254.169.254/' } });
+    });
+    const res = await call({ ref: '225201' });
+    expect(res.status).toBe(502);
+    expect(res.body.error).toContain('HTTP 302');
+    expect(seen).toEqual([
+      'https://synod.trench-companion.com/wp-json/synod/v1/warband/225201 redirect=manual',
+    ]);
+  });
+
   it('says why when their host cannot be reached', async () => {
     vi.stubGlobal('fetch', async () => { throw new Error('The operation timed out'); });
     const res = await call({ ref: '225201' });

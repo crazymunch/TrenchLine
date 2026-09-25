@@ -47,6 +47,11 @@ server, so the rules it follows are written down rather than left to the code:
   (`BUCKETS.companionImport`, twenty in a quarter of an hour). Enumerating
   their warbands is not something this endpoint can be turned into by calling
   it faster.
+- **Redirects are not followed.** Their endpoint answers 200 directly, and
+  following a 3xx would send our server wherever the answer points — to any
+  host, including one a user could never reach themselves. A 3xx is reported
+  with its status, so if that ever changes it is a one-line change made
+  deliberately rather than a door left open in case it is needed.
 - **Nothing is stored.** The envelope is passed straight back to the browser.
   It reaches our database only if the player presses Import, and then as our
   own shapes, with none of their ids in it.

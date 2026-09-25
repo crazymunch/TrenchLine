@@ -67,7 +67,19 @@ export async function POST(req: NextRequest) {
         // Only the id is sent. No credentials, no cookies, no referrer.
         headers: { accept: 'application/json' },
         cache: 'no-store',
-        redirect: 'follow',
+        /*
+          Redirects are NOT followed, and that is a deliberate refusal rather
+          than an oversight.
+
+          `follow` sends this server wherever the answer points, to any host —
+          which is the classic way a fetch-on-behalf-of-a-user becomes a
+          request to an address the user could never reach themselves. Their
+          endpoint answers 200 directly; if that ever changes, a 3xx falls
+          into the non-200 branch below and the error names the status, which
+          is a one-line change made deliberately rather than a door left open
+          in case it is needed.
+        */
+        redirect: 'manual',
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
     } catch (err) {
