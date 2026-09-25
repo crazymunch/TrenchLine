@@ -160,10 +160,20 @@ entry — and the pipeline now ships the entry's spelling as
 spelling resolves **from the catalogue**, which is what keeps it out of the
 equivalence file below.
 
-Names always first. An alias can only fill a gap, never redirect an item that
-some entry holds outright — the failure an earlier attempt produced when it made
-entry names into names (`Melee -> Knight Companion of the Bladed Fly`; see the
-bundle note in `scripts/lib/parse-battlescribe.mjs`).
+Names always first, and **an ambiguous name is not a gap**. Four names in this
+ruleset belong to two entries each — `Anti-Tank Hammer`, `Punt Gun`, `Warcross`,
+`Molotov Cocktail` — and the Court of the Seven-Headed Serpent's Weapon
+Collections rows carry the same four as `Claimed: Anti-Tank Hammer` with the
+bare name as their alias. Falling through to the aliases on an ambiguity put
+another faction's row, at no cost, on a plain Iron Sultanate model whose item
+this list does not stock and which had been correctly reported. So the aliases
+are asked only where NO entry answered to the name, and ambiguity resolves to
+nothing as it does everywhere else here.
+
+That ordering is also what keeps an alias from redirecting an item some entry
+holds outright — the failure an earlier attempt produced when it made entry
+names into names (`Melee -> Knight Companion of the Bladed Fly`; see the bundle
+note in `scripts/lib/parse-battlescribe.mjs`).
 
 ### When no rule of spelling reaches
 
@@ -195,9 +205,13 @@ from the generated dataset or it does not exist. Their `cost_value` is read for
 two purposes only: so the report can say, per item, where the two differ, and
 so a line their record states as **not a purchase** is not charged as one.
 
-One line per item, listing the models it is on. The same Standard Armour on
-four Kavass is one entry in the price report with four names against it, not
-the same sentence four times.
+**The report says a thing once.** One line per item in the price report, listing
+the models it is on; one line per model for the kit their record hands it; one
+line per unresolved thing, listing the models that carried it; one line per
+`_mv_` name no list here has, naming the Variant that does carry it. Four Kavass
+carrying the same unresolvable upgrade and the same unresolvable item produced
+eight lines before — two facts, said eight times — and a report that repeats
+itself is one a player stops reading before the line that matters.
 
 ### Kit the model already has is not bought twice
 
@@ -227,12 +241,26 @@ Two facts answer it, in this order:
    as `infoLinks` rather than forced `entryLink`s, and this ruleset holds no
    Battlekit for the entry at all — the gap `rules/equipGate.ts` documents.
 
-The Book of Golems is the same rule on an upgrade: *"It has the Human Hands
-Alchemical Formula, plus Alchemical Formulas worth a total of up to 50 👑 for
-free"*, so the Formula the grant names is priced at nothing. It is read from
-the grant (`rules/golem.ts`, which reads it out of the shipped Exploration
-table), not from a name, and `rules/formulaShelf.ts` excludes the same Formula
-from the 50-Ducat allowance.
+### The Book of Golems pays for three things
+
+*"Add a Takwin Homunculus … to your Warband. It has the Human Hands Alchemical
+Formula, plus Alchemical Formulas worth a total of up to 50 👑 for free."* An
+imported Golem is priced exactly as the app's own path prices one:
+
+| | |
+| --- | --- |
+| the model | **given**. Recorded as `grantedFree`, the field `fromWarband` prices at nothing and `convert` refuses to refund — the same way the app records any model a rule hands over. The entry's own cost stays on the profile snapshot, because that is what the entry costs. |
+| the named Formula | **given**, read from the grant rather than by name, so a Dispatch that renames it needs no edit here. |
+| the next 50 Ducats of Formulae | **free while the allowance stretches**, in the order their record lists them, and priced from the entry once it does not. A Formula costing Glory is never covered, for the reason `formulaShelf` does not cover one: the allowance is stated in Ducats. |
+
+Their record says the same thing in its own structure, which is the cross-check:
+the Golem's model line carries `discount: 40` — the whole entry price — and each
+of the four Formulae its allowance covers carries a discount equal to its cost.
+
+A Formula is written with the group **path** as its category, which is what the
+app writes for the same purchase. The leaf alone made an `Eye Options` Formula
+not a Formula to `formulaeOf` — the defect FD-13a fixed for the in-app purchase,
+which the import reintroduced.
 
 The ledger is opened the way `migrateFoundingPot` opens an imported NewRecruit
 warband:
@@ -279,7 +307,7 @@ booked for it.
 | `list_upgrades` | `ActiveUnit.specialUpgrades`, priced from our entry |
 | `context.failed_promotions` | `Warband.promotionMisses` (FD-06b) |
 | `exploration.explorationskills` | `Warband.explorationEffects` (FD-07) |
-| `exploration.locations` | `Warband.explorationDiscoveries` (FD-07), **and what each Location grants for the rest of the campaign**, read from the Location's own text by pack G's `explorationGrants` — the Black Market's *"From now on … you can purchase Glory Items costing 8 ☼ or less"* is a permission the Warband keeps |
+| `exploration.locations` | `Warband.explorationDiscoveries` (FD-07), **and what each Location grants for the rest of the campaign**, read from the Location's own text by pack G's `explorationGrants` — the Black Market's *"From now on … you can purchase Glory Items costing 8 ☼ or less"* is a permission the Warband keeps — **and what its text puts in the Arsenal**: *"Add Curative Fluids to your Warband's Arsenal"* is an item this ruleset carries, added at no cost and marked `grantedBy` that Location. `explorationGrants` answers the first and not the second, which is why there are two readers |
 | `exploration.location_mods` | read as a CHECK, not as a source. Their standing-effect record says nothing the Location's own text does not, so a mod whose Location is discovered and whose text offers no choice needs no line; one for a Location we did not resolve, or one recording an option, is named in the report |
 | `faction.patron_id` | `Warband.patron` |
 | `context.campaign_round`, `context.victory_points` | `Warband.importedCampaign`, **each only where their record states it** |
@@ -375,8 +403,8 @@ nothing was taken from it, and appends how many models carry a value:
 | field | why not |
 | --- | --- |
 | `stat_selections` | What a stat selection changes is not stated anywhere public, so there is nothing to read it from. It waits for a record that says what one does. |
-| `subproperties` | Their ids for the abilities the model's ENTRY carries — `ab_artificialbody` is this ruleset's Artificial Life, `ab_pummellingblows` its Pummeling Blows — rather than anything the player chose. A model's abilities are read from its entry here, which is why the spellings differing does not matter. Two of theirs name something no entry here does: `ab_chosenhomunculus`, which marks an Alchemist as having a Homunculus without saying WHICH (the association `rules/golem.ts` searched for and did not find), and `ab_limitedupgrades`, which is the Book of Golems' own restriction and is carried as the model's grant instead. |
-| `list_modelequipment` | The relation a model's Battlekit came through, which says nothing the entry does not — plus, where the entry offers a choice of kit, which package was taken. What a package contains is not stated anywhere public, so each choice is named rather than applied: the Mamluk Faris's three-way loadout is `rel_md_eq_mamlukpackage_1`, and which of the three that is nobody outside their app can say. |
+| `subproperties` | Their ids for the abilities the model's ENTRY carries — `ab_artificialbody` is this ruleset's Artificial Life, `ab_pummellingblows` its Pummeling Blows. A model's abilities are read from its entry here, which is why the spellings differing does not matter, so the list itself adds nothing. **Some of them do carry a choice the player made**, and each of those is named in a line of its own: Mastery of the Elements records which Keyword (`kw_gas`, resolved against this ruleset's glossary), and `ab_chosenhomunculus` records which Homunculus is that Alchemist's — by the purchase id their record gives the model, so it resolves to a name on the roster. `rules/golem.ts` searched the HOMUNCULI for that association and found none, which was right: it is recorded on the Alchemist. `ab_limitedupgrades` is the Book of Golems' own restriction, carried as the model's grant instead. |
+| `list_modelequipment` | The relation a model's Battlekit came through, and — where the entry offers a choice of kit — which package was taken. The relation is not idle: the same `rel_md_eq_…` on an equipment LINE is how this import knows that line was not a purchase, which is what stops a Mamluk Faris being charged 55 Ducats for the kit its price includes. What is not read is the package: what one contains is not stated anywhere public, so the Mamluk Faris's three-way loadout is named as `rel_md_eq_mamlukpackage_1` rather than applied. |
 
 `scar_reserves` and `active` **were** in this table and are not any more: both
 were measured on the owner's own warband and both now map, as above. That is
@@ -397,9 +425,17 @@ one piece of text.
 Not read at all and not reported, because they are about their site rather than
 about the warband: `id`, `source`, `contextdata`, `tags.UPDATE_VERSION_REFERENCE`,
 `context.id`, `context.homebrew_id`, `exploration.templocations`, `recruited`,
-their per-purchase UI bookkeeping (`purchaseid`, `discount`, `count_limit`,
-`count_cap`, `sell_item`, `sell_full`, `modelpurch`), `warband_user_id`,
-`warband_campaigns` and `warband_campaign_invites`.
+their per-purchase UI bookkeeping (`purchaseid`, `count_limit`, `count_cap`,
+`sell_item`, `sell_full`, `modelpurch`), `warband_user_id`, `warband_campaigns`
+and `warband_campaign_invites`.
+
+**`discount` is not among them, and was.** It is zero on every line of the
+owner's warband except the Book of Golems' model — 40, the whole of the entry's
+price — and the five lines its grant covers, which is their record stating the
+same conclusion the grant does. So it is part of their price here (`theirCost`
+reads `cost_value` less the discount) and is separately cross-checked against
+ours per model: where they take Ducats off a model and this import does not, or
+takes off a different number, the report says so.
 
 **Every one of those classifications is a test.** `trenchCompanionFixture.test.ts`
 walks the keys of the committed envelope — the Warband, its context, its
@@ -435,4 +471,8 @@ reported by name and listed in the fixture test: the Lion of Jabir's
 `Fierce Lion` and the Azeb's `Light Skirmisher` are real catalogue entries that
 `optionsOf` does not emit — one is declared outside a `selectionEntryGroup`,
 the other states its rule through an `infoLink type="rule"` — and
-`es_scoutreport` is an Exploration Skill this ruleset does not carry.
+`es_scoutreport` is an Exploration Skill this ruleset does not carry. The
+catalogue also hides the Light Skirmisher row outright when the House of Wisdom
+is taken (`Iron Sultanate.cat:5468-5470`, the modifier conditioned on that
+Variant's entry), following the Variant's own Kavass rule: *"However, you cannot
+give these Azebs the SKIRMISHER Keyword."*

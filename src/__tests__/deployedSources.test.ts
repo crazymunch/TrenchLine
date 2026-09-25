@@ -39,44 +39,83 @@ function walk(dir: string): string[] {
 }
 
 /**
- * A reference that RESOLVES the path, rather than one that mentions it.
+ * The file with its comments taken out.
  *
- * An `import`, a `require`, a dynamic `import()`, or any of the `fs` reads a
- * server component could make. Deliberately not a bare search for the word:
- * every citation in this codebase names the file it came from, and a test that
- * failed on those would be one people delete rather than obey.
+ * Every citation in this codebase names the file a value came from, and a test
+ * that failed on those is one people delete rather than obey. So prose is
+ * allowed and code is not, and the way to tell them apart is to remove the
+ * prose first — not to guess at the shape of the call.
+ *
+ * Block comments, line comments, and the `*` continuation lines inside a block
+ * are all prose. Strings are left alone: a path in a string is the thing this
+ * test is looking for.
  */
-const RESOLVES = [
-  /(?:^|\n)\s*import\s[^\n]*['"][^'"]*data-sources\//,
-  /(?:^|\n)\s*(?:export\s+)?\{[^}]*\}\s*from\s*['"][^'"]*data-sources\//,
-  /\brequire\s*\(\s*['"][^'"]*data-sources\//,
-  /\bimport\s*\(\s*['"][^'"]*data-sources\//,
-  /\b(?:readFileSync|readFile|createReadStream|readdirSync|existsSync|statSync)\s*\([^)]*data-sources\//,
-];
+const withoutComments = (text: string): string => text
+  .replace(/\/\*[\s\S]*?\*\//g, ' ')
+  .replace(/(^|[^:])\/\/[^\n]*/g, '$1 ')
+  /* A line that begins with `*` is a block comment's continuation and nothing
+     else — no statement in this language starts with one. */
+  .replace(/^\s*\*[^\n]*$/gm, ' ');
+
+/**
+ * Why the shape of the call is not what this looks at.
+ *
+ * The first version of this test matched `readFileSync(` followed by
+ * `data-sources/` with no `)` between them — and `[^)]*` stops at the first
+ * bracket, so `readFileSync(path.join(process.cwd(), 'data-sources/…'))`, the
+ * form this PR's own tests use, walked straight past it. So did
+ * `const P = 'data-sources/…'; readFileSync(P)`, where the path and the call
+ * are on different lines entirely.
+ *
+ * There is no bound on the ways a path can reach a reader. What IS bounded is
+ * the path: a file the deployment does not carry cannot be named by anything
+ * the bundle runs. So the rule is the plain one — the string does not appear in
+ * code under `src/` — and the comment-stripping above is what keeps the
+ * citations legal.
+ *
+ * It holds for the generated data too, which is why the equivalence table
+ * cites a fixture by its file name rather than its path: a path in a data
+ * field is inert, but a rule with an exception for "the inert ones" is a rule
+ * somebody has to adjudicate, and this one does not.
+ */
+const EXCLUDED = 'data-sources/';
 
 describe('what the deployment does not have a copy of', () => {
-  it('is not read by anything the app ships', () => {
+  it('is not named by any code the app ships', () => {
     const offenders: string[] = [];
     for (const file of walk(SRC)) {
-      const text = fs.readFileSync(file, 'utf8');
-      if (RESOLVES.some((re) => re.test(text))) {
+      if (withoutComments(fs.readFileSync(file, 'utf8')).includes(EXCLUDED)) {
         offenders.push(path.relative(SRC, file));
       }
     }
-    expect(offenders, 'these read data-sources/, which no deployment carries — '
+    expect(offenders, `these name ${EXCLUDED} in code, and no deployment carries it — `
       + 'route the value through src/data/generated/ instead (docs/DEPLOYMENT.md)')
       .toEqual([]);
   });
 
-  it('would catch the import that broke the deployment', () => {
-    /* The exact line that failed, twice, so this test is known to detect it
-       rather than merely asserting an empty list of its own choosing. */
-    const broke = "import EQUIVALENCE from "
-      + "'../../data-sources/trench-companion/id-name-equivalence.json';";
-    expect(RESOLVES.some((re) => re.test(broke))).toBe(true);
-    /* And the shapes it does not fire on: a citation, and a test's own read. */
-    expect(RESOLVES.some((re) => re.test(' * See `data-sources/resolutions.json`.'))).toBe(false);
-    expect(RESOLVES.some((re) => re.test("const D = 'data-sources/x.json';"))).toBe(false);
+  it('catches every shape the path can reach a reader by', () => {
+    /*
+      The import that broke the deployment, and the two evasions the first
+      version of this test let through — both of which fail on Vercel at
+      request time with ENOENT rather than at build time.
+    */
+    const caught = (code: string) => withoutComments(code).includes(EXCLUDED);
+
+    expect(caught("import EQUIVALENCE from "
+      + "'../../data-sources/trench-companion/id-name-equivalence.json';")).toBe(true);
+    expect(caught("readFileSync(path.join(process.cwd(), 'data-sources/x.json'), 'utf8')"))
+      .toBe(true);
+    expect(caught("const P = 'data-sources/x.json';\nreadFileSync(P, 'utf8');")).toBe(true);
+    expect(caught("await import('../../data-sources/x.json')")).toBe(true);
+
+    /* And what stays legal: a citation, in either comment style, including the
+       `*` continuation lines a block comment wraps onto. */
+    expect(caught(' * See `data-sources/resolutions.json`.')).toBe(false);
+    expect(caught('// from data-sources/rulebook/extracted/changelog-1.0.2.txt')).toBe(false);
+    expect(caught('/*\n  Measured against data-sources/battlescribe/Iron Sultanate.cat.\n*/'))
+      .toBe(false);
+    /* A URL is not a comment: `//` inside one must not swallow the rest. */
+    expect(caught("fetch('https://example.com/x'); const P = 'data-sources/y.json';")).toBe(true);
   });
 
   it('agrees with .vercelignore about what is excluded', () => {
@@ -84,6 +123,6 @@ describe('what the deployment does not have a copy of', () => {
        should be deleted rather than left asserting a rule nobody has. */
     const ignore = fs.readFileSync(
       path.resolve(import.meta.dirname, '../../.vercelignore'), 'utf8');
-    expect(ignore.split('\n').map((l) => l.trim())).toContain('data-sources/');
+    expect(ignore.split('\n').map((l) => l.trim())).toContain(EXCLUDED);
   });
 });

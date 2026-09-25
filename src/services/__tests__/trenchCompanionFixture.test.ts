@@ -38,6 +38,8 @@ import { carriesAsBattlekit, forcedBattlekit } from '@/rules/battlekit';
 import { catalogueUnitFor } from '@/rules/catalogueUnit';
 import { nameKey } from '@/rules/names';
 import { explorationGrants } from '@/rules/campaign';
+import { formulaShelf } from '@/rules/formulaShelf';
+import { formulaeOf } from '@/rules/formulae';
 import { patronSkillsFor } from '@/rules/advancement';
 import { scarCount, unfitForDuty, traumaProcedure } from '@/rules/trauma';
 import { recruitable } from '@/rules/recruitable';
@@ -57,8 +59,9 @@ const unit = (name: string) => w.units.find((u) => u.customName.trim() === name)
 
 /** Their own record, read straight from the fixture: `warband_data` is a string. */
 interface TheirLine {
-  purchase?: { cost_value?: number };
+  purchase?: { cost_value?: number; discount?: number };
   model: {
+    id?: string;
     name?: string;
     model?: string;
     equipment?: { equipment?: { name?: string } }[];
@@ -124,9 +127,18 @@ describe('the warband itself', () => {
 
     const out = importTrenchCompanionWarband(meddled, DATASET as unknown as Dataset);
     const meddledUnit = out.warband.units.find((u) => u.customName === 'Brazen Bull')!;
+
+    /*
+      The resolved ENTRY, by id. Round 2, item 6: asserting the name and the
+      base cost proved less than it looked — both hold by construction on a
+      roster where the Kavass and the Brazen Bull are different entries anyway,
+      and an id cannot be satisfied by a coincidence of names.
+    */
+    const kavassEntry = shelfTL.units.find((u) => u.name === 'Kavass')!;
+    const bullEntry = shelfTL.units.find((u) => u.name === 'Brazen Bull')!;
+    expect(meddledUnit.profileSnapshot.id).toBe(kavassEntry.id);
+    expect(meddledUnit.profileSnapshot.id).not.toBe(bullEntry.id);
     expect(meddledUnit.profileSnapshot.name).toBe('Kavass');
-    expect(meddledUnit.profileSnapshot.baseCost)
-      .toBe(unit('Nasir the Inaccurate').profileSnapshot.baseCost);
   });
 
   it('reports a Variant name no list here carries, and prices the base entry', () => {
@@ -151,8 +163,12 @@ describe('the warband itself', () => {
     const faris = out.warband.units.find((u) => u.customName.trim() === 'Jawhar al-Sari')!;
     expect(faris.profileSnapshot.id).toBe(base.id);
 
-    expect(out.warnings.some((x) => x.includes("files this model as 'sipahi'")
-      && x.includes('imported as Mamluk Faris'))).toBe(true);
+    const said = out.warnings.find((x) => x.includes("as 'sipahi'"))!;
+    expect(said).toBeDefined();
+    expect(said).toContain('imported as Mamluk Faris');
+    /* Nothing in this ruleset carries the name, and the line says so — see the
+       next test for the other half of that sentence. */
+    expect(said).toContain('No list this ruleset carries has an entry of that name');
 
     /* No list here carries the name, under that Variant or any other. */
     const defenders = recruitable(D, 'iron-sultanate',
@@ -167,6 +183,33 @@ describe('the warband itself', () => {
     expect(stated).toBeGreaterThan(0);
     expect(base.baseCost).not.toBe(stated);
     expect(faris.totalCost).not.toBe(stated);
+  });
+
+  it("names the Variant that does carry a name this Warband's list does not", () => {
+    /*
+      Round 2, item 6. "No list this ruleset carries has an entry of that name"
+      is false whenever another Variant of the faction does, and then the fact
+      the player needs is that they have the wrong Variant rather than an
+      unknown model. `md_azeb_mv_kavass` in a PLAIN Iron Sultanate Warband is
+      that case: the House of Wisdom is what calls an Azeb a Kavass.
+    */
+    const meddled = JSON.parse(JSON.stringify(envelope));
+    const data = JSON.parse(meddled.warband_data);
+    data.faction.faction_property.object_id = 'fc_ironsultanate';
+    meddled.warband_data = JSON.stringify(data);
+    const out = importTrenchCompanionWarband(meddled, D);
+
+    const variant = (D.variants ?? []).find((v) => v.id === 'houseofwisdom')!;
+    const lines = out.warnings.filter((x) => x.includes("as 'kavass'"));
+    /* One line for the Variant form, not one per model (item 8). */
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toContain(`what the ${variant.name} list calls it`);
+    for (const name of ['Idris the Relic Hound', 'Nasir the Inaccurate',
+      'Rafiq the Incinerator', 'Sabir the Wind-Caller']) {
+      expect(lines[0], name).toContain(name);
+    }
+    /* And the models are on the roster as the base entry. */
+    expect(out.warband.units.filter((u) => u.profileSnapshot.name === 'Azeb')).toHaveLength(4);
   });
 
   it('marks the model the Book of Golems created, and only that one', () => {
@@ -386,14 +429,71 @@ describe('their fighter status', () => {
       roster as a fighting member — a default dressed as a reading, and the
       one field that says whether the model is there at all.
     */
-    for (const value of [null, 3, { state: 'active' }, undefined]) {
+    for (const value of [null, 3, { state: 'active' }, undefined, '', '   ']) {
       const out = meddle((m) => {
         if (value === undefined) delete m.active; else m.active = value;
       });
+      /* Round 2, item 7: an empty string is not one of their words either, and
+         it used to be read as `active`. */
       expect(out.warband.units.some((u) => u.customName.trim() === 'Al-Qahhar, the Crippled'),
         JSON.stringify(value)).toBe(false);
       expect(out.unmatched.some((x) => /fighter status is/.test(x)), JSON.stringify(value))
         .toBe(true);
+    }
+  });
+
+  it('says nothing about a model it did not import', () => {
+    /*
+      Round 2, item 7. The unmapped report walked their whole model list, so a
+      model their record calls `lost` still had its `list_modelequipment` choice
+      printed and was still counted in "3 models carry a value for it" — a
+      report speaking for a model the player did not import.
+    */
+    const faris = 'Jawhar al-Sari';
+    expect(report.unmapped.some((u) => u.startsWith(`list_modelequipment on ${faris}:`)))
+      .toBe(true);
+    const counted = (lines: string[]) =>
+      Number(/(\d+) models? carr/.exec(lines.find((u) => u.startsWith('list_modelequipment:'))!)![1]);
+    expect(counted(report.unmapped)).toBe(3);
+
+    const out = meddle((m) => { m.active = 'lost'; }, 'md_mamlukfaris');
+    expect(out.warband.units.some((u) => u.customName.trim() === faris)).toBe(false);
+    expect(out.unmapped.some((u) => u.startsWith(`list_modelequipment on ${faris}:`)))
+      .toBe(false);
+    expect(counted(out.unmapped)).toBe(2);
+  });
+
+  it('says a miss once, listing the models that carried it', () => {
+    /*
+      Round 2, item 8. `up_skirmisher` and one unresolvable item on four
+      Kavass produced eight lines — two facts, said eight times. One line each
+      now, naming all four models.
+    */
+    const copy = JSON.parse(JSON.stringify(envelope));
+    const data = JSON.parse(copy.warband_data);
+    const kavass = (data.models as { model: { model: string; name: string;
+      equipment: unknown[]; list_upgrades: unknown[] } }[])
+      .filter((m) => m.model.model === 'md_azeb_mv_kavass');
+    expect(kavass).toHaveLength(4);
+    for (const line of kavass) {
+      line.model.list_upgrades = [{
+        purchase: { cost_value: 5, cost_type: 0 },
+        upgrade: { object_id: 'up_skirmisher' },
+      }];
+      line.model.equipment = [{
+        purchase: { cost_value: 9, cost_type: 0 },
+        equipment: { id: 'eq_nosuchthing', name: 'Tide-Caller Horn' },
+      }];
+    }
+    copy.warband_data = JSON.stringify(data);
+    const out = importTrenchCompanionWarband(copy, D);
+
+    const names = kavass.map((l) => l.model.name.trim());
+    const lines = out.unmatched.filter(
+      (u) => u.includes('up_skirmisher') || u.includes('Tide-Caller Horn'));
+    expect(lines).toHaveLength(2);
+    for (const line of lines) {
+      for (const name of names) expect(line, line).toContain(name);
     }
   });
 
@@ -417,10 +517,19 @@ describe('their fighter status', () => {
     expect(out.unmatched.some((x) => /is 'lost' in their record/.test(x))).toBe(true);
     /* And nothing of that model's reaches the report once it is not imported. */
     expect(out.warnings.some((x) => x.startsWith(`${kasim}: `))).toBe(false);
-    expect(out.unmatched.some((x) => x.startsWith(`${kasim}: `))).toBe(false);
+    expect(out.unmatched.some((x) => x.includes(`on ${kasim}`))).toBe(false);
     expect(out.priceDifferences.some((d) => d.where.includes(kasim))).toBe(false);
   });
 });
+
+/** An option on the Kavass entry, by name — the price comes from here. */
+const kavassOption = (name: string) => {
+  const kavass = shelfTL.units.find((u) => u.name === 'Kavass')!;
+  const entry = catalogueUnitFor(D, { baseProfileId: kavass.id }, 'iron-sultanate');
+  const option = (entry?.options ?? []).find((o) => o.name === name)!;
+  expect(option, `the Kavass entry offers ${name}`).toBeDefined();
+  return option;
+};
 
 describe('the upgrades', () => {
   it('resolves all ten Formulae on Al-Masyukh, group-namespaced slugs and all', () => {
@@ -445,7 +554,16 @@ describe('the upgrades', () => {
        group in their slug is theirs and not a claim about ours. */
     const held = unit('Al-Masyukh, Hunter of Hunters').specialUpgrades ?? [];
     expect(held.find((u) => u.name === 'Massive Size')?.category).toBe('Alchemical Formulae');
-    expect(held.find((u) => u.name === 'Hawk Eyes')?.category).toBe('Eye Options');
+    /*
+      The group PATH, which is what `AddEquipmentModal` writes for the same
+      purchase. Round 2: imported with the leaf, an Eye Option was not a
+      Formula to `formulaeOf` — the defect FD-13a fixed for the in-app
+      purchase, reintroduced by the import.
+    */
+    expect(held.find((u) => u.name === 'Hawk Eyes')?.category)
+      .toBe('Alchemical Formulae::Eye Options');
+    expect(formulaeOf(unit('Al-Masyukh, Hunter of Hunters'))).toContain('Hawk Eyes');
+    expect(formulaeOf(unit('Al-Masyukh, Hunter of Hunters'))).toContain('Hypnotic Eyes');
   });
 
   it('resolves up_meleemight to the purchase it actually is', () => {
@@ -461,24 +579,28 @@ describe('the upgrades', () => {
       As it shipped, Idris, Nasir and Rafiq each lost a point of Melee and 5
       Ducats, and the report said the rename was "already in the model".
     */
+    /* The option's own price, read from the entry. Round 2, item 9: this used
+       to type `5` under a comment saying it came from the dataset. */
+    const blade = kavassOption('Studied Blade');
+    expect(blade.cost.ducats).toBeGreaterThan(0);
+
     for (const name of ['Idris the Relic Hound', 'Nasir the Inaccurate', 'Rafiq the Incinerator']) {
       const held = unit(name).specialUpgrades ?? [];
-      expect(held.map((u) => u.name), name).toEqual(['Studied Blade']);
-      expect(held[0].cost, name).toBe(5);
-      expect(held[0].category, name).toBe('Upgrades');
+      expect(held.map((u) => u.name), name).toEqual([blade.name]);
+      expect(held[0].cost, name).toBe(blade.cost.ducats);
+      expect(held[0].category, name).toBe(blade.groupPath ?? blade.group);
     }
     expect(report.unmatched.some((u) => /meleemight/.test(u))).toBe(false);
     expect(report.unmapped.some((u) => /meleemight/.test(u))).toBe(false);
   });
 
   it('charges the three Kavass for it, at the catalogue\'s price', () => {
-    /* Read from the dataset, not typed: the price is the entry option's. */
-    const blade = shelfTL.units.find((u) => u.name === 'Kavass');
-    expect(blade).toBeDefined();
+    const blade = kavassOption('Studied Blade');
     const kavass = unit('Nasir the Inaccurate');
     const gear = [...kavass.equippedWeapons, ...kavass.equippedArmour, ...kavass.equippedEquipment]
       .reduce((sum, g) => sum + (g.cost ?? 0), 0);
-    expect(kavass.totalCost).toBe(kavass.profileSnapshot.baseCost + gear + 5);
+    expect(kavass.totalCost)
+      .toBe(kavass.profileSnapshot.baseCost + gear + blade.cost.ducats);
   });
 });
 
@@ -542,8 +664,49 @@ describe('the equipment', () => {
     }
   });
 
-  it('carries the Arsenal across', () => {
-    expect(w.armoryStash.map((s) => s.name)).toEqual(['Siege Jezzail', 'Alchemical Ammunition']);
+  it('carries the Arsenal across, and what a Location gave it', () => {
+    /*
+      Round 2, item 3. Their two lines, and then the Curative Fluids the
+      Ransacked Alchemist Workshop's own text adds — *"Add Curative Fluids to
+      your Warband’s Arsenal"* — which `explorationGrants` does not read (it
+      answers Skills, loot and the Glory Item permissions and returns nothing
+      at all for that Location), so the item this ruleset does carry was being
+      dropped while the report claimed the text had been read.
+    */
+    expect(w.armoryStash.map((s) => s.name))
+      .toEqual(['Siege Jezzail', 'Alchemical Ammunition', 'Curative Fluids']);
+
+    const fluids = w.armoryStash.find((s) => s.name === 'Curative Fluids')!;
+    /* Given, not bought: no cost, and the Location that gave it. */
+    expect(fluids.cost).toBe(0);
+    expect(fluids.price).toEqual({ ducats: 0, glory: 0 });
+    expect(fluids.grantedBy).toBe('Ransacked Alchemist Workshop');
+    expect(w.explorationDiscoveries).toContain(fluids.grantedBy);
+
+    /* The item is this ruleset's, not a name this import invented, and the
+       sentence that grants it is the Location's own. */
+    const entry = (D.weapons ?? []).find((x) => nameKey(x.name) === nameKey('Curative Fluids'));
+    expect(entry, 'this ruleset carries Curative Fluids').toBeDefined();
+    const rows = Object.values(D.campaign?.exploration?.locations ?? {}).flat();
+    const workshop = rows.find((x) => x.name === 'Ransacked Alchemist Workshop')!;
+    expect(workshop.description).toMatch(/Add Curative Fluids to your Warband’s Arsenal/);
+    /* And pack G's reader really does return nothing for it, which is why this
+       is a second reader rather than a call to that one. */
+    expect(explorationGrants(D, workshop, 5)).toEqual([]);
+  });
+
+  it('never says a text was read when the reader returned nothing', () => {
+    /*
+      Round 2, item 3. The `location_mods` note stated that "the Location's own
+      standing effect is read from that text" whatever the reader had returned.
+      It now names what was read — and for a Location whose text says nothing
+      this app records, it says that instead.
+    */
+    const line = report.unmapped.find(
+      (u) => u.startsWith("location_mods 'el_ransackedalchemistworkshop_mod'"))!;
+    expect(line).toBeDefined();
+    expect(line).toContain('What was read from that text: Curative Fluids in the Arsenal');
+    expect(line).not.toMatch(/standing effect is read from that text/);
   });
 
   it('charges a Scripture Guardian nothing for the kit its own entry carries', () => {
@@ -626,34 +789,137 @@ describe('the equipment', () => {
     for (const item of carriedNames('Jawhar al-Sari')) expect(said[0]).toContain(item);
   });
 
-  it('does not charge the Golem for the Formula the Book of Golems gives it', () => {
+  it("prices the Golem the way the app's own Book of Golems path prices it", () => {
     /*
-      *"It has the Human Hands Alchemical Formula, plus Alchemical Formulas
-      worth a total of up to 50 👑 for free"* — the named Formula is given, and
-      the import was charging for it. Read from the grant, not by name.
+      Round 2, item 2, and the architect's ruling on the question round 1
+      raised. The grant reads *"Add a Takwin Homunculus … to your Warband. It
+      has the Human Hands Alchemical Formula, plus Alchemical Formulas worth a
+      total of up to 50 👑 for free"* — three things free, and round 1 priced
+      only the named Formula at nothing, leaving the Golem at 90 Ducats where
+      the app's own path would have it at none.
+
+      Every figure below is read from the dataset, the grant, or the app's own
+      `formulaShelf`; none is typed.
     */
     const grant = golemGrant(D)!;
-    expect(grant.startsWith).toBeTruthy();
-
     const golem = unit('Al-Mudawwan, the Inscribed');
-    expect(golem.grantedBy).toBe(GOLEM_GRANTED_BY);
-    const given = (golem.specialUpgrades ?? []).find((x) => x.name === grant.startsWith);
-    expect(given, grant.startsWith).toBeDefined();
-    expect(given!.cost).toBe(0);
-
-    /* The option is not a free row: the same Formula on the Homunculus that
-       the grant did NOT create is charged the catalogue's price. */
     const entry = catalogueUnitFor(D, { baseProfileId: golem.profileSnapshot.id },
       'iron-sultanate');
-    const option = (entry?.options ?? []).find((o) => o.name === grant.startsWith);
-    expect(option?.cost.ducats).toBeGreaterThan(0);
-    const sibling = unit('Al-Masyukh, Hunter of Hunters');
-    expect(sibling.grantedBy).toBeUndefined();
-    expect((sibling.specialUpgrades ?? []).find((x) => x.name === grant.startsWith)?.cost)
-      .toBe(option!.cost.ducats);
 
-    /* And their record prices it at nothing too, so nothing is reported. */
-    expect(report.priceDifferences.some((d) => d.name === grant.startsWith)).toBe(false);
+    /* The model: given, and recorded the way the app records a given model. */
+    expect(golem.grantedFree).toBe(GOLEM_GRANTED_BY);
+    expect(golem.profileSnapshot.baseCost).toBeGreaterThan(0);
+
+    /* Each Formula at the price the app's own shelf would put on it. */
+    const shelf = formulaShelf(D, {
+      unit: golem,
+      catalogueUnit: entry,
+      alchemistAlive: null,
+      isTakwin: true,
+      strongbox: { ducats: 0, glory: 0 },
+    });
+    for (const held of golem.specialUpgrades ?? []) {
+      const offer = shelf.offers.find((o) => o.option.name === held.name);
+      expect(offer, held.name).toBeDefined();
+      expect(held.cost, held.name).toBe(offer!.price.ducats);
+    }
+
+    /* And the allowance really is what covers them: the four beside the
+       granted Formula sum to exactly what the grant states. */
+    const listPrice = (name: string) =>
+      (entry?.options ?? []).find((o) => o.name === name)!.cost.ducats;
+    const beside = (golem.specialUpgrades ?? [])
+      .filter((u) => nameKey(u.name) !== nameKey(grant.startsWith));
+    expect(beside.reduce((sum, u) => sum + listPrice(u.name), 0))
+      .toBe(grant.freeFormulaDucats);
+    expect(golem.totalCost).toBe(0);
+
+    /* Their record says the same, in its own structure: the model and those
+       four carry a discount equal to their price. */
+    const theirs = theirModels.find((l) => l.model.model === 'md_takwincreation_golem')!;
+    expect(theirs.purchase!.discount).toBe(golem.profileSnapshot.baseCost);
+    expect(report.warnings.some((x) => /Ducats off this model's price/.test(x))).toBe(false);
+  });
+
+  it('charges a Golem for the Formulae the allowance does not stretch to', () => {
+    /* The other half of the grant's sentence: "up to 50 👑". A Formula beyond
+       the allowance is priced from the entry, in their record's own order. */
+    const grant = golemGrant(D)!;
+    const golem = unit('Al-Mudawwan, the Inscribed');
+    const entry = catalogueUnitFor(D, { baseProfileId: golem.profileSnapshot.id },
+      'iron-sultanate');
+    const extra = (entry?.options ?? []).find((o) => o.name === 'Massive Size')!;
+    expect(extra.cost.ducats).toBeGreaterThan(0);
+
+    const out = meddle((m) => {
+      (m.list_upgrades as unknown[]).push({
+        purchase: { cost_value: extra.cost.ducats, cost_type: 0, discount: 0 },
+        upgrade: { object_id: 'up_alchemicalformulae_massive_size' },
+      });
+    }, 'md_takwincreation_golem');
+    const richer = out.warband.units.find((u) => u.customName.trim() === 'Al-Mudawwan, the Inscribed')!;
+    expect((richer.specialUpgrades ?? []).find((u) => u.name === extra.name)?.cost)
+      .toBe(extra.cost.ducats);
+    /* The allowance still covered the first 50, and nothing more. */
+    expect(richer.totalCost).toBe(extra.cost.ducats);
+    expect(grant.freeFormulaDucats).toBeGreaterThan(0);
+  });
+
+  it('reports a discount their record takes and this import does not', () => {
+    /* The cross-check, on a record that disagrees with ours: strip their
+       discount and the two no longer agree about what the model cost. */
+    const out = meddle((m) => { void m; }, 'md_takwincreation_golem');
+    expect(out.warnings.some((x) => /Ducats off this model's price/.test(x))).toBe(false);
+
+    const copy = JSON.parse(JSON.stringify(envelope));
+    const data = JSON.parse(copy.warband_data);
+    data.models.find((m: { model: { model: string } }) =>
+      m.model.model === 'md_takwincreation_golem').purchase.discount = 0;
+    copy.warband_data = JSON.stringify(data);
+    const stripped = importTrenchCompanionWarband(copy, D);
+    expect(stripped.warnings.some((x) => x.startsWith('Al-Mudawwan, the Inscribed: ')
+      && /Ducats off this model's price/.test(x))).toBe(true);
+  });
+
+  it("never claims another faction's row for a name two entries carry", () => {
+    /*
+      Round 2, item 1. The alias route shipped falling through on an AMBIGUOUS
+      name as well as a missing one, and four names in this ruleset belong to
+      two entries each while the Court of the Seven-Headed Serpent's Weapon
+      Collections rows carry the same four as `Claimed: …` with the bare name
+      as their alias. So a plain Iron Sultanate model holding an Anti-Tank
+      Hammer — not stocked by that list, and correctly reported before this —
+      resolved to another faction's row at no cost.
+    */
+    const four = ['Anti-Tank Hammer', 'Punt Gun', 'Warcross', 'Molotov Cocktail'];
+
+    /* The collision is real, on both halves: two entries by name, and a third
+       carrying the name as an alias. */
+    for (const name of four) {
+      expect((D.weapons ?? []).filter((w) => nameKey(w.name) === nameKey(name)).length, name)
+        .toBeGreaterThan(1);
+      expect((D.weapons ?? []).some((w) => (w.aliases ?? [])
+        .some((a) => nameKey(a) === nameKey(name))), name).toBe(true);
+    }
+
+    const meddled = JSON.parse(JSON.stringify(envelope));
+    const data = JSON.parse(meddled.warband_data);
+    /* A plain Iron Sultanate Warband — no Variant — carrying the four. */
+    data.faction.faction_property.object_id = 'fc_ironsultanate';
+    data.models.find((m: { model: { model: string } }) => m.model.model === 'md_brazenbull')
+      .model.equipment = four.map((name, i) => ({
+        purchase: { cost_value: 0, cost_type: 0, faction_rel_id: `rel_fc_eq_${i}` },
+        equipment: { id: `eq_${i}`, name },
+      }));
+    meddled.warband_data = JSON.stringify(data);
+    const out = importTrenchCompanionWarband(meddled, D);
+
+    const bull = out.warband.units.find((u) => u.customName.trim() === 'Al-Qahhar, the Crippled')!;
+    expect([...bull.equippedWeapons, ...bull.equippedArmour, ...bull.equippedEquipment]
+      .map((x) => x.name)).toEqual([]);
+    for (const name of four) {
+      expect(out.unmatched, name).toContain(`${name}, on Al-Qahhar, the Crippled`);
+    }
   });
 
   it('reports the prices that differ, with ours read from the ruleset', () => {
@@ -662,7 +928,22 @@ describe('the equipment', () => {
       above reported as a disagreement. The Brazen Bull is the real one: their
       record prices the model 100 and ours prices it from the catalogue.
     */
-    expect(report.priceDifferences.map((d) => d.name)).toEqual(['Brazen Bull']);
+    expect(report.priceDifferences.map((d) => d.name))
+      .toEqual(['Brazen Bull', 'Siege Jezzail', 'Alchemical Ammunition']);
+
+    /*
+      The two Arsenal lines are there because their record prices them at
+      NOTHING: each carries a discount equal to its cost, which is the Sniper's
+      Lair granting them ("Add the Battlekit listed below for your Faction to
+      your Arsenal"). This ruleset prices what an item is worth, so the two
+      records disagree about the Arsenal's value and the report says so per
+      item rather than adopting either number.
+    */
+    const theirStash = (JSON.parse(envelope.warband_data) as {
+      equipment: { purchase: { cost_value: number; discount: number } }[] }).equipment;
+    for (const line of theirStash) {
+      expect(line.purchase.discount).toBe(line.purchase.cost_value);
+    }
 
     const bull = shelfTL.units.find((u) => u.name === 'Brazen Bull')!;
     const theirs = theirModels.find((l) => l.model.model === 'md_brazenbull')!.purchase!;
@@ -702,7 +983,7 @@ describe('what it could not resolve', () => {
         rule arrives as an `infoLink type="rule"` (Skirmisher) rather than as
         an inline Ability profile, and `optionsOf` resolves only profile links,
         so nothing is emitted for it; and the catalogue hides the row outright
-        when the House of Wisdom is taken (`:5466`, conditioned on the Variant
+        when the House of Wisdom is taken (`:5468-5470`, conditioned on the Variant
         entry `c2b1-d49e-937b-2f87`), following that Variant's own Kavass rule
         — "However, you cannot give these Azebs the SKIRMISHER Keyword."
 
@@ -718,8 +999,8 @@ describe('what it could not resolve', () => {
       (item 9).
     */
     expect(report.unmatched).toEqual([
-      "Dhi’b al-Nafud: upgrade 'up_fierceandbrave'",
-      "Sabir the Wind-Caller: upgrade 'up_skirmisher'",
+      "upgrade 'up_fierceandbrave', on Dhi’b al-Nafud",
+      "upgrade 'up_skirmisher', on Sabir the Wind-Caller",
     ]);
   });
 
@@ -886,6 +1167,26 @@ describe('every field their record carries', () => {
     subproperties: 'reported',
     list_modelequipment: 'reported',
   };
+  const ENVELOPE: Record<string, string> = {
+    warband_data: 'read: everything below',
+    warband_id: 'read: reported back by the route; the roster carries none of their ids',
+    id: 'theirs: their own row id',
+    warband_user_id: 'theirs: whose account it is — deliberately not read',
+    warband_campaigns: 'theirs: the campaigns their record links it to',
+    warband_campaign_invites: 'theirs',
+  };
+  /** `{ object_id, selections, consumables, tags }` — their reference wrapper. */
+  const REF: Record<string, string> = {
+    object_id: 'read: the id that is resolved',
+    selections: 'read: the choice recorded, named in the report',
+    consumables: 'theirs: their per-object consumable counters',
+    tags: "theirs: their own flags on the reference",
+  };
+  const SELECTION: Record<string, string> = {
+    option_refID: 'read: which option the choice answers',
+    selection_ID: 'read: what was chosen',
+    suboption: 'read: reported with the choice it belongs to',
+  };
   const LINE: Record<string, string> = {
     purchase: 'read: their price, for the price report',
     model: 'read', equipment: 'read', upgrade: 'read',
@@ -919,6 +1220,9 @@ describe('every field their record carries', () => {
 
   it('classifies every field the Warband itself carries', () => {
     const their = JSON.parse(envelope.warband_data) as Record<string, never>;
+    /* The envelope around it, too: `warband_campaigns` holds a campaign id and
+       was outside the walk entirely (round 2, item 4). */
+    walk('envelope', envelope, ENVELOPE);
     walk('warband_data', their, WARBAND);
     walk('context', their.context, CONTEXT);
     walk('context.stored_ratings', (their.context as Record<string, never>).stored_ratings, RATINGS);
@@ -927,6 +1231,25 @@ describe('every field their record carries', () => {
     for (const line of (their.equipment ?? []) as Record<string, never>[]) {
       walk('equipment[]', line, LINE);
       walk('equipment[].purchase', line.purchase, PURCHASE);
+    }
+
+    /*
+      And the objects inside the lists, which the walk used to stop short of.
+      Every one of them is their reference wrapper, and a selection inside it is
+      a choice this import reports by name.
+    */
+    const exploration = their.exploration as Record<string, never>;
+    for (const [what, list] of [
+      ['exploration.locations[]', exploration.locations],
+      ['exploration.location_mods[]', exploration.location_mods],
+      ['fireteams[]', their.fireteams],
+    ] as [string, Record<string, never>[]][]) {
+      for (const ref of list ?? []) {
+        walk(what, ref, REF);
+        for (const sel of (ref.selections ?? []) as Record<string, never>[]) {
+          walk(`${what}.selections[]`, sel, SELECTION);
+        }
+      }
     }
   });
 
@@ -944,6 +1267,18 @@ describe('every field their record carries', () => {
         walk('list_upgrades[]', u, LINE);
         walk('list_upgrades[].purchase', u.purchase, PURCHASE);
       }
+      for (const sub of (m.subproperties ?? []) as Record<string, never>[]) {
+        walk('subproperties[]', sub, REF);
+        for (const sel of (sub.selections ?? []) as Record<string, never>[]) {
+          walk('subproperties[].selections[]', sel, SELECTION);
+        }
+      }
+      for (const rel of (m.list_modelequipment ?? []) as Record<string, never>[]) {
+        walk('list_modelequipment[]', rel, REF);
+        for (const sel of (rel.selections ?? []) as Record<string, never>[]) {
+          walk('list_modelequipment[].selections[]', sel, SELECTION);
+        }
+      }
     }
   });
 
@@ -958,6 +1293,37 @@ describe('every field their record carries', () => {
     expect(report.unmapped.some(
       (u) => u.startsWith('list_modelequipment on Jawhar al-Sari:')
         && /rel_md_eq_mamlukpackage_1/.test(u))).toBe(true);
+  });
+
+  it('names the choice an ability records, by what it chose', () => {
+    /*
+      Round 2, item 4. The line said the ids were "rather than anything the
+      player chose", and two of them are exactly that: Mastery of the Elements
+      picks an element, and `ab_chosenhomunculus` names which Homunculus is
+      this Alchemist's — by the purchase id their record gives that model, so
+      it resolves to a name on this roster. `golem.ts` searched the HOMUNCULI
+      for that association and found none, which was correct: it is recorded on
+      the Alchemist.
+    */
+    const kasim = 'Sipahsalar Kasim bin Malik, the Living Engineer';
+    const lines = report.unmapped.filter((u) => u.startsWith(`subproperties on ${kasim}:`));
+    expect(lines).toHaveLength(2);
+
+    const element = lines.find((x) => x.includes('ab_masteryoftheelements'))!;
+    expect(element).toContain("'kw_gas'");
+    /* Resolved against this ruleset's own glossary, not spelled out here. */
+    const gas = (D.keywords ?? []).find((k) => nameKey(k.name) === nameKey('gas'))!;
+    expect(gas, 'this ruleset carries the GAS Keyword').toBeDefined();
+    expect(element).toContain(`the ${gas.name} Keyword`);
+
+    const homunculus = lines.find((x) => x.includes('ab_chosenhomunculus'))!;
+    const theirs = theirModels.find((l) => (l.model.name ?? '').trim()
+      === 'Al-Masyukh, Hunter of Hunters')!;
+    expect(homunculus).toContain(theirs.model.id!);
+    expect(homunculus).toContain('Al-Masyukh, Hunter of Hunters on this roster');
+
+    /* The model whose choice is null says nothing at all. */
+    expect(report.unmapped.some((u) => u.startsWith('subproperties on Zayd'))).toBe(false);
   });
 
   it('reads the standing effect a Location grants, from our own text', () => {

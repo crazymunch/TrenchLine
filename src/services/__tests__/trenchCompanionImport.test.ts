@@ -366,7 +366,7 @@ describe('the report', () => {
         },
       }],
     });
-    expect(r.unmatched).toContain("Heretic Trooper: Skill 'sk_nosuchskill'");
+    expect(r.unmatched).toContain("Skill 'sk_nosuchskill', on Heretic Trooper");
     expect(r.warband.units[0].skills).toBeUndefined();
   });
 
@@ -383,7 +383,7 @@ describe('the report', () => {
         },
       }],
     });
-    expect(r.unmatched).toContain('Heretic Trooper: Tide-Caller Horn');
+    expect(r.unmatched).toContain('Tide-Caller Horn, on Heretic Trooper');
     expect(r.warband.units[0].equippedWeapons).toEqual([]);
     expect(r.warband.units[0].equippedEquipment).toEqual([]);
     expect(r.warband.units[0].totalCost).toBe(TROOPER.baseCost);

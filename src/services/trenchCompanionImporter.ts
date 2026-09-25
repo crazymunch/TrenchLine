@@ -51,6 +51,7 @@ import { sameFaction } from '../rules/variants';
 import { catalogueUnitFor } from '../rules/catalogueUnit';
 import { GOLEM_GRANTED_BY, golemGrant } from '../rules/golem';
 import { carriesAsBattlekit } from '../rules/battlekit';
+import { isAlchemicalFormula } from '../rules/formulae';
 import { removeFromRoster } from '../rules/fallen';
 import { explorationChoices, explorationGrants } from '../rules/campaign';
 import { TRENCH_COMPANION_IDS } from '../data/generated/trench-companion-ids.generated';
@@ -88,6 +89,15 @@ interface TcPurchase {
    * `includedInTheirModel`.
    */
   faction_rel_id?: string;
+  /**
+   * Ducats their record takes off this line's price.
+   *
+   * Zero on every purchase of the owner's warband but one: the Golem's model
+   * line carries `discount: 40`, the whole of the entry's price, which is their
+   * record stating the same conclusion `golem.ts` reaches. Read as a
+   * cross-check, never as our price.
+   */
+  discount?: number;
   /** The relation, which carries a name of its own — sometimes a different one. */
   custom_rel?: { name?: string };
 }
@@ -129,7 +139,8 @@ interface TcModelInner {
   list_injury?: (TcRef | string)[];
   /* Read to report what they record and this does not. See `UNMAPPED_MODEL`. */
   list_modelequipment?: TcModelEquipment[];
-  subproperties?: TcRef[];
+  /** Abilities, and the choice each one records where it asks for one. */
+  subproperties?: TcModelEquipment[];
   /* Read only to report that they are not mapped. See `UNMAPPED_MODEL`. */
   scar_reserves?: unknown;
   stat_selections?: unknown[];
@@ -261,8 +272,27 @@ const slugTail = (id: string): string => id.replace(/^[a-z]{2,3}_/, '');
  * `rules-build.mjs` copies it into `src/data/generated/` verbatim and the
  * guard asserts the two are identical.
  */
-const EQUIVALENT: Record<string, { ours: string | null; theirs: string; why: string }> =
-  TRENCH_COMPANION_IDS.ids;
+type Equivalence = Record<string, { ours: string | null; theirs: string; why: string }>;
+
+/**
+ * An id the table says this ruleset has no counterpart for, and who carried it.
+ *
+ * Collected rather than reported per model: four Kavass carrying the same
+ * unresolvable upgrade produced the same paragraph four times.
+ */
+interface NullEquivalence { id: string; theirs: string; why: string; on: string }
+
+/**
+ * A thing on a model that this ruleset has no entry for, and who carried it.
+ *
+ * Collected so the report says it ONCE. Four Kavass carrying the same
+ * unresolvable upgrade and the same unresolvable item produced eight lines —
+ * two facts, said eight times — and a report that repeats itself is one a
+ * player stops reading before they reach the line that matters.
+ */
+interface Miss { what: string; on: string }
+
+const EQUIVALENT: Equivalence = TRENCH_COMPANION_IDS.ids;
 
 
 /**
@@ -336,7 +366,18 @@ function theirCost(p: TcPurchase | undefined): Cost | null {
     unstated price is not compared, and the report says so.
   */
   if (typeof p?.cost_value !== 'number' || !Number.isFinite(p.cost_value)) return null;
-  const v = p.cost_value;
+  /*
+    Less what their record took off it.
+
+    `discount` is zero on every line of the owner's warband except the Golem's
+    model line, which carries 40 — the whole of the entry's price, because their
+    app gives the Book of Golems' model away too. Read as part of the price
+    because that is what it is: the line's price is what their record charged
+    for it, and comparing our nothing against their gross 40 reported a
+    disagreement where the two records in fact agree. The discount is separately
+    cross-checked against ours, per model, where they differ.
+  */
+  const v = p.cost_value - num(p.discount);
   if (p.cost_type === 0 || p.cost_type === undefined) return { ducats: v, glory: 0 };
   if (p.cost_type === 1) return { ducats: 0, glory: v };
   return null;
@@ -388,17 +429,32 @@ function namesFor(
  * narrows by faction first, which is what makes a name unique where it can be.
  */
 function uniqueByName<T>(candidates: T[], nameOf: (x: T) => string, keys: string[]): T | undefined {
-  return uniqueBy(candidates, (x) => [nameOf(x)], keys);
+  const found = lookupBy(candidates, (x) => [nameOf(x)], keys);
+  return found.kind === 'one' ? found.hit : undefined;
 }
 
-/** The same rule, over every name a candidate answers to. */
-function uniqueBy<T>(candidates: T[], namesOf: (x: T) => string[], keys: string[]): T | undefined {
+/**
+ * One candidate, none, or several — the three outcomes kept apart.
+ *
+ * `undefined` conflates two answers that must not be conflated: "no entry
+ * carries this name" and "several do". The first is a gap another rule may
+ * fill; the second is an ambiguity, and filling it from somewhere else picks a
+ * winner between entries that all hold the name outright. See
+ * `uniqueByNameOrAlias`, where telling them apart is the whole point.
+ */
+type Found<T> = { kind: 'one'; hit: T } | { kind: 'none' } | { kind: 'many' };
+
+function lookupBy<T>(
+  candidates: T[],
+  namesOf: (x: T) => string[],
+  keys: string[],
+): Found<T> {
   for (const key of keys) {
     const hits = candidates.filter((c) => namesOf(c).some((n) => nameKey(n) === key));
-    if (hits.length === 1) return hits[0];
-    if (hits.length > 1) return undefined;
+    if (hits.length === 1) return { kind: 'one', hit: hits[0] };
+    if (hits.length > 1) return { kind: 'many' };
   }
-  return undefined;
+  return { kind: 'none' };
 }
 
 /**
@@ -417,13 +473,26 @@ function uniqueBy<T>(candidates: T[], namesOf: (x: T) => string[], keys: string[
  * name outright it answers, so an alias can never redirect a real item to
  * another entry (the failure `parse-battlescribe.mjs` records from the attempt
  * that made entry names into names).
+ *
+ * **A name that is AMBIGUOUS is not a gap**, and this shipped for one round
+ * treating it as one. Four names each belong to two entries in this ruleset —
+ * `Anti-Tank Hammer`, `Punt Gun`, `Warcross`, `Molotov Cocktail` — and the
+ * Court of the Seven-Headed Serpent's Weapon Collections rows carry the same
+ * four as `Claimed: Anti-Tank Hammer` with the bare name as their alias. So a
+ * plain Iron Sultanate model holding an Anti-Tank Hammer, which this ruleset's
+ * Sultanate list does not stock and which was correctly reported, resolved to
+ * another faction's `Claimed:` row at no cost. Ambiguity resolves to nothing,
+ * as it does everywhere else here, and the aliases are asked only when no
+ * entry answered to the name at all.
  */
 function uniqueByNameOrAlias<T extends { name: string; aliases?: string[] }>(
   candidates: T[],
   keys: string[],
 ): T | undefined {
-  return uniqueByName(candidates, (x) => x.name, keys)
-    ?? uniqueBy(candidates, (x) => x.aliases ?? [], keys);
+  const byOwnName = lookupBy(candidates, (x) => [x.name], keys);
+  if (byOwnName.kind !== 'none') return byOwnName.kind === 'one' ? byOwnName.hit : undefined;
+  const byAlias = lookupBy(candidates, (x) => x.aliases ?? [], keys);
+  return byAlias.kind === 'one' ? byAlias.hit : undefined;
 }
 
 /**
@@ -458,19 +527,18 @@ function fighterStatus(raw: unknown, label: string): FighterStatus {
     import can act on, and the model is left off and named rather than put on
     the roster on the strength of a fallback.
   */
-  if (typeof raw !== 'string') {
+  if (typeof raw !== 'string' || !raw.trim()) {
     return {
       keep: false,
       why: `${label}: their record's fighter status is `
-        + `${raw === undefined ? 'absent' : JSON.stringify(raw)}, which is not one of the states `
-        + 'this import knows (active, reserved, dead, lost, dog). Whether the model is on the '
-        + 'roster at all is exactly what that field says, so it is left off rather than imported '
-        + 'as a guess.',
+        + `${raw === undefined ? 'absent' : typeof raw === 'string' ? 'empty' : JSON.stringify(raw)}`
+        + ', which is not one of the states this import knows (active, reserved, dead, lost, dog). '
+        + 'Whether the model is on the roster at all is exactly what that field says, so it is '
+        + 'left off rather than imported as a guess.',
     };
   }
   const state = raw.trim().toLowerCase();
   switch (state) {
-    case '':
     case 'active':
       return { keep: true, benched: false, dead: false };
     case 'reserved':
@@ -484,13 +552,24 @@ function fighterStatus(raw: unknown, label: string): FighterStatus {
           + 'Battlekit rather than onto the roster.',
       };
     case 'dog':
-      /* A Trench Dog attached to a handler. Our dataset holds the Dog as its
-         own entry, so it is imported as the model it names; the attachment
-         itself is theirs and we have nowhere to put it. */
+      /*
+        A Trench Dog attached to a handler. Our dataset holds the Dog as its own
+        entry, so it is imported as the model it names; the attachment itself is
+        theirs and we have nowhere to put it.
+
+        No warband measured has carried one, so what their record does with a
+        dog that also holds purchases of its own — whether the handler's price
+        includes it, whether its kit is listed on the dog or on the handler — is
+        not known, and the note says so rather than implying the price is
+        settled.
+      */
       return {
         keep: true, benched: false, dead: false,
         note: `${label} is marked 'dog' in their record, which attaches it to a handler. `
-          + 'It is imported as the model it names; the attachment is not mapped.',
+          + 'It is imported as the model it names and priced from this ruleset like any other '
+          + 'model; the attachment is not mapped. No warband this import has been measured '
+          + 'against carries one, so if their record prices a dog through its handler — or lists '
+          + "the handler's kit on the dog — that is not something this has been able to check.",
       };
     default:
       return {
@@ -522,22 +601,23 @@ const UNMAPPED_MODEL: { field: keyof TcModelInner; why: string }[] = [
   },
   {
     field: 'subproperties',
-    why: 'Their own ids for the abilities the model\'s ENTRY carries, rather than anything the '
-      + 'player chose: `ab_artificialbody` is this ruleset\'s Artificial Life, '
-      + '`ab_pummellingblows` its Pummeling Blows, `ab_agilelion` its Agile. A model\'s '
-      + 'abilities are read from its entry here — which is also why the spellings differing does '
-      + 'not matter — so nothing is taken from this list. Where an id names something no entry '
-      + 'here does, it is a rule kept elsewhere or not at all: `ab_chosenhomunculus` marks a '
-      + 'Jabirean Alchemist as having a Homunculus without any selection saying WHICH, so the '
-      + 'association still cannot be read; `ab_limitedupgrades` is the Book of Golems\' own '
+    why: 'Their own ids for the abilities the model\'s ENTRY carries: `ab_artificialbody` is '
+      + 'this ruleset\'s Artificial Life, `ab_pummellingblows` its Pummeling Blows, '
+      + '`ab_agilelion` its Agile. A model\'s abilities are read from its entry here — which is '
+      + 'also why the spellings differing does not matter — so the list itself adds nothing. '
+      + 'Some of them DO carry a choice the player made, and every one of those is named below '
+      + 'rather than left in this line: an ability that asks which Keyword, or which other model, '
+      + 'records the answer in its `selections`. `ab_limitedupgrades` is the Book of Golems\' own '
       + 'restrictions, which this import carries on the model as its grant instead.',
   },
   {
     field: 'list_modelequipment',
-    why: 'The relation a model\'s Battlekit came through — `rel_md_eq_sultanatesapper` — which '
-      + 'says nothing the entry does not, plus, where the entry offers a choice of kit, which '
-      + 'package was taken. What a package contains is not stated anywhere public, so each '
-      + 'choice their record states is named below rather than applied.',
+    why: 'The relation a model\'s Battlekit came through — `rel_md_eq_sultanatesapper` — and, '
+      + 'where the entry offers a choice of kit, which package was taken. The relation itself is '
+      + 'not idle: the same `rel_md_eq_…` on an equipment LINE is how this import knows that line '
+      + 'was not a purchase, which is what stops a Mamluk Faris being charged 55 Ducats for the '
+      + 'kit its price includes. What is not read is the package: what one contains is not stated '
+      + 'anywhere public, so each choice their record states is named below rather than applied.',
   },
 ];
 
@@ -555,6 +635,16 @@ const UNMAPPED_MODEL: { field: keyof TcModelInner; why: string }[] = [
 export function importTrenchCompanionWarband(
   envelope: TrenchCompanionEnvelope,
   dataset: Dataset,
+  /**
+   * The id equivalence table to resolve with.
+   *
+   * Defaults to the shipped one, and is a parameter for one reason: the guard
+   * that proves a `{ ours: null }` entry cannot shadow a resolution has to run
+   * the real import with such an entry in the table. Without the seam that
+   * guard could only re-derive the resolution order, which is the thing it is
+   * meant to be checking.
+   */
+  equivalent: Equivalence = EQUIVALENT,
 ): TrenchCompanionImportResult {
   const data = readWarbandData(envelope);
 
@@ -562,6 +652,23 @@ export function importTrenchCompanionWarband(
   const warnings: string[] = [];
   const unmapped: string[] = [];
   const priceDifferences: PriceDifference[] = [];
+  /** Ids the table says resolve to nothing here — one line each, below. */
+  const nullEquivalence: NullEquivalence[] = [];
+  /** `_mv_` names no list here has, one line per name — see below. */
+  const variantMisses: { form: string; profile: UnitProfile; on: string }[] = [];
+  /** Things on a model this ruleset has no entry for — one line each, below. */
+  const unresolved: Miss[] = [];
+  /**
+   * The models this import put on the roster, dead ones included.
+   *
+   * What `reportUnmapped` speaks for. It used to walk their whole list, so a
+   * model their record calls `lost` — which this import deliberately does not
+   * take — still had its `list_modelequipment` choice reported and was still
+   * counted in "9 models carry a value for it". A report about a model the
+   * player did not import is the thing round 1's item 10 was about, one reader
+   * further on.
+   */
+  const kept: TcModelInner[] = [];
 
   /* ---------------------------------------------------------- the ruleset */
 
@@ -600,7 +707,7 @@ export function importTrenchCompanionWarband(
     }
 
     const { profile, golem, variantMiss } = resolveModel(
-      shelf.units, factionId, theirName, m.model);
+      shelf.units, factionId, theirName, m.model, equivalent);
     if (!profile) {
       unmatched.push(`${theirName}${m.model ? ` (${m.model})` : ''}`);
       return;
@@ -622,33 +729,67 @@ export function importTrenchCompanionWarband(
       return;
     }
     if (status.note) warnings.push(status.note);
+    /* Only a model the import KEPT is one the report speaks for. */
+    kept.push(m);
 
     /*
       Their id named a Variant's model, and this Warband's list does not have
       that name. See `resolveModel`: a Variant can reprice a model as well as
       rename it, so falling back to the base entry is a different price and not
       only a different name.
+
+      Which Variant carries the name is LOOKED UP rather than asserted away.
+      The line used to say "no list this ruleset carries has an entry of that
+      name", which is false whenever another Variant of the same faction does —
+      and the player needs to know that it is the wrong Variant rather than an
+      unknown model. Collected per Variant form, not per model: four models
+      under the same absent Variant said the same thing four times.
     */
-    if (variantMiss) {
+    if (variantMiss) variantMisses.push({ form: variantMiss, profile, on: theirName });
+
+    /*
+      A model the Book of Golems gave the Warband costs nothing.
+
+      *"Add a Takwin Homunculus … to your Warband"*, with no cost in the
+      sentence — the reading `golem.ts` records, and the reading their own
+      record agrees with: it carries `discount: 40` on this line, the whole of
+      the entry's price. Recorded the way the app records any model a rule
+      gave: `grantedFree`, which is what `fromWarband` prices at nothing and
+      what `convert` refuses to refund. The entry's own cost stays on the
+      profile snapshot, because that is what the entry costs.
+    */
+    const grantedFree = golem && !!golemGrant(dataset);
+    const ownCost: Cost = grantedFree ? { ducats: 0, glory: 0 } : ourUnitCost(profile);
+
+    /*
+      Their discount, read as the cross-check it is.
+
+      It was classed as their bookkeeping and never read, which left the one
+      place their record states the same conclusion unexamined. Where they take
+      Ducats off a model and this import does not, or takes off a different
+      number, the two records disagree about what the model cost and the player
+      is told rather than left to notice.
+    */
+    const theirDiscount = num(line.purchase?.discount);
+    const ourDiscount = grantedFree ? ourUnitCost(profile).ducats : 0;
+    if (theirDiscount !== ourDiscount) {
       warnings.push(
-        `${theirName}: their record files this model as '${variantMiss}', a Warband Variant's own `
-        + `name for it, and no list this ruleset carries has an entry of that name. It is `
-        + `imported as ${profile.name}, the entry their id names underneath, and priced at that `
-        + `entry's ${costLabel(ourUnitCost(profile))}. Where a Variant reprices the model it `
-        + 'renames, that is not the same price — check it against their record.',
+        `${theirName}: their record takes ${theirDiscount} Ducats off this model's price and this `
+        + `import takes ${ourDiscount} off. The roster is priced from this ruleset either way — `
+        + `the model is on it at ${costLabel(ownCost)} — and the two records disagree about why.`,
       );
     }
 
-    comparePrice(profile.name, theirCost(line.purchase), ourUnitCost(profile),
+    comparePrice(profile.name, theirCost(line.purchase), ownCost,
       priceDifferences, warnings, theirName);
 
     const gear = readGear(dataset, shelf, factionId, factionName, m, profile, theirName,
-      stamp, idx, unmatched, warnings, priceDifferences);
+      stamp, idx, unresolved, warnings, priceDifferences);
 
     const upgrades = readUpgrades(dataset, factionId, factionName, profile, m, theirName, golem,
-      stamp, idx, unmatched, priceDifferences, warnings, unmapped);
+      stamp, idx, equivalent, unresolved, priceDifferences, warnings, nullEquivalence);
 
-    const trauma = readTrauma(dataset, m, theirName, unmatched);
+    const trauma = readTrauma(dataset, m, theirName, unresolved);
 
     const tough = (profile.stats.keywords ?? []).some((k) => /^TOUGH$/i.test(k.trim()));
     const maxWounds = tough ? 2 : 1;
@@ -682,14 +823,16 @@ export function importTrenchCompanionWarband(
       xp: num(m.experience),
       isElite: m.elite === true,
       advancements: [],
-      skills: readSkills(dataset, m, theirName, unmatched),
+      skills: readSkills(dataset, m, theirName, unresolved),
       injuries: trauma.injuries,
       ...(trauma.scars.length ? { scars: trauma.scars } : {}),
       /* Their fighter status, read from `active`. See `fighterStatus`. */
       ...(status.benched ? { benched: true } : {}),
       isDead: false,
+      /* A model a rule gave the Warband, and the rule that gave it. */
+      ...(grantedFree ? { grantedFree: GOLEM_GRANTED_BY } : {}),
       /* Our prices, added up. Theirs is reported, never charged. */
-      totalCost: profile.baseCost + gear.ducats + upgrades.ducats,
+      totalCost: ownCost.ducats + gear.ducats + upgrades.ducats,
       currentWounds: maxWounds,
       maxWounds,
       bloodMarkers: 0,
@@ -739,8 +882,51 @@ export function importTrenchCompanionWarband(
     );
   }
 
-  const exploration = readExploration(dataset, data, round, unmatched, unmapped);
-  reportUnmapped(data, unmapped);
+  const exploration = readExploration(dataset, shelf, data, round, stamp, equivalent,
+    unmatched, unmapped);
+  /*
+    One line per `_mv_` name no list here carries, listing the models under it
+    and naming the Variant that DOES carry it, where one does.
+  */
+  for (const form of [...new Set(variantMisses.map((v) => v.form))]) {
+    const rows = variantMisses.filter((v) => v.form === form);
+    const carrier = variantWithEntryNamed(dataset, appFactionIds, factionId, form);
+    warnings.push(
+      `${listOf([...new Set(rows.map((r) => r.on))])}: their record files `
+      + `${rows.length === 1 ? 'this model' : 'these models'} as '${form}', a Warband Variant's `
+      + `own name for the entry. ${carrier
+        ? `It is what the ${carrier} list calls it, and this Warband is not that Variant`
+        : 'No list this ruleset carries has an entry of that name'}`
+      + `, so ${rows.length === 1 ? 'it is' : 'they are'} imported as `
+      + `${rows[0].profile.name}, the entry their id names underneath, and priced at that entry's `
+      + `${costLabel(ourUnitCost(rows[0].profile))}. Where a Variant reprices the model it `
+      + 'renames, that is not the same price — check it against their record.',
+    );
+  }
+
+  /*
+    One line per id the table rules out, listing the models that carried it —
+    not the same paragraph once per model.
+  */
+  for (const id of [...new Set(nullEquivalence.map((n) => n.id))]) {
+    const rows = nullEquivalence.filter((n) => n.id === id);
+    unmapped.push(
+      `${id} ('${rows[0].theirs}') on ${listOf([...new Set(rows.map((r) => r.on))])}: `
+      + rows[0].why,
+    );
+  }
+
+  /*
+    One line per thing this ruleset could not resolve, listing the models that
+    carried it — see `Miss`. After the Warband-level lines, which are about the
+    Warband rather than about a model.
+  */
+  for (const what of [...new Set(unresolved.map((x) => x.what))]) {
+    const who = [...new Set(unresolved.filter((x) => x.what === what).map((x) => x.on))];
+    unmatched.push(`${what}, on ${listOf(who)}`);
+  }
+
+  reportUnmapped(data, kept, dataset.keywords ?? [], unmapped);
 
   const now = new Date().toISOString();
   const bare: Warband = {
@@ -760,7 +946,8 @@ export function importTrenchCompanionWarband(
     ledger: [],
     units: living,
     ...(fallen.length ? { fallen } : {}),
-    armoryStash: stash.items,
+    /* What they hold, and what a Location gave — see `arsenalGrant`. */
+    armoryStash: [...stash.items, ...exploration.granted],
     explorationDiscoveries: exploration.discoveries,
     explorationEffects: exploration.effects,
     ...(misses > 0 ? { promotionMisses: misses } : {}),
@@ -911,6 +1098,32 @@ function readFaction(
 }
 
 /**
+ * Which of this faction's Variants calls an entry by that name, if any.
+ *
+ * Asked only when a `_mv_` name resolved to nothing in the Warband's own list,
+ * which is rare — so the cost of building each Variant's list here is paid
+ * once, on a report line that would otherwise state something false.
+ *
+ * The Variant's printed name, for a player to read: "it is what the Defenders
+ * of the Iron Wall list calls it, and this Warband is not that Variant" is an
+ * answer; "no list carries that name" was not.
+ */
+function variantWithEntryNamed(
+  dataset: Dataset,
+  appFactionIds: string[],
+  factionId: string,
+  name: string,
+): string | undefined {
+  const want = nameKey(name);
+  for (const variant of dataset.variants ?? []) {
+    if (!sameFaction(variant.factionId, factionId)) continue;
+    const list = recruitable(dataset, factionId, appFactionIds, variant.id);
+    if (list.units.some((u) => nameKey(u.name) === want)) return variant.name;
+  }
+  return undefined;
+}
+
+/**
  * The Patron the Warband took, from their `patron_id`.
  *
  * `pt_houseofwisdom` against this ruleset's `HOUSE OF WISDOM`: `nameKey` folds
@@ -965,6 +1178,7 @@ function resolveModel(
   factionId: string,
   theirName: string,
   theirSlug: string | undefined,
+  equivalent: Equivalence,
 ): { profile?: UnitProfile; golem: boolean; variantMiss?: string } {
   const golem = golemStripped(slugTail(theirSlug ?? '')).golem;
   const mine = units.filter((u) => sameFaction(u.factionId, factionId));
@@ -1025,8 +1239,8 @@ function resolveModel(
   if (byBase) return { profile: byBase, golem, ...(after ? { variantMiss: after } : {}) };
 
   /*
-    Their id where no rule of spelling reaches our name. Two entries, each
-    citing their bundle. See `EQUIVALENT`.
+    Their id where no rule of spelling reaches our name. Each entry cites both
+    sides; see `EQUIVALENT` for how many there are and what guards them.
 
     Looked up under the golem-stripped id as well as the raw one, because
     `_golem` says how the model arrived and not which entry it is:
@@ -1034,7 +1248,7 @@ function resolveModel(
     Homunculus, and the table names the entry once.
   */
   const bare = theirSlug ? `md_${golemStripped(slugTail(theirSlug)).slug}` : '';
-  const named = (theirSlug ? EQUIVALENT[theirSlug] : undefined) ?? EQUIVALENT[bare];
+  const named = (theirSlug ? equivalent[theirSlug] : undefined) ?? equivalent[bare];
   if (named?.ours) {
     const byTable = pick([nameKey(named.ours)]);
     if (byTable) return { profile: byTable, golem };
@@ -1081,6 +1295,21 @@ function comparePrice(
   }
   into.push({ name, theirs, ours, where: where ? [where] : [] });
 }
+
+/**
+ * One standing Exploration effect, in words, for a report a person reads.
+ *
+ * The fields are `ExplorationEffect`'s: a Skill is a name, and the other three
+ * are numbers the book states in a sentence.
+ */
+const saidEffect = (e: NonNullable<Warband['explorationEffects']>[number]): string => {
+  if (e.gloryItemsUpTo) {
+    return `Glory Items up to ${e.gloryItemsUpTo} Glory, purchasable from now on`;
+  }
+  if (e.lootBonus) return `${e.lootBonus} Ducats more loot each Exploration Step`;
+  if (e.gloryItemOnce) return `one Glory Item up to ${e.gloryItemOnce} Glory`;
+  return `the ${e.name} Exploration Skill`;
+};
 
 /** `a`, `a and b`, `a, b and c` — for a report a person reads. */
 const listOf = (names: readonly string[]): string =>
@@ -1188,7 +1417,7 @@ function readGear(
   modelLabel: string,
   stamp: number,
   idx: number,
-  unmatched: string[],
+  misses: Miss[],
   warnings: string[],
   priceDifferences: PriceDifference[],
 ): { weapons: EquippedWeapon[]; armour: EquippedArmour[]; equipment: EquippedEquipment[]; ducats: number } {
@@ -1205,7 +1434,7 @@ function readGear(
     const label = theirName || relName || e.equipment?.id || 'an unnamed item';
     const keys = namesFor(theirName, relName, e.equipment?.id);
     if (!keys.length) {
-      unmatched.push(`${modelLabel}: an item with no name`);
+      misses.push({ what: 'an item with no name', on: modelLabel });
       return;
     }
 
@@ -1328,7 +1557,7 @@ function readGear(
       return;
     }
 
-    unmatched.push(`${modelLabel}: ${label}`);
+    misses.push({ what: label, on: modelLabel });
   });
 
   /*
@@ -1367,10 +1596,11 @@ function readUpgrades(
   golem: boolean,
   stamp: number,
   idx: number,
-  unmatched: string[],
+  equivalent: Equivalence,
+  misses: Miss[],
   priceDifferences: PriceDifference[],
   warnings: string[],
-  unmapped: string[],
+  nullEquivalence: NullEquivalence[],
 ): {
   bought: { id: string; name: string; cost: number; category: string }[];
   /** What their record files as an upgrade and this ruleset holds as gear. */
@@ -1386,21 +1616,30 @@ function readUpgrades(
   const entry = catalogueUnitFor(dataset, { baseProfileId: profile.id }, factionId);
 
   /*
-    The Formula the Book of Golems hands over, which is not a purchase.
+    What the Book of Golems pays for, priced the way the app's own path prices
+    it (`formulaShelf.ts`, and the purchase `AddEquipmentModal` writes from it).
 
     *"It has the Human Hands Alchemical Formula, plus Alchemical Formulas worth
-    a total of up to 50 👑 for free"* — so the named Formula is given, and this
-    import was charging the Golem 10 Ducats for it. Read from the grant
-    (`golem.ts`, which reads it out of the shipped Exploration table) rather
-    than by name, so a Dispatch that renames the Formula needs no edit here;
-    `formulaShelf.ts` excludes the same Formula from the 50-Ducat allowance,
-    and this is the price side of that one rule.
+    a total of up to 50 👑 for free (you do not have to pay for the Formulas
+    that you choose)."* Two things, and round 1 only did the first:
 
-    Their record agrees, and states this line at 0 where the Golem's other
-    Formulae carry their list price — which is why nothing about it appears in
-    the price report either way.
+      the named Formula        given, so priced at nothing
+      the next 50 Ducats       of Alchemical Formulae, also at nothing
+
+    Read from the grant rather than by name or by number — `golem.ts` reads
+    both out of the shipped Exploration table — so a Dispatch that renames the
+    Formula or moves the allowance needs no edit here.
+
+    Allocated in the order their record lists them, which is the order the
+    player bought them in and the order `formulaShelf` would have charged them:
+    free while the allowance stretches, priced from the entry once it does not.
+    A Formula costing Glory is never covered, for the same reason the shelf
+    does not cover one: the allowance is stated in Ducats.
   */
-  const givenFormula = golem ? nameKey(golemGrant(dataset)?.startsWith ?? '') : '';
+  const grant = golem ? golemGrant(dataset) : null;
+  const givenFormula = nameKey(grant?.startsWith ?? '');
+  /** Ducats of the allowance still unspent. See the note above. */
+  let freeLeft = grant?.freeFormulaDucats ?? 0;
 
   for (const u of list) {
     const id = refId(u.upgrade);
@@ -1415,17 +1654,32 @@ function readUpgrades(
       to fill a gap; it is not allowed to shadow a resolution.
     */
     const keys = upgradeSlugKeys(id, m.model);
-    let option = uniqueByName(entry?.options ?? [], (o) => o.name, keys);
+    /** The entry's own options, and then the gear shelf — see below. */
+    const bySlug = (k: string[]) => {
+      const opt = uniqueByName(entry?.options ?? [], (o) => o.name, k);
+      return { opt, loose: opt ? undefined : uniqueByNameOrAlias(dataset.weapons ?? [], k) };
+    };
+    let { opt: option, loose } = bySlug(keys);
 
-    /* What the slug rules could not reach. Each entry cites both sides. */
-    if (!option) {
-      const equivalent = EQUIVALENT[id];
-      if (equivalent?.ours) {
-        option = uniqueByName(entry?.options ?? [], (o) => o.name,
-          [nameKey(equivalent.ours)]);
+    /*
+      The table, and only now.
+
+      EVERY slug rule first, the gear shelf included. Round 1 put the table
+      after the option lookup and before the shelf, which is the same defect
+      one shelf over: a `{ ours: null }` entry for `up_secrets_secretsoftakwin`
+      would have dropped the Secrets of Takwin — which the shelf below resolves
+      — and every guard on the table would have stayed green. A table may fill
+      a gap; it may not shadow a resolution, wherever the resolution lives.
+    */
+    if (!option && !loose) {
+      const named = equivalent[id];
+      if (named?.ours) {
+        const byTable = bySlug([nameKey(named.ours)]);
+        option = byTable.opt;
+        loose = byTable.loose;
       }
-      if (!option && equivalent && equivalent.ours === null) {
-        unmapped.push(`${id} ('${equivalent.theirs}') on ${modelLabel}: ${equivalent.why}`);
+      if (!option && !loose && named && named.ours === null) {
+        nullEquivalence.push({ id, theirs: named.theirs, why: named.why, on: modelLabel });
         continue;
       }
     }
@@ -1448,7 +1702,6 @@ function readUpgrades(
       Armoury Table does not stock it, and the legality strip will say so.
     */
     if (!option) {
-      const loose = uniqueByNameOrAlias(dataset.weapons ?? [], keys);
       if (loose) {
         warnings.push(
           `${modelLabel}: ${loose.name} is recorded as an upgrade in their record and as a `
@@ -1477,18 +1730,30 @@ function readUpgrades(
     }
 
     if (!option) {
-      unmatched.push(`${modelLabel}: upgrade '${id || 'unnamed'}'`);
+      misses.push({ what: `upgrade '${id || 'unnamed'}'`, on: modelLabel });
       continue;
     }
+    const list: Cost = { ducats: option.cost.ducats, glory: option.cost.glory };
     const granted = !!givenFormula && nameKey(option.name) === givenFormula;
-    const cost: Cost = granted
-      ? { ducats: 0, glory: 0 }
-      : { ducats: option.cost.ducats, glory: option.cost.glory };
+    /* The allowance, spent in their record's order. */
+    const covered = !granted && !!grant && isAlchemicalFormula(option)
+      && !list.glory && freeLeft >= list.ducats;
+    if (covered) freeLeft -= list.ducats;
+    const cost: Cost = granted || covered ? { ducats: 0, glory: 0 } : list;
     bought.push({
       id: `su-${nameKey(option.name)}`,
       name: option.name,
       cost: cost.ducats,
-      category: option.group,
+      /*
+        The group PATH, not the leaf — what `AddEquipmentModal` writes when the
+        same Formula is bought in the app, for the reason FD-13a states:
+        `formulaeOf` decides what is a Formula by asking whether the category
+        CONTAINS `Alchemical Formulae`, and an `Eye Options` leaf fails that
+        test. Imported with the leaf, Hawk Eyes and Hypnotic Eyes were not
+        Formulae on the model that held them — not in `traitsOf`, not in the
+        card's Formula section, not in the Takwin gates.
+      */
+      category: option.groupPath ?? option.group,
     });
     ducats += cost.ducats;
     comparePrice(option.name, theirCost(u.purchase), cost, priceDifferences, warnings,
@@ -1509,7 +1774,7 @@ function readSkills(
   dataset: Dataset,
   m: TcModelInner,
   modelLabel: string,
-  unmatched: string[],
+  misses: Miss[],
 ): ActiveUnit['skills'] {
   const tables = dataset.campaign?.skills ?? {} as Dataset['campaign']['skills'];
   const rows = Object.entries(tables).flatMap(([table, list]) =>
@@ -1520,7 +1785,7 @@ function readSkills(
     const id = refId(ref);
     const hit = uniqueByName(rows, (r) => r.name, [nameKey(slugTail(id))]);
     if (!hit) {
-      unmatched.push(`${modelLabel}: Skill '${id || 'unnamed'}'`);
+      misses.push({ what: `Skill '${id || 'unnamed'}'`, on: modelLabel });
       continue;
     }
     out.push({
@@ -1551,7 +1816,7 @@ function readTrauma(
   dataset: Dataset,
   m: TcModelInner,
   modelLabel: string,
-  unmatched: string[],
+  misses: Miss[],
 ): { injuries: string[]; scars: NonNullable<ActiveUnit['scars']> } {
   const rows = dataset.campaign?.trauma ?? [];
   const injuries: string[] = [];
@@ -1561,7 +1826,7 @@ function readTrauma(
     const id = refId(ref);
     const hit = uniqueByName(rows, (r) => r.name, [nameKey(slugTail(id))]);
     if (!hit) {
-      unmatched.push(`${modelLabel}: injury '${id || 'unnamed'}'`);
+      misses.push({ what: `injury '${id || 'unnamed'}'`, on: modelLabel });
       continue;
     }
     injuries.push(hit.name);
@@ -1654,11 +1919,19 @@ function readStash(
  */
 function readExploration(
   dataset: Dataset,
+  shelf: Shelf,
   data: TcWarbandData,
   round: number,
+  stamp: number,
+  equivalent: Equivalence,
   unmatched: string[],
   unmapped: string[],
-): { discoveries: string[]; effects: Warband['explorationEffects'] } {
+): {
+  discoveries: string[];
+  effects: Warband['explorationEffects'];
+  /** Items a Location's own text puts in the Arsenal. See `arsenalGrant`. */
+  granted: StashedItem[];
+} {
   const known = dataset.campaign?.exploration?.skills ?? [];
   const effects: NonNullable<Warband['explorationEffects']> = [];
 
@@ -1687,6 +1960,17 @@ function readExploration(
   const locations = dataset.campaign?.exploration?.locations ?? {};
   const rows = Object.values(locations).flat();
   const discoveries: string[] = [];
+  const granted: StashedItem[] = [];
+  /**
+   * What this ruleset read from each Location's own text.
+   *
+   * Kept so the report can say it. The `location_mods` note below used to
+   * state that "the Location's own standing effect is read from that text"
+   * whatever the reader had returned — and for the Ransacked Alchemist
+   * Workshop it had returned nothing at all. A report that claims a reading it
+   * did not make is worse than one that says nothing.
+   */
+  const readFrom = new Map<string, string[]>();
   for (const loc of data.exploration?.locations ?? []) {
     const id = typeof loc === 'string' ? loc : refId(loc as TcRef);
     /*
@@ -1704,7 +1988,7 @@ function readExploration(
       The rules first and the table second, for the reason `readUpgrades`
       states: a table may fill a gap, never shadow a resolution.
     */
-    const named = EQUIVALENT[id]?.ours;
+    const named = equivalent[id]?.ours;
     const hit = tail
       ? uniqueByName(rows, (r) => r.name, [nameKey(tail), ...(named ? [nameKey(named)] : [])])
       : undefined;
@@ -1727,16 +2011,44 @@ function readExploration(
         every option would hand the Warband both halves of a choice the book
         makes it pick between. The choice is reported, not guessed.
       */
-      effects.push(...explorationGrants(dataset, hit, round));
+      const standing = explorationGrants(dataset, hit, round);
+      effects.push(...standing);
+
+      /*
+        And what its text puts in the ARSENAL, which `explorationGrants` does
+        not read: it answers Skills, loot and the Glory Item permissions, and
+        returns nothing at all for the Ransacked Alchemist Workshop, whose
+        whole effect is *"Add Curative Fluids to your Warband’s Arsenal"*. So
+        the Workshop was recorded as a discovery and the Curative Fluids —
+        which this ruleset does carry — were dropped, while the report said the
+        standing effect had been read from that text. See `arsenalGrant`.
+      */
+      const gift = arsenalGrant(dataset, shelf, hit, granted.length, stamp);
+      readFrom.set(hit.name, [
+        ...standing.map(saidEffect),
+        ...(gift.item ? [`${gift.item.name} in the Arsenal, at no cost`] : []),
+      ]);
+      if (gift.item) granted.push(gift.item);
+      else if (gift.names) {
+        unmapped.push(
+          `${hit.name}: its text adds '${gift.names}' to the Arsenal, which is not one entry this `
+          + 'ruleset can name — a per-faction list, or a name it does not carry — so nothing was '
+          + 'added for it. Whatever their record holds for it is in the Arsenal above, priced '
+          + 'from this ruleset.',
+        );
+      }
     } else unmatched.push(`Exploration Location '${id || 'unnamed'}'`);
 
     /*
-      A Location can carry the option the player chose — Sniper's Lair asks
-      which model gets the nest, and their record keeps the answer in
-      `selections`. We have nowhere to put it yet: the Location options are
-      pack G's, and inventing a home for the choice now would mean guessing
-      what our side will call it. The discovery is recorded; the choice is
-      reported.
+      The option the player took, where their record keeps one.
+
+      Pack G reads a Location's options (`explorationChoices`) and what each
+      one grants (`explorationGrants` with `chosen`), so the answer has
+      somewhere to go — when their id says WHICH of our options it is. Theirs
+      are ids of their own (`ot_snipersnest` → `el_snipersnest_ironsultanate`),
+      and nothing states them to be our order or our labels, so the option is
+      named rather than applied, beside the labels this ruleset prints for that
+      Location so the player can see the two lists together.
 
       Reported even where the Location itself did not resolve, under their own
       id. The player made that choice whether or not we can name the row it
@@ -1746,10 +2058,15 @@ function readExploration(
     for (const sel of chosen) {
       const option = isRecord(sel) ? String(sel.option_refID ?? '') : '';
       const picked = isRecord(sel) ? String(sel.selection_ID ?? '') : '';
+      const ours = hit ? explorationChoices(hit).map((c) => c.label) : [];
       unmapped.push(
         `${hit?.name ?? id}: the option taken (${option || 'unnamed'}`
-        + `${picked ? ` → ${picked}` : ''}) is recorded on their side and is not mapped here. `
-        + 'Location options are not modelled yet; the discovery itself is recorded.',
+        + `${picked ? ` → ${picked}` : ''}) is recorded on their side and is not applied here. `
+        + (ours.length
+          ? `This ruleset prints its options as ${ours.map((l) => `'${l}'`).join(', ')}, and their `
+            + 'ids do not say which of those they are.'
+          : "This ruleset's text for it states no options to choose between, so there is nothing "
+            + 'here for the choice to select.'),
       );
     }
   }
@@ -1791,20 +2108,111 @@ function readExploration(
       .filter(Boolean);
     if (!picked.length) continue;
     const ours = explorationChoices(hit).map((c) => c.label);
+    const got = readFrom.get(hit.name) ?? [];
     unmapped.push(
       `location_mods '${id}': their record keeps the option '${picked.join("', '")}' for `
       + `${hit.name}. ${ours.length
         ? `This ruleset prints its options as ${ours.map((l) => `'${l}'`).join(', ')}, and their `
-          + 'ids do not say which of those they are, so no option\'s effect is applied.'
-        : "This ruleset's text for it offers no choice to make, so there is nothing to apply the "
-          + "option to; the Location's own standing effect is read from that text."}`,
+          + 'ids do not say which of those they are, so no option\'s effect is applied. '
+        : "This ruleset's text for it states no options to choose between, so there is nothing "
+          + 'here for the choice to select. '}`
+      + (got.length
+        ? `What was read from that text: ${listOf(got)}.`
+        : 'Nothing in that text is anything this app records, so the discovery itself is all that '
+          + 'is on the Warband for it.'),
     );
   }
 
   return {
     discoveries,
     effects: effects.length ? effects : undefined,
+    granted,
   };
+}
+
+/**
+ * What a Location's own text puts in the Arsenal.
+ *
+ * *"Add Curative Fluids to your Warband’s Arsenal."* Four of the shipped
+ * Locations hand an item over outright, and `explorationGrants` does not read
+ * them: it answers the Exploration Skills, the loot bonus and the Glory Item
+ * permissions, and returns nothing at all for the Ransacked Alchemist
+ * Workshop, whose entire effect is that sentence.
+ *
+ * Read from the sentence, not from a list of Location names kept beside it —
+ * the rule `explorationGrants` itself follows. Both spellings of the
+ * possessive, because the books use the curly one and the extracts do not
+ * always.
+ *
+ * Priced at **nothing**, and marked with the Location that gave it: the
+ * Warband did not buy it. Where the sentence names something this ruleset
+ * cannot resolve to exactly one entry — the Sniper's Lair's *"the Battlekit
+ * listed below for your Faction"* is a per-faction list, not a name — the
+ * caller reports it rather than adding a guess.
+ */
+const ARSENAL_GRANT =
+  /Add\s+([A-Za-z][A-Za-z ’'-]*?)\s+to your (?:Warband(?:’|')?s )?Arsenal/i;
+
+function arsenalGrant(
+  dataset: Dataset,
+  shelf: Shelf,
+  location: { name: string; description?: string },
+  index: number,
+  stamp: number,
+): { item?: StashedItem; names?: string } {
+  const said = ARSENAL_GRANT.exec(location.description ?? '');
+  if (!said) return {};
+  const names = said[1].trim();
+  /* As the sentence states it, and without the article it may open with. */
+  const keys = [...new Set([nameKey(names), nameKey(names.replace(/^the\s+/i, ''))])]
+    .filter(Boolean);
+  if (!keys.length) return {};
+
+  /* This Warband's own shelves first, then the catalogue — the same order the
+     gear reader uses, and for the same reason: the shelf knows this faction's
+     name for the thing. The price is nothing either way. */
+  const found = uniqueByNameOrAlias(
+    [...shelf.weapons, ...shelf.armour, ...shelf.equipment], keys)
+    ?? uniqueByNameOrAlias(dataset.weapons ?? [], keys);
+  if (!found) return { names };
+
+  const section = (dataset.battlekit ?? [])
+    .find((b) => nameKey(b.name) === nameKey(found.name))?.section;
+  return {
+    item: {
+      id: `stash-tc-${stamp}-granted-${index}`,
+      name: found.name,
+      type: section === 'Armour' || section === 'Shields' ? 'Armour'
+        : section === 'Equipment' || !section ? 'Equipment' : 'Weapon',
+      cost: 0,
+      currency: 'ducats',
+      price: { ducats: 0, glory: 0 },
+      quantity: 1,
+      grantedBy: location.name,
+    },
+  };
+}
+
+/**
+ * What one of their choice ids actually names, where this can be said.
+ *
+ * A model, by the purchase id their record gives each model — which is also
+ * that model's `id` — or a Keyword from this ruleset's glossary. Anything else
+ * is left as their id alone, which is still the honest answer: a line that
+ * says `kw_gas` and nothing more tells the player exactly what their record
+ * states.
+ */
+function saidChoice(
+  models: readonly TcModelInner[],
+  keywords: readonly { name: string }[],
+  picked: string,
+): string {
+  const model = models.find((m) => m.id === picked);
+  if (model) return ` — ${(model.name ?? '').trim() || picked} on this roster`;
+  const keyword = uniqueByName(keywords as { name: string }[], (k) => k.name,
+    [nameKey(slugTail(picked))]);
+  if (keyword) return ` — the ${keyword.name} Keyword`;
+  return '';
 }
 
 /**
@@ -1815,8 +2223,14 @@ function readExploration(
  * `UNMAPPED_MODEL`); the Warband-level ones only when they hold something,
  * because "fireteams: none" is not news.
  */
-function reportUnmapped(data: TcWarbandData, unmapped: string[]): void {
-  const models = (data.models ?? []).map((l) => l.model).filter(Boolean) as TcModelInner[];
+function reportUnmapped(
+  data: TcWarbandData,
+  /** The models this import kept. See `kept` — never their whole list. */
+  models: readonly TcModelInner[],
+  /** This ruleset's Keyword glossary, for the choices that name one. */
+  keywords: readonly { name: string }[],
+  unmapped: string[],
+): void {
 
   for (const { field, why } of UNMAPPED_MODEL) {
     const carrying = models.filter((m) => {
@@ -1855,6 +2269,41 @@ function reportUnmapped(data: TcWarbandData, unmapped: string[]): void {
         + `'${rel.object_id ?? 'an unnamed relation'}'. What that package contains is not stated `
         + 'anywhere public, so the choice is reported and not applied.',
       );
+    }
+
+    /*
+      An ability that asks a question, and the answer their record gives it.
+
+      Two kinds on the owner's warband, and the line for each says what the
+      answer IS rather than repeating their id for it:
+
+        `ab_masteryoftheelements` → `kw_gas`
+            The Jabirean Alchemist's Mastery of the Elements picks an element.
+            Resolved against this ruleset's Keyword glossary, so the line names
+            GAS rather than a slug.
+
+        `ab_chosenhomunculus` → `md_takwincreation_10_1789965799416`
+            The Takwin association — which Homunculus is this Alchemist's — and
+            the answer is a MODEL, by the purchase id their record gives that
+            model. So it resolves to a name on this roster. `golem.ts` searched
+            the Homunculi for this association and found none, which is
+            correct: it is recorded on the Alchemist.
+
+      Reported rather than applied: this app holds no field for either answer
+      (`takwinRestrictions` asks whether an Alchemist is alive, not which
+      Homunculus is whose), and inventing one from an import is how a fact
+      nobody can check gets onto a roster.
+    */
+    for (const sub of m.subproperties ?? []) {
+      for (const sel of sub.selections ?? []) {
+        const picked = typeof sel.selection_ID === 'string' ? sel.selection_ID.trim() : '';
+        if (!picked) continue;
+        unmapped.push(
+          `subproperties on ${label}: '${sub.object_id ?? 'an unnamed ability'}' records the `
+          + `choice '${picked}'${saidChoice(models, keywords, picked)}. This app holds no field `
+          + 'for it, so it is named here rather than applied.',
+        );
+      }
     }
   }
 

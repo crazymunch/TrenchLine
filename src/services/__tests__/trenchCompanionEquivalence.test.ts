@@ -24,7 +24,7 @@ import type { Dataset } from '@/types/catalogue';
 import { recruitable } from '@/rules/recruitable';
 import { nameKey } from '@/rules/names';
 import { TRENCH_COMPANION_IDS } from '@/data/generated/trench-companion-ids.generated';
-import { upgradeSlugKeys } from '../trenchCompanionImporter';
+import { importTrenchCompanionWarband, upgradeSlugKeys } from '../trenchCompanionImporter';
 
 const D = DATASET as unknown as Dataset;
 const APP = (D.factions ?? []).map((f) => f.id ?? f.name);
@@ -61,10 +61,14 @@ const everyLocationName = (): Set<string> => new Set(
 /** The fixture, for the model slug an `up_` id is namespaced by. */
 const fixture = fs.readFileSync(path.join(process.cwd(),
   'data-sources/fixtures/trench-companion/al-qarn-rihla-505410.json'), 'utf8');
-const theirModels = (JSON.parse(
-  (JSON.parse(fixture) as { warband_data: string }).warband_data,
-) as { models: { model: { model?: string; list_upgrades?: { upgrade?: { object_id?: string } }[] } }[] })
-  .models.map((l) => l.model);
+const envelope = JSON.parse(fixture) as { warband_data: string };
+interface TheirModel {
+  model?: string;
+  list_upgrades?: { upgrade?: { object_id?: string } }[];
+}
+const theirModels: TheirModel[] =
+  (JSON.parse(envelope.warband_data) as { models: { model: TheirModel }[] })
+    .models.map((l) => l.model);
 
 /**
  * One domain per prefix: the names an id of that kind resolves against, and
@@ -187,6 +191,66 @@ describe('the Trench Companion id equivalence table', () => {
       if (domain.keys(id).some((k) => names.has(k))) stale.push(`${id} ('${e.theirs}')`);
     }
     expect(stale, 'entries the slug rules now reach without help — delete them').toEqual([]);
+  });
+
+  it('cannot shadow a resolution, on any shelf', () => {
+    /*
+      Round 2, item 5. The table used to be consulted after the entry's own
+      options and BEFORE the gear shelf, so a `{ ours: null }` entry for an id
+      the shelf resolves would have dropped it — the exact failure round 1's
+      item 1 found one shelf over, where a wrong `null` cost three models a
+      point of Melee each. Every slug rule runs first now, the shelf included.
+
+      Proven by running the real import with such an entry in the table:
+      `up_secrets_secretsoftakwin` resolves on the gear shelf (the House of
+      Wisdom's Secrets are stated on the Warband, not on the Alchemist), so a
+      null entry for it must change nothing.
+    */
+    const kasim = 'Sipahsalar Kasim bin Malik, the Living Engineer';
+    const held = (r: ReturnType<typeof importTrenchCompanionWarband>) =>
+      (r.warband.units.find((u) => u.customName.trim() === kasim)?.equippedEquipment ?? [])
+        .map((x) => x.name);
+
+    const plain = importTrenchCompanionWarband(envelope, D);
+    expect(held(plain)).toContain('Secrets of Takwin');
+
+    const nulled = importTrenchCompanionWarband(envelope, D, {
+      ...table.ids,
+      up_secrets_secretsoftakwin: {
+        ours: null,
+        theirs: 'Secrets of Takwin',
+        why: 'a null entry this test puts in the table on purpose',
+      },
+    });
+    expect(held(nulled), 'a null table entry dropped something the shelf resolves')
+      .toContain('Secrets of Takwin');
+  });
+
+  it('resolves, through the whole import, to what each entry names', () => {
+    /*
+      The other half: an entry that names something must actually reach it when
+      the real importer runs over the committed fixture — not merely name
+      something the ruleset happens to carry.
+    */
+    const r = importTrenchCompanionWarband(envelope, D);
+    const onRoster = [
+      ...r.warband.units.flatMap((u) => [
+        u.profileSnapshot.name,
+        ...(u.specialUpgrades ?? []).map((x) => x.name),
+        ...u.equippedWeapons.map((x) => x.name),
+        ...u.equippedArmour.map((x) => x.name),
+        ...u.equippedEquipment.map((x) => x.name),
+      ]),
+      ...(r.warband.explorationDiscoveries ?? []),
+      ...(r.warband.explorationEffects ?? []).map((e) => e.name),
+      ...r.warband.armoryStash.map((s) => s.name),
+    ].map((n) => nameKey(n));
+
+    for (const [id, e] of entries) {
+      if (!e.ours) continue;
+      expect(onRoster, `${id} names '${e.ours}', which the import does not put on the roster`)
+        .toContain(nameKey(e.ours));
+    }
   });
 
   it('holds no entry for an id the importer never sees', () => {
