@@ -41,6 +41,31 @@ const golemNote = (
   return [golem.reason];
 };
 
+/**
+ * The Skills the import did not count as an Advancement Roll, said out loud.
+ *
+ * Order 44 item 2: the importer computed this and the modal dropped it on the
+ * floor, so a roster carrying a Patron's Skill with no bracketed roll came in
+ * counted as no roll taken, correctly, and silently. A player looking at a model
+ * with three Skills and one roll taken has no way to tell a correct reading from
+ * a parse failure — which is the whole reason the importer reports it.
+ *
+ * One line per model, because the names are what a player checks against their
+ * own sheet.
+ */
+const noRollNote = (
+  entries: { model: string; skills: string[] }[] | undefined,
+): string[] => {
+  if (!entries?.length) return [];
+  return [
+    'These Skills carry no 2D6 total on the roster, so they count as no '
+    + 'Advancement Roll taken — which is right for a Patron\'s Skill or a Glory '
+    + 'Item\'s. If one of them WAS rolled for, add the total on the model\'s '
+    + 'advancement sheet.',
+    ...entries.map((e) => `${e.model}: ${e.skills.join(', ')}`),
+  ];
+};
+
 export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose }) => {
   // `units` already carries the dataset's profiles plus any custom ones. The
   // importer used to resolve against `defaultRules.ts` instead, which gave
@@ -143,11 +168,11 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     if (readRoster(inputText)) return;
 
     try {
-      const { warband, unmatched, golem } = importNewRecruitRoster(
+      const { warband, unmatched, golem, skillsWithNoRoll } = importNewRecruitRoster(
         inputText, units, importDataset ?? undefined);
       setUnmatched(unmatched);
       setFileNotes(golemNote(golem));
-      setNotes([]);
+      setNotes(noRollNote(skillsWithNoRoll));
       setPrices([]);
       if (warband.units.length === 0) {
         setErrorMsg('No units could be parsed from the input. Please check the export format.');
@@ -224,12 +249,12 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       setInputText(content);
       if (readRoster(content)) return;
       try {
-        const { warband, unmatched, golem } = importNewRecruitRoster(
+        const { warband, unmatched, golem, skillsWithNoRoll } = importNewRecruitRoster(
           content, units, importDataset ?? undefined);
         setParsedWarband(withRuleset(warband));
         setUnmatched(unmatched);
         setFileNotes(golemNote(golem));
-        setNotes([]);
+        setNotes(noRollNote(skillsWithNoRoll));
         setPrices([]);
         setErrorMsg(null);
       } catch (_err) {

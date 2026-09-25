@@ -5,6 +5,7 @@ import { hasCampaign } from '../../store/seed';
 import { storage } from '../../services/storage';
 import { unresolvedSides, type BattleRecord } from '@/types/battle';
 import { matchHandover, type MatchHandover } from '@/rules/matchHandover';
+import Link from 'next/link';
 import { PostBattleWizardModal } from './PostBattleWizardModal';
 import { useStore } from '../../store/useStore';
 import { useDataset } from '@/rules/useDataset';
@@ -667,9 +668,28 @@ export const CampaignHubView: React.FC = () => {
                     </td>
 
                     <td className="p-4">
-                      <div className="font-gothic font-bold text-base text-theme-text">
-                        {member.warbandName}
-                      </div>
+                      {/*
+                        FD-12: the Roster Sheet is reached from the Hub as well as
+                        from the builder.
+
+                        A link only for a roster THIS DEVICE holds. The sheet
+                        route reads the store, so a link for somebody else's
+                        warband would open a page that could only say it does not
+                        have it — a link that is known in advance to fail.
+                      */}
+                      {warbands.some((w) => w.id === member.warbandId) ? (
+                        <Link
+                          href={`/roster/${encodeURIComponent(member.warbandId)}/sheet`}
+                          className="flex min-h-[44px] items-center font-gothic font-bold text-base text-theme-text hover:text-theme-primary"
+                          title="Open this warband's Roster Sheet"
+                        >
+                          {member.warbandName}
+                        </Link>
+                      ) : (
+                        <div className="font-gothic font-bold text-base text-theme-text">
+                          {member.warbandName}
+                        </div>
+                      )}
                       <div className="text-xs sm:text-[11px] text-theme-muted">{member.playerName}</div>
                     </td>
 

@@ -42,10 +42,12 @@
 import type { Dataset, Cost } from '../types/catalogue';
 import type {
   Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem,
+  InjuryRecord,
 } from '../types/warband';
 import type { UnitProfile } from '../types/rules';
 import { book } from '../rules/ledger';
 import { nameKey } from '../rules/names';
+import { advancementRollsStated, skillsStatingNoRoll } from '../rules/provenance';
 import { recruitable } from '../rules/recruitable';
 import { sameFaction } from '../rules/variants';
 import { catalogueUnitFor } from '../rules/catalogueUnit';
@@ -356,6 +358,11 @@ export function importTrenchCompanionWarband(
     const tough = (profile.stats.keywords ?? []).some((k) => /^TOUGH$/i.test(k.trim()));
     const maxWounds = tough ? 2 : 1;
 
+    /* Read once: both are used twice below — the list itself, and the record
+       of where each entry came from. */
+    const companionSkills = readSkills(dataset, m, theirName, unmatched);
+    const companionInjuries = readInjuries(dataset, m, theirName, unmatched);
+
     units.push({
       id: `u-tc-${stamp}-${idx}`,
       /* Their display name is the player's own name for the model; the
@@ -371,8 +378,18 @@ export function importTrenchCompanionWarband(
       xp: num(m.experience),
       isElite: m.elite === true,
       advancements: [],
-      skills: readSkills(dataset, m, theirName, unmatched),
-      injuries: readInjuries(dataset, m, theirName, unmatched),
+      skills: companionSkills,
+      /*
+        Only the Skills whose record states a roll (review round 2 item 1). The
+        Companion's export carries no roll for a Skill, so this is normally
+        nought and the report says which Skills were not counted: a Patron's
+        grant among them is correct, not a parse failure.
+      */
+      ...(advancementRollsStated(companionSkills)
+        ? { advancementRolls: advancementRollsStated(companionSkills) } : {}),
+      injuries: companionInjuries,
+      ...(companionInjuries.length
+        ? { injuryRecords: injuryRecordsFor(companionInjuries) } : {}),
       isDead: false,
       /* Our prices, added up. Theirs is reported, never charged. */
       totalCost: profile.baseCost + gear.ducats + upgrades.ducats,
@@ -470,6 +487,24 @@ export function importTrenchCompanionWarband(
     fact about the Grail Devotee, not five, and a report a player scrolls
     past is a report a player does not read.
   */
+  /*
+    Which Skills cost no Advancement Roll (review round 2 item 1). Their export
+    carries no roll for a Skill, so `advancementRolls` comes out nought and a
+    player seeing three Skills against no roll taken deserves the reason in
+    words rather than having to infer it. One line, in the channel this importer
+    already reports through.
+  */
+  for (const u of warband.units) {
+    const uncounted = skillsStatingNoRoll(u.skills);
+    if (uncounted.length) {
+      warnings.push(
+        `${u.customName || u.profileSnapshot?.name || 'A model'}: `
+        + `${uncounted.join(', ')} — the share carries no roll for these, so they `
+        + 'count as no Advancement Roll taken. Correct it on the model if one was rolled.',
+      );
+    }
+  }
+
   return {
     warband,
     unmatched,
@@ -867,6 +902,13 @@ function readSkills(
     }
     out.push({
       name: hit.name, category: hit.table, roll: String(hit.roll), effect: hit.description,
+      /*
+        Where it came from (FD-12 item 2). `import`, and with NO roll inside the
+        source: `roll` above is the roll the Skill's ROW sits on in our own
+        table, which is how the row was found — it is not a roll anybody made,
+        and the share page's provenance line must not present it as one.
+      */
+      source: { kind: 'import' },
     });
   }
   return out.length ? out : undefined;
@@ -891,6 +933,17 @@ function readInjuries(
     out.push(hit.name);
   }
   return out;
+}
+
+/**
+ * The same injuries, with where they came from (FD-12 item 2).
+ *
+ * `import`, and no roll: the Companion's record names the injury and says
+ * nothing about a D66. `injuriesHeld` joins this to `injuries`, which stays the
+ * authority on which injuries the model carries.
+ */
+function injuryRecordsFor(names: readonly string[]): InjuryRecord[] {
+  return names.map((name) => ({ name, source: { kind: 'import' as const } }));
 }
 
 /** The Warband's stash, by the same three shelves a model's gear uses. */

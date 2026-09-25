@@ -17,6 +17,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useStore } from '../useStore';
 import type { Warband, ActiveUnit } from '@/types/warband';
 import type { SkillLearned } from '@/rules/advancement';
+import { statesAnAdvancementRoll } from '@/rules/provenance';
 
 vi.mock('@/services/storage', async (orig) => {
   const actual = await orig<typeof import('@/services/storage')>();
@@ -75,8 +76,44 @@ describe('a Skill learned from an Advancement Roll', () => {
   it('lands on skills, with the table and the roll that produced it', () => {
     apply([learned()]);
     expect(unitAfter().skills).toEqual([
-      { name: 'Bloodlust', category: 'melee', roll: '7', effect: 'The model may re-roll…' },
+      {
+        name: 'Bloodlust', category: 'melee', roll: '7',
+        effect: 'The model may re-roll…',
+        /*
+          And where it came from (FD-12 item 2, review round 1 finding C).
+
+          The app knows the most about this entry of any on the roster — which
+          step, which game, which 2D6 total — and until this it recorded the
+          least: a Skill the Promotions step had just rolled read back as
+          "Imported · rolled 7", indistinguishable from a name that arrived in
+          a file.
+        */
+        /* No game: this seed is in no campaign, and `campaignGameOf`'s 1 is a
+           Threshold, not a history (review round 2 item 2). */
+        source: { kind: 'advancement', roll: '7' },
+      },
     ]);
+  });
+
+  it('counts the Advancement Roll it used, because it records it', () => {
+    /*
+      Round 2 item 1: the count is not one per Skill — it is one per Skill whose
+      record STATES a roll. This writer is the case where that is unambiguous:
+      the wizard rolled the dice, so it writes `advancement` with the 2D6 total,
+      and `statesAnAdvancementRoll` reads it back off the entry rather than
+      trusting the caller to have incremented anything.
+
+      A Patron's Skill, a Glory Item's and `65 Bitter Lessons`'s state no roll
+      and cost none — which is the half round 1 got backwards by counting the
+      list's length.
+    */
+    expect(unitAfter().advancementRolls ?? 0).toBe(0);
+    apply([learned()]);
+    expect(unitAfter().advancementRolls).toBe(1);
+
+    const written = unitAfter().skills![0];
+    expect(written.source).toMatchObject({ kind: 'advancement', roll: '7' });
+    expect(statesAnAdvancementRoll(written)).toBe(true);
   });
 
   it('does not write to the legacy advancements array', () => {

@@ -10,13 +10,16 @@ import type { UnitTitleRecord } from '../../types/warband';
 import { persistWarbands } from '../persist';
 import { book, undoPurchases } from '../../rules/ledger';
 import { campaignGameOf } from '../../rules/campaign';
+import {
+  advancementRollsStated, statesAnAdvancementRoll,
+} from '../../rules/provenance';
 import { isZero } from '../../rules/costs';
 import type { Cost } from '../../types/catalogue';
 import type { Warband } from '../../types/warband';
 import type { Dataset } from '../../types/catalogue';
 import { eligibility } from '../../rules/earnedRecruitment';
 
-export type ProgressionSlice = Pick<AppState, 'updateUnitAdvancement' | 'addUnitSkill' | 'removeUnitSkill' | 'addUnitScar' | 'removeUnitScar' | 'setUnitFireteam' | 'toggleUnitSpecialUpgrade' | 'addUnitDeed' | 'removeUnitDeed' | 'setUnitTitles' | 'addUnitTitleRecord' | 'toggleUnitTitleActive' | 'removeUnitTitleRecord' | 'setUnitTitleRecords' | 'claimEarnedRecruitment'>;
+export type ProgressionSlice = Pick<AppState, 'updateUnitAdvancement' | 'addUnitSkill' | 'removeUnitSkill' | 'addUnitScar' | 'removeUnitScar' | 'addUnitInjury' | 'removeUnitInjury' | 'addWarbandReward' | 'removeWarbandReward' | 'setUnitFireteam' | 'toggleUnitSpecialUpgrade' | 'addUnitDeed' | 'removeUnitDeed' | 'setUnitTitles' | 'addUnitTitleRecord' | 'toggleUnitTitleActive' | 'removeUnitTitleRecord' | 'setUnitTitleRecords' | 'claimEarnedRecruitment'>;
 
 export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionSlice> = (set, _get) => ({
     /**
@@ -167,7 +170,21 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
               if (existing.some(s => s.name === skill.name)) return u;
               return {
                 ...u,
-                skills: [...existing, skill]
+                skills: [...existing, skill],
+                /*
+                  And the roll it used, IF its record states one (review round 2
+                  item 1).
+
+                  Round 1 added one per Skill by any route, which is the mistake
+                  `advancement.ts` warns against in as many words: a Patron
+                  grants Skills, so do some Glory Items and `65 Bitter Lessons`,
+                  and counting Skills cancels rolls the model earned. A player
+                  who types in a Skill they rolled at the table records the 2D6
+                  total with it, and that is what is counted — a Patron Skill
+                  entered by hand consumes nothing.
+                */
+                advancementRolls: (u.advancementRolls ?? 0)
+                  + (statesAnAdvancementRoll(skill) ? 1 : 0),
               };
             }),
             updatedAt: new Date().toISOString()
@@ -187,9 +204,18 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
+              const kept = (u.skills || []).filter(s => s.name !== skillName);
+              const dropped = (u.skills || []).filter(s => s.name === skillName);
+              /* Symmetrical with adding: the roll goes back only for a Skill
+                 whose record claimed one. Otherwise a mis-tap and an undo costs
+                 the model an Advancement Roll for good — the count only ever
+                 climbing is how a correction becomes a penalty — while removing
+                 a Patron Skill would refund a roll it never spent. */
+              const refund = advancementRollsStated(dropped);
               return {
                 ...u,
-                skills: (u.skills || []).filter(s => s.name !== skillName)
+                skills: kept,
+                advancementRolls: Math.max(0, (u.advancementRolls ?? 0) - refund),
               };
             }),
             updatedAt: new Date().toISOString()
@@ -284,6 +310,124 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             updatedAt: new Date().toISOString()
           };
           return updatedWb;
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    /*
+      An injury, into BOTH arrays.
+
+      `injuries` is the authority on which injuries a model has — it is what
+      `alreadySuffered`, the card, the presentation projection and every roster
+      file read — and `injuryRecords` carries where each came from. Writing them
+      in one action is what stops the two lists disagreeing; `injuriesHeld`
+      joins them back for a reader.
+    */
+    addUnitInjury: (warbandId, unitId, injury) => {
+      set((state) => {
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          return {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              const name = injury.name.trim();
+              if (!name) return u;
+              const key = (s: string) => s.trim().toLowerCase();
+              if ((u.injuries ?? []).some((i) => key(i) === key(name))) return u;
+              return {
+                ...u,
+                injuries: [...(u.injuries ?? []), name],
+                injuryRecords: [
+                  ...(u.injuryRecords ?? []),
+                  { name, ...(injury.source ? { source: injury.source } : {}) },
+                ],
+              };
+            }),
+            updatedAt: new Date().toISOString(),
+          };
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    removeUnitInjury: (warbandId, unitId, name) => {
+      set((state) => {
+        const key = (s: string) => s.trim().toLowerCase();
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          return {
+            ...w,
+            units: w.units.map((u) => {
+              if (u.id !== unitId) return u;
+              return {
+                ...u,
+                injuries: (u.injuries ?? []).filter((i) => key(i) !== key(name)),
+                injuryRecords: (u.injuryRecords ?? []).filter((r) => key(r.name) !== key(name)),
+              };
+            }),
+            updatedAt: new Date().toISOString(),
+          };
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    /*
+      A standing grant the Warband holds.
+
+      `campaignRules` gains the name as well, because that list is what the
+      rules modules read to decide whether the Warband HAS a grant — `golemGrant`
+      matches the Book of Golems by the sentence its Exploration row prints, on
+      the strength of the name being in that list. A reward the player recorded
+      by hand is evidence of the same kind as one the importer read, so it goes
+      in the same place; `rewards` carries the text and the provenance a name
+      cannot.
+    */
+    addWarbandReward: (warbandId, reward) => {
+      set((state) => {
+        const key = (s: string) => s.trim().toLowerCase();
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          const name = reward.name.trim();
+          if (!name) return w;
+          if ((w.rewards ?? []).some((r) => key(r.name) === key(name))) return w;
+          const rules = w.campaignRules ?? [];
+          return {
+            ...w,
+            rewards: [...(w.rewards ?? []), { ...reward, name }],
+            campaignRules: rules.some((r) => key(r) === key(name)) ? rules : [...rules, name],
+            updatedAt: new Date().toISOString(),
+          };
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    /*
+      Removing a reward removes its name from `campaignRules` too.
+
+      Leaving the name behind would keep the grant in force for every rules
+      module that reads that list while the record of it was gone from the
+      sheet — a Warband that still held the Book of Golems and could not say
+      why.
+    */
+    removeWarbandReward: (warbandId, name) => {
+      set((state) => {
+        const key = (s: string) => s.trim().toLowerCase();
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+          return {
+            ...w,
+            rewards: (w.rewards ?? []).filter((r) => key(r.name) !== key(name)),
+            campaignRules: (w.campaignRules ?? []).filter((r) => key(r) !== key(name)),
+            updatedAt: new Date().toISOString(),
+          };
         });
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };

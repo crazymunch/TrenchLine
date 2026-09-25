@@ -1023,6 +1023,135 @@ body {
   .print-hide {
     display: none !important;
   }
+
+  /* =========================================================================
+     THE WARBAND ROSTER SHEET (FD-12 item 4)
+
+     A different sheet from `.print-sheet` above, and deliberately a second
+     block rather than a widening of the first. `.print-sheet` is the export
+     modal's three modes — plain, pretty, cards — and exists only on paper.
+     `.roster-sheet` is the official Warband Roster Sheet, which is a ROUTE: it
+     is read on screen at the table, so it cannot be `display: none` off paper,
+     and it already has its layout from the theme when it prints.
+
+     What print changes is the ink, the units and the pagination: page 1
+     landscape as the printed sheet is, then two unit cards a page, in the
+     sheet's order.
+
+     Not verified on paper. Stated in physical units for that reason, as the
+     block above is.
+     ========================================================================= */
+
+  /*
+    Page 1 lands sideways, which is how the official sheet prints it: the
+    campaign table is six columns of twelve rows and portrait squeezes the
+    scenario name to nothing. A named page rather than a global `size`, because
+    the unit cards that follow are portrait.
+  */
+  @page roster-landscape {
+    size: landscape;
+    margin: 10mm;
+  }
+  .roster-sheet .roster-sheet-page {
+    page: roster-landscape;
+    page-break-after: always;
+  }
+
+  /* The sheet's own subtree is what prints, the same mechanism as above. */
+  .roster-sheet,
+  .roster-sheet * {
+    visibility: visible;
+  }
+  .roster-sheet {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 9pt;
+    line-height: 1.3;
+  }
+  .roster-sheet,
+  .roster-sheet * {
+    background: transparent !important;
+    color: #000 !important;
+    border-color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /*
+    Except the Experience track, whose MEANING is its fill.
+
+    The blanket rule above is right for the rest of the sheet — a lit screen's
+    panels and tints are noise on paper — and it was catastrophic here: every
+    filled Experience box and every greyed LIMITED POTENTIAL box printed empty,
+    so the sheet came out of the printer claiming every model had nought
+    Experience and no cap (review round 1, finding I).
+
+    `print-color-adjust: exact` is the instruction to the printer that these
+    fills are content rather than decoration, and it is also what stops a
+    browser's "background graphics off" default dropping them. Stated in black
+    and a grey, because this is ink: the theme's colours are not on paper.
+  */
+  .roster-sheet .print-fill {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .roster-sheet .print-fill.bg-theme-primary {
+    background: #000 !important;
+  }
+  .roster-sheet .print-fill.bg-theme-border\/40 {
+    background: #bbb !important;
+  }
+  /*
+    The third fill: a box this submission is awarding (review round 2 item 11).
+    A mid grey, so it is distinguishable from both the solid held box and the
+    lighter capped one in black and white — the accent colour is a screen
+    colour and means nothing on paper.
+
+    It is here because the class exists at all: a fill the stylesheet does not
+    name is a fill the blanket `background: transparent !important` erases,
+    which is the bug item I of round 1 was.
+  */
+  .roster-sheet .print-fill.bg-theme-accent {
+    background: #777 !important;
+  }
+
+  /*
+    Two unit cards a page, which is the printed sheet's own density for the
+    large card. `break-inside: avoid` is right HERE and wrong for
+    `.print-model` above, and the difference is what is inside: a roster sheet
+    card is a statline, a track and three short lists, which fits half a page;
+    a `.print-model` in `pretty` mode carries every ability's full rules text
+    and can exceed a page on its own.
+  */
+  .roster-sheet .roster-sheet-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    border: 0.6pt solid #000;
+    padding: 3mm;
+    margin: 0 0 4mm;
+    min-height: 118mm;
+  }
+  .roster-sheet .roster-sheet-card:nth-of-type(2n) {
+    page-break-after: always;
+  }
+
+  /* The table prints as a table at every width: the phone stack is a screen
+     layout, and both are rendered, so exactly one must show. */
+  .roster-sheet table {
+    width: 100%;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .roster-sheet th,
+  .roster-sheet td {
+    border: 0.3pt solid #000;
+    padding: 0.6mm 1mm;
+    text-align: left;
+  }
 }
 
 /* The sheet does not exist on screen. It is built for paper only, and showing

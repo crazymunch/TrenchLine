@@ -16,6 +16,7 @@ import {
 import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries, traumaWriteFor,
+  traumaRecords,
 } from '../../rules/trauma';
 import {
   cappedExperience, experienceCap, canBePromoted, eliteCount, promotionRules,
@@ -32,6 +33,9 @@ import type { MatchHandover } from '../../rules/matchHandover';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { fieldable } from '../../rules/recreation';
+import { PatronPicker } from '../builder/PatronPicker';
+import { patronMissing } from '../../rules/patrons';
+import { ExperienceTrack } from '../ExperienceTrack';
 import {
   warStoriesOffer, warStoriesEligible, extraExperienceFor, isValidRoll,
   type ExtraExperienceRule,
@@ -70,7 +74,7 @@ interface PostBattleWizardModalProps {
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ handover, onClose }) => {
   const {
     getActiveWarband, applyPostBattleResults, campaign, setCampaignHouseRule,
-    claimEarnedRecruitment, opponents, factions, warbands,
+    claimEarnedRecruitment, opponents, factions, warbands, updateWarbandLore,
   } = useStore();
 
   const warband = getActiveWarband();
@@ -203,7 +207,15 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
 
   // Casualties from match
   const ooaUnits = battleRoster.filter((u) => u.status === 'Out of Action');
-  const [casualtyOutcomes, setCasualtyOutcomes] = useState<Record<string, { outcome: string; isDead: boolean }>>({});
+  /*
+    `thrown` is the D66 the player actually threw, kept because the record needs
+    it and round 1 threw it away: the writer stored the matched ROW's range
+    (`41-63`) as the roll, so a sheet claimed "rolled 41-63" for a die that came
+    up 52 (review round 2 item 3). The throw was here all along.
+  */
+  const [casualtyOutcomes, setCasualtyOutcomes] = useState<Record<string, {
+    outcome: string; isDead: boolean; thrown?: number;
+  }>>({});
   /*
     Roll 12 Captured is the one result the table does not decide: two players
     negotiate a ransom, and the model is either bought back or executed. The
@@ -282,6 +294,32 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     rolls: [number, number] | null;
   }>>({});
   const [skillPicks, setSkillPicks] = useState<SkillLearned[]>([]);
+  /*
+    FD-15: the step asks for the Patron on the spot.
+
+    A Patron Skill result on a Warband with none recorded used to end the roll —
+    "nothing can be offered" — with the player's only route out being to close
+    the wizard, open the Chronicle dossier, type the Patron's name correctly and
+    start the post-battle again. The rule is not optional ("they MUST pick a
+    Patron for it", L4753-4755), so the gap is closable here.
+  */
+  const [patronAskOpen, setPatronAskOpen] = useState(false);
+  /*
+    And the wizard ASKS when it opens on a campaign Warband with none (FD-15: "a
+    Warband already in a campaign with none recorded is asked for it the first
+    time the wizard opens").
+
+    Asked as a prompt on the first step rather than as a picker opened over it,
+    which is a deviation from the design's wording and a deliberate one. This is
+    a Sheet, and opening a second Sheet on top of it the moment the wizard mounts
+    puts a dialog in front of a player who has not done anything yet — and hides
+    the step they came for behind it. The prompt is unmissable, it is on the
+    screen the player is already reading, and the picker is one tap away.
+
+    Computed, not stored: it has to stop showing the moment the Patron is picked,
+    and a flag would have to be cleared by every path that sets one.
+  */
+  const patronGap = patronMissing(warband);
 
   /*
     War Stories (Wildcard Skill 11), taken or left — FD-06d.
@@ -349,7 +387,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   const [explorationLocation, setExplorationLocation] =
     useState<{ name: string; description?: string } | null>(null);
   const [explorationFound, setExplorationFound] =
-    useState<{ discovered?: string; effects: ExplorationEffect[] }>({ effects: [] });
+    useState<{ discovered?: string; text?: string; effects: ExplorationEffect[] }>({ effects: [] });
 
   /*
     Above the early return, and it has to be. React identifies a hook by its
@@ -438,11 +476,13 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
         ? {
             outcome: `D66: ${rollNum} - ${matched.name}: ${matched.description}`,
             isDead: /^dead$/i.test(matched.name),
+            thrown: rollNum,
           }
         : {
             outcome: `D66: ${rollNum} - no row on the Trauma Table. This is a data bug; ` +
                      `record the result by hand and report it.`,
             isDead: false,
+            thrown: rollNum,
           },
     }));
   };
@@ -790,7 +830,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     setExplorationLocation(outcome.location ?? null);
     setExplorationChoice(choice ?? null);
     setExplorationFound(outcome.location
-      ? { discovered: outcome.location.name, effects: granted }
+      ? {
+        discovered: outcome.location.name,
+        /* The Location's own printed text, so the Warband's record of what it
+           holds carries the rule rather than just its name (FD-12 item 2).
+           Copied from the dataset, never retyped. */
+        text: outcome.location.description,
+        effects: granted,
+      }
       : { effects: [] });
     // Loot replaces rather than accumulates: rolling again is a correction, not
     // a second Exploration.
@@ -1080,10 +1127,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
         isDead: removed,
         ...(capture?.fullRecovery ? { fullRecovery: true } : {}),
         ...(capture && capture.ransom > 0 ? { ransomPaid: capture.ransom } : {}),
-        records: {
-          injury: write.injury,
-          ...(write.scar ? { scar: write.scar } : {}),
-        },
+        /*
+          The throw and the row, kept apart (review round 2 item 3) — and decided
+          in `rules/trauma.ts` rather than here (Order 44 item 4b), so a test can
+          drive the decision instead of hand-building a record the store then
+          reads. `data.thrown` is the D66 this component has held since the
+          result was resolved.
+        */
+        records: traumaRecords(write, data.thrown),
       };
     });
 
@@ -1155,7 +1206,11 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       */
       explorationForfeited
         ? undefined
-        : { discovered: explorationFound.discovered, effects: explorationFound.effects },
+        : {
+          discovered: explorationFound.discovered,
+          text: explorationFound.text,
+          effects: explorationFound.effects,
+        },
     );
   };
 
@@ -1262,6 +1317,32 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
           {/* STEP 1: OUTCOME & SCENARIO */}
           {step === 1 && (
             <div className="space-y-4">
+              {/*
+                FD-15. "Once they have recruited their Warband, they must pick a
+                Patron for it" — so a campaign Warband with none recorded is a gap
+                in the record, and the post-battle is where it starts to matter:
+                an Advancement Roll of 2 sends the player to a list this Warband
+                does not have.
+              */}
+              {patronGap && (
+                <div className="rounded border border-status-warning bg-status-warning/10 p-3 space-y-2">
+                  <p className="text-xs text-theme-muted leading-relaxed">
+                    <strong className="text-status-warning">No Patron recorded.</strong>{' '}
+                    &ldquo;Once they have recruited their Warband, they must pick a
+                    Patron for it.&rdquo; The Patron decides which Skill you may
+                    take on a Patron Skill result, so that roll cannot be answered
+                    until one is set.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setPatronAskOpen(true)}
+                    className="min-h-[44px] w-full rounded border border-status-warning bg-theme-base px-3 text-xs font-bold uppercase text-status-warning"
+                  >
+                    Pick this Warband&rsquo;s Patron
+                  </button>
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs uppercase text-theme-muted mb-1">
                   Official Scenario Fought (12 Official Scenarios)
@@ -2102,6 +2183,45 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     )}
 
                     {/*
+                      The track (FD-12 item 1), the same component the unit card
+                      and the Roster Sheet draw. The circles are where the rolls
+                      below come from, so the player can see the one they are
+                      about to spend and the next one coming.
+
+                      `xp + xp.points`, not `unit.xp`: the rolls due beneath it
+                      are computed from the Experience this submission awards,
+                      so a track drawn on the figure from BEFORE the battle
+                      showed a model one box short of a circle while offering it
+                      the roll that circle earns (review round 1, finding L).
+                      `justPromoted` resets to zero first, exactly as the commit
+                      does — a model Promoted in this step "begins with 0
+                      Experience Points, but will gain at least 1".
+                    */}
+                    <ExperienceTrack
+                      dataset={dataset}
+                      unit={{
+                        ...unit,
+                        xp: (promotionRolls?.outcomes ?? []).some(
+                          (o) => o.promoted && o.unitId === unit.id)
+                          ? xp.points
+                          : unit.xp + xp.points,
+                      }}
+                      /*
+                        And WHICH boxes this submission is adding (review round 2
+                        item 11). The track has to be drawn on the total, because
+                        the rolls offered beside it are computed from the total —
+                        but a player looking at six filled boxes could not see
+                        which of them the battle had just earned. A model Promoted
+                        in this step starts from nothing, so all of its boxes are
+                        the gain.
+                      */
+                      heldBefore={(promotionRolls?.outcomes ?? []).some(
+                        (o) => o.promoted && o.unitId === unit.id)
+                        ? 0
+                        : unit.xp}
+                    />
+
+                    {/*
                       The Advancement Roll, in the book's three steps.
 
                       Shown only for a model that has actually earned one. The
@@ -2209,14 +2329,30 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                                       and substituting a Skill from elsewhere is
                                       what this step used to do.
                                     */
-                                    <p className="text-xs sm:text-[11px] text-theme-muted">
-                                      {SKILL_TABLE_LABEL[offer.table]} on {offer.rolled}:{' '}
-                                      {offer.substitution === 'patron'
-                                        ? 'Patron Skill — this Warband has no Patron recorded, so nothing can be offered.'
-                                        : offer.landedOn === null
-                                          ? 'that total is not on this table.'
-                                          : 'the model already has every Skill on this table.'}
-                                    </p>
+                                    <>
+                                      <p className="text-xs sm:text-[11px] text-theme-muted">
+                                        {SKILL_TABLE_LABEL[offer.table]} on {offer.rolled}:{' '}
+                                        {offer.substitution === 'patron'
+                                          ? 'Patron Skill — this Warband has no Patron recorded, so nothing can be offered.'
+                                          : offer.landedOn === null
+                                            ? 'that total is not on this table.'
+                                            : 'the model already has every Skill on this table.'}
+                                      </p>
+                                      {/*
+                                        FD-15. The gap is closable here: pick the
+                                        Patron and the same roll offers its Skills,
+                                        without leaving the post-battle.
+                                      */}
+                                      {offer.substitution === 'patron' && (
+                                        <button
+                                          type="button"
+                                          onClick={() => setPatronAskOpen(true)}
+                                          className="min-h-[44px] w-full rounded border border-theme-accent bg-theme-base px-3 text-xs font-bold uppercase text-theme-accent"
+                                        >
+                                          Pick this Warband&rsquo;s Patron
+                                        </button>
+                                      )}
+                                    </>
                                   ) : offer.offered.map((row) => (
                                     <button
                                       key={row.name}
@@ -2820,6 +2956,30 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
 
             </div>
           )}
+
+      {/*
+        FD-15. Rendered at the modal's root rather than inside the model's row:
+        the picker is a Sheet of its own, and nesting one inside a mapped row
+        would mount one per model.
+      */}
+      {warband && (
+        <PatronPicker
+          open={patronAskOpen}
+          onClose={() => setPatronAskOpen(false)}
+          dataset={dataset}
+          factionId={warband.factionId}
+          factionName={factions.find((f) => f.id === warband.factionId)?.name}
+          current={warband.patron}
+          reason={'A Patron Skill was rolled and this Warband has no Patron recorded. '
+            + '“If a Patron Skill is rolled, use one of the Patron Skills for the Patron '
+            + 'you picked for your Warband.” Pick it here and the roll offers that '
+            + 'Patron’s Skills.'}
+          onPick={(name) => {
+            updateWarbandLore(warband.id, warband.lore ?? '', warband.motto ?? '', name);
+            setPatronAskOpen(false);
+          }}
+        />
+      )}
 
     </Sheet>
   );

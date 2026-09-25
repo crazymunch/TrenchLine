@@ -1,0 +1,158 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import type { Warband } from '@/types/warband';
+import { loadSharedWarband } from '@/lib/api/warbandLoader';
+import { loadDataset, rulesetForWarband, rulesetNote } from '@/lib/serverDataset';
+import { rosterSheet } from '@/rules/rosterSheet';
+import { rulesetInfo } from '@/rules/rulesets';
+import { SharedRosterSheet } from './SharedRosterSheet';
+
+/**
+ * A warband at a share link (SH-1).
+ *
+ * > Trench Companion's share link is the thing people paste into the group
+ * > chat. Ours has nothing to paste.
+ *
+ * `/w/<token>` renders the Roster Sheet from FD-12, read only: no builder
+ * controls, no session required, and `noindex`.
+ *
+ * **Outside `(app)`, on purpose.** The app group's layout carries the
+ * navigation rail, the bottom bar, the sync banner and the store — every one of
+ * which is a control this page must not have.
+ *
+ * **404, never an empty sheet.** An unknown token and a cleared one are the
+ * same answer, because `loadSharedWarband` returns null for both: "Stop
+ * sharing" nulls the column, so the old link matches no row.
+ *
+ * ## The sheet is projected HERE, on the server
+ *
+ * Review round 1, finding A, and it was a real disclosure. The first version
+ * handed the loader's whole object to a `'use client'` component as a prop —
+ * and a client component's props are **serialised into the HTML**. Passing
+ * `includePrivate={false}` hid those fields on the page and did nothing at all
+ * about them being sent: view-source on a shared roster carried the owner's
+ * private notes, every model's notes, quote and lore, the `chronicleLog`, the
+ * `snapshots` whose labels name opponents, the `ledger` including the
+ * `byUserId` and `byName` of admin entries — **another user's data** — plus
+ * `campaignMembers` and `creatorId`, all under a page that said the player's
+ * private notes are not shared.
+ *
+ * So the projection runs on the server and the client is handed the
+ * `RosterSheetModel` and nothing else. That model is a **rendering** of the
+ * roster: it carries what the printed sheet prints. `rosterSheet.test.ts`
+ * asserts that nothing private reaches it, because "we checked once" is not a
+ * property a page keeps.
+ *
+ * ## And WHICH rendering — round 2, item 4
+ *
+ * Moving the projection to the server stopped the roster being sent. It did not
+ * settle what the sheet itself prints, and four things it printed were the
+ * owner's: **PLAYER**, which is an ACCOUNT name and, for an account registered
+ * by email with no name set, the local part of that address
+ * (`api/auth/register/route.ts` falls back to `email.split('@')[0]`); the
+ * Warband's **lore** as the bio, which `presentRoster` has always treated as
+ * private; a provenance **note**, the player's own words; and the legacy
+ * free-text **advancements** strings.
+ *
+ * `rosterSheet` now takes an `audience` and this page passes `'public'`. The
+ * parameter rather than a strip here is deliberate: the default is `'public'`,
+ * so a field added to the model tomorrow is absent from this page without
+ * anybody remembering to remove it. Forgetting fails closed.
+ *
+ * **The ruleset is the warband's own** (`rulesetId`, RV-1), not the reader's
+ * and not the server's default — a shared roster is the owner's roster, and
+ * whichever edition the reader's browser happens to be set to is not a fact
+ * about it. Where none is recorded the published default is used and the page
+ * says so, because absent means *not recorded*, never *the default*.
+ *
+ * **Dynamic, never cached.** The token is a capability and the roster behind it
+ * changes; a cached render would serve a stale roster and, worse, could serve
+ * it after the share was stopped.
+ */
+export const dynamic = 'force-dynamic';
+
+/**
+ * `noindex` in the document as well as in the header.
+ *
+ * The header (`next.config.mjs`) is the one that matters; this covers a crawler
+ * that renders the HTML and reads the tag. What is at stake is somebody's
+ * roster in a search index that outlives the share.
+ *
+ * The title carries the warband's name so a pasted link previews as something
+ * recognisable in a chat, and nothing else: no player name, no account, and no
+ * description that would put the roster's contents into a link preview.
+ */
+export async function generateMetadata(
+  { params }: { params: Promise<{ token: string }> },
+): Promise<Metadata> {
+  const { token } = await params;
+  const warband = await loadSharedWarband(token);
+  return {
+    title: warband ? `${warband.name} — Warband Roster Sheet` : 'Roster not found',
+    robots: { index: false, follow: false, nocache: true },
+  };
+}
+
+export default async function SharedWarbandPage(
+  { params }: { params: Promise<{ token: string }> },
+) {
+  const { token } = await params;
+  const loaded = await loadSharedWarband(token);
+  if (!loaded) notFound();
+
+  /*
+    The loader's shape is the sync's shape, which is what SH-1 asks for — and it
+    is wider than `Warband` by the server-owned fields. Nothing below leaves
+    this function except the projection.
+  */
+  const warband = loaded as unknown as Warband;
+
+  const ruleset = rulesetForWarband(warband);
+  /*
+    The footer's three readings as one value (Order 44 item 4c). Built once, here,
+    so both renders below say the same thing — and as a discriminated union, so
+    the reading that names the id the warband asked for cannot be constructed
+    without it.
+  */
+  const note = rulesetNote(ruleset, rulesetInfo(ruleset.id)?.name ?? ruleset.id);
+  const dataset = await loadDataset(ruleset.id);
+
+  /*
+    A ruleset the build cannot load is reported, never substituted (rule 2). The
+    sheet without one has no Threshold table, no Experience track and no faction
+    name, and filling those in from anywhere else is the fabrication this
+    project deleted `githubSync.ts` over.
+  */
+  if (!dataset) {
+    return (
+      <SharedRosterSheet
+        name={warband.name}
+        sheet={null}
+        ruleset={note}
+      />
+    );
+  }
+
+  const sheet = rosterSheet(warband, {
+    dataset,
+    /* No campaign: this reader has none, and the sheet leaves CAMPAIGN BATTLE
+       blank rather than naming one it cannot verify. */
+    campaign: null,
+    /*
+      A public reader (review round 2 item 4). The audience is what decides what
+      the model CONTAINS — no account name, no lore, no notes of any kind — and
+      with the projection on the server those fields never leave the process.
+      Naming the audience here rather than stripping fields afterwards is what
+      makes the next field somebody adds private without this page changing.
+    */
+    audience: 'public',
+  });
+
+  return (
+    <SharedRosterSheet
+      name={warband.name}
+      sheet={sheet}
+      ruleset={note}
+    />
+  );
+}
