@@ -193,7 +193,7 @@ describe('the ledger, opened as migrateFoundingPot opens one', () => {
       ['quartermaster', -407, -4],
     ]);
     expect(out.warband.gloryPoints).toBe(7);
-    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(false);
+    expect(out.warnings.some((w) => /do not reconcile/.test(w))).toBe(false);
   });
 
   it('debits bank less spare, so a warband with a stash lands on their Strongbox', () => {
@@ -217,7 +217,7 @@ describe('the ledger, opened as migrateFoundingPot opens one', () => {
       ['quartermaster', -467],
     ]);
     expect(out.warband.treasuryDucats).toBe(233);
-    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(false);
+    expect(out.warnings.some((w) => /do not reconcile/.test(w))).toBe(false);
   });
 
   it('names both of their figures in the quartermaster entry', () => {
@@ -250,7 +250,7 @@ describe('the ledger, opened as migrateFoundingPot opens one', () => {
     /* Their page says the Strongbox holds 100, and that is what it holds
        here — whatever their roster and stash figures add up to. */
     expect(out.warband.treasuryDucats).toBe(100);
-    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(true);
+    expect(out.warnings.some((w) => /do not reconcile/.test(w))).toBe(true);
   });
 });
 
@@ -324,10 +324,14 @@ describe('the report', () => {
     expect(r.warnings.some((w) => /debt of 25 Ducats/.test(w))).toBe(true);
   });
 
-  it('lists the three per-model fields it does not map, every time', () => {
+  it('lists the field it still does not map, every time', () => {
+    /* `scar_reserves` and `active` were measured on the owner's own warband
+       and now map; `stat_selections` was empty on all thirteen, so there is
+       nothing to read it from and it waits. */
     const r = run();
-    for (const field of ['scar_reserves', 'stat_selections', 'active']) {
-      expect(r.unmapped.some((u) => u.startsWith(`${field}:`))).toBe(true);
+    expect(r.unmapped.some((u) => u.startsWith('stat_selections:'))).toBe(true);
+    for (const mapped of ['scar_reserves:', 'active:']) {
+      expect(r.unmapped.some((u) => u.startsWith(mapped))).toBe(false);
     }
   });
 

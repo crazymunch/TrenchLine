@@ -165,6 +165,8 @@ booked for it.
 | `exploration.explorationskills` | `Warband.explorationEffects` (FD-07) |
 | `exploration.locations` | `Warband.explorationDiscoveries` (FD-07) |
 | `context.campaign_round`, `context.victory_points` | `Warband.importedCampaign`, **each only where their record states it** |
+| `scar_reserves` | `ActiveUnit.scars`, **on top of one Scar per injury** — see below |
+| `active` | the model's place on the roster — see *Their fighter status* below |
 
 `importedCampaign` is its own field rather than a write into our own numbers,
 and that needs saying. Our Campaign Victory Points are **derived** from the
@@ -181,6 +183,51 @@ their campaign on the record that their record never asserted, and a player
 reading it here would take it for their own. Where neither field is stated, the
 warband carries no `importedCampaign` at all.
 
+### Battle Scars
+
+**Measured on the owner's own Companion screen, 25 September 2026.** Al-Qahhar,
+the Crippled — a Brazen Bull carrying `in_lostarm` with `scar_reserves: 0` —
+shows exactly **one** Battle Scar. So:
+
+> Scars = one per entry in `list_injury`, **plus** `scar_reserves`.
+
+which is what the book implies anyway: a Full Recovery and a paid ransom each
+leave a Scar with no injury behind it, so the two counts were never going to be
+the same number.
+
+Both halves land on `ActiveUnit.scars`, not on `injuries`. That is the list
+`scarCount` reads and `unfitForDuty` retires a model on, so an imported model
+is judged by the same rule as a home-grown one. The two arrays are separate on
+purpose and RC-05 is specifically about not inferring either from the other.
+
+A Scar that came with an injury carries that Trauma row's name and roll. A Scar
+from the reserves is named `Battle Scar` and carries **no roll**: their record
+says how many there are and not which result caused each, and labelling one
+with a row it does not have is the invention [rule 2](../CLAUDE.md) forbids.
+
+*The same screen shows the Experience track with circles at 2, 4 and 7, which
+agrees with our derived `campaign.experience.advancementAt`, and three Scar
+boxes with a skull on the third, which agrees with `unfitAt` 3.*
+
+### Their fighter status
+
+`active` is not a flag but a state, and their own bundle names the values it
+tests for — `IsDead(){return "dead"==this.State}`, `IsReserve()` on
+`"reserved"`, `IsLost()` on `"lost"`, and `"dog"==e.model.State` for a Trench
+Dog attached to a handler.
+
+| theirs | here |
+| --- | --- |
+| `active` | on the roster |
+| `reserved` | on the roster, `benched` — *"any models you do not use will have to sit the game out"* (p.97) is the same choice, and durable for the same reason |
+| `dead` | to `fallen` with its Battlekit, through `removeFromRoster` — the one path a removed model leaves by (RR-25 / FD-05a) — and a warning naming it |
+| `dog` | imported as the model it names, since our dataset holds the Trench Dog as its own entry. The attachment to a handler is theirs and is reported as not mapped |
+| `lost` | **not imported**, and named in the report with their own word |
+
+`lost` is the one that must not be guessed. What it means is stated nowhere
+public, and neither reading is safe: taking it for dead removes a model the
+player may still have, and taking it for benched keeps one they have lost.
+
 ## Not mapped
 
 Reported on every import, whether or not the warband carries a value, because a
@@ -189,12 +236,12 @@ later that something did not arrive:
 
 | field | why not |
 | --- | --- |
-| `scar_reserves` | Battle Scars are recorded from the Trauma Table here, and what this counter holds is not stated anywhere public. |
-| `stat_selections` | What a stat selection changes is not stated anywhere public. |
-| `active` | It is not known whether this marks a model benched for a game or retired from the roster. |
+| `stat_selections` | What a stat selection changes is not stated anywhere public, and it is `[]` on all thirteen models of the owner's own warband — so there is nothing to read it from either. It waits for a warband that carries one. |
 
-All three wait to be measured on a warband the owner owns, rather than be mapped
-on a reading of one stranger's record.
+`scar_reserves` and `active` **were** in this table and are not any more: both
+were measured on the owner's own warband and both now map, as above. That is
+what the table is for — a field sits here until somebody can show what it
+means, and then it leaves.
 
 Reported when they hold something: `fireteams` (a Fireteam is a name on a model
 here, and their grouping has not been measured), `modifiers`, `consumables`, and

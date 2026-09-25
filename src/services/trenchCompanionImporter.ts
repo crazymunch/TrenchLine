@@ -49,6 +49,9 @@ import { nameKey } from '../rules/names';
 import { recruitable } from '../rules/recruitable';
 import { sameFaction } from '../rules/variants';
 import { catalogueUnitFor } from '../rules/catalogueUnit';
+import { GOLEM_GRANTED_BY } from '../rules/golem';
+import { removeFromRoster } from '../rules/fallen';
+import EQUIVALENCE from '../../data-sources/trench-companion/id-name-equivalence.json';
 
 /* ------------------------------------------------------------ their shape */
 
@@ -188,6 +191,85 @@ const refId = (r: TcRef | string | undefined): string =>
 const slugTail = (id: string): string => id.replace(/^[a-z]{2,3}_/, '');
 
 /**
+ * Their ids where no rule of spelling reaches our name.
+ *
+ * Two entries today, each citing their bundle — see
+ * `data-sources/trench-companion/id-name-equivalence.json` and the guard test
+ * that fails when one stops being needed. Everything else resolves by the
+ * slug rules below, because their ids ARE slugs of their names.
+ */
+const EQUIVALENT: Record<string, { ours: string | null; theirs: string; why: string }> =
+  (EQUIVALENCE as { ids: Record<string, { ours: string | null; theirs: string; why: string }> }).ids;
+
+/**
+ * The names one of their model ids can mean, in the order to try them.
+ *
+ * Their slugs carry structure, and it is structure about OUR data:
+ *
+ *   `md_azeb_mv_kavass`        the Azeb under a named Variant; `_mv_` separates
+ *                              the base entry from the Variant's own name, and
+ *                              the part after it is what our Variant-applied
+ *                              list calls the model ("Kavass").
+ *   `md_takwincreation_golem`  the same entry, created by the Book of Golems.
+ *
+ * So: the whole slug, then the part after `_mv_`, then the part before it.
+ * The `_golem` suffix is stripped first and answered separately — it says how
+ * the model ARRIVED, not which entry it is (GOLEM-1).
+ */
+function modelSlugKeys(slug: string | undefined): string[] {
+  if (!slug) return [];
+  const tail = golemStripped(slugTail(slug)).slug;
+  const [before, after] = tail.includes('_mv_') ? tail.split('_mv_') : [tail, ''];
+  return [...new Set([nameKey(tail), nameKey(after), nameKey(before)].filter(Boolean))];
+}
+
+/**
+ * The Book of Golems, written into the id.
+ *
+ * `md_takwincreation_golem` is a Takwin Homunculus the grant created — their
+ * bundle files it under `variant_name: "Rare_Exploration"`, which is the
+ * Exploration row this app already reads (GOLEM-1). The model is the same
+ * entry either way, so the suffix is taken off before resolution and the
+ * answer carried out separately, the way `golemOnImport` keeps the decision
+ * apart from the model.
+ */
+function golemStripped(tail: string): { slug: string; golem: boolean } {
+  return tail.endsWith('_golem')
+    ? { slug: tail.slice(0, -'_golem'.length), golem: true }
+    : { slug: tail, golem: false };
+}
+
+/**
+ * The names one of their upgrade ids can mean.
+ *
+ * Their upgrade ids are namespaced by the option GROUP as well as by the
+ * model, and they keep the underscores inside a name:
+ * `up_alchemicalformulae_massive_size` is `Massive Size` in the
+ * `Alchemical Formulae` group, and `up_secrets_secretsoftakwin` is
+ * `Secrets of Takwin` under `Secrets`.
+ *
+ * So: the whole tail, then the tail with its FIRST underscore-delimited
+ * segment dropped — which is the group, whatever the group happens to be
+ * called, without this file needing a list of their group names. Then the
+ * same again with the model's own slug taken off the front, for the ids that
+ * are namespaced by the model instead.
+ *
+ * Underscores inside a name are simply not significant: `nameKey` drops every
+ * non-alphanumeric, so `massive_size` and `Massive Size` are the same key.
+ */
+function upgradeSlugKeys(id: string, modelSlug: string | undefined): string[] {
+  const tail = slugTail(id);
+  const own = nameKey(golemStripped(slugTail(modelSlug ?? '')).slug);
+  const withoutGroup = tail.includes('_') ? tail.slice(tail.indexOf('_') + 1) : '';
+  const flat = nameKey(tail);
+  return [...new Set([
+    flat,
+    nameKey(withoutGroup),
+    own && flat.startsWith(own) ? flat.slice(own.length) : '',
+  ].filter(Boolean))];
+}
+
+/**
  * Their price for a line, in the currency their `cost_type` names.
  *
  * `cost_type` 0 is Ducats on every line measured. `1` is read as Glory
@@ -267,6 +349,62 @@ function uniqueByName<T>(candidates: T[], nameOf: (x: T) => string, keys: string
   return undefined;
 }
 
+/**
+ * Their fighter status, and what each of its five values means here.
+ *
+ * `active` is not a flag; it is a state, and their own bundle names the
+ * values it tests for:
+ *
+ *   `IsDead(){return "dead"==this.State}`
+ *   `IsReserve(){return "reserved"==this.State}`
+ *   `IsLost(){return "lost"==this.State}`
+ *   `"dog"==e.model.State`   — a Trench Dog attached to a handler
+ *
+ * Four of the five map onto something this app already has. `lost` does not,
+ * and is the one that must NOT be guessed: neither "dead" nor "benched" is a
+ * safe reading of a word whose meaning is stated nowhere public, and either
+ * guess silently either kills a model or keeps one the player has lost. It is
+ * left off the roster and named in the report, with their word.
+ */
+type FighterStatus =
+  | { keep: true; benched: boolean; dead: boolean; note?: string }
+  | { keep: false; why: string };
+
+function fighterStatus(raw: unknown, label: string): FighterStatus {
+  const state = typeof raw === 'string' ? raw.trim().toLowerCase() : 'active';
+  switch (state) {
+    case '':
+    case 'active':
+      return { keep: true, benched: false, dead: false };
+    case 'reserved':
+      /* "Models you do not use will have to sit the game out" — `benched` is
+         the same choice, durable for the same reason (p.97). */
+      return { keep: true, benched: true, dead: false };
+    case 'dead':
+      return {
+        keep: true, benched: false, dead: true,
+        note: `${label} is dead in their record, and is imported to the memorial with its `
+          + 'Battlekit rather than onto the roster.',
+      };
+    case 'dog':
+      /* A Trench Dog attached to a handler. Our dataset holds the Dog as its
+         own entry, so it is imported as the model it names; the attachment
+         itself is theirs and we have nowhere to put it. */
+      return {
+        keep: true, benched: false, dead: false,
+        note: `${label} is marked 'dog' in their record, which attaches it to a handler. `
+          + 'It is imported as the model it names; the attachment is not mapped.',
+      };
+    default:
+      return {
+        keep: false,
+        why: `${label} is '${state}' in their record. What that means is not stated anywhere `
+          + 'public, and neither dead nor benched is a safe reading of it, so the model is '
+          + 'left off rather than imported as a guess.',
+      };
+  }
+}
+
 /* ------------------------------------------------------------ the importer */
 
 /**
@@ -279,9 +417,12 @@ function uniqueByName<T>(candidates: T[], nameOf: (x: T) => string, keys: string
  * own warband happens to carry a value in it.
  */
 const UNMAPPED_MODEL: { field: keyof TcModelInner; why: string }[] = [
-  { field: 'scar_reserves', why: 'Battle Scars are recorded from the Trauma Table here, and it is not known what this counter holds.' },
-  { field: 'stat_selections', why: 'What a stat selection changes is not stated anywhere public.' },
-  { field: 'active', why: 'It is not known whether this marks a model benched for a game or retired from the roster.' },
+  {
+    field: 'stat_selections',
+    why: 'What a stat selection changes is not stated anywhere public, and it was empty on '
+      + 'every model of the owner\'s own warband, so there is nothing to read it from either. '
+      + 'It waits for a warband that carries one.',
+  },
 ];
 
 /**
@@ -328,6 +469,9 @@ export function importTrenchCompanionWarband(
 
   const stamp = Date.now();
   const units: ActiveUnit[] = [];
+  /* Models their record calls dead. Taken off the roster below through
+     `removeFromRoster`, which is the one path a removed model leaves by. */
+  const deadIds: string[] = [];
 
   (data.models ?? []).forEach((line, idx) => {
     const m = line.model;
@@ -338,7 +482,7 @@ export function importTrenchCompanionWarband(
       return;
     }
 
-    const profile = resolveModel(shelf.units, factionId, theirName, m.model);
+    const { profile, golem } = resolveModel(shelf.units, factionId, theirName, m.model);
     if (!profile) {
       unmatched.push(`${theirName}${m.model ? ` (${m.model})` : ''}`);
       return;
@@ -351,17 +495,40 @@ export function importTrenchCompanionWarband(
       stamp, idx, unmatched, warnings, priceDifferences);
 
     const upgrades = readUpgrades(dataset, factionId, profile, m, theirName,
-      unmatched, priceDifferences, warnings);
+      unmatched, priceDifferences, warnings, unmapped);
+
+    const status = fighterStatus(m.active, theirName);
+    if (!status.keep) {
+      unmatched.push(status.why);
+      return;
+    }
+    if (status.note) warnings.push(status.note);
+
+    const trauma = readTrauma(dataset, m, theirName, unmatched);
 
     const tough = (profile.stats.keywords ?? []).some((k) => /^TOUGH$/i.test(k.trim()));
     const maxWounds = tough ? 2 : 1;
 
+    const unitId = `u-tc-${stamp}-${idx}`;
+    if (status.dead) deadIds.push(unitId);
+
     units.push({
-      id: `u-tc-${stamp}-${idx}`,
+      id: unitId,
       /* Their display name is the player's own name for the model; the
          catalogue's name stays on the snapshot, as the NewRecruit import
          leaves it. */
       customName: theirName,
+      /*
+        The Book of Golems, where their id said so (GOLEM-1).
+
+        `md_takwincreation_golem` is the grant's own model, and `grantedBy` is
+        what every rule that cares reads — the free-Formula allowance, and
+        *"can never be Promoted"*. Marked from their record rather than
+        guessed at by `golemOnImport`, which is the one case that function
+        exists to handle and cannot: their record already says which model it
+        was.
+      */
+      ...(golem ? { grantedBy: GOLEM_GRANTED_BY } : {}),
       baseProfileId: profile.id,
       profileSnapshot: profile,
       equippedWeapons: gear.weapons,
@@ -372,7 +539,10 @@ export function importTrenchCompanionWarband(
       isElite: m.elite === true,
       advancements: [],
       skills: readSkills(dataset, m, theirName, unmatched),
-      injuries: readInjuries(dataset, m, theirName, unmatched),
+      injuries: trauma.injuries,
+      ...(trauma.scars.length ? { scars: trauma.scars } : {}),
+      /* Their fighter status, read from `active`. See `fighterStatus`. */
+      ...(status.benched ? { benched: true } : {}),
       isDead: false,
       /* Our prices, added up. Theirs is reported, never charged. */
       totalCost: profile.baseCost + gear.ducats + upgrades.ducats,
@@ -384,6 +554,17 @@ export function importTrenchCompanionWarband(
       hasActedThisTurn: false,
     });
   });
+
+  /*
+    The dead, off the roster and into the memorial.
+
+    Through `removeFromRoster` rather than by filtering here: that function is
+    the single path a removed model leaves by (RR-25 / FD-05a), and it is what
+    clears the battle state, sets `isDead` and carries the Battlekit across.
+    A model left in `units` behind a flag is a model every reader has to
+    remember to skip, and three of them did not.
+  */
+  const { units: living, fallen } = removeFromRoster({ units, fallen: [] }, deadIds);
 
   /* -------------------------------------------------------------- the stash */
 
@@ -414,7 +595,7 @@ export function importTrenchCompanionWarband(
     );
   }
 
-  const exploration = readExploration(dataset, data, round, unmatched);
+  const exploration = readExploration(dataset, data, round, unmatched, unmapped);
   reportUnmapped(data, unmapped);
 
   const now = new Date().toISOString();
@@ -433,7 +614,8 @@ export function importTrenchCompanionWarband(
     treasuryDucats: 0,
     gloryPoints: 0,
     ledger: [],
-    units,
+    units: living,
+    ...(fallen.length ? { fallen } : {}),
     armoryStash: stash.items,
     explorationDiscoveries: exploration.discoveries,
     explorationEffects: exploration.effects,
@@ -474,7 +656,9 @@ export function importTrenchCompanionWarband(
     warband,
     unmatched,
     warnings: [...new Set(warnings)],
-    unmapped,
+    /* Deduplicated for the same reason as the warnings: three Kavass each
+       carrying the Variant's own rename is one fact about the Variant. */
+    unmapped: [...new Set(unmapped)],
     priceDifferences: dedupePrices(priceDifferences),
   };
 }
@@ -599,11 +783,47 @@ function resolveModel(
   factionId: string,
   theirName: string,
   theirSlug: string | undefined,
-): UnitProfile | undefined {
-  const keys = namesFor(theirName, undefined, theirSlug);
+): { profile?: UnitProfile; golem: boolean } {
+  const golem = golemStripped(slugTail(theirSlug ?? '')).golem;
   const mine = units.filter((u) => sameFaction(u.factionId, factionId));
-  return uniqueByName(mine, (u) => u.name, keys)
-    ?? uniqueByName(units, (u) => u.name, keys);
+  const pick = (keys: string[]) => (keys.length
+    ? uniqueByName(mine, (u) => u.name, keys) ?? uniqueByName(units, (u) => u.name, keys)
+    : undefined);
+
+  /*
+    The SLUG first, and the name second.
+
+    On the first warband this was measured against, every `model.name` was the
+    entry's own display name, so resolving by name worked — by accident. On
+    the owner's warband it is the PLAYER's name: `Jawhar al-Sari` on a
+    `md_mamlukfaris`, `Al-Qahhar, the Crippled` on a `md_brazenbull`. Matching
+    those against our entries resolves nothing at best, and at worst resolves
+    a nickname to some other entry that happens to share it.
+
+    Their id is the stable half of their record, so it goes first. The name is
+    kept as the fallback for an id no rule reaches, and it is otherwise the
+    player's own name for the model — `customName`, nothing more.
+  */
+  const bySlug = pick(modelSlugKeys(theirSlug));
+  if (bySlug) return { profile: bySlug, golem };
+
+  /*
+    Their id where no rule of spelling reaches our name. Two entries, each
+    citing their bundle. See `EQUIVALENT`.
+
+    Looked up under the golem-stripped id as well as the raw one, because
+    `_golem` says how the model arrived and not which entry it is:
+    `md_takwincreation_golem` and `md_takwincreation` are the same Takwin
+    Homunculus, and the table names the entry once.
+  */
+  const bare = theirSlug ? `md_${golemStripped(slugTail(theirSlug)).slug}` : '';
+  const named = (theirSlug ? EQUIVALENT[theirSlug] : undefined) ?? EQUIVALENT[bare];
+  if (named?.ours) {
+    const byTable = pick([nameKey(named.ours)]);
+    if (byTable) return { profile: byTable, golem };
+  }
+
+  return { profile: pick([nameKey(theirName)].filter(Boolean)), golem };
 }
 
 /** Our price for an entry, in both currencies. */
@@ -808,6 +1028,7 @@ function readUpgrades(
   unmatched: string[],
   priceDifferences: PriceDifference[],
   warnings: string[],
+  unmapped: string[],
 ): { bought: { id: string; name: string; cost: number; category: string }[]; ducats: number } {
   const bought: { id: string; name: string; cost: number; category: string }[] = [];
   let ducats = 0;
@@ -815,13 +1036,27 @@ function readUpgrades(
   if (!list.length) return { bought, ducats };
 
   const entry = catalogueUnitFor(dataset, { baseProfileId: profile.id }, factionId);
-  const own = nameKey(slugTail(m.model ?? ''));
 
   for (const u of list) {
     const id = refId(u.upgrade);
-    const tail = nameKey(slugTail(id));
-    const keys = [...new Set([tail, own && tail.startsWith(own) ? tail.slice(own.length) : ''])]
-      .filter(Boolean);
+
+    /*
+      An id their bundle names something our data expresses another way.
+
+      `up_meleemight` is their name for the House of Wisdom's rename of the
+      Azeb to Kavass, carried as an upgrade on the model. Our Variant applies
+      that rename to the ENTRY, so the model this import already resolved IS
+      the Kavass and there is nothing left for the upgrade to become. Reported
+      as expressed by the Variant rather than as something we failed to find,
+      because those are different sentences and only one of them is true.
+    */
+    const equivalent = EQUIVALENT[id];
+    if (equivalent && equivalent.ours === null) {
+      unmapped.push(`${id} ('${equivalent.theirs}') on ${modelLabel}: ${equivalent.why}`);
+      continue;
+    }
+
+    const keys = upgradeSlugKeys(id, m.model);
     const option = uniqueByName(entry?.options ?? [], (o) => o.name, keys);
     if (!option) {
       unmatched.push(`${modelLabel}: upgrade '${id || 'unnamed'}'`);
@@ -872,15 +1107,33 @@ function readSkills(
   return out.length ? out : undefined;
 }
 
-/** The injuries a model carries, by name against the Trauma Table. */
-function readInjuries(
+/**
+ * The injuries a model carries, and the Battle Scars that go with them.
+ *
+ * Their `list_injury` is the injuries, and `scar_reserves` is the Scars a
+ * model carries **beyond** them. Measured on the owner's own Companion screen
+ * (25 September): Al-Qahhar, the Crippled carries `in_lostarm` and
+ * `scar_reserves: 0`, and their screen shows exactly one Battle Scar. So the
+ * count is one Scar per injury plus the reserves — which is what the book
+ * implies, because a Full Recovery and a paid ransom each leave a Scar with no
+ * injury behind it.
+ *
+ * Both halves land on `ActiveUnit.scars`, because that is the list
+ * `scarCount` reads and `unfitForDuty` retires a model on. Writing only
+ * `injuries` would have left an imported model judged by a different rule from
+ * a home-grown one: `scars` and `injuries` are separate arrays on purpose, and
+ * RC-05 is specifically about not inferring one from the other.
+ */
+function readTrauma(
   dataset: Dataset,
   m: TcModelInner,
   modelLabel: string,
   unmatched: string[],
-): string[] {
+): { injuries: string[]; scars: NonNullable<ActiveUnit['scars']> } {
   const rows = dataset.campaign?.trauma ?? [];
-  const out: string[] = [];
+  const injuries: string[] = [];
+  const scars: NonNullable<ActiveUnit['scars']> = [];
+
   for (const ref of m.list_injury ?? []) {
     const id = refId(ref);
     const hit = uniqueByName(rows, (r) => r.name, [nameKey(slugTail(id))]);
@@ -888,9 +1141,28 @@ function readInjuries(
       unmatched.push(`${modelLabel}: injury '${id || 'unnamed'}'`);
       continue;
     }
-    out.push(hit.name);
+    injuries.push(hit.name);
+    /* The Scar that came with it, carrying the row's own name and roll. */
+    scars.push({ name: hit.name, roll: hit.roll, effect: hit.description });
   }
-  return out;
+
+  /*
+    The Scars with no injury beside them.
+
+    Named as what they are rather than given a Trauma row they do not have: we
+    know how MANY there are and nothing else, and inventing a result to label
+    each one would be exactly the fabrication rule 2 forbids.
+  */
+  const reserves = Math.max(0, num(m.scar_reserves));
+  for (let i = 0; i < reserves; i += 1) {
+    scars.push({
+      name: 'Battle Scar',
+      effect: 'Carried over from Trench Companion, which records the count but not '
+        + 'which Trauma result caused it.',
+    });
+  }
+
+  return { injuries, scars };
 }
 
 /** The Warband's stash, by the same three shelves a model's gear uses. */
@@ -962,12 +1234,15 @@ function readExploration(
   data: TcWarbandData,
   round: number,
   unmatched: string[],
+  unmapped: string[],
 ): { discoveries: string[]; effects: Warband['explorationEffects'] } {
   const known = dataset.campaign?.exploration?.skills ?? [];
   const effects: NonNullable<Warband['explorationEffects']> = [];
 
   for (const ref of data.exploration?.explorationskills ?? []) {
     const id = refId(ref);
+    /* `es_reroll` against our `Re-roll`: `nameKey` folds the hyphen and the
+       case, so their eight are all slugs of our names and none needs help. */
     const hit = uniqueByName(known, (s) => s.name, [nameKey(slugTail(id))]);
     if (!hit) {
       unmatched.push(`Exploration Skill '${id || 'unnamed'}'`);
@@ -981,14 +1256,39 @@ function readExploration(
   const discoveries: string[] = [];
   for (const loc of data.exploration?.locations ?? []) {
     const id = typeof loc === 'string' ? loc : refId(loc as TcRef);
-    const name = isRecord(loc) && typeof loc.name === 'string' ? loc.name : '';
-    const keys = namesFor(name, undefined, id);
-    const hit = keys.length ? uniqueByName(rows, (r) => r.name, keys) : undefined;
-    if (!hit) {
-      unmatched.push(`Exploration Location '${name || id || 'unnamed'}'`);
-      continue;
+    /*
+      A Location id can carry the book it came from: `_cf` for Carcass Front,
+      as on `el_ransackedalchemistworkshop_cf`. Our tables hold one row per
+      Location whatever printed it, so the suffix is taken off before the name
+      is matched — it says which book, not which Location.
+    */
+    const tail = slugTail(id).replace(/_cf$/, '');
+    const hit = tail ? uniqueByName(rows, (r) => r.name, [nameKey(tail)]) : undefined;
+    if (hit) discoveries.push(hit.name);
+    else unmatched.push(`Exploration Location '${id || 'unnamed'}'`);
+
+    /*
+      A Location can carry the option the player chose — Sniper's Lair asks
+      which model gets the nest, and their record keeps the answer in
+      `selections`. We have nowhere to put it yet: the Location options are
+      pack G's, and inventing a home for the choice now would mean guessing
+      what our side will call it. The discovery is recorded; the choice is
+      reported.
+
+      Reported even where the Location itself did not resolve, under their own
+      id. The player made that choice whether or not we can name the row it
+      belongs to, and losing it twice over is worse than losing it once.
+    */
+    const chosen = isRecord(loc) && Array.isArray(loc.selections) ? loc.selections : [];
+    for (const sel of chosen) {
+      const option = isRecord(sel) ? String(sel.option_refID ?? '') : '';
+      const picked = isRecord(sel) ? String(sel.selection_ID ?? '') : '';
+      unmapped.push(
+        `${hit?.name ?? id}: the option taken (${option || 'unnamed'}`
+        + `${picked ? ` → ${picked}` : ''}) is recorded on their side and is not mapped here. `
+        + 'Location options are not modelled yet; the discovery itself is recorded.',
+      );
     }
-    discoveries.push(hit.name);
   }
 
   return {
@@ -1125,13 +1425,25 @@ function openFoundingPot(
     glory: rating.glory + stashRating.glory,
   };
   if (accounted.ducats !== spent.ducats || accounted.glory !== spent.glory) {
+    /*
+      Their four figures, stated. Not "their numbers are wrong".
+
+      On the owner's own warband they read 1460 banked, 1455 roster, 33 stash,
+      60 spare — so the bank is down by 1400 while the roster and stash come
+      to 1488. We do not know what their app counts where, and saying their
+      arithmetic is broken would be asserting something we have not checked.
+      What IS certain is which figure their page prints as the Strongbox, and
+      that is the one this import lands on.
+    */
+    const money = (c: Cost) => `${c.ducats} Ducats and ${c.glory} Glory`;
     warnings.push(
-      `Their own numbers do not add up: ${allowance.ducats} Ducats and ${allowance.glory} Glory `
-      + `banked, less a Strongbox of ${spare.ducats} and ${spare.glory}, means `
-      + `${spent.ducats} and ${spent.glory} was spent — but their roster and stash are valued at `
-      + `${accounted.ducats} and ${accounted.glory}. The Strongbox here is their own `
-      + 'Strongbox figure, which is what their page shows; the quartermaster entry above is the '
-      + 'difference, so the two agree here whatever their totals say.',
+      'Their four figures do not reconcile against each other, so here they are as their '
+      + `record states them: banked ${money(allowance)}; roster valued at ${money(rating)}; `
+      + `stash valued at ${money(stashRating)}; Strongbox ${money(spare)}. `
+      + `Bank less Strongbox is ${money(spent)}, which is what the quartermaster entry above `
+      + `debits, while roster plus stash is ${money(accounted)}. The Strongbox here is their `
+      + 'own Strongbox figure — the number their page prints — so the two agree whatever the '
+      + 'rest of their totals mean.',
     );
   }
 
