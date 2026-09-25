@@ -527,8 +527,26 @@ describe('unit options', () => {
     for (const o of glory) expect(o.cost.ducats).toBe(0);
   });
 
+  /*
+    Except a STATLINE option, which carries none because the rule it states is
+    the statline itself. `Winged` says the model is a Fly Thrall and `Guard Dog`
+    that the Trench Dog is a Guard Dog; both point at a Unit profile through
+    `unitProfileId` and neither has rules text to carry. See DA-02 and
+    `rules/statlineOptions.ts`.
+  */
   it('every option carries the rules text that makes it an option', () => {
-    for (const o of allOptions) expect(o.description.length).toBeGreaterThan(0);
+    for (const o of allOptions.filter((x) => !x.unitProfileId)) {
+      expect(o.description.length, o.name).toBeGreaterThan(0);
+    }
+  });
+
+  it('and a statline option names the profile it swaps in instead', () => {
+    const statlines = allOptions.filter((o) => o.unitProfileId);
+    expect(statlines.map((o) => o.name).sort()).toEqual([
+      'Attack Dog', 'Guard Dog', 'Guard Dog', 'Hellhound',
+      'Martyrdom Dog', 'Mercy Dog', 'Mercy Dog', 'Winged',
+    ]);
+    for (const o of statlines) expect(o.description).toBe('');
   });
 
   // Gear is already in `weapons`; duplicating the armoury onto every unit that

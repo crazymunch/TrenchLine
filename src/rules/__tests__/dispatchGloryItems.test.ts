@@ -7,6 +7,16 @@
  * collection, and an armoury row is nested inside `armouries[].rows` — so
  * these would have been readable in the Codex and takeable by nobody.
  *
+ * The SECTION is the other half, and it changed in RR-14. Until the rulebook's
+ * six Glory Item Tables were parsed there was no `Glory Items` section to add a
+ * row to, so these were stocked under the kind of thing they are. The Dispatch
+ * says which table they join — "Add the following entry to the BLACK GRAIL
+ * Glory Items Table", "...to the SULTANATE Glory Items Table" — and that is now
+ * a section that exists, so they join it and sit behind the same p.125
+ * discovery gate as every other Glory Item. Left as Equipment they would have
+ * been on sale to a Warband that has discovered nothing, while the rulebook's
+ * own 4-Glory Knighthood was not.
+ *
  * The currency is the interesting part. The Dispatch prints it as a glyph and
  * the text extraction drops it, leaving `Regimental Kaşık … 4` with no unit;
  * the Grail Strain costs had the same problem and needed a maintainer ruling.
@@ -33,7 +43,7 @@ describe('the Dispatch Glory Items', () => {
     expect(rows('Blessings of Beelzebub')).toEqual([{
       faction: 'cult-of-the-black-grail',
       name: 'Blessings of Beelzebub',
-      section: 'Equipment',
+      section: 'Glory Items',
       cost: { ducats: 0, glory: 9 },
       restrictions: ['Lord of Tumours only, Limit: 1'],
     }]);
@@ -44,7 +54,7 @@ describe('the Dispatch Glory Items', () => {
     expect(rows('Regimental Kaşık')).toEqual([{
       faction: 'iron-sultanate',
       name: 'Regimental Kaşık',
-      section: 'Equipment',
+      section: 'Glory Items',
       cost: { ducats: 0, glory: 4 },
       restrictions: ['Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1'],
     }]);

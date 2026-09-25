@@ -103,8 +103,17 @@ describe('the shipped options this is about', () => {
         }
       }
     }
-    expect(priced).toBe(280);
-    expect(groups.size).toBe(18);
+    /*
+      287 and 19, where this said 280 and 18. The seven that joined are the
+      Trench Dog's specializations — Guard, Mercy and Attack at 5 Ducats for New
+      Antioch, Guard, Mercy, Martyrdom and Hellhound at 1 Glory for the
+      Mercenaries — which DA-02 established are options on the dog rather than
+      models to hire, and which the parser now emits as such. `Specialization`
+      is the group that came with them. The Thrall's `Winged` is the eighth
+      statline option and is free, so it is not counted here.
+    */
+    expect(priced).toBe(287);
+    expect(groups.size).toBe(19);
   });
 });
 

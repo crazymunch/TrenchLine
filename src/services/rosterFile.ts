@@ -176,6 +176,12 @@ export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
      game, and it cannot be recovered from anywhere else once the roster
      leaves this device. */
   diedInMatchId: 'durable',
+  /* Sent home rather than killed, and the game it happened in. Durable for the
+     same reason as `diedInMatchId`: it is the only thing that distinguishes a
+     retired model from a dead one, and a memorial that cannot tell them apart
+     reports a Warband's losses as higher than they were. */
+  retired: 'durable',
+  retiredAtGame: 'durable',
   totalCost: 'durable',
   grantedFree: 'durable',
   fireteam: 'durable',

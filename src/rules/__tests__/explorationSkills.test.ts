@@ -16,7 +16,7 @@ import { describe, it, expect } from 'vitest';
 
 import { DATASET } from '@/data/generated/trenchline.generated';
 import {
-  explorationSkillEffect, explorationSkillNamed, explorationGrants,
+  explorationSkillEffect, explorationSkillNamed, explorationGrants, explorationChoices,
   explorationPool, explorationLootBonus, resolveExploration, explorationFromModels,
   explorationRerolls,
 } from '../campaign';
@@ -91,9 +91,20 @@ describe('every grant in the shipped tables', () => {
     ]);
   });
 
+  /*
+    Where the Location offers a choice, the grant belongs to ONE of its options
+    and the step asks which (finding B) — the High-Ranking Captive's Skill comes
+    with `Indenture` and not with `Execute`. So the option that carries the
+    sentence is the one passed, found by reading the options rather than by
+    naming it here.
+  */
+  const grantingChoice = (l: { description?: string }) =>
+    explorationChoices(l).find(
+      (c) => /gains? the [A-Za-z][A-Za-z -]*? Exploration Skill/i.test(c.text))?.label;
+
   it('resolves to one of the seven, so none is recorded under a name nothing reads', () => {
     for (const l of granting) {
-      const [effect] = explorationGrants(DATASET, l, 3);
+      const [effect] = explorationGrants(DATASET, l, 3, grantingChoice(l));
       expect(effect, l.name).toBeTruthy();
       expect(SKILLS.map((s) => s.name), `${l.name} granted ${effect.name}`)
         .toContain(effect.name);

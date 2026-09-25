@@ -81,15 +81,20 @@ describe.each(Object.keys(ALLOWED))('%s', (file) => {
   });
 
   /*
-    The two names `toRoster` cannot join are reported, not dropped, and both
-    are known: the Sniper Scope is an Exploration find from the Campaign Rules
-    catalogue, which FD-17's EXP-1 leaves named until the campaign half of a
-    `.ros` is designed, and Machine Armour reaches the Sultanate through a
-    hidden entryLink that the flat weapons list cannot express (WC-1).
+    The one name `toRoster` cannot join is reported, not dropped: Machine
+    Armour reaches the Sultanate through a hidden entryLink that the flat
+    weapons list cannot express (WC-1).
+
+    The Sniper Scope used to be the second, and is not any more. It was read as
+    an Exploration find the dataset could not price, because the Glory Item
+    Tables had never been parsed — and it is not a find at all: the rulebook
+    prints it in the Sultanate's Glory Item Table at 2 ☼ (p.126), which RR-14
+    now derives. The owner's own roster is where that shows: an item they had
+    bought and the app could not name is now an Armoury row with a price.
   */
   it('reports the names it cannot join, and no others', () => {
     expect(verdict(file).unmatched.map((u) => u.name).sort())
-      .toEqual(['Machine Armour', 'Sniper Scope']);
+      .toEqual(['Machine Armour']);
   });
 });
 

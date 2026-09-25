@@ -35,7 +35,10 @@ import type { Keyword } from '../../types/catalogue';
 import { readRange } from '@/rules/weaponRange';
 import { effectiveMovement, type TraumaRow } from '@/rules/effectiveStats';
 import { formulaeHeld } from '@/rules/formulaShelf';
-import type { UnitOption } from '../../types/catalogue';
+import type { UnitOption, UnitProfile, Dataset, WarbandVariant } from '../../types/catalogue';
+import { modelSelections } from '@/rules/applyVariant';
+import { shownAbilitiesFor } from '@/rules/shownAbilities';
+import { swappedProfile } from '@/rules/statlineOptions';
 
 interface Props {
   unit: ActiveUnit;
@@ -47,7 +50,20 @@ interface Props {
    * print. Resolved by the caller with `catalogueUnitFor`, so this sheet does
    * not have to know how a roster records an entry.
    */
-  catalogueUnit?: { options?: UnitOption[] } | null;
+  catalogueUnit?: (Pick<UnitProfile, 'abilities' | 'modifiers'> & { options?: UnitOption[] }) | null;
+  /**
+   * The ruleset and the Warband's Variant, for the abilities this model prints
+   * as it stands (DA-01).
+   *
+   * Play Mode is the screen this matters most on: it is read at the table,
+   * mid-game, to settle what a model can do. The Varangian Guard's Weapon
+   * Familiarity — "They lose Shock Charge if they equip a shield together with
+   * a two-handed axe" — is a rule about the loadout in front of the players,
+   * and the sheet showed the entry's whole ability list whatever the model was
+   * carrying.
+   */
+  dataset?: Dataset | null;
+  variant?: WarbandVariant;
   onClose: () => void;
 }
 
@@ -64,7 +80,7 @@ const Section: React.FC<{
 );
 
 export const ModelReferenceSheet: React.FC<Props> = ({
-  unit, keywords, traumaTable = [], catalogueUnit, onClose,
+  unit, keywords, traumaTable = [], catalogueUnit, dataset, variant, onClose,
 }) => {
   const p = unit.profileSnapshot;
   /*
@@ -81,6 +97,21 @@ export const ModelReferenceSheet: React.FC<Props> = ({
   const formulae = formulaeHeld(unit, catalogueUnit);
 
   /*
+    The abilities this model prints, as equipped. Filtered against its own
+    catalogue entry rather than replaced by it, so anything a campaign added to
+    the snapshot stays; where the entry cannot be resolved the snapshot stands
+    whole, which is the roster's own record rather than a guess.
+  */
+  const abilities = React.useMemo(
+    () => shownAbilitiesFor({
+      dataset,
+      entry: catalogueUnit as UnitProfile | null | undefined,
+      variant,
+      unit,
+    }),
+    [dataset, variant, catalogueUnit, unit]);
+
+  /*
     Movement with the model's injuries counted.
 
     The reported defect: a Leg Wound reduces Movement by 2" and the app showed
@@ -88,17 +119,28 @@ export const ModelReferenceSheet: React.FC<Props> = ({
     the Trauma table's own text, and reports the injuries it could not express
     as a number instead of dropping them.
   */
+  /*
+    The second statline this model has been given, where its entry offers one
+    (DA-02, finding N). Play Mode is the screen this matters most on: a Fly
+    Thrall moves 6"/Flying and the Thrall 5"/Infantry, and the sheet is what the
+    players measure from mid-game.
+  */
+  const swapped = React.useMemo(
+    () => swappedProfile(dataset, catalogueUnit, modelSelections(unit)),
+    [dataset, catalogueUnit, unit]);
+  const shown = swapped ? swapped.stats : p.stats;
+
   const mov = effectiveMovement(
-    p.stats.movementInches ? `${p.stats.movementInches}"` : p.stats.movement,
+    shown.movementInches ? `${shown.movementInches}"` : shown.movement,
     unit.injuries ?? [],
     traumaTable,
   );
 
   const stats: Array<[string, string, boolean]> = [
     ['MOV', mov.effective, mov.delta !== 0],
-    ['RNG', p.stats.ranged, false],
-    ['MELEE', p.stats.melee, false],
-    ['ARMOUR', p.stats.armour, false],
+    ['RNG', shown.ranged, false],
+    ['MELEE', shown.melee, false],
+    ['ARMOUR', shown.armour, false],
   ];
 
   return (
@@ -166,10 +208,10 @@ export const ModelReferenceSheet: React.FC<Props> = ({
         )}
 
         {/* ----------------------------------------------------- abilities */}
-        {(p.innateAbilities?.length ?? 0) > 0 && (
+        {abilities.length > 0 && (
           <Section icon={<Activity className="h-3.5 w-3.5 text-theme-primary" />} title="Abilities">
             <div className="space-y-2">
-              {(p.innateAbilities ?? []).map((a, i) => (
+              {abilities.map((a, i) => (
                 <div key={`${a.name}-${i}`} className="rounded border border-theme-border bg-theme-base p-2.5">
                   <span className="block text-xs font-bold text-theme-text">{a.name}</span>
                   {/* Keywords inside the prose link too, so a rule that cites

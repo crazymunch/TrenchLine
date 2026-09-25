@@ -236,19 +236,67 @@ function checkWargear(
   variant?: WarbandVariant
 ): Violation[] {
   const out: Violation[] = [];
-  const rosterCounts = new Map<string, number>();
+  const rosterCounts = new Map<string, { name: string; count: number }>();
+
+  /*
+    The Arsenal counts towards a roster-wide `Limit: N`.
+
+    Page 123, L7234–7238: "if the Battlekit had a Limit of 2, and your Warband
+    already has 2 such items in its Arsenal and/or equipped by a model, then you
+    could not purchase any more". The count was built from the models' `items`
+    alone, so a Warband could hold a Limit 1 item in the Arsenal and buy a
+    second onto a model — and the Quartermaster Step is exactly where a player
+    buys into the Arsenal, so the omission bit hardest in the place the rule is
+    printed.
+
+    The same sentence gives the other half for free: "if your Warband used to
+    have 2 of the Battlekit and one has subsequently been removed … then you
+    could purchase a replacement." Nothing is needed for that — a sold copy
+    leaves `stash` and the count falls with it.
+
+    Only the roster-wide limit reads this. A `Limit: N per model` is a
+    statement about a model, and an item in the Arsenal is on no model.
+  */
+  /*
+    Counted by NAME, not by catalogue id.
+
+    Keying on `weaponId` skipped every row the catalogues cannot name, and the
+    Glory Item Tables are full of them: a Sniper Scope, a Trench Dog, a
+    Smokescreen, an Executioner's Axe and Beelzebub's Embrace all carry
+    `weaponId: null`, so five of the items whose whole stipulation is a limit
+    were the five the limit did not reach. The Armoury row states the limit and
+    `restrictionsFor` matches that row by name, so the name is the key the two
+    halves already share.
+  */
+  const bump = (name: string | undefined, qty: number) => {
+    const k = nameKey(name ?? '');
+    if (!k) return;
+    const at = rosterCounts.get(k);
+    if (at) at.count += qty;
+    else rosterCounts.set(k, { name: name!, count: qty });
+  };
+
+  for (const item of roster.stash) {
+    bump(item.weaponId ? weapons.get(item.weaponId)?.name ?? item.name : item.name,
+      item.quantity ?? 1);
+  }
 
   for (const u of roster.units) {
     const profile = profiles.get(u.profileId);
     const perUnit = new Map<string, number>();
 
     for (const item of u.items) {
-      if (!item.weaponId) continue;
       const qty = item.quantity ?? 1;
-      rosterCounts.set(item.weaponId, (rosterCounts.get(item.weaponId) ?? 0) + qty);
+      const named = item.weaponId ? weapons.get(item.weaponId) : undefined;
+      /* Counted whether or not the catalogues carry a profile for it — see
+         `bump`. Everything BELOW still needs the profile and stops without it,
+         which is unchanged: a restriction is read off the armoury row, and the
+         roster-wide limit below is what reads it for these. */
+      bump(named?.name ?? item.name, qty);
+      if (!item.weaponId) continue;
       perUnit.set(item.weaponId, (perUnit.get(item.weaponId) ?? 0) + qty);
 
-      const w = weapons.get(item.weaponId);
+      const w = named;
       if (!w) continue;
 
       // A faction that does not stock an item cannot buy it. This is a real
@@ -379,15 +427,31 @@ function checkWargear(
     }
   }
 
-  // Roster-wide "Limit: N".
-  for (const [weaponId, n] of rosterCounts) {
-    const w = weapons.get(weaponId);
-    if (!w) continue;
-    for (const r of restrictionsOf(w, armoury)) {
-      if (r.kind === 'limit' && r.perModel == null && n > r.max) {
+  /*
+    Roster-wide "Limit: N", over everything the Warband holds — on a model or in
+    the Arsenal, with a catalogue profile or without one.
+
+    `restrictionsOf` reads the stipulation off the Armoury row, and
+    `restrictionsFor` matches that row by id OR by name, so an item the
+    catalogues cannot name is still checked against the row that priced it.
+  */
+  /* Name -> the weapon entry, for the rows that have one. Where there is no
+     armoury to read a stipulation from — a hand-built dataset in a test, a
+     ruleset with no tables — the weapon's own `restrictions` are the only
+     source, and they are on that entry. */
+  const weaponByName = new Map<string, { id: string; name: string; restrictions?: string[] }>();
+  for (const w of weapons.values()) {
+    const k = nameKey(w.name);
+    if (k && !weaponByName.has(k)) weaponByName.set(k, w);
+  }
+
+  for (const { name, count } of rosterCounts.values()) {
+    const offer = weaponByName.get(nameKey(name)) ?? { name };
+    for (const r of restrictionsOf(offer, armoury)) {
+      if (r.kind === 'limit' && r.perModel == null && count > r.max) {
         out.push(err({
           code: 'wargear-limit',
-          message: `${w.name}: ${n} taken across the warband, limit is ${r.max}.`,
+          message: `${name}: ${count} taken across the warband, limit is ${r.max}.`,
           rule: r.raw,
         }));
       }

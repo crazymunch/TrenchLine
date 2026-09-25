@@ -253,7 +253,21 @@ function compare(entry, unit) {
   }
 
   if (entry.abilities) {
-    const ours = (unit.abilities ?? []);
+    /*
+      The abilities the ENTRY prints, which is what the book's entry page
+      lists. An Ability profile marked `hidden="true"` in the catalogue belongs
+      to a Variant and is printed on the Variant's page instead (DA-01), so
+      comparing it against the entry reported a difference for every one of
+      them — 18 rows of `ability.variant` saying, correctly and uselessly, that
+      the book does not print a Varangian Guard rule on the Shocktrooper's
+      entry.
+
+      Now that the parser records the attribute, they are taken out of the
+      comparison and counted separately below. A hidden ability the book DOES
+      print on the entry is a real finding and still reported.
+    */
+    const hiddenOurs = (unit.abilities ?? []).filter((a) => a.hidden);
+    const ours = (unit.abilities ?? []).filter((a) => !a.hidden);
     const theirs = entry.abilities;
     const oursBy = new Map(ours.map((a) => [normName(a.name), a]));
     const theirsBy = new Map(theirs.map((a) => [normName(a.name), a]));
@@ -277,13 +291,22 @@ function compare(entry, unit) {
       const matchedByText = theirs.some((a) => normAbilityText(a.text) === normAbilityText(o.description)
         || (normAbilityText(a.text).length > 40 && normAbilityText(o.description).includes(normAbilityText(a.text).slice(0, 60))));
       if (matchedByText) continue;
-      /* An ability the catalogue reveals only inside a Variant is printed on
-         the Variant's page, not the entry's. Named, so the reader can check. */
-      const reveal = (unit.modifiers ?? []).find((m) => m.origin === `profile:${o.name}`
+      diffs.push({ field: 'ability.extra', ours: o.name,
+        book: '(not printed on this entry)' });
+    }
+
+    /*
+      A hidden ability the book prints on the entry after all: the catalogue has
+      gated a rule the entry simply has. That is the one thing taking the hidden
+      ones out of the comparison could conceal, so it is reported on its own.
+    */
+    for (const a of hiddenOurs) {
+      if (!theirsBy.has(normName(a.name))) continue;
+      const reveal = (unit.modifiers ?? []).find((m) => m.origin === `profile:${a.name}`
         && m.field === 'hidden' && String(m.value) === 'false');
       const via = reveal?.when?.childName ?? (reveal ? 'a condition' : null);
-      diffs.push({ field: via ? 'ability.variant' : 'ability.extra', ours: o.name,
-        book: via ? `(revealed by ${via})` : '(not printed on this entry)' });
+      diffs.push({ field: 'ability.hidden', ours: `${a.name} (hidden${via ? `, revealed by ${via}` : ''})`,
+        book: '(printed on this entry)' });
     }
   }
   return diffs;
@@ -318,7 +341,20 @@ const unitsUnseen = units.filter((u) => !unitsSeen.has(u.id)
 console.log(`BOOK AUDIT (${RULESET})`);
 console.log(`  book entries with a Cost: ${entries.length} (with statline ${entries.filter((e) => e.stats).length}, with abilities block ${entries.filter((e) => e.abilities).length})`);
 console.log(`  dataset units: ${units.length}; matched to a book entry: ${unitsSeen.size}`);
-console.log(`  comparisons with at least one difference: ${report.length}\n`);
+console.log(`  comparisons with at least one difference: ${report.length}`);
+/*
+  Abilities the catalogue hides on the entry and a Variant reveals (DA-01).
+  Counted rather than compared, because the book prints them on the Variant's
+  page and not on the entry's — but counted out loud, so taking them out of the
+  comparison cannot quietly become losing them.
+*/
+{
+  const hidden = units.flatMap((u) => (u.abilities ?? []).filter((a) => a.hidden));
+  const on = new Set(units.filter((u) => (u.abilities ?? []).some((a) => a.hidden)).map((u) => u.name));
+  console.log(`  variant-revealed abilities held back from the comparison: `
+    + `${hidden.length} on ${on.size} unit(s)`);
+}
+console.log('');
 
 const byField = {};
 for (const r of report) for (const d of r.diffs) byField[d.field] = (byField[d.field] ?? 0) + 1;

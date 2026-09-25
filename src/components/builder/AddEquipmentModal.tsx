@@ -7,6 +7,7 @@ import { useStore } from '../../store/useStore';
 import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
 import { canEquip } from '../../rules/equipGate';
 import { armouryFor } from '../../rules/armoury';
+import { gloryItemPermission, gloryItemNotice } from '../../rules/gloryItems';
 import { traitsOf, chosenBy } from '../../rules/formulae';
 import { formulaShelf } from '../../rules/formulaShelf';
 import { catalogueUnitFor } from '../../rules/catalogueUnit';
@@ -25,7 +26,8 @@ import {
   Search,
   Minus,
   AlertTriangle,
-  FlaskConical
+  FlaskConical,
+  Sparkles
 } from 'lucide-react';
 
 interface AddEquipmentModalProps {
@@ -170,6 +172,20 @@ const GateNote: React.FC<{ gate: { allowed: boolean; reason?: string; caveat?: s
     );
   };
 
+/**
+ * The label that says an offer came from a Glory Item Table rather than the
+ * faction's Armoury Table (p.125, RR-14).
+ *
+ * Worth saying on the row itself: the two are priced in the same currency and a
+ * player who has just opened the tables with a Trench Merchant is looking at a
+ * list where some rows needed that discovery and most did not.
+ */
+const GloryItemChip: React.FC = () => (
+  <span className="ml-1.5 align-middle rounded border border-theme-accent/50 bg-theme-accent/10 px-1 py-0.5 font-mono text-xs sm:text-[9px] uppercase tracking-wider text-theme-accent">
+    Glory Item
+  </span>
+);
+
 export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   warbandId,
   unitId,
@@ -301,6 +317,16 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   const { dataset } = useDataset(
     (typeof window !== 'undefined'
       && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
+
+  /*
+    What this Warband may buy from its Glory Item Table, so the sheet can say
+    why the table is shut. The FILTERING is `recruitable`'s — the shelf this
+    screen is handed no longer carries the rows — and this is only the sentence
+    that explains it.
+  */
+  const gloryGate = React.useMemo(
+    () => gloryItemPermission(dataset, activeWarband?.explorationEffects),
+    [dataset, activeWarband]);
 
   const carriedNow = React.useMemo(() => ([
     ...(unit?.equippedWeapons ?? []),
@@ -731,6 +757,22 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
           </div>
         </div>
 
+        {/*
+          Why the Glory Items are, or are not, on these lists (p.125, RR-14).
+
+          The shelf is filtered by `recruitable` before it reaches this screen,
+          so without this line a player looking for a Knighthood finds a list
+          that simply does not have one and no reason why. The rule is quoted
+          from the dataset rather than paraphrased here, because the whole point
+          of the sentence is that it names what to go and do about it.
+        */}
+        <div className="px-1 pb-2">
+          <p className="flex items-start gap-1.5 text-xs sm:text-[11px] font-mono leading-relaxed text-theme-muted">
+            <Sparkles className="mt-0.5 h-3 w-3 flex-shrink-0 text-theme-accent" />
+            <span>{gloryItemNotice(gloryGate, dataset)}</span>
+          </p>
+        </div>
+
         {/* Scrollable List Body */}
           
           {/* WEAPONS LIST */}
@@ -751,7 +793,9 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                     <div className="space-y-1">
                       <div className="flex items-start justify-between gap-2">
                         <div>
-                          <strong className="text-xs text-theme-text block">{w.name}</strong>
+                          <strong className="text-xs text-theme-text block">
+                            {w.name}{w.gloryItem && <GloryItemChip />}
+                          </strong>
                           <span className="text-xs sm:text-[10px] text-theme-muted block">
                             {w.type} • {w.hands || 1}H • Range: {w.range}
                           </span>
@@ -823,7 +867,9 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                       <div className="flex items-start justify-between gap-2">
                         <div>
                           <div className="flex items-center space-x-2">
-                            <strong className="text-xs text-theme-text block">{a.name}</strong>
+                            <strong className="text-xs text-theme-text block">
+                              {a.name}{a.gloryItem && <GloryItemChip />}
+                            </strong>
                             {isShield && (
                               <span className="text-xs sm:text-[9px] px-1.5 py-0.2 rounded bg-status-legal text-white font-bold uppercase">
                                 Shield
@@ -907,7 +953,7 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
                         <div>
                           <div className="flex items-center space-x-2">
                             <strong className="text-xs block text-theme-text">
-                              {e.name}
+                              {e.name}{e.gloryItem && <GloryItemChip />}
                             </strong>
                           </div>
                           <span className="text-xs sm:text-[10px] text-theme-muted block">

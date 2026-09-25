@@ -168,6 +168,23 @@ export interface UnitOption {
   profileId?: string;
   /** Conditional rules attached to the option itself. */
   modifiers?: Modifier[];
+  /**
+   * The Unit profile this option swaps in, where the option IS a statline.
+   *
+   * An entry can state more than one Unit profile and let the player choose:
+   * "Grail Thralls / Fly Thralls" is one entry with two, and a Trench Dog takes
+   * one of five specializations. Those sub-entries used to be emitted as
+   * separate recruits (DA-02); taking them off the recruit list without this
+   * made them unfieldable, because `optionsOf` skips any sub-entry carrying a
+   * Unit profile.
+   *
+   * Points at `UnitProfile.id` of the matching `secondaryProfile`. The card and
+   * Play Mode's reference sheet read it to show the statline the model actually
+   * has — a Fly Thrall's 6"/Flying rather than the Thrall's 5"/Infantry.
+   *
+   * Absent on every ordinary option, which states a rule rather than a profile.
+   */
+  unitProfileId?: string;
 }
 
 /* ----------------------------------------------------------------- rules */
@@ -186,6 +203,30 @@ export interface Ability {
    * reads it off the roster rather than off the scenario list.
    */
   grantsDeed?: { name: string; description: string };
+  /**
+   * The catalogue prints this ability `hidden="true"`: it is not on the entry
+   * until something reveals it (DA-01).
+   *
+   * Almost always a Warband Variant — the Shocktrooper's Axe Mastery, Shield
+   * Bash, Indomitable and Weapon Familiarity all belong to the Remnants of
+   * Byzantium — and occasionally one of the model's own selections. Which one
+   * is stated by a `set hidden=false` modifier on the unit, under the origin
+   * `profile:<this ability's name>`; `visibleAbilities` in
+   * `rules/applyVariant.ts` is what reads the two together.
+   *
+   * Absent means printed on the entry as it stands, which is the common case.
+   */
+  hidden?: boolean;
+  /**
+   * The Variants that reveal this ability, where a Variant is the only thing
+   * that does.
+   *
+   * For the Codex, which shows every ability a model can ever have and labels
+   * the ones a particular Warband would not see — a reference that hid them
+   * would be a reference with rules missing from it. Set by
+   * `visibleAbilities`, never by the pipeline.
+   */
+  variantOnly?: string[];
 }
 
 export interface Keyword {
@@ -208,6 +249,20 @@ export interface Keyword {
  * Evaluated by `src/rules/modifiers.ts` against a roster selection.
  */
 export interface Modifier {
+  /**
+   * The id of the profile this modifier is written on, where it is written on
+   * one (DA-01, review round 1 finding J).
+   *
+   * `origin` is readable — `profile:Hateful` — and a name is not an identity:
+   * the Yoke Fiend states `Hateful` twice, once for a Fang of the Seething
+   * Black Warband and once for everybody else, each hidden by its own
+   * condition. Matched on the name alone, both modifiers applied to both
+   * profiles and the ability disappeared under every Variant.
+   *
+   * Absent on an entry-level modifier and on a ruleset generated before this,
+   * so a reader falls back to `origin`.
+   */
+  originId?: string;
   /** BattleScribe's verbs. `set` is by far the most common. */
   op: 'set' | 'increment' | 'decrement' | 'add' | 'remove'
     | 'append' | 'prepend' | 'replace' | 'set-primary' | 'unset-primary';
@@ -549,6 +604,20 @@ export interface UnitProfile {
    * out of the recruit list.
    */
   secondaryProfile?: boolean;
+  /**
+   * The entry this profile is a second statline OF, where the catalogues state
+   * it that way (DA-02).
+   *
+   * `Black Grail.cat` L3166: the `Grail Thrall` entry holds `Grounded` and
+   * `Winged` as sub-entries with a Unit profile each, and the Trench Dog's
+   * `Specialization` group holds four or five more. The parser emitted every
+   * one as a recruit; the first is the model and the rest are this.
+   *
+   * Absent on a `secondaryProfile` the Carcass Front layer marks, which is
+   * written from the book rather than from a catalogue tree and has no parent
+   * entry to name.
+   */
+  parentEntryId?: string;
 
   lore?: string;
   /**
@@ -805,10 +874,27 @@ export interface ArmouryRow {
   name: string;
   /** Null where the rulebook lists Battlekit the catalogues do not carry. */
   weaponId: string | null;
-  /** 'Ranged Weapons' | 'Melee Weapons' | 'Grenades' | 'Armour' | 'Equipment' */
+  /**
+   * 'Ranged Weapons' | 'Melee Weapons' | 'Grenades' | 'Armour' | 'Equipment',
+   * or 'Glory Items' for a row printed in a faction's Glory Item Table.
+   *
+   * Load-bearing for that last one. Page 125 distinguishes a Glory Item from
+   * the Glory-priced Battlekit in an Armoury Table, and only the first needs an
+   * Exploration discovery to buy — so the gate keys on this, never on the
+   * currency. See `rules/gloryItems.ts`.
+   */
   section: string;
   cost: Cost;
   restrictions: string[];
+  /**
+   * The printed price where the book gives a range rather than a number: the
+   * Trench Dog is `1-3 ☼`.
+   *
+   * `cost` carries the lowest of the range, so a Warband is never refused an
+   * item it can afford; this is the row as printed, so the screen can show the
+   * player that the price is theirs to settle.
+   */
+  priceRange?: string;
   /**
    * The row is printed with a bullet: the item is unique to this faction and
    * its rules are in the faction's own Battlekit section, not the core one.
@@ -1352,6 +1438,77 @@ export interface TraumaProcedure {
 }
 
 /**
+ * The Campaign Scenario tables, p.96.
+ *
+ * Three D6 bands and a named final battle. The bands tile the games they cover
+ * with no gap and the final battle is the game after the last band, both
+ * checked at build time — a campaign game that falls between two tables would
+ * have no scenario at all.
+ */
+export interface CampaignScenarioTables {
+  bands: {
+    /** `Early Campaign`, `Mid-Campaign`, `Endgame`, as the book heads them. */
+    name: string;
+    /** Inclusive game numbers this table covers. */
+    from: number;
+    to: number;
+    rows: {
+      roll: number;
+      /** The scenario, resolved against `Dataset.scenarios`. */
+      scenario?: string;
+      /**
+       * The sixth result, which is not a scenario: *"The player who has played
+       * fewer games chooses one of the scenarios listed above."* Recorded as a
+       * result in its own right, because rerolling it would take the choice the
+       * rule hands to the player who is behind.
+       */
+      choose?: boolean;
+      /** That result's own sentence, tie-break included. */
+      text?: string;
+    }[];
+  }[];
+  /** *"Final Battle (Battle 12) ▶ The Great War"* — a name, not a roll. */
+  final: { name: string; game: number; scenario: string };
+}
+
+/**
+ * The Quartermaster Step's own rules, from the pages that state them.
+ *
+ * Two things live here because both are gates the app could not apply for want
+ * of a number, and both belong to this step rather than to the Trauma Step or
+ * to an Armoury Table.
+ */
+export interface QuartermasterStep {
+  /**
+   * Retiring a model the player chooses to retire (p.123).
+   *
+   * **Not** `TraumaProcedure.battleScars.unfitAt.** The two counts are close
+   * enough to be confused and they are opposite rules: `unfitAt` (three scars)
+   * is the book removing a model whether the player likes it or not, in the
+   * Trauma Step; `atScars` (two) is the player being allowed to retire one, in
+   * the Quartermaster Step, while it is still fit to fight. Reading either for
+   * the other either strands a veteran on the roster or deletes it.
+   */
+  retireInjured: {
+    /** Battle Scars at which retiring becomes available. Two, in the book. */
+    atScars: number;
+    /** The section's own words, for the screen that removes the model. */
+    text: string;
+  };
+  /**
+   * Why a faction's Glory Item Table may be entirely absent (p.125).
+   *
+   * `needsDiscovery` is the gate itself; what a particular discovery permits —
+   * *"Glory Items costing 5 ☼ or less"* — is stated by that discovery and read
+   * from `campaign.exploration.locations`, never duplicated here.
+   */
+  gloryItems: {
+    needsDiscovery: boolean;
+    text: string;
+  };
+}
+
+/**
  * Calling for Reinforcements, as the rulebook sequences it.
  *
  * The prose is carried because a screen about to empty a player's Arsenal and
@@ -1669,6 +1826,38 @@ export interface Dataset {
      * is what the app did for two years, with a switch on the unit card.
      */
     promotions?: PromotionRules;
+    /**
+     * The Quartermaster Step's own two rules (p.123 and p.125).
+     *
+     * Optional for the same reason as `traumaProcedure`: a ruleset built before
+     * this existed states neither, and "the book does not say" must stay
+     * distinguishable from "no model may be retired" and from "every Glory Item
+     * is on sale".
+     */
+    quartermaster?: QuartermasterStep;
+    /**
+     * The Carcass Front Exploration Step's own two numbers, read from the
+     * supplement (RR-09, review round 1 finding I).
+     *
+     * `startingDice` is **3** and does not grow with games played — it grows
+     * with Campaign Tracker rewards and Camp buildings — and `lootPerPoint` is
+     * **5** where the rulebook pays 10. Both were constants in
+     * `rules/campaign.ts` with the book cited beside them, which is one rung
+     * short of rule 1: the citation was right and the numbers were typed.
+     *
+     * Undefined on a ruleset without the supplement, which is what the
+     * Exploration panel refuses on rather than falling back to the rulebook's.
+     */
+    carcassFrontExplorationStep?: { startingDice: number; lootPerPoint: number };
+    /**
+     * Which scenario a campaign game is played on (p.96).
+     *
+     * Optional for the same reason as `traumaProcedure`: a ruleset built before
+     * this existed prints no bands, and "the ruleset does not say" must stay
+     * distinguishable from "any scenario, at any game" — which is what the
+     * Mission Generator did.
+     */
+    scenarioTables?: CampaignScenarioTables;
   };
   meta: {
     rulesetId: string;

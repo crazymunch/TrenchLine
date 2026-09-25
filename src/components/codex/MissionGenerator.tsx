@@ -6,6 +6,8 @@ import { useScenarios } from '../../rules/useScenarios';
 import { soundEffects } from '../../services/soundEffects';
 import { parseUnforeseenEvents, rollUnforeseen } from '../../rules/unforeseen';
 import { rollWeather } from '../../rules/weather';
+import { rollCampaignScenario } from '../../rules/campaignScenario';
+import { campaignGameOf } from '../../rules/campaign';
 import {
   generateScenario, asText, type GeneratedScenario,
 } from '../../rules/scenarioGenerator';
@@ -20,7 +22,8 @@ import {
   RefreshCw, 
   Compass, 
   Edit3,
-  Play
+  Play,
+  Swords
 } from 'lucide-react';
 
 /**
@@ -50,11 +53,12 @@ import {
  */
 
 export const MissionGenerator: React.FC = () => {
-  const { setCurrentView } = useStore();
+  const { setCurrentView, getActiveWarband, campaign } = useStore();
   // The derived twelve plus the All Out War pack. Templates are seeded from
   // the book's own sections, so a custom mission starts from real rules.
   const { scenarios } = useScenarios();
-  const [activeMode, setActiveMode] = useState<'designer' | 'random' | 'procedural'>('designer');
+  const [activeMode, setActiveMode] =
+    useState<'designer' | 'random' | 'procedural' | 'campaign'>('designer');
 
   /*
     Which scenario's table to roll. Only Hunt for Heroes has one, so it is the
@@ -73,6 +77,17 @@ export const MissionGenerator: React.FC = () => {
   const { dataset: genDataset } = useDataset();
   const weather = genDataset?.weather ?? null;
   const [lastWeather, setLastWeather] = useState<ReturnType<typeof rollWeather> | null>(null);
+
+  /*
+    The Campaign Scenario tables, p.96 (RR-14). The game number starts at the
+    active Warband's, which is what the book's bands are indexed on, and stays
+    editable — a player may be generating for a game the app has no record of.
+  */
+  const scenarioTables = genDataset?.campaign?.scenarioTables ?? null;
+  const [campaignGame, setCampaignGame] = useState(
+    () => campaignGameOf(getActiveWarband() ?? { }, campaign));
+  const [campaignRoll, setCampaignRoll] =
+    useState<ReturnType<typeof rollCampaignScenario> | null>(null);
 
   /*
     The Carcass Front Random Scenario Generator. Absent from a ruleset that
@@ -192,8 +207,10 @@ export const MissionGenerator: React.FC = () => {
           </p>
         </div>
 
-        {/* Mode Toggle */}
-        <div className="flex bg-theme-base p-1 rounded border border-theme-border text-xs font-mono">
+        {/* Mode Toggle. `flex-wrap` because a fourth tab does not fit on a
+            375px phone in one row, and a bar that overflows is the defect
+            docs/MOBILE.md forbids hiding with `overflow-x: hidden`. */}
+        <div className="flex flex-wrap gap-1 bg-theme-base p-1 rounded border border-theme-border text-xs font-mono">
           <button
             onClick={() => setActiveMode('designer')}
             className={`px-3.5 py-1.5 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
@@ -216,6 +233,18 @@ export const MissionGenerator: React.FC = () => {
           >
             <Dices className="w-3.5 h-3.5" />
             <span>Random Scenario</span>
+          </button>
+
+          <button
+            onClick={() => setActiveMode('campaign')}
+            className={`px-3.5 min-h-[44px] lg:min-h-0 lg:py-1.5 rounded font-bold uppercase transition-all flex items-center space-x-1.5 ${
+              activeMode === 'campaign'
+                ? 'bg-theme-primary text-theme-base shadow'
+                : 'text-theme-muted hover:text-theme-text'
+            }`}
+          >
+            <Swords className="w-3.5 h-3.5" />
+            <span>Campaign Game</span>
           </button>
 
           <button
@@ -604,6 +633,141 @@ export const MissionGenerator: React.FC = () => {
                   ))}
                 </div>
               </details>
+            </>
+          )}
+        </div>
+      )}
+
+      {/*
+        MODE: the Campaign Scenario tables, p.96 (RR-14).
+
+        Three D6 tables banded by game number and a named Final Battle. Until
+        now the app had no way to say which scenario a campaign game should be
+        played on, and the Random Scenario mode beside this one answers a
+        different question — it builds a scenario out of the Carcass Front
+        charts rather than picking one of the twelve the book prints.
+
+        The game number defaults to the active Warband's, through
+        `campaignGameOf`, and stays editable: a player generating for a
+        opponent's table, or planning ahead, is asking about a game the app has
+        no record of.
+      */}
+      {activeMode === 'campaign' && (
+        <div className="space-y-5 animate-fade-in font-mono text-xs">
+          {!scenarioTables ? (
+            <div className="p-8 text-center bg-theme-base rounded border border-dashed border-theme-border space-y-2">
+              <Swords className="w-8 h-8 text-theme-primary mx-auto opacity-60" />
+              <h4 className="font-gothic font-bold text-base text-theme-text">
+                No Campaign Scenario tables in this ruleset
+              </h4>
+              <p className="text-theme-muted leading-relaxed max-w-md mx-auto">
+                The bands are printed on page 96 of the digital rulebook. A ruleset
+                built without them cannot say which scenario a campaign game uses,
+                and this will not guess one.
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="p-4 bg-theme-elevated rounded border border-theme-border space-y-3">
+                <p className="text-theme-muted leading-relaxed">
+                  Count the games played in the campaign so far and roll on the band
+                  that covers the next one. Where the two players differ, the book
+                  uses the greater number.
+                </p>
+
+                {/* A column on a phone, a row from `sm:`. */}
+                <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+                  <label className="flex-1">
+                    <span className="block uppercase font-bold text-theme-text mb-1">Game</span>
+                    <input
+                      type="number"
+                      min={1}
+                      inputMode="numeric"
+                      value={campaignGame}
+                      onChange={(e) => setCampaignGame(Math.max(1, Number(e.target.value) || 1))}
+                      className="w-full min-h-[44px] bg-theme-base border border-theme-border rounded px-3 text-base sm:text-sm text-theme-text focus:outline-none focus:border-theme-primary"
+                    />
+                  </label>
+
+                  <button
+                    onClick={() => {
+                      soundEffects.playDiceRoll();
+                      setCampaignRoll(rollCampaignScenario(genDataset, campaignGame));
+                    }}
+                    className="flex items-center justify-center gap-2 px-5 min-h-[44px] bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded shadow transition-all"
+                  >
+                    <Dices className="w-4 h-4" />
+                    <span>Roll for game {campaignGame}</span>
+                  </button>
+                </div>
+              </div>
+
+              {campaignRoll && (
+                <div className="p-4 bg-theme-base rounded border border-theme-primary/50 space-y-2">
+                  {campaignRoll.band === null ? (
+                    /* Rule 2: past the Final Battle the book prints nothing, and
+                       this says so rather than holding at the Endgame table. */
+                    <p className="text-theme-muted leading-relaxed">
+                      The published tables stop at the Final Battle. Game {campaignRoll.game}
+                      {' '}is past it, so there is no table to roll on — agree a scenario
+                      with your opponent.
+                    </p>
+                  ) : (
+                    <>
+                      <span className="uppercase font-bold text-theme-primary block">
+                        {campaignRoll.band}
+                        {campaignRoll.roll !== null && ` — rolled ${campaignRoll.roll}`}
+                      </span>
+                      {campaignRoll.scenario && (
+                        <strong className="block font-gothic text-lg text-theme-text">
+                          {campaignRoll.scenario}
+                        </strong>
+                      )}
+                      {campaignRoll.playersChoose && (
+                        <div className="space-y-2">
+                          <p className="text-theme-muted leading-relaxed">{campaignRoll.text}</p>
+                          <ul className="flex flex-wrap gap-1.5">
+                            {campaignRoll.choices.map((name) => (
+                              <li
+                                key={name}
+                                className="rounded border border-theme-border bg-theme-surface px-2 py-1 text-theme-text"
+                              >
+                                {name}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* The bands themselves, because the Codex is read when the book
+                  is not to hand. */}
+              <div className="space-y-4">
+                {scenarioTables.bands.map((band) => (
+                  <div key={band.name} className="space-y-1.5">
+                    <span className="uppercase font-bold text-theme-text block border-b border-theme-border pb-1">
+                      {band.name} (Games {band.from}–{band.to})
+                    </span>
+                    <ul className="space-y-1">
+                      {band.rows.map((r) => (
+                        <li key={r.roll} className="flex gap-2 text-theme-muted">
+                          <span className="tabular-nums text-theme-primary font-bold">{r.roll}</span>
+                          <span className="min-w-0">{r.scenario ?? r.text}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                <div className="space-y-1.5">
+                  <span className="uppercase font-bold text-theme-text block border-b border-theme-border pb-1">
+                    {scenarioTables.final.name} (Battle {scenarioTables.final.game})
+                  </span>
+                  <p className="text-theme-muted">{scenarioTables.final.scenario}</p>
+                </div>
+              </div>
             </>
           )}
         </div>

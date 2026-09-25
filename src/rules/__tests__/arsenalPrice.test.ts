@@ -28,6 +28,18 @@ const APP_FACTION_IDS = (DATASET.armouries ?? []).map((a) => a.factionId);
 const gloryRows = (DATASET.armouries ?? []).flatMap((a) =>
   a.rows.filter((r) => r.cost.glory > 0).map((r) => ({ factionId: a.factionId, row: r })));
 
+/**
+ * Whether the row came from a Glory Item Table rather than the Armoury Table.
+ *
+ * Needed to find the right offer, because a faction can stock one NAME on both
+ * of its tables at two prices and the book says so: the Court's footnote 3
+ * reads "A Warband can have up to 3 Restraining Muzzles purchased with ☼ in
+ * addition to up to 3 Restraining Muzzles purchased with 👑." Matching on the
+ * name alone found whichever came first and compared a 10-Ducat Armoury row
+ * against a 1-Glory Glory Item.
+ */
+const isGloryRow = (section: string) => section === 'Glory Items';
+
 describe('the Glory-priced offers in the shipped dataset', () => {
   it('are there to be got wrong', () => {
     // 32 offers of 16 distinct items across 8 of the armouries. The number is
@@ -43,12 +55,16 @@ describe('the Glory-priced offers in the shipped dataset', () => {
 });
 
 describe('the price a purchase row carries', () => {
-  it.each(gloryRows.map((g) => [g.factionId, g.row.name, g.row.cost.glory] as const))(
+  it.each(gloryRows.map((g) =>
+    [g.factionId, g.row.name, g.row.cost.glory, isGloryRow(g.row.section)] as const))(
     '%s / %s is %i Glory in the lists the Arsenal buys from',
-    (factionId, name, glory) => {
-      const lists = recruitable(DATASET, factionId, APP_FACTION_IDS);
+    (factionId, name, glory, fromGloryTable) => {
+      /* The whole table, because a Glory Item is only offered once a discovery
+         has opened it — the list a Warband with none sees has no Glory Items at
+         all (p.125, RR-14). */
+      const lists = recruitable(DATASET, factionId, APP_FACTION_IDS, undefined);
       const entry = [...lists.weapons, ...lists.armour, ...lists.equipment]
-        .find((x) => nameKey(x.name) === nameKey(name));
+        .find((x) => nameKey(x.name) === nameKey(name) && !!x.gloryItem === fromGloryTable);
 
       expect(entry, `${name} is not offered to ${factionId} at all`).toBeTruthy();
       expect(profileCost(entry!)).toEqual({ ducats: 0, glory });
