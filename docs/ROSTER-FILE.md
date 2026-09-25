@@ -310,8 +310,10 @@ Four Exploration Locations put an item in the Arsenal outright — *"Add Curativ
 Fluids to your Warband's Arsenal"* — and an Arsenal row that records only a name
 and a price cannot say which of its rows was bought. That matters when one is
 sold, when a ruleset is converted (`convert.ts` refunds nothing for a thing that
-cost nothing), and when a player looks at the list and wonders where a free
-Siege Jezzail came from.
+cost nothing), and when a player reads the list: an imported Warband that holds
+the Sniper's Lair has a Siege Jezzail and an Alchemical Ammunition in its Arsenal
+at no cost, because that Location's text names both for its faction and the
+record it came from prices them at nothing.
 
 So a granted row carries the granter's own name, spelled as
 `explorationDiscoveries` records it, and a price of nothing. Absent on every row

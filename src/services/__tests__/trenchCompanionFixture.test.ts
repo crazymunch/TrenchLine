@@ -37,7 +37,7 @@ import { GOLEM_GRANTED_BY, golemGrant } from '@/rules/golem';
 import { carriesAsBattlekit, forcedBattlekit } from '@/rules/battlekit';
 import { catalogueUnitFor } from '@/rules/catalogueUnit';
 import { nameKey } from '@/rules/names';
-import { explorationGrants } from '@/rules/campaign';
+import { explorationChoices, explorationGrants } from '@/rules/campaign';
 import { formulaShelf } from '@/rules/formulaShelf';
 import { formulaeOf } from '@/rules/formulae';
 import { patronSkillsFor } from '@/rules/advancement';
@@ -203,7 +203,12 @@ describe('the warband itself', () => {
     const lines = out.warnings.filter((x) => x.includes("as 'kavass'"));
     /* One line for the Variant form, not one per model (item 8). */
     expect(lines).toHaveLength(1);
-    expect(lines[0]).toContain(`what the ${variant.name} list calls it`);
+    /* The Variant's name with its own article dropped, so the sentence reads
+       "what the House of Wisdom list calls it" and not "the The" (round 3,
+       item 6). */
+    expect(variant.name).toMatch(/^The /);
+    expect(lines[0]).toContain(`what the ${variant.name.replace(/^The /, '')} list calls it`);
+    expect(lines[0]).not.toContain('the The');
     for (const name of ['Idris the Relic Hound', 'Nasir the Inaccurate',
       'Rafiq the Incinerator', 'Sabir the Wind-Caller']) {
       expect(lines[0], name).toContain(name);
@@ -497,6 +502,41 @@ describe('their fighter status', () => {
     }
   });
 
+  it('says a table entry that resolves to nothing once, listing the models', () => {
+    /*
+      Round 3, item 7. The dedupe of these lines was unpinned — reverting it to
+      one paragraph per model kept every test green, because the shipped table
+      has no `{ ours: null }` entry for anything on this warband. So the table
+      is handed in: `up_skirmisher` ruled out, on all four Kavass.
+    */
+    const copy = JSON.parse(JSON.stringify(envelope));
+    const data = JSON.parse(copy.warband_data);
+    const kavass = (data.models as { model: { model: string; name: string;
+      list_upgrades: unknown[] } }[]).filter((m) => m.model.model === 'md_azeb_mv_kavass');
+    for (const line of kavass) {
+      line.model.list_upgrades = [{
+        purchase: { cost_value: 5, cost_type: 0 },
+        upgrade: { object_id: 'up_skirmisher' },
+      }];
+    }
+    copy.warband_data = JSON.stringify(data);
+
+    const out = importTrenchCompanionWarband(copy, D, {
+      up_skirmisher: {
+        ours: null,
+        theirs: 'Light Skirmisher',
+        why: 'this ruleset carries no option for it — see the fixture test above',
+      },
+    });
+    const lines = out.unmapped.filter((u) => u.startsWith('up_skirmisher '));
+    expect(lines).toHaveLength(1);
+    for (const line of kavass) expect(lines[0]).toContain(line.model.name.trim());
+    expect(lines[0]).toContain('this ruleset carries no option for it');
+    /* And nothing landed on the models for it. */
+    expect(out.warband.units.every((u) => !(u.specialUpgrades ?? [])
+      .some((x) => /skirmisher/i.test(x.name)))).toBe(true);
+  });
+
   it('asks whether the model is on the roster before reading anything off it', () => {
     /*
       Item 10 again, and the order the two are asked in. Status used to be read
@@ -695,6 +735,180 @@ describe('the equipment', () => {
     expect(explorationGrants(D, workshop, 5)).toEqual([]);
   });
 
+  it('adds to the Arsenal only where a Location names an item it can resolve', () => {
+    /*
+      Round 3, item 1. The first version of this reader matched sixteen of the
+      thirty-four Locations and wrote a line for each — *"Heavy Weapons Cache:
+      its text adds 'it' to the Arsenal"*, *"'them'"* for three more, *"'one
+      Glory Item'"* for the Treasure of the Holies, and a Troop Flag for a
+      Trench Shrine even where the player took `Return`. Every one of those was
+      a false statement in a report.
+
+      So: each Location of the table imported ALONE, with a mod of its own, and
+      the same three questions asked of each.
+    */
+    const rows = Object.entries(D.campaign?.exploration?.locations ?? {})
+      .flatMap(([, list]) => list);
+    expect(rows.length).toBeGreaterThan(30);
+
+    /** That Location as the only discovery, with the mod that holds its effect. */
+    const onlyLocation = (row: { name: string }) => {
+      const copy = JSON.parse(JSON.stringify(envelope));
+      const data = JSON.parse(copy.warband_data);
+      const id = `el_${nameKey(row.name)}`;
+      data.exploration.locations = [{ object_id: id, selections: [] }];
+      data.exploration.location_mods = [{
+        object_id: `${id}_mod`,
+        /* An option their record has not answered, as the Workshop's carries. */
+        selections: [{ option_refID: `ot_${nameKey(row.name)}_a`, selection_ID: null }],
+      }];
+      copy.warband_data = JSON.stringify(data);
+      return importTrenchCompanionWarband(copy, D);
+    };
+
+    const quiet: string[] = [];
+    const granted: string[] = [];
+    const reported: string[] = [];
+    for (const row of rows) {
+      const out = onlyLocation(row);
+      expect(out.warband.explorationDiscoveries, row.name).toContain(row.name);
+      /* The Location reader's own rows: `-granted-` in the id. A row of THEIR
+         Arsenal that this Location accounts for is a different reading (item 2)
+         and is tested below. */
+      const gifts = out.warband.armoryStash.filter(
+        (x) => x.grantedBy === row.name && x.id.includes('-granted-'));
+      const lines = out.unmapped.filter((u) => u.startsWith(`${row.name}: its text adds`));
+
+      if (explorationChoices(row).length) {
+        /* A choice is not ours to answer: their option ids say nothing about
+           which of our options they are. */
+        expect(gifts, `${row.name} offers a choice`).toEqual([]);
+        expect(lines, `${row.name} offers a choice`).toEqual([]);
+        quiet.push(row.name);
+        continue;
+      }
+
+      for (const gift of gifts) {
+        /* Nothing invented: the name is in the Location's own text, and the
+           Warband paid nothing for it. */
+        expect(row.description ?? '', gift.name).toContain(gift.name);
+        expect(gift.cost, gift.name).toBe(0);
+        expect(gift.price, gift.name).toEqual({ ducats: 0, glory: 0 });
+      }
+      for (const line of lines) {
+        /* A line only ever quotes a phrase the text contains, and only a phrase
+           that names something — the capital letter is what separates a name
+           from `it`, `them` and `one Glory Item`. */
+        const quoted = /adds '([^']+)'/.exec(line)![1];
+        expect(row.description ?? '', line).toContain(quoted);
+        expect(quoted[0], line).toBe(quoted[0].toUpperCase());
+      }
+      if (gifts.length) granted.push(row.name);
+      else if (lines.length) reported.push(row.name);
+      else quiet.push(row.name);
+    }
+
+    /* The Workshop is the one that grants, and the Lair the one that reports. */
+    expect(granted).toEqual(['Ransacked Alchemist Workshop']);
+    expect(reported).toContain('Sniper’s Lair');
+
+    /* And the cases that used to produce a false line say nothing at all. */
+    for (const name of ['Heavy Weapons Cache', 'Ruined House', 'Warband Strongbox',
+      'Battlefield of Corpses', 'Treasure of the Holies', 'Fallen Soldier', 'Trench Shrine']) {
+      expect(quiet, name).toContain(name);
+    }
+  });
+
+  it('records an Arsenal row their record prices at nothing, where a Location says why', () => {
+    /*
+      Round 3, item 2, on the architect's ruling. Both of their Arsenal rows
+      carry a discount equal to their cost, and this Warband holds the Sniper's
+      Lair: *"Add the Battlekit listed below for your Faction to your Arsenal …
+      * Iron Sultanate: Siege Jezzail, Alchemical Ammunition, and a Cloak of
+      Alamut."* Their record states the discount and our own text names the
+      items, so recording them as given reads both records rather than believing
+      either alone.
+    */
+    const lair = 'Sniper’s Lair';
+    expect(w.explorationDiscoveries).toContain(lair);
+
+    const theirStash = (JSON.parse(envelope.warband_data) as {
+      equipment: { purchase: { cost_value: number; discount: number };
+        equipment: { name: string } }[] }).equipment;
+    for (const line of theirStash) {
+      expect(line.purchase.discount, line.equipment.name).toBe(line.purchase.cost_value);
+      const row = w.armoryStash.find((x) => x.name === line.equipment.name)!;
+      expect(row, line.equipment.name).toBeDefined();
+      expect(row.cost, row.name).toBe(0);
+      expect(row.price, row.name).toEqual({ ducats: 0, glory: 0 });
+      expect(row.grantedBy, row.name).toBe(lair);
+      /* The Lair's own text is what named it — cited, not assumed. */
+      const rows = Object.values(D.campaign?.exploration?.locations ?? {}).flat();
+      expect(rows.find((r) => r.name === lair)!.description).toContain(row.name);
+      /* And the shelf does price it, which is what was being charged before. */
+      expect([...shelfTL.weapons, ...shelfTL.armour, ...shelfTL.equipment]
+        .find((x) => x.name === row.name)!.cost, row.name).toBeGreaterThan(0);
+      expect(report.warnings.some((x) => x.startsWith(`${row.name} is in the Arsenal at no cost`)
+        && x.includes(lair))).toBe(true);
+    }
+
+    /* Nothing is reported as a price difference for them any more. */
+    for (const line of theirStash) {
+      expect(report.priceDifferences.some((d) => d.name === line.equipment.name)).toBe(false);
+    }
+  });
+
+  it('keeps the ruleset price where no held Location accounts for their zero', () => {
+    /*
+      The other half of the ruling. Their zero is only a reading where a
+      Location they hold says why; otherwise it is a statement this import
+      cannot explain, and adopting it would be taking their arithmetic on trust.
+    */
+    const copy = JSON.parse(JSON.stringify(envelope));
+    const data = JSON.parse(copy.warband_data);
+    /* The same discounted rows, with every Location dropped. */
+    data.exploration.locations = [];
+    data.exploration.location_mods = [];
+    copy.warband_data = JSON.stringify(data);
+    const out = importTrenchCompanionWarband(copy, D);
+
+    for (const name of ['Siege Jezzail', 'Alchemical Ammunition']) {
+      const row = out.warband.armoryStash.find((x) => x.name === name)!;
+      expect(row.grantedBy, name).toBeUndefined();
+      expect(row.cost, name).toBe([...shelfTL.weapons, ...shelfTL.armour, ...shelfTL.equipment]
+        .find((x) => x.name === name)!.cost);
+      expect(out.priceDifferences.some((d) => d.name === name), name).toBe(true);
+    }
+  });
+
+  it('keeps the ruleset price where their record charged for it in full', () => {
+    /*
+      The discount is half the reading, and this is the half a Location alone
+      cannot supply. The Sniper's Lair's list names the Cloak of Alamut as well
+      — and a Cloak their record CHARGED for is a Cloak the Warband bought,
+      whatever the Lair offers.
+    */
+    const shelfCost = [...shelfTL.weapons, ...shelfTL.armour, ...shelfTL.equipment]
+      .find((x) => x.name === 'Cloak of Alamut')!.cost;
+    expect(shelfCost).toBeGreaterThan(0);
+    const rows = Object.values(D.campaign?.exploration?.locations ?? {}).flat();
+    expect(rows.find((r) => r.name === 'Sniper’s Lair')!.description)
+      .toContain('Cloak of Alamut');
+
+    const copy = JSON.parse(JSON.stringify(envelope));
+    const data = JSON.parse(copy.warband_data);
+    (data.equipment as unknown[]).push({
+      purchase: { cost_value: shelfCost, cost_type: 0, discount: 0 },
+      equipment: { id: 'eq_cloakofalamut_x', name: 'Cloak of Alamut' },
+    });
+    copy.warband_data = JSON.stringify(data);
+    const out = importTrenchCompanionWarband(copy, D);
+
+    const row = out.warband.armoryStash.find((x) => x.name === 'Cloak of Alamut')!;
+    expect(row.grantedBy).toBeUndefined();
+    expect(row.cost).toBe(shelfCost);
+  });
+
   it('never says a text was read when the reader returned nothing', () => {
     /*
       Round 2, item 3. The `location_mods` note stated that "the Location's own
@@ -863,6 +1077,16 @@ describe('the equipment', () => {
     /* The allowance still covered the first 50, and nothing more. */
     expect(richer.totalCost).toBe(extra.cost.ducats);
     expect(grant.freeFormulaDucats).toBeGreaterThan(0);
+
+    /*
+      And the report says which rule that crosses (round 3, item 8): the app's
+      own shelf does not price a Formula beyond the allowance, it refuses one —
+      the grant states the model can receive no additional Alchemical Formulas.
+    */
+    expect(grant.noFurtherFormulas).toBe(true);
+    expect(out.warnings.some((x) => x.startsWith('Al-Mudawwan, the Inscribed: ')
+      && x.includes(extra.name)
+      && /no additional Alchemical Formulas/.test(x))).toBe(true);
   });
 
   it('reports a discount their record takes and this import does not', () => {
@@ -928,22 +1152,14 @@ describe('the equipment', () => {
       above reported as a disagreement. The Brazen Bull is the real one: their
       record prices the model 100 and ours prices it from the catalogue.
     */
-    expect(report.priceDifferences.map((d) => d.name))
-      .toEqual(['Brazen Bull', 'Siege Jezzail', 'Alchemical Ammunition']);
-
     /*
-      The two Arsenal lines are there because their record prices them at
-      NOTHING: each carries a discount equal to its cost, which is the Sniper's
-      Lair granting them ("Add the Battlekit listed below for your Faction to
-      your Arsenal"). This ruleset prices what an item is worth, so the two
-      records disagree about the Arsenal's value and the report says so per
-      item rather than adopting either number.
+      One line. The two Arsenal rows were here in round 2, because their record
+      prices them at nothing — and round 3 settled why: each carries a discount
+      equal to its cost and the Warband holds the Sniper's Lair, which names
+      both in its per-faction list. They are recorded as granted instead, so
+      there is nothing to disagree about. See the Arsenal test above.
     */
-    const theirStash = (JSON.parse(envelope.warband_data) as {
-      equipment: { purchase: { cost_value: number; discount: number } }[] }).equipment;
-    for (const line of theirStash) {
-      expect(line.purchase.discount).toBe(line.purchase.cost_value);
-    }
+    expect(report.priceDifferences.map((d) => d.name)).toEqual(['Brazen Bull']);
 
     const bull = shelfTL.units.find((u) => u.name === 'Brazen Bull')!;
     const theirs = theirModels.find((l) => l.model.model === 'md_brazenbull')!.purchase!;
@@ -1065,8 +1281,14 @@ describe('what it could not resolve', () => {
     }
   });
 
-  it('reports the Fireteam and the Location option', () => {
-    expect(report.unmapped.some((u) => u.startsWith('fireteams:'))).toBe(true);
+  it('reports the Fireteam by its member, and the Location option', () => {
+    const line = report.unmapped.find((u) => u.startsWith('fireteams:'))!;
+    expect(line).toBeDefined();
+    /* Named, not counted (round 3, item 10): their record gives the member as a
+       model's purchase id, which resolves to a name on this roster. */
+    const faris = theirModels.find((l) => l.model.model === 'md_mamlukfaris')!;
+    expect(line).toContain(faris.model.id!);
+    expect(line).toContain('Jawhar al-Sari on this roster');
     expect(report.unmapped.some((u) => /the option taken/.test(u))).toBe(true);
   });
 });

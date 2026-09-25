@@ -117,6 +117,41 @@ const DOMAINS: Record<string, { what: string; names: () => Set<string>; keys: (i
 
 const domainOf = (id: string) => DOMAINS[`${id.slice(0, id.indexOf('_') + 1)}`];
 
+/** Every name the import puts anywhere on the Warband, folded. */
+const onRoster = (r: ReturnType<typeof importTrenchCompanionWarband>): string[] => [
+  ...r.warband.units.flatMap((u) => [
+    u.profileSnapshot.name,
+    ...(u.specialUpgrades ?? []).map((x) => x.name),
+    ...u.equippedWeapons.map((x) => x.name),
+    ...u.equippedArmour.map((x) => x.name),
+    ...u.equippedEquipment.map((x) => x.name),
+  ]),
+  ...(r.warband.explorationDiscoveries ?? []),
+  ...(r.warband.explorationEffects ?? []).map((e) => e.name),
+  ...r.warband.armoryStash.map((x) => x.name),
+].map((n) => nameKey(n));
+
+/**
+ * Which entries of a table the ordinary rules would reach without it.
+ *
+ * Asked of the real importer, one entry at a time: remove it, run the import
+ * again, and see whether the answer got worse. A named entry that is still
+ * reached without its line has stopped being needed; a `null` entry says
+ * nothing here answers the id, and a roster holding something by that name
+ * disproves it.
+ */
+const staleIn = (ids: Record<string, { ours: string | null; theirs: string; why: string }>) => {
+  const stale: string[] = [];
+  for (const id of Object.keys(ids)) {
+    const e = ids[id];
+    const without = Object.fromEntries(Object.entries(ids).filter(([k]) => k !== id));
+    const got = onRoster(importTrenchCompanionWarband(envelope, D, without));
+    const wanted = nameKey(e.ours ?? e.theirs);
+    if (wanted && got.includes(wanted)) stale.push(id);
+  }
+  return stale;
+};
+
 describe('the Trench Companion id equivalence table', () => {
   it('is not empty, or this test proves nothing', () => {
     expect(entries.length).toBeGreaterThan(0);
@@ -177,20 +212,37 @@ describe('the Trench Companion id equivalence table', () => {
     }
   });
 
-  it('holds no entry the ordinary slug rules would now resolve on their own', () => {
+  it('holds no entry the ordinary rules would now resolve on their own', () => {
     /*
-      The guard that matters. Their ids are slugs of their names, so an entry
-      is only earned where the slug reaches nothing. If our data is renamed
-      such that the slug DOES reach it, this entry has stopped being needed
-      and must go rather than sit here being believed.
+      The guard that matters, and round 3 rewrote how it asks.
+
+      It used to ask each id's keys against one domain — for an `up_` id, the
+      entry's options and nothing else. So `up_secrets_secretsoftakwin` with
+      `{ ours: null }` could be added to the real table and every test stayed
+      green, while the gear shelf resolved the Secrets perfectly well: a guard
+      that reads one shelf cannot answer a question about all of them.
+
+      So it asks the importer. Each entry is REMOVED from the table, the real
+      import is run again, and the entry is earned only if the answer got worse:
+      a named entry whose name still reaches the roster without it has stopped
+      being needed, and a `null` entry is a claim that nothing here answers the
+      id, which the roster holding something by that name disproves.
     */
-    const stale: string[] = [];
-    for (const [id, e] of entries) {
-      const domain = domainOf(id)!;
-      const names = domain.names();
-      if (domain.keys(id).some((k) => names.has(k))) stale.push(`${id} ('${e.theirs}')`);
-    }
-    expect(stale, 'entries the slug rules now reach without help — delete them').toEqual([]);
+    expect(staleIn(table.ids),
+      'entries the ordinary rules now reach without help — delete them').toEqual([]);
+  });
+
+  it('fails on an entry the rules reach on their own, whatever shelf it is on', () => {
+    /* The exact entry that slipped past the old guard. The Secrets of Takwin
+       resolve on the gear shelf, so a `null` entry for them is stale. */
+    expect(staleIn({
+      ...table.ids,
+      up_secrets_secretsoftakwin: {
+        ours: null,
+        theirs: 'Secrets of Takwin',
+        why: 'a stale entry this test adds on purpose',
+      },
+    })).toEqual(['up_secrets_secretsoftakwin']);
   });
 
   it('cannot shadow a resolution, on any shelf', () => {
@@ -232,23 +284,10 @@ describe('the Trench Companion id equivalence table', () => {
       the real importer runs over the committed fixture — not merely name
       something the ruleset happens to carry.
     */
-    const r = importTrenchCompanionWarband(envelope, D);
-    const onRoster = [
-      ...r.warband.units.flatMap((u) => [
-        u.profileSnapshot.name,
-        ...(u.specialUpgrades ?? []).map((x) => x.name),
-        ...u.equippedWeapons.map((x) => x.name),
-        ...u.equippedArmour.map((x) => x.name),
-        ...u.equippedEquipment.map((x) => x.name),
-      ]),
-      ...(r.warband.explorationDiscoveries ?? []),
-      ...(r.warband.explorationEffects ?? []).map((e) => e.name),
-      ...r.warband.armoryStash.map((s) => s.name),
-    ].map((n) => nameKey(n));
-
+    const got = onRoster(importTrenchCompanionWarband(envelope, D));
     for (const [id, e] of entries) {
       if (!e.ours) continue;
-      expect(onRoster, `${id} names '${e.ours}', which the import does not put on the roster`)
+      expect(got, `${id} names '${e.ours}', which the import does not put on the roster`)
         .toContain(nameKey(e.ours));
     }
   });

@@ -92,10 +92,12 @@ interface TcPurchase {
   /**
    * Ducats their record takes off this line's price.
    *
-   * Zero on every purchase of the owner's warband but one: the Golem's model
-   * line carries `discount: 40`, the whole of the entry's price, which is their
-   * record stating the same conclusion `golem.ts` reaches. Read as a
-   * cross-check, never as our price.
+   * Seven lines of the owner's warband carry one, and each is their record
+   * stating that the Warband was given something rather than buying it: the
+   * Golem's model line (40, the whole entry price), the four Formulae its
+   * allowance covers (15, 15, 10, 10 — fifty exactly), and both Arsenal rows,
+   * which the Sniper's Lair grants by name. Read as part of their price, and
+   * cross-checked against ours per model.
    */
   discount?: number;
   /** The relation, which carries a name of its own — sometimes a different one. */
@@ -369,11 +371,12 @@ function theirCost(p: TcPurchase | undefined): Cost | null {
   /*
     Less what their record took off it.
 
-    `discount` is zero on every line of the owner's warband except the Golem's
-    model line, which carries 40 — the whole of the entry's price, because their
-    app gives the Book of Golems' model away too. Read as part of the price
-    because that is what it is: the line's price is what their record charged
-    for it, and comparing our nothing against their gross 40 reported a
+    Seven lines of the owner's warband carry a `discount`, and every one of them
+    is their record saying the Warband did not pay: the Golem's model line (40,
+    the whole entry price), the four Formulae its 50-Ducat allowance covers, and
+    both Arsenal rows, which the Sniper's Lair grants by name. Read as part of
+    the price because that is what it is — the line's price is what their record
+    charged for it, and comparing our nothing against their gross 40 reported a
     disagreement where the two records in fact agree. The discount is separately
     cross-checked against ours, per model, where they differ.
   */
@@ -615,8 +618,8 @@ const UNMAPPED_MODEL: { field: keyof TcModelInner; why: string }[] = [
     why: 'The relation a model\'s Battlekit came through — `rel_md_eq_sultanatesapper` — and, '
       + 'where the entry offers a choice of kit, which package was taken. The relation itself is '
       + 'not idle: the same `rel_md_eq_…` on an equipment LINE is how this import knows that line '
-      + 'was not a purchase, which is what stops a Mamluk Faris being charged 55 Ducats for the '
-      + 'kit its price includes. What is not read is the package: what one contains is not stated '
+      + 'was not a purchase, which is what stops a Mamluk Faris being charged for the kit its own '
+      + 'price includes. What is not read is the package: what one contains is not stated '
       + 'anywhere public, so each choice their record states is named below rather than applied.',
   },
 ];
@@ -854,9 +857,8 @@ export function importTrenchCompanionWarband(
   const { units: living, fallen } = removeFromRoster({ units, fallen: [] }, deadIds);
 
   /* -------------------------------------------------------------- the stash */
-
-  const stash = readStash(dataset, shelf, data.equipment ?? [], stamp,
-    unmatched, priceDifferences, warnings);
+  /* After the Exploration read, because a row their record prices at nothing is
+     explained by a Location the Warband holds — see `grantedByHeldLocation`. */
 
   /* ------------------------------------------------------- campaign state */
 
@@ -884,6 +886,9 @@ export function importTrenchCompanionWarband(
 
   const exploration = readExploration(dataset, shelf, data, round, stamp, equivalent,
     unmatched, unmapped);
+
+  const stash = readStash(dataset, shelf, data.equipment ?? [], stamp,
+    exploration.discoveries, unmatched, priceDifferences, warnings);
   /*
     One line per `_mv_` name no list here carries, listing the models under it
     and naming the Variant that DOES carry it, where one does.
@@ -895,7 +900,8 @@ export function importTrenchCompanionWarband(
       `${listOf([...new Set(rows.map((r) => r.on))])}: their record files `
       + `${rows.length === 1 ? 'this model' : 'these models'} as '${form}', a Warband Variant's `
       + `own name for the entry. ${carrier
-        ? `It is what the ${carrier} list calls it, and this Warband is not that Variant`
+        ? `It is what the ${carrier.replace(/^the\s+/i, '')} list calls it, and this Warband is `
+          + 'not that Variant'
         : 'No list this ruleset carries has an entry of that name'}`
       + `, so ${rows.length === 1 ? 'it is' : 'they are'} imported as `
       + `${rows[0].profile.name}, the entry their id names underneath, and priced at that entry's `
@@ -1739,6 +1745,23 @@ function readUpgrades(
     const covered = !granted && !!grant && isAlchemicalFormula(option)
       && !list.glory && freeLeft >= list.ducats;
     if (covered) freeLeft -= list.ducats;
+    /*
+      A Formula the allowance does not stretch to.
+      The app's own shelf does not merely price one of these — it refuses it:
+      the grant's own sentence says the model "can never be Promoted or receive
+      additional Alchemical Formulas", and `formulaShelf` returns that text as
+      the reason. Their record holds it, so it is on the model at the entry's
+      price rather than dropped, and the report says which rule that crosses.
+    */
+    if (grant?.noFurtherFormulas && !granted && !covered && isAlchemicalFormula(option)) {
+      warnings.push(
+        `${modelLabel}: ${option.name} costs ${costLabel(list)} and is beyond the `
+        + `${grant.freeFormulaDucats} Ducats of Formulae the ${grant.name} gives this model. That `
+        + 'grant states it can receive no additional Alchemical Formulas, so the Formulas tab '
+        + 'here refuses this one outright. It is on the model as their record holds it, priced '
+        + "from the entry — the refusal is this ruleset's rule, and the disagreement is theirs.",
+      );
+    }
     const cost: Cost = granted || covered ? { ducats: 0, glory: 0 } : list;
     bought.push({
       id: `su-${nameKey(option.name)}`,
@@ -1859,6 +1882,8 @@ function readStash(
   shelf: Shelf,
   list: TcEquipment[],
   stamp: number,
+  /** The Locations this Warband holds. See `grantedByHeldLocation`. */
+  discoveries: readonly string[],
   unmatched: string[],
   priceDifferences: PriceDifference[],
   warnings: string[],
@@ -1875,6 +1900,48 @@ function readStash(
     }
 
     const add = (name: string, cost: Cost, type: StashedItem['type']) => {
+      /*
+        A row their record prices at nothing, where a Location they hold says
+        why.
+
+        Both of the owner's Arsenal rows carry a discount equal to their cost,
+        and the Warband holds the Sniper's Lair: *"Add the Battlekit listed
+        below for your Faction to your Arsenal … * Iron Sultanate: Siege
+        Jezzail, Alchemical Ammunition, and a Cloak of Alamut."* Their record
+        states the discount and our own text names the items, so recording them
+        as given is reading both records rather than believing either alone —
+        the same treatment the Workshop's Curative Fluids get.
+
+        A row discounted to nothing that NO held Location accounts for keeps the
+        ruleset's price and is reported as a difference: their zero is then a
+        statement this import cannot explain, and adopting it would be taking
+        their arithmetic on trust.
+      */
+      const theirs = theirCost(e.purchase);
+      const free = num(e.purchase?.discount) > 0
+        && !!theirs && theirs.ducats === 0 && theirs.glory === 0;
+      const granter = free ? grantedByHeldLocation(dataset, discoveries, name) : undefined;
+      if (granter) {
+        warnings.push(
+          `${name} is in the Arsenal at no cost: their record prices it at nothing — a discount `
+          + `equal to its price — and ${granter}, which this Warband holds, adds it to the Arsenal `
+          + `by name. It is recorded as granted by that Location rather than priced from the `
+          + `${cost.ducats || cost.glory ? costLabel(cost) : 'shelf'} this ruleset would charge.`,
+        );
+        /* Their own row, at nothing: the kind their record gave it, the id it
+           would have had, and the Location that accounts for the price. */
+        items.push({
+          id: `stash-tc-${stamp}-${j}`,
+          name,
+          type,
+          cost: 0,
+          currency: 'ducats',
+          price: { ducats: 0, glory: 0 },
+          quantity: 1,
+          grantedBy: granter,
+        });
+        return;
+      }
       items.push({
         id: `stash-tc-${stamp}-${j}`,
         name,
@@ -2014,29 +2081,9 @@ function readExploration(
       const standing = explorationGrants(dataset, hit, round);
       effects.push(...standing);
 
-      /*
-        And what its text puts in the ARSENAL, which `explorationGrants` does
-        not read: it answers Skills, loot and the Glory Item permissions, and
-        returns nothing at all for the Ransacked Alchemist Workshop, whose
-        whole effect is *"Add Curative Fluids to your Warband’s Arsenal"*. So
-        the Workshop was recorded as a discovery and the Curative Fluids —
-        which this ruleset does carry — were dropped, while the report said the
-        standing effect had been read from that text. See `arsenalGrant`.
-      */
-      const gift = arsenalGrant(dataset, shelf, hit, granted.length, stamp);
-      readFrom.set(hit.name, [
-        ...standing.map(saidEffect),
-        ...(gift.item ? [`${gift.item.name} in the Arsenal, at no cost`] : []),
-      ]);
-      if (gift.item) granted.push(gift.item);
-      else if (gift.names) {
-        unmapped.push(
-          `${hit.name}: its text adds '${gift.names}' to the Arsenal, which is not one entry this `
-          + 'ruleset can name — a per-faction list, or a name it does not carry — so nothing was '
-          + 'added for it. Whatever their record holds for it is in the Arsenal above, priced '
-          + 'from this ruleset.',
-        );
-      }
+      /* What its text puts in the Arsenal is read from their `location_mods`
+         below, not from the discovery — see the note there. */
+      readFrom.set(hit.name, standing.map(saidEffect));
     } else unmatched.push(`Exploration Location '${id || 'unnamed'}'`);
 
     /*
@@ -2103,6 +2150,34 @@ function readExploration(
       );
       continue;
     }
+    /*
+      What this Location's text puts in the Arsenal, keyed on their MOD.
+
+      Their `_mod` is the Location's effect still standing: the Ransacked
+      Alchemist Workshop's carries the option that has not been answered yet
+      (`selection_ID: null`), which is their record saying the Curative Fluids
+      are still held and no model has been chosen to spend them on. Keyed on the
+      discovery instead, a Warband that had already used them would be handed
+      them back on every import.
+    */
+    const gift = arsenalGrant(dataset, shelf, hit, granted.length, stamp);
+    const pending = (isRecord(mod) && Array.isArray(mod.selections) ? mod.selections : [])
+      .some((sel) => isRecord(sel) && sel.selection_ID === null);
+    if (gift.item) {
+      granted.push(gift.item);
+      readFrom.set(hit.name, [
+        ...(readFrom.get(hit.name) ?? []),
+        `${gift.item.name} in the Arsenal, at no cost`
+        + (pending ? ', with the model it is spent on still unchosen in their record' : ''),
+      ]);
+    } else if (gift.names) {
+      unmapped.push(
+        `${hit.name}: its text adds '${gift.names}' to the Arsenal, which is not one entry this `
+        + 'ruleset can name — a per-faction list, or a name two entries here carry — so nothing '
+        + 'was added for it. Anything their own record holds for it is in the Arsenal above.',
+      );
+    }
+
     const picked = (isRecord(mod) && Array.isArray(mod.selections) ? mod.selections : [])
       .map((sel) => (isRecord(sel) ? String(sel.option_refID ?? '') : ''))
       .filter(Boolean);
@@ -2131,7 +2206,7 @@ function readExploration(
 }
 
 /**
- * What a Location's own text puts in the Arsenal.
+ * What a Location's own text puts in the Arsenal, where that can be READ.
  *
  * *"Add Curative Fluids to your Warband’s Arsenal."* Four of the shipped
  * Locations hand an item over outright, and `explorationGrants` does not read
@@ -2139,19 +2214,41 @@ function readExploration(
  * permissions, and returns nothing at all for the Ransacked Alchemist
  * Workshop, whose entire effect is that sentence.
  *
- * Read from the sentence, not from a list of Location names kept beside it —
- * the rule `explorationGrants` itself follows. Both spellings of the
- * possessive, because the books use the curly one and the extracts do not
- * always.
+ * Read from the sentence rather than from a list of Location names — the rule
+ * `explorationGrants` itself follows — and the sentence has to say something
+ * specific for anything to happen. Sixteen of the thirty-four Locations match a
+ * loose reading of it, and most of them name nothing:
  *
- * Priced at **nothing**, and marked with the Location that gave it: the
- * Warband did not buy it. Where the sentence names something this ruleset
- * cannot resolve to exactly one entry — the Sniper's Lair's *"the Battlekit
- * listed below for your Faction"* is a per-faction list, not a name — the
- * caller reports it rather than adding a guess.
+ *   `Add it to your Arsenal`        the Heavy Weapons Cache, the Fallen
+ *                                   Soldier, the Ruined Church — a pronoun
+ *   `Add them to your Arsenal`      the Ruined House, the Warband Strongbox,
+ *                                   the Battlefield of Corpses
+ *   `Add one Glory Item …`          the Treasure of the Holies — a quantity
+ *
+ * The first version of this reader wrote a report line for every one of them,
+ * each stating something untrue: *"Heavy Weapons Cache: its text adds 'it' to
+ * the Arsenal"*. So the capital letter is part of the pattern: the books name an
+ * item with one, and a pronoun or a quantity has none. The article in front of
+ * it is dropped, which is why `an Angelic Instrument` is looked up as
+ * `Angelic Instrument`.
+ *
+ * **A Location that offers a choice grants nothing here.** The Trench Shrine's
+ * *"Add a Troop Flag"* belongs to one of its three options, and their record
+ * answers a choice in ids of its own (`ot_snipersnest` →
+ * `el_snipersnest_ironsultanate`) that say nothing about which of our options
+ * they are — so a Warband that took the Shrine's `Return` would have been given
+ * a Troop Flag it never had. `explorationChoices` is asked first, and a
+ * Location with options is left alone.
+ *
+ * Priced at **nothing**, and marked with the Location that gave it: the Warband
+ * did not buy it. Where the sentence names something this ruleset cannot
+ * resolve to exactly one entry — the Sniper's Lair's *"the Battlekit listed
+ * below for your Faction"* is a per-faction list, and two entries here are
+ * called `Angelic Instrument` — the caller reports the phrase rather than
+ * adding a guess.
  */
 const ARSENAL_GRANT =
-  /Add\s+([A-Za-z][A-Za-z ’'-]*?)\s+to your (?:Warband(?:’|')?s )?Arsenal/i;
+  /Add\s+(?:(?:an|a|the)\s+)?([A-Z][A-Za-z ’'-]*?)\s+to your (?:Warband(?:’|')?s )?Arsenal/;
 
 function arsenalGrant(
   dataset: Dataset,
@@ -2160,36 +2257,82 @@ function arsenalGrant(
   index: number,
   stamp: number,
 ): { item?: StashedItem; names?: string } {
+  /* A choice is not ours to answer. See the note above. */
+  if (explorationChoices(location).length) return {};
+
   const said = ARSENAL_GRANT.exec(location.description ?? '');
   if (!said) return {};
   const names = said[1].trim();
-  /* As the sentence states it, and without the article it may open with. */
-  const keys = [...new Set([nameKey(names), nameKey(names.replace(/^the\s+/i, ''))])]
-    .filter(Boolean);
-  if (!keys.length) return {};
+  if (!names) return {};
 
-  /* This Warband's own shelves first, then the catalogue — the same order the
-     gear reader uses, and for the same reason: the shelf knows this faction's
-     name for the thing. The price is nothing either way. */
   const found = uniqueByNameOrAlias(
-    [...shelf.weapons, ...shelf.armour, ...shelf.equipment], keys)
-    ?? uniqueByNameOrAlias(dataset.weapons ?? [], keys);
+    [...shelf.weapons, ...shelf.armour, ...shelf.equipment], [nameKey(names)])
+    ?? uniqueByNameOrAlias(dataset.weapons ?? [], [nameKey(names)]);
   if (!found) return { names };
 
+  return { item: grantedStashItem(dataset, found, location.name, index, stamp) };
+}
+
+/**
+ * Which Location this Warband holds accounts for an item it was given.
+ *
+ * Read from the Location's own text: the Sniper's Lair names the Siege Jezzail
+ * and the Alchemical Ammunition in its per-faction list, so a row their record
+ * prices at nothing has a granter this ruleset can name. Only where exactly one
+ * held Location names it — two would be a guess between them, and none means
+ * their zero is unexplained and their price is reported as a difference
+ * instead.
+ */
+function grantedByHeldLocation(
+  dataset: Dataset,
+  discoveries: readonly string[],
+  item: string,
+): string | undefined {
+  const want = nameKey(item);
+  if (!want) return undefined;
+  const held = Object.values(dataset.campaign?.exploration?.locations ?? {}).flat()
+    .filter((row) => discoveries.includes(row.name))
+    .filter((row) => nameKey(row.description ?? '').includes(want));
+  return held.length === 1 ? held[0].name : undefined;
+}
+
+/**
+ * One Arsenal row the Warband was given: no price, and the granter's name.
+ *
+ * The kind comes from the three sources `recruitable` reads for a Glory Item,
+ * in the same order — the Battlekit chapter's section, then the profile's own
+ * kind, and only then `Equipment`, which is what an entry stating no kind at
+ * all means. `Curative Fluids` is the case: the chapter has no section for it
+ * and its profile is typed `Special`, so it is gear, arrived at rather than
+ * assumed.
+ */
+function grantedStashItem(
+  dataset: Dataset,
+  entry: { id: string; name: string; type?: string; range?: string },
+  grantedBy: string,
+  index: number,
+  stamp: number,
+): StashedItem {
   const section = (dataset.battlekit ?? [])
-    .find((b) => nameKey(b.name) === nameKey(found.name))?.section;
+    .find((b) => nameKey(b.name) === nameKey(entry.name))?.section;
+  const fromProfile = (() => {
+    if (/^(armour|shield)/i.test(entry.type ?? '')) return 'Armour';
+    const range = (entry.range ?? '').trim();
+    if (range && range !== '-') return 'Ranged Weapons';
+    if (/handed|grenade/i.test(entry.type ?? '')) return 'Melee Weapons';
+    return undefined;
+  })();
+  const kind = section ?? fromProfile ?? 'Equipment';
   return {
-    item: {
-      id: `stash-tc-${stamp}-granted-${index}`,
-      name: found.name,
-      type: section === 'Armour' || section === 'Shields' ? 'Armour'
-        : section === 'Equipment' || !section ? 'Equipment' : 'Weapon',
-      cost: 0,
-      currency: 'ducats',
-      price: { ducats: 0, glory: 0 },
-      quantity: 1,
-      grantedBy: location.name,
-    },
+    id: `stash-tc-${stamp}-granted-${index}`,
+    name: entry.name,
+    type: kind === 'Armour' || kind === 'Shields' ? 'Armour'
+      : kind === 'Equipment' ? 'Equipment' : 'Weapon',
+    cost: 0,
+    currency: 'ducats',
+    price: { ducats: 0, glory: 0 },
+    quantity: 1,
+    grantedBy,
   };
 }
 
@@ -2336,8 +2479,22 @@ function reportUnmapped(
   }
 
   if ((data.fireteams ?? []).length) {
+    /*
+      Named, not counted. A Fireteam's members are what it IS, and their record
+      gives each as a model's purchase id — which resolves to a name on this
+      roster, exactly as an ability's choice does.
+    */
+    const members = (data.fireteams ?? []).flatMap((ft) => (
+      isRecord(ft) && Array.isArray(ft.selections) ? ft.selections : [])
+      .map((sel) => (isRecord(sel) && typeof sel.selection_ID === 'string'
+        ? sel.selection_ID : ''))
+      .filter(Boolean)
+      .map((picked) => `${picked}${saidChoice(models, keywords, picked)}`));
     unmapped.push(`fireteams: ${(data.fireteams ?? []).length} recorded, and not mapped. `
-      + 'A Fireteam is a name on a model here; their grouping has not been measured.');
+      + 'A Fireteam is a name on a model here; their grouping has not been measured. '
+      + (members.length
+        ? `The member${members.length === 1 ? '' : 's'} their record names: ${listOf(members)}.`
+        : 'Their record names no member for it.'));
   }
   if ((data.modifiers ?? []).length) {
     unmapped.push(`modifiers: ${(data.modifiers ?? []).length} recorded, and not mapped.`);

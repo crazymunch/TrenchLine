@@ -255,7 +255,14 @@ imported Golem is priced exactly as the app's own path prices one:
 
 Their record says the same thing in its own structure, which is the cross-check:
 the Golem's model line carries `discount: 40` — the whole entry price — and each
-of the four Formulae its allowance covers carries a discount equal to its cost.
+of the **four** Formulae its allowance covers carries a discount equal to its
+cost, fifty Ducats exactly. The fifth line, the granted Formula itself, their
+record already prices at nothing, so it needs no discount.
+
+A Formula **beyond** the allowance is priced from the entry and reported: the
+app's own shelf does not price one of those, it refuses it — the grant states the
+model can receive no additional Alchemical Formulas — so a record holding one is
+a disagreement the player is told about rather than a number quietly charged.
 
 A Formula is written with the group **path** as its category, which is what the
 app writes for the same purchase. The leaf alone made an `Eye Options` Formula
@@ -307,8 +314,8 @@ booked for it.
 | `list_upgrades` | `ActiveUnit.specialUpgrades`, priced from our entry |
 | `context.failed_promotions` | `Warband.promotionMisses` (FD-06b) |
 | `exploration.explorationskills` | `Warband.explorationEffects` (FD-07) |
-| `exploration.locations` | `Warband.explorationDiscoveries` (FD-07), **and what each Location grants for the rest of the campaign**, read from the Location's own text by pack G's `explorationGrants` — the Black Market's *"From now on … you can purchase Glory Items costing 8 ☼ or less"* is a permission the Warband keeps — **and what its text puts in the Arsenal**: *"Add Curative Fluids to your Warband's Arsenal"* is an item this ruleset carries, added at no cost and marked `grantedBy` that Location. `explorationGrants` answers the first and not the second, which is why there are two readers |
-| `exploration.location_mods` | read as a CHECK, not as a source. Their standing-effect record says nothing the Location's own text does not, so a mod whose Location is discovered and whose text offers no choice needs no line; one for a Location we did not resolve, or one recording an option, is named in the report |
+| `exploration.locations` | `Warband.explorationDiscoveries` (FD-07), **and what each Location grants for the rest of the campaign**, read from the Location's own text by pack G's `explorationGrants` — the Black Market's *"From now on … you can purchase Glory Items costing 8 ☼ or less"* is a permission the Warband keeps |
+| `exploration.location_mods` | the Location's effect still standing, and **what its text puts in the Arsenal**: *"Add Curative Fluids to your Warband's Arsenal"* is an item this ruleset carries, added at no cost and marked `grantedBy` that Location. Keyed on the mod rather than the discovery, so a Warband that has already spent them is not handed them back. The sentence has to name something: a pronoun (*"Add it to your Arsenal"*, seven Locations), a quantity (*"one Glory Item"*) or a grant that belongs to one of the Location's options yields nothing at all. Beyond that grant the mod is a CHECK rather than a source: its standing effect says nothing the Location's own text does not, so a mod whose Location is discovered and whose text offers no choice needs no line; one for a Location we did not resolve, or one recording an option, is named in the report |
 | `faction.patron_id` | `Warband.patron` |
 | `context.campaign_round`, `context.victory_points` | `Warband.importedCampaign`, **each only where their record states it** |
 | `scar_reserves` | `ActiveUnit.scars`, **on top of one Scar per injury** — see below |
@@ -429,13 +436,14 @@ their per-purchase UI bookkeeping (`purchaseid`, `count_limit`, `count_cap`,
 `sell_item`, `sell_full`, `modelpurch`), `warband_user_id`, `warband_campaigns`
 and `warband_campaign_invites`.
 
-**`discount` is not among them, and was.** It is zero on every line of the
-owner's warband except the Book of Golems' model — 40, the whole of the entry's
-price — and the five lines its grant covers, which is their record stating the
-same conclusion the grant does. So it is part of their price here (`theirCost`
-reads `cost_value` less the discount) and is separately cross-checked against
-ours per model: where they take Ducats off a model and this import does not, or
-takes off a different number, the report says so.
+**`discount` is not among them, and was.** Seven lines of the owner's warband
+carry one, and every one is their record saying the Warband did not pay: the Book
+of Golems' model (40, the whole of the entry's price), the **four** Formulae its
+50-Ducat allowance covers, and both Arsenal rows, which the Sniper's Lair grants
+by name. So it is part of their price here (`theirCost` reads `cost_value` less
+the discount) and is separately cross-checked against ours per model: where they
+take Ducats off a model and this import does not, or takes off a different
+number, the report says so.
 
 **Every one of those classifications is a test.** `trenchCompanionFixture.test.ts`
 walks the keys of the committed envelope — the Warband, its context, its
