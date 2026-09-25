@@ -51,7 +51,12 @@ export const ConvertRulesetSheet: React.FC<Props> = ({
       onClose={onClose}
       size="lg"
       title="Convert this warband"
-      subtitle={`From ${named(warband.rulesetId ?? null)} to ${named(plan?.to ?? null)}.`}
+      /* While the target is still loading it is not named: a subtitle that
+         says "to an unrecorded ruleset" for half a second is a sentence a
+         player can read and be wrong about. */
+      subtitle={plan?.to
+        ? `From ${named(warband.rulesetId ?? null)} to ${named(plan.to)}.`
+        : `This warband is recorded as ${named(warband.rulesetId ?? null)}.`}
       footer={plan && !plan.refusal ? (
         <>
           <button
