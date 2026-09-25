@@ -18,17 +18,24 @@
  * a property of the stack, not of the rendering.
  */
 import { describe, it, expect } from 'vitest';
-import { overlayStack } from '../useOverlay';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { handlesKey, overlayStack } from '../useOverlay';
 
 /**
- * The hook's Escape branch, with the real guard in it.
+ * The hook's Escape branch, calling the hook's OWN guard.
  *
- * `useOverlay` does exactly this: `if (!overlayStack.isTopmost(mine)) return;`
- * before closing. Calling both handlers below is not artificial — it is what
- * the browser does, because both listeners are on `document`.
+ * Round 1's version of this restated the guard — `if
+ * (!overlayStack.isTopmost(mine)) return;` — written out again here, so deleting
+ * the guard from `useOverlay` left this suite green (review round 2 item 6).
+ * `handlesKey` is that decision, exported, and this calls it. Deleting it from
+ * the hook now fails the source assertion at the foot of this file.
+ *
+ * Calling both handlers below is not artificial — it is what the browser does,
+ * because both listeners are on `document`.
  */
 const escapeHandler = (mine: object, onClose: () => void) => () => {
-  if (!overlayStack.isTopmost(mine)) return;
+  if (!handlesKey(mine)) return;
   onClose();
 };
 
@@ -116,5 +123,45 @@ describe('the overlay stack', () => {
     overlayStack.remove({});
     expect(overlayStack.isTopmost(open)).toBe(true);
     overlayStack.remove(open);
+  });
+});
+
+
+describe('round 2 item 6: the guard the hook actually runs', () => {
+  /*
+    The suite above drives `handlesKey`, which is the hook's own guard rather
+    than a copy of it. What that cannot see is the hook DROPPING the call — so
+    this reads the hook and asserts the call is there, in both branches that need
+    it. Deleting either line fails here.
+
+    Source-level because the repo has no DOM test environment; the rendering is
+    covered by Playwright. The alternative — adding jsdom and a testing library
+    for one guard — is a dependency decision that is not mine to take in this PR,
+    and it is named in the PR body.
+  */
+  const hook = readFileSync(
+    join(process.cwd(), 'src/components/ui/useOverlay.ts'), 'utf8');
+
+  it('exports the guard, so there is one definition of it', () => {
+    expect(hook).toMatch(/export const handlesKey/);
+  });
+
+  it('guards Escape with it', () => {
+    const escape = hook.slice(hook.indexOf("e.key === 'Escape'"));
+    const branch = escape.slice(0, escape.indexOf('return;') + 7);
+    expect(branch, 'the Escape branch does not call handlesKey')
+      .toMatch(/if \(!handlesKey\(mine\)\) return;/);
+  });
+
+  it('guards Tab with it too', () => {
+    expect(hook, 'the Tab branch does not call handlesKey')
+      .toMatch(/e\.key !== 'Tab'[^\n]*!handlesKey\(mine\)/);
+  });
+
+  it('and states the decision exactly once, not inline as well', () => {
+    /* An inline `isTopmost` in the hook's key handler would be a second copy of
+       the guard, which is the shape this item exists to remove. */
+    const handler = hook.slice(hook.indexOf('const onKey'));
+    expect(handler).not.toMatch(/overlayStack\.isTopmost/);
   });
 });

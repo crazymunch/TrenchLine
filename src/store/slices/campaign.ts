@@ -17,7 +17,7 @@ import {
 import { removeFromRoster } from '../../rules/fallen';
 import { recreationOffer, recreationLapsed } from '../../rules/recreation';
 import { bookAll, bookReinforcements, strongbox } from '../../rules/ledger';
-import { campaignGameOf } from '../../rules/campaign';
+import { campaignGameOf, recordedCampaignGame } from '../../rules/campaign';
 
 /* `Omit` over a union collapses it to the keys they share, which would lose
    `entityId` from the two territory operations. Distributed, it does not. */
@@ -399,6 +399,16 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         the Threshold — and a second rule here would be a second answer.
       */
       const postBattleGame = campaignGameOf(activeWb, get().campaign);
+      /*
+        And the game number a PROVENANCE may state, which is not the same value
+        (review round 2 item 2). `campaignGameOf` falls back to 1 for a Warband
+        in no campaign, and for one whose campaign is not the campaign loaded —
+        correct for the Threshold it is fielding to, an invention if it is
+        written into a record. A standalone Warband's fifth battle is not
+        "game 1". So the provenance writers below take this instead, and record
+        no game where the app cannot name one.
+      */
+      const recordedGame = recordedCampaignGame(activeWb, get().campaign);
 
       const updatedUnits = activeWb.units.map((u) => {
         const cas = casualties.find((c) => c.unitId === u.id);
@@ -449,8 +459,9 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           */
           const traumaSource = {
             kind: 'trauma' as const,
-            game: postBattleGame,
+            ...(recordedGame !== undefined ? { game: recordedGame } : {}),
             ...(cas.records?.roll ? { roll: cas.records.roll } : {}),
+            ...(cas.records?.row ? { row: cas.records.row } : {}),
           };
           const writesInjury = cas.records ? cas.records.injury : !cas.fullRecovery;
           if (writesInjury) {
@@ -578,7 +589,11 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
               the most about, reported as the one it knows the least about
               (review round 1, finding C).
             */
-            source: { kind: 'advancement', game: postBattleGame, roll: String(l.roll) },
+            source: {
+              kind: 'advancement' as const,
+              ...(recordedGame !== undefined ? { game: recordedGame } : {}),
+              roll: String(l.roll),
+            },
           });
         }
 
@@ -888,7 +903,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
           ...(exploration?.text ? { text: exploration.text } : {}),
           source: {
             kind: 'exploration' as const,
-            game: postBattleGame,
+            ...(recordedGame !== undefined ? { game: recordedGame } : {}),
             location: newFind,
           },
         }]

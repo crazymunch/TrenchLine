@@ -8,10 +8,11 @@
  * the record does not say how".
  */
 import { describe, it, expect } from 'vitest';
-import type { ActiveUnit, Warband } from '@/types/warband';
+import type { ActiveUnit, Provenance, Warband } from '@/types/warband';
 import {
-  holdingsOf, injuriesHeld, provenanceLabel, provenanceOf, rewardInGroup,
-  splitRecordedRoll,
+  advancementRollsStated, holdingsOf, injuriesHeld, provenanceLabel,
+  provenanceOf, rewardInGroup, skillsStatingNoRoll, splitRecordedRoll,
+  statesAnAdvancementRoll,
 } from '../provenance';
 
 const unit = (over: Partial<ActiveUnit> = {}): ActiveUnit => ({
@@ -39,29 +40,36 @@ describe('an absent record is an import, never a roll', () => {
     expect(label).not.toMatch(/roll/);
   });
 
-  it('a roll with no source is a RECORDED roll, never evidence of a step', () => {
+  it('a bare roll is a recorded ROW, never a step and never a throw', () => {
     /*
-      Review round 1, finding D. A scar with a `roll` and no `source` was being
-      read as `{ kind: 'trauma', roll }` — and the advancement sheet has always
-      written `roll` from the Trauma Table ROW a player picked out of a
-      dropdown, so every hand-entered scar on every existing roster began
-      reading "Trauma Step · rolled 31" for a D66 nobody threw.
+      Two rounds on one line. Round 1 (finding D) fixed the KIND: a scar with a
+      `roll` and no `source` was read as `{ kind: 'trauma' }`, though the
+      advancement sheet has always written that field from the Trauma Table ROW a
+      player picked out of a dropdown — so every existing roster claimed a Trauma
+      Step that never ran.
 
-      The module's opening rule has no exceptions: no `source` means `import`,
-      whatever else the entry carries.
+      Round 2 item 3 fixes the VERB, which round 1 left: the reading was still
+      "rolled 31" for a row nobody threw a die for. A row is evidence of a
+      choice. So the value lands in `row` and reads "row 31".
+
+      The module's opening rule still has no exceptions: no `source` means
+      `import`, whatever else the entry carries.
     */
     const scarred = holdingsOf({
       units: [unit({ scars: [{ name: 'Leg Wound', roll: '31' }] })],
     } as never);
-    expect(scarred[0].source).toEqual({ kind: 'import', roll: '31' });
-    expect(provenanceLabel({ source: scarred[0].source })).toBe('Imported · rolled 31');
+    expect(scarred[0].source).toEqual({ kind: 'import', row: '31' });
+    expect(provenanceLabel({ source: scarred[0].source })).toBe('Imported · row 31');
     expect(provenanceLabel({ source: scarred[0].source })).not.toMatch(/Trauma/);
+    expect(provenanceLabel({ source: scarred[0].source })).not.toMatch(/rolled/);
 
-    /* And the same for a Skill, which was already read this way. */
+    /* And the same for a Skill, which was already read this way — and which
+       therefore states no Advancement Roll, because a row is not a total. */
     const skilled = holdingsOf({
       units: [unit({ skills: [{ name: 'Point Blank', category: 'Ranged Skills', roll: '9' }] })],
     } as never);
-    expect(skilled[0].source).toEqual({ kind: 'import', roll: '9' });
+    expect(skilled[0].source).toEqual({ kind: 'import', row: '9' });
+    expect(statesAnAdvancementRoll({ source: skilled[0].source })).toBe(false);
   });
 
   it('but a source that IS recorded is believed, roll and all', () => {
@@ -85,8 +93,14 @@ describe('an absent record is an import, never a roll', () => {
     */
     expect(provenanceLabel({ source: { kind: 'manual', game: 6 } }))
       .toBe('Recorded by hand · game 6');
+    /* The note is the player's own words, so it reads on their own sheet
+       (round 2 item 4) — the kind is derived and reads on both. */
+    expect(provenanceLabel(
+      { source: { kind: 'manual-pre-app', note: 'before we used the app' } },
+      { audience: 'owner' },
+    )).toBe('Recorded before the app · before we used the app');
     expect(provenanceLabel({ source: { kind: 'manual-pre-app', note: 'before we used the app' } }))
-      .toBe('Recorded before the app · before we used the app');
+      .toBe('Recorded before the app');
     /* And `manual-pre-app` carries no game, because there was no record then. */
     expect(provenanceLabel({ source: { kind: 'manual-pre-app' } }))
       .not.toMatch(/game/);
@@ -100,8 +114,24 @@ describe('an absent record is an import, never a roll', () => {
       .toBe('Imported · rolled 9');
     expect(provenanceLabel({ source: { kind: 'exploration', game: 2, location: 'Ransacked Alchemist Workshop' } }))
       .toBe('Exploration · game 2 · Ransacked Alchemist Workshop');
-    expect(provenanceLabel({ source: { kind: 'manual-pre-app', note: 'before we used the app' } }))
-      .toBe('Recorded before the app · before we used the app');
+    expect(provenanceLabel(
+      { source: { kind: 'manual-pre-app', note: 'before we used the app' } },
+      { audience: 'owner' },
+    )).toBe('Recorded before the app · before we used the app');
+  });
+
+  it('and a public reading drops the note, which is the only part they wrote', () => {
+    /*
+      Round 2 item 4. Everything else in the label is derived — a kind, a game
+      number, a die, a Location the book names — so a share loses the note and
+      keeps the record. Public is the DEFAULT, so a caller that forgets is safe.
+    */
+    const note = { source: { kind: 'manual' as const, game: 2, note: 'PRIVATE-NOTE' } };
+    expect(provenanceLabel(note)).toBe('Recorded by hand · game 2');
+    expect(provenanceLabel(note, {})).toBe('Recorded by hand · game 2');
+    expect(provenanceLabel(note, { audience: 'public' })).toBe('Recorded by hand · game 2');
+    expect(provenanceLabel(note, { audience: 'owner' }))
+      .toBe('Recorded by hand · game 2 · PRIVATE-NOTE');
   });
 });
 
@@ -193,9 +223,11 @@ describe('the review: everything the Warband holds, and how', () => {
     expect(holdingsOf(warband).filter((h) => h.name === 'Book of Golems')).toHaveLength(1);
   });
 
-  it('carries the roll of a Skill that predates `source`', () => {
+  it('carries the ROW of a Skill that predates `source`', () => {
+    /* A row, not a roll: that field was written from a dropdown (round 2
+       item 3), so it says which line, not which dice. */
     const sharp = holdingsOf(warband).find((h) => h.name === 'Sharp Eyes')!;
-    expect(sharp.source).toEqual({ kind: 'import', roll: '6' });
+    expect(sharp.source).toEqual({ kind: 'import', row: '6' });
   });
 
   it('names the model each Skill, injury and scar belongs to', () => {
@@ -231,5 +263,78 @@ describe('a reward found by the group its source filed it under', () => {
     expect(rewardInGroup(rewards, 'patron selection')?.name).toBe('Sublime Gate');
     expect(rewardInGroup(rewards, 'Exploration Rewards')).toBeUndefined();
     expect(rewardInGroup(undefined, 'Patron Selection')).toBeUndefined();
+  });
+});
+
+describe('round 2 item 1: a Skill consumes a roll only if its record states one', () => {
+  /*
+    `advancement.ts` has said since it was written that a model can gain a Skill
+    without an Advancement Roll — a Patron grants them, so do some Glory Items
+    and the `65 Bitter Lessons` Trauma result. Round 1 counted Skills anyway,
+    which cancels rolls a model earned. These pin the rule the count reads.
+  */
+  const skill = (source?: Provenance) => ({ name: 'Point Blank', ...(source ? { source } : {}) });
+
+  it('an Advancement Roll states one, by kind', () => {
+    expect(statesAnAdvancementRoll(skill({ kind: 'advancement', game: 2, roll: '9' }))).toBe(true);
+  });
+
+  it('an import states one only with a bracketed 2D6 total', () => {
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: '9' }))).toBe(true);
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: '2' }))).toBe(true);
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: '12' }))).toBe(true);
+    /* A Companion Skill: their export carries no roll at all. */
+    expect(statesAnAdvancementRoll(skill({ kind: 'import' }))).toBe(false);
+  });
+
+  it('a D66 or a range is not a 2D6 total', () => {
+    /* `Lost Arm [26]` is an injury's D66, not a Skill's throw, and a Trauma
+       row's `41-63` is reached by more than one total. Neither is a roll on a
+       Skills table. */
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: '26' }))).toBe(false);
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: '41-63' }))).toBe(false);
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: '13' }))).toBe(false);
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: '1' }))).toBe(false);
+    expect(statesAnAdvancementRoll(skill({ kind: 'import', roll: 'nine' }))).toBe(false);
+  });
+
+  it('hand entry states one only where a total was captured', () => {
+    expect(statesAnAdvancementRoll(skill({ kind: 'manual', game: 3, roll: '7' }))).toBe(true);
+    expect(statesAnAdvancementRoll(skill({ kind: 'manual', game: 3 }))).toBe(false);
+    expect(statesAnAdvancementRoll(skill({ kind: 'manual-pre-app', roll: '7' }))).toBe(true);
+    expect(statesAnAdvancementRoll(skill({ kind: 'manual-pre-app', note: 'game 2' }))).toBe(false);
+  });
+
+  it('the kinds that are not a Skills-table roll state none', () => {
+    expect(statesAnAdvancementRoll(skill({ kind: 'exploration', location: '16 Treasure' }))).toBe(false);
+    expect(statesAnAdvancementRoll(skill({ kind: 'trauma', roll: '52' }))).toBe(false);
+  });
+
+  it('a Skill with no record at all states none', () => {
+    /* The module's opening rule reads it as an import, and an import with no
+       roll states nothing. Not a roll of nought. */
+    expect(statesAnAdvancementRoll(skill())).toBe(false);
+    expect(statesAnAdvancementRoll(undefined)).toBe(false);
+  });
+
+  it('a row is evidence of a choice, never of a die', () => {
+    expect(statesAnAdvancementRoll(skill({ kind: 'manual', row: '7' }))).toBe(false);
+  });
+
+  it('counts across a list, and names the ones it did not count', () => {
+    const skills = [
+      skill({ kind: 'advancement', roll: '7' }),
+      { name: 'Gate of Sublime Wisdom', source: { kind: 'import' } as Provenance },
+      { name: 'Champion', source: { kind: 'import', roll: '11' } as Provenance },
+      { name: 'Bitter Lessons' },
+    ];
+    expect(advancementRollsStated(skills)).toBe(2);
+    expect(skillsStatingNoRoll(skills)).toEqual(['Gate of Sublime Wisdom', 'Bitter Lessons']);
+  });
+
+  it('an empty or absent list counts nought and names nothing', () => {
+    expect(advancementRollsStated([])).toBe(0);
+    expect(advancementRollsStated(undefined)).toBe(0);
+    expect(skillsStatingNoRoll(undefined)).toEqual([]);
   });
 });

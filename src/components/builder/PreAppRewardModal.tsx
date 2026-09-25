@@ -99,7 +99,12 @@ export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) =
               id="reward-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Ransacked Alchemist Workshop"
+              /* No game data in a UI string (rule 1, review round 2 item 8).
+                 The old placeholder was a Location's name typed into a
+                 component — the sort of literal that stops matching the
+                 catalogues the moment they are refetched, and reads as though
+                 the app were suggesting a specific reward. */
+              placeholder="the name as your sheet has it"
               className="w-full min-h-[44px] bg-theme-surface border border-theme-border px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
             />
           </div>
@@ -165,7 +170,7 @@ export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) =
                     {r.name}
                   </strong>
                   <span className="block font-mono text-xs sm:text-[10px] text-theme-muted">
-                    {provenanceLabel(r)}
+                    {provenanceLabel(r, { audience: 'owner' })}
                     {r.group && ` · ${r.group}`}
                   </span>
                   {r.text && (

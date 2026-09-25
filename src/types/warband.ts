@@ -48,12 +48,25 @@ export interface Provenance {
    */
   game?: number;
   /**
-   * The roll that produced it, exactly as it was recorded: `9` for a 2D6
-   * Skill, `31` for a D66 injury. A STRING because NewRecruit prints it as
-   * one — `Point Blank [9]` — and because a ranged Trauma row (`41-63`) is
-   * reached by more than one total.
+   * The die that was actually thrown, exactly as it was recorded: `9` for a
+   * 2D6 Skill, `52` for a D66 injury. A STRING because NewRecruit prints it as
+   * one — `Point Blank [9]`.
+   *
+   * A thrown die only. A player who picks a result out of a dropdown has
+   * thrown nothing, and what they picked goes in `row` — review round 2 item 3:
+   * the Trauma writer was storing the row's range where the wizard held the
+   * throw, so a sheet read "rolled 41-63" for a D66 that came up 52.
    */
   roll?: string;
+  /**
+   * The table row the result came from, where that is all the record can say.
+   *
+   * A range (`41-63`) or a single value, and NOT a throw: a row picked by hand
+   * reads "row 31", never "rolled 31". Which one a record carries is the
+   * difference between evidence of a die and evidence of a choice, and
+   * `statesAnAdvancementRoll` counts only the die.
+   */
+  row?: string;
   /** The Exploration Location that granted it, as the book spells it. */
   location?: string;
   /** The player's own words. Only meaningful for the two manual kinds. */

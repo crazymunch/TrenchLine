@@ -206,7 +206,15 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
 
   // Casualties from match
   const ooaUnits = battleRoster.filter((u) => u.status === 'Out of Action');
-  const [casualtyOutcomes, setCasualtyOutcomes] = useState<Record<string, { outcome: string; isDead: boolean }>>({});
+  /*
+    `thrown` is the D66 the player actually threw, kept because the record needs
+    it and round 1 threw it away: the writer stored the matched ROW's range
+    (`41-63`) as the roll, so a sheet claimed "rolled 41-63" for a die that came
+    up 52 (review round 2 item 3). The throw was here all along.
+  */
+  const [casualtyOutcomes, setCasualtyOutcomes] = useState<Record<string, {
+    outcome: string; isDead: boolean; thrown?: number;
+  }>>({});
   /*
     Roll 12 Captured is the one result the table does not decide: two players
     negotiate a ransom, and the model is either bought back or executed. The
@@ -467,11 +475,13 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
         ? {
             outcome: `D66: ${rollNum} - ${matched.name}: ${matched.description}`,
             isDead: /^dead$/i.test(matched.name),
+            thrown: rollNum,
           }
         : {
             outcome: `D66: ${rollNum} - no row on the Trauma Table. This is a data bug; ` +
                      `record the result by hand and report it.`,
             isDead: false,
+            thrown: rollNum,
           },
     }));
   };
@@ -1119,9 +1129,17 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
         records: {
           injury: write.injury,
           ...(write.scar ? { scar: write.scar } : {}),
-          /* The row the result came off, so the injury the store writes can say
-             where it came from as the scar already could (FD-12 item 2). */
-          ...(write.row?.roll ? { roll: String(write.row.roll) } : {}),
+          /*
+            Two different facts, and the record keeps them apart (review round 2
+            item 3). `roll` is the D66 the player threw — the wizard has held it
+            since the result was resolved. `row` is the line of the table it
+            landed on, which for `41-63` is a range no die shows. Round 1 wrote
+            the range into `roll`, so the sheet reported a throw that never
+            happened; a result with no throw behind it now records the row alone
+            and reads "row 41-63".
+          */
+          ...(data.thrown !== undefined ? { roll: String(data.thrown) } : {}),
+          ...(write.row?.roll ? { row: String(write.row.roll) } : {}),
         },
       };
     });
@@ -2194,6 +2212,19 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                           ? xp.points
                           : unit.xp + xp.points,
                       }}
+                      /*
+                        And WHICH boxes this submission is adding (review round 2
+                        item 11). The track has to be drawn on the total, because
+                        the rolls offered beside it are computed from the total —
+                        but a player looking at six filled boxes could not see
+                        which of them the battle had just earned. A model Promoted
+                        in this step starts from nothing, so all of its boxes are
+                        the gain.
+                      */
+                      heldBefore={(promotionRolls?.outcomes ?? []).some(
+                        (o) => o.promoted && o.unitId === unit.id)
+                        ? 0
+                        : unit.xp}
                     />
 
                     {/*

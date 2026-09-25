@@ -46,18 +46,30 @@ export async function loadDataset(id: string): Promise<Dataset | null> {
  * shared roster is the **owner's** roster, so the reader's setting is not a
  * fact about it and neither is the server's default — its own record is.
  *
- * `recorded: false` where the warband has none. Absent means *not recorded*,
- * never *the default*, so the page says which ruleset it fell back to rather
- * than presenting the default as the warband's own.
+ * THREE cases, not two (review round 2 item 5). Round 1 had the second and
+ * third share an answer, and the page then said something untrue:
  *
- * An id the build does not ship falls back the same way and says so, rather
- * than 500ing a page whose roster is perfectly readable.
+ * - the warband records a ruleset this build ships — read under it, `recorded`;
+ * - the warband records none — read under the default, and the page says the
+ *   warband records none, which is the truth about it;
+ * - the warband records one this build does NOT ship — read under the default,
+ *   and `unavailable` carries the id it asked for. Round 1 reported this as
+ *   "this warband records no ruleset", which is false about the roster and
+ *   hides the only fact worth knowing: the build is behind the record. Falling
+ *   back is right — the roster is perfectly readable and 500ing the page would
+ *   serve nobody — but falling back SILENTLY is the invention rule 2 forbids.
+ *
+ * Absent still means *not recorded*, never *the default*.
  */
 export function rulesetForWarband(
   warband: { rulesetId?: string } | null | undefined,
-): { id: string; recorded: boolean } {
+): { id: string; recorded: boolean; unavailable?: string } {
   const own = String(warband?.rulesetId ?? '').trim();
-  return own && RULESET_IDS.includes(own)
-    ? { id: own, recorded: true }
-    : { id: DEFAULT_RULESET_ID, recorded: false };
+  if (own && RULESET_IDS.includes(own)) return { id: own, recorded: true };
+  return {
+    id: DEFAULT_RULESET_ID,
+    recorded: false,
+    /* Only where the warband actually asked for one. */
+    ...(own ? { unavailable: own } : {}),
+  };
 }

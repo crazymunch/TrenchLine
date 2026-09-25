@@ -36,6 +36,18 @@ export interface ExperienceBox {
   /** True where the model has reached this box. */
   filled: boolean;
   /**
+   * True where this box is Experience the caller is about to AWARD, not
+   * Experience the model already had.
+   *
+   * Always false unless the caller says what the model held before (see
+   * `heldBefore`). The post-battle wizard draws the track on Experience plus the
+   * gain — it has to, because the Advancement Rolls it offers beside the track
+   * are computed from that total — and round 1 left the player unable to see
+   * which of the filled boxes the battle had just earned (review round 2
+   * item 11).
+   */
+  gained: boolean;
+  /**
    * True where LIMITED POTENTIAL puts this box out of the model's reach.
    *
    * Greyed rather than removed: the track is the same eighteen boxes for every
@@ -78,6 +90,17 @@ const experienceRules = (dataset: Dataset | null | undefined) =>
 export function experienceTrackFor(
   dataset: Dataset | null | undefined,
   unit: Pick<ActiveUnit, 'xp' | 'scars' | 'baseProfileId'>,
+  opts: {
+    /**
+     * What the model held BEFORE whatever the caller is showing, so the boxes
+     * between that and `unit.xp` come back as `gained`.
+     *
+     * Omitted everywhere the track is a statement of fact — the unit card, the
+     * Roster Sheet — and passed by the post-battle wizard, which is showing a
+     * total that includes an award not yet committed.
+     */
+    heldBefore?: number;
+  } = {},
 ): ExperienceTrackModel | null {
   const rules = experienceRules(dataset);
   const max = rules?.max;
@@ -94,12 +117,18 @@ export function experienceTrackFor(
     than clipping the model's own record off the end.
   */
   const boxCount = Math.max(max, xp);
+  /* Clamped into `[0, xp]`: a "before" above the total would mark negative
+     ground, and one below zero would mark the whole row as a gain. */
+  const before = opts.heldBefore === undefined
+    ? xp
+    : Math.min(xp, Math.max(0, Math.floor(opts.heldBefore)));
   const boxes: ExperienceBox[] = Array.from({ length: boxCount }, (_, i) => {
     const index = i + 1;
     return {
       index,
       advancement: at.has(index),
       filled: index <= xp,
+      gained: index > before && index <= xp,
       beyondCap: cap !== null && index > cap,
     };
   });

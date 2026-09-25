@@ -30,7 +30,9 @@ import path from 'node:path';
 import { DATASET } from '@/data/generated/trenchline.generated';
 import { recruitable } from '@/rules/recruitable';
 import { rosterSheet } from '@/rules/rosterSheet';
-import { holdingsOf } from '@/rules/provenance';
+import {
+  advancementRollsStated, holdingsOf, skillsStatingNoRoll,
+} from '@/rules/provenance';
 import { advancementRollsDue } from '@/rules/advancement';
 import { importNewRecruitRoster } from '../newRecruitImporter';
 import type { ActiveUnit, Warband } from '@/types/warband';
@@ -55,6 +57,10 @@ const imported = (file: string): Warband => {
 
 const AUGUST = imported('al-qarn-rihla-august.json');
 const SEPTEMBER = imported('al-qarn-rihla-september.json');
+/* The whole result, not just the warband: round 2 item 1 reports which Skills
+   were not counted as a roll, and that is part of what the import produced. */
+const SEPTEMBER_REPORT = importNewRecruitRoster(
+  read('al-qarn-rihla-september.json'), KNOWN, DATASET);
 
 const byName = (wb: Warband) => new Map(wb.units.map((u) => [u.customName, u]));
 const skillNames = (u: ActiveUnit | undefined) => (u?.skills ?? []).map((s) => s.name);
@@ -310,7 +316,7 @@ describe('FD-12 acceptance: the sheet the two exports produce', () => {
   });
 });
 
-describe('review round 1, finding F: an imported Skill uses the roll it used', () => {
+describe('round 2 item 1: an imported Skill uses the roll its record STATES', () => {
   it('leaves nobody owed a roll they have already taken', () => {
     /*
       `advancementRollsDue` counts the circles a model's Experience has passed
@@ -336,10 +342,59 @@ describe('review round 1, finding F: an imported Skill uses the roll it used', (
     expect(owed.filter((m) => m.skills > 0).length).toBeGreaterThan(0);
   });
 
-  it('records one roll per Skill on the sheet', () => {
+  it('records the rolls the roster STATES, not one per Skill', () => {
+    /*
+      On this file the two happen to agree, and the test says which one is the
+      rule: every Skill in the owner's September export carries NewRecruit's
+      bracketed 2D6 total, so the stated count IS the Skill count here. Asserting
+      the stated count is what makes the next roster — one carrying a Patron's
+      Skill, which brackets nothing — come out right.
+    */
     for (const u of SEPTEMBER.units) {
-      expect(u.advancementRolls ?? 0, u.customName).toBe((u.skills ?? []).length);
+      expect(u.advancementRolls ?? 0, u.customName)
+        .toBe(advancementRollsStated(u.skills));
     }
+    /* And this file really does state them all, or the sentence above is wrong. */
+    for (const u of SEPTEMBER.units) {
+      expect(skillsStatingNoRoll(u.skills), u.customName).toEqual([]);
+    }
+    /* So the import reported nothing uncounted. */
+    expect(SEPTEMBER_REPORT.skillsWithNoRoll).toBeUndefined();
+  });
+
+  it('a Skill that states no roll costs none, so the roll stays owed', () => {
+    /*
+      The case the inverted rule lost, in the architect's own terms: a model at
+      6 Experience holding three Skills, one of them a Patron's grant. The
+      circles are at 2 and 4, so it has earned two rolls and taken two — and at
+      7, the third circle, it is owed one.
+
+      Counting Skills makes that three taken, so at 7 the app offers nothing and
+      nothing on any screen says a roll went missing. An over-offer is visible
+      and declined; an under-offer is silent, which is why the count is a floor.
+    */
+    const skills = [
+      { name: 'Ranged Proficiency', source: { kind: 'import', roll: '7' } },
+      { name: 'Point Blank', source: { kind: 'import', roll: '9' } },
+      { name: 'Gate of Sublime Wisdom', source: { kind: 'import' } },
+    ] as ActiveUnit['skills'];
+
+    expect(advancementRollsStated(skills)).toBe(2);
+    expect(skillsStatingNoRoll(skills)).toEqual(['Gate of Sublime Wisdom']);
+
+    const taken = advancementRollsStated(skills);
+    const circles = DATASET.campaign.experience!.advancementAt;
+    expect(circles.slice(0, 3)).toEqual([2, 4, 7]);
+
+    const at = (xp: number) => advancementRollsDue(
+      DATASET, { xp, advancementRolls: taken } as ActiveUnit);
+    expect(at(6)).toBe(0);
+    expect(at(7)).toBe(1);
+
+    /* And what round 1 did, so the regression is named rather than described. */
+    const counted = skills!.length;
+    expect(advancementRollsDue(DATASET, { xp: 7, advancementRolls: counted } as ActiveUnit))
+      .toBe(0);
   });
 
   it('and the provenance is an import, with the roll the roster printed', () => {

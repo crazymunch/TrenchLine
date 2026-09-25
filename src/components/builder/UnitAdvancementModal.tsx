@@ -10,7 +10,7 @@ import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { canBePromoted } from '../../rules/promotions';
 import { nextAdvancementAt } from '../../rules/advancement';
-import { campaignGameOf } from '../../rules/campaign';
+import { recordedCampaignGame } from '../../rules/campaign';
 import type { Provenance } from '../../types/warband';
 import { injuriesHeld, provenanceLabel } from '../../rules/provenance';
 import { ExperienceTrack } from '../ExperienceTrack';
@@ -124,6 +124,10 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     and "before the app" is the claim that has to be made deliberately.
   */
   const [beforeTheApp, setBeforeTheApp] = useState(false);
+  /* The 2D6 total a hand-entered Skill was rolled on, where the player had one.
+     Empty is the honest default and costs no Advancement Roll — review round 2
+     item 1. A string, because it is what was typed until it is read. */
+  const [handRoll, setHandRoll] = useState<string>('');
   const [selectedInjuryName, setSelectedInjuryName] = useState<string>('');
 
 
@@ -287,8 +291,14 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   /*
     The provenance of a hand entry, decided once.
 
-    The game comes from `campaignGameOf`, the one derivation of it — a
-    `manual-pre-app` entry deliberately carries none, because "before the app"
+    The game comes from `recordedCampaignGame`, NOT from `campaignGameOf`
+    (review round 2 item 2): that one falls back to 1 for a Warband in no
+    campaign and for one whose campaign is not the campaign loaded, which is the
+    right Threshold to field to and an invented fact to write down. A standalone
+    Warband's fifth battle is not "game 1", so the field is simply absent and the
+    label prints no game.
+
+    A `manual-pre-app` entry carries none either way, because "before the app"
     means there was no campaign record to place it in.
   */
   const handSource = (): Provenance => (beforeTheApp
@@ -298,8 +308,10 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     }
     : {
       kind: 'manual',
-      game: campaignGameOf(
-        { campaignId: warbandCampaignId }, campaign),
+      ...(() => {
+        const game = recordedCampaignGame({ campaignId: warbandCampaignId }, campaign);
+        return game !== undefined ? { game } : {};
+      })(),
       ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}),
     });
 
@@ -313,18 +325,27 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         roll: skillObj.roll,
         effect: skillObj.description,
         /*
-          Hand-entered, and marked as such. NOT `advancement`: nothing here
-          rolled 2D6, and recording a roll that did not happen is the
-          fabrication rule 2 forbids. The wizard's Promotions step writes
-          `advancement` with the game and the total it actually rolled.
+          Hand-entered, and marked as such. NOT `advancement`: this component
+          rolled nothing, and claiming the app rolled it is the fabrication rule
+          2 forbids. The wizard's Promotions step is what writes `advancement`.
 
-          It still USES a roll: `addUnitSkill` increments `advancementRolls`,
-          because a Skill recorded by any route is one Advancement Roll taken.
-          The marking is for the reader; the arithmetic is the same either way.
+          Whether it CONSUMES an Advancement Roll is decided by the record, not
+          by the route (review round 2 item 1): the 2D6 total the player gives
+          above is carried here, and `addUnitSkill` counts the Skill only if it
+          is present. A Patron's Skill entered with the field empty costs
+          nothing, which is the case counting Skills got wrong.
+
+          `row` is the dropdown line they picked, which is not a die — kept apart
+          from `roll` for the same reason the Trauma entry keeps them apart.
         */
-        source: handSource(),
+        source: {
+          ...handSource(),
+          ...(handRoll.trim() ? { roll: handRoll.trim() } : {}),
+          ...(skillObj.roll && !handRoll.trim() ? { row: String(skillObj.roll) } : {}),
+        },
       });
       setSelectedSkillName('');
+      setHandRoll('');
     }
   };
 
@@ -336,9 +357,14 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         name: injuryObj.name,
         roll: injuryObj.roll,
         effect: injuryObj.description,
-        /* The roll is the table ROW the player chose, not a D66 anybody threw,
-           so the kind is the hand entry it is. */
-        source: handSource(),
+        /*
+          The table ROW the player chose, recorded as a row (review round 2
+          item 3). Nobody threw a die for it, so it must not read as a throw:
+          `provenanceLabel` prints "row 41-63" and never "rolled 41-63". The
+          distinction is the difference between evidence of a die and evidence
+          of a choice.
+        */
+        source: { ...handSource(), ...(injuryObj.roll ? { row: injuryObj.roll } : {}) },
       });
       setSelectedInjuryRoll('');
     }
@@ -602,11 +628,38 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   placeholder="e.g. rolled at the table in game 3"
                   className="w-full min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                 />
+                {/*
+                  The 2D6 total the player threw, where there was one (review
+                  round 2 item 1).
+
+                  This field is what makes the Advancement Roll accounting
+                  possible at all. A Skill consumes a roll if and only if its
+                  record states the roll — a Patron's grant and a Glory Item's
+                  cost none — so a player who rolled at the table needs somewhere
+                  to say what came up, and a player recording a Patron Skill
+                  leaves it empty and is charged nothing.
+
+                  Not the dropdown's row: that is the line they pointed at, which
+                  the app already knows. This is the die.
+                */}
+                <label htmlFor="hand-roll" className="eyebrow block">
+                  The 2D6 total you rolled, if you rolled for it
+                </label>
+                <input
+                  id="hand-roll"
+                  value={handRoll}
+                  onChange={(e) => setHandRoll(e.target.value)}
+                  inputMode="numeric"
+                  placeholder="e.g. 9 — leave empty for a Patron or Glory Item Skill"
+                  className="w-full min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+                />
                 <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
                   Nothing here rolls dice, so every entry is marked as recorded
-                  by hand rather than as a roll that did not happen. It still
-                  counts the same: a Skill uses an Advancement Roll and a scar
-                  counts towards retirement, whichever way it was recorded.
+                  by hand rather than as a roll that did not happen. A Skill uses
+                  an Advancement Roll only where you give the total above: a
+                  Patron grants Skills and so do some Glory Items, and counting
+                  those would cancel a roll this model earned. A scar counts
+                  towards retirement whichever way it was recorded.
                 </p>
               </div>
 
@@ -677,7 +730,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                         {/* How it was earned. A Skill with no record reads as an
                             import — never as a roll nobody made. */}
                         <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
-                          {provenanceLabel(s)}
+                          {provenanceLabel(s, { audience: 'owner' })}
                         </p>
                       </div>
 
@@ -801,7 +854,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                           {s.effect}
                         </p>
                         <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
-                          {provenanceLabel(s)}
+                          {provenanceLabel(s, { audience: 'owner' })}
                         </p>
                       </div>
 
@@ -870,7 +923,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                           {inj.name}
                         </strong>
                         <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
-                          {provenanceLabel(inj)}
+                          {provenanceLabel(inj, { audience: 'owner' })}
                         </p>
                       </div>
                       {/* 44px, like every other control at this width

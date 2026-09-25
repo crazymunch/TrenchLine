@@ -195,3 +195,66 @@ describe('review round 1, finding L: the wizard draws the Experience it is award
     expect(promoted.boxes.filter((b) => b.filled)).toHaveLength(1);
   });
 });
+
+describe('review round 2, item 11: which boxes this submission is awarding', () => {
+  /*
+    The wizard has to draw the track on Experience PLUS the gain — the
+    Advancement Rolls it offers beside it are computed from that total, which is
+    round 1's finding L. What it could not show was which of the filled boxes the
+    battle had just earned, so a player checking the app against the table saw
+    six filled boxes and no way to tell four-plus-two from six.
+
+    `heldBefore` is the caller saying what the model brought.
+  */
+  it('marks only the boxes between what was held and the new total', () => {
+    const track = experienceTrackFor(DATASET, unit({ xp: 6 }), { heldBefore: 4 })!;
+    expect(track.boxes.filter((b) => b.gained).map((b) => b.index)).toEqual([5, 6]);
+    /* All six are still filled: the gain is a subset of the fill, not a rival. */
+    expect(track.boxes.filter((b) => b.filled).map((b) => b.index))
+      .toEqual([1, 2, 3, 4, 5, 6]);
+  });
+
+  it('marks nothing when the caller does not say, which is every other screen', () => {
+    /* The unit card and the Roster Sheet state what a model HAS. Nothing there
+       is pending, so nothing is a gain. */
+    const track = experienceTrackFor(DATASET, unit({ xp: 6 }))!;
+    expect(track.boxes.some((b) => b.gained)).toBe(false);
+  });
+
+  it('a Promoted model’s whole row is the gain, because it begins at nothing', () => {
+    /* "They begin with 0 Experience Points, but will gain at least 1 due to
+       surviving the game after which they were Promoted." */
+    const track = experienceTrackFor(DATASET, unit({ xp: 1 }), { heldBefore: 0 })!;
+    expect(track.boxes.filter((b) => b.gained).map((b) => b.index)).toEqual([1]);
+  });
+
+  it('awards nothing when the battle awarded nothing', () => {
+    const track = experienceTrackFor(DATASET, unit({ xp: 6 }), { heldBefore: 6 })!;
+    expect(track.boxes.some((b) => b.gained)).toBe(false);
+  });
+
+  it('refuses to mark ground that does not exist', () => {
+    /* A "before" above the total would mark backwards, and a negative one would
+       claim the model earned its whole history this game. Both clamp. */
+    const over = experienceTrackFor(DATASET, unit({ xp: 3 }), { heldBefore: 9 })!;
+    expect(over.boxes.some((b) => b.gained)).toBe(false);
+
+    const under = experienceTrackFor(DATASET, unit({ xp: 2 }), { heldBefore: -5 })!;
+    expect(under.boxes.filter((b) => b.gained).map((b) => b.index)).toEqual([1, 2]);
+  });
+
+  it('and the wizard is the caller that says what was held', () => {
+    /* Source-level, as the finding-L case above is: this suite has no DOM, and
+       the bug was which numbers the call site passes. */
+    const wizard = fs.readFileSync(
+      path.join(process.cwd(), 'src/components/campaign/PostBattleWizardModal.tsx'), 'utf8');
+    const call = wizard.slice(
+      wizard.indexOf('<ExperienceTrack'),
+      wizard.indexOf('/>', wizard.indexOf('<ExperienceTrack')));
+
+    expect(call, 'the wizard does not tell the track what the model held')
+      .toMatch(/heldBefore=/);
+    /* Zero for a model Promoted in this step, its own Experience otherwise. */
+    expect(call).toMatch(/heldBefore=\{[\s\S]*promoted[\s\S]*\?[\s\S]*0[\s\S]*:[\s\S]*unit\.xp/);
+  });
+});

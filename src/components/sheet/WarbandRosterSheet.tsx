@@ -43,8 +43,11 @@ export interface WarbandRosterSheetProps {
   warband: Warband;
   dataset: Dataset | null | undefined;
   campaign?: { id?: string; name?: string; currentGame?: number; currentTurn?: number } | null;
-  /** False on the public share page: a model's private notes are not shared. */
-  includePrivate?: boolean;
+  /**
+   * Who is reading. `'public'` unless said otherwise, so a caller that forgets
+   * shows too little rather than publishing the owner's own writing.
+   */
+  audience?: 'owner' | 'public';
 }
 
 const Blank: React.FC = () => <span className="text-theme-muted">—</span>;
@@ -67,7 +70,16 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
   </section>
 );
 
-/** The sheet, from a model somebody else projected. Nothing else is read. */
+/**
+ * The sheet, from a model somebody else projected. Nothing else is read.
+ *
+ * The holdings below ask `provenanceLabel` for the OWNER's reading, and that is
+ * safe rather than a hole: `rosterSheet` has already taken the `note` off every
+ * record a public reader is given (round 2 item 4), so this can only render what
+ * survived the projection. The model is the boundary; the view renders what
+ * reached it. Asking for the public reading here would instead hide the note from
+ * the player on their own sheet, which is the field's whole purpose.
+ */
 export const RosterSheetView: React.FC<{ sheet: RosterSheetModel }> = ({ sheet }) => {
   const { header, strongbox, campaign: table } = sheet;
 
@@ -129,14 +141,14 @@ export const RosterSheetView: React.FC<{ sheet: RosterSheetModel }> = ({ sheet }
                 <tr>
                   <td className="text-theme-muted">Ducats</td>
                   <td className="text-right text-theme-text">
-                    {strongbox.fromLedger ? strongbox.ducatsTotal : <Blank />}
+                    {strongbox.ducatsTotal ?? <Blank />}
                   </td>
                   <td className="text-right text-theme-text font-bold">{strongbox.ducatsUnspent}</td>
                 </tr>
                 <tr>
                   <td className="text-theme-muted">Glory</td>
                   <td className="text-right text-theme-text">
-                    {strongbox.fromLedger ? strongbox.gloryTotal : <Blank />}
+                    {strongbox.gloryTotal ?? <Blank />}
                   </td>
                   <td className="text-right text-theme-text font-bold">{strongbox.gloryUnspent}</td>
                 </tr>
@@ -223,7 +235,7 @@ export const RosterSheetView: React.FC<{ sheet: RosterSheetModel }> = ({ sheet }
                         presented as rewards the Warband earned.
                       */}
                       {h.group ?? (h.kind === 'reward' ? 'stated by the roster, ungrouped' : h.kind)}
-                      {' · '}{provenanceLabel({ source: h.source })}
+                      {' · '}{provenanceLabel({ source: h.source }, { audience: 'owner' })}
                     </span>
                     {h.text && (
                       <span className="block text-theme-muted leading-relaxed break-words">
@@ -493,7 +505,7 @@ const UnitSheetCard: React.FC<{ card: SheetCard }> = ({ card }) => {
  * whole roster into the page's serialised props.
  */
 export const WarbandRosterSheet: React.FC<WarbandRosterSheetProps> = ({
-  warband, dataset, campaign, includePrivate = false,
+  warband, dataset, campaign, audience = 'public',
 }) => (
-  <RosterSheetView sheet={rosterSheet(warband, { dataset, campaign, includePrivate })} />
+  <RosterSheetView sheet={rosterSheet(warband, { dataset, campaign, audience })} />
 );

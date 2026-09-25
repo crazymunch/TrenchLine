@@ -415,6 +415,33 @@ export function campaignGameOf(
   return Math.max(1, Math.floor(n) || 1);
 }
 
+/**
+ * The game number to RECORD on a provenance, or nothing.
+ *
+ * `campaignGameOf` answers a different question and answers it correctly: what
+ * Threshold is this Warband fielding to? A Warband in no campaign fields to
+ * game 1's, which is the right allowance and a fact about the limit, not about
+ * history.
+ *
+ * Writing that same 1 into a record is the invention `provenance.ts` exists to
+ * refuse (review round 2 item 2). A standalone Warband's fifth battle is not
+ * "game 1", and neither is a game played while a DIFFERENT campaign is loaded
+ * in the app — the fallback fires for both. So a record gets a game only where
+ * the Warband is a member of the campaign that is loaded, and otherwise the
+ * field is absent and `provenanceLabel` prints no game.
+ *
+ * Absent is not a gap to be filled later. It is the whole of what the app knows.
+ */
+export function recordedCampaignGame(
+  warband: { campaignId?: string },
+  campaign?: { id?: string; currentGame?: number; currentTurn?: number } | null,
+): number | undefined {
+  if (!warband.campaignId || !campaign || campaign.id !== warband.campaignId) {
+    return undefined;
+  }
+  return campaignGameOf(warband, campaign);
+}
+
 
 /* --------------------------------------------------------------- lifecycle */
 

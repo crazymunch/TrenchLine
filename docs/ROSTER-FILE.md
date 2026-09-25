@@ -149,18 +149,47 @@ app that had been open all season; which of the two it is is the player's to say
 A file written before any of this carries no `source` at all, and `provenanceOf`
 reads that as **`import`** — never as a roll that did not happen, and **never as
 a step**, whatever else the entry carries. A scar with a `roll` and no `source`
-is an import whose roll was recorded, not evidence of a Trauma Step: the
-advancement sheet has always written `roll` from the table ROW a player picked
-out of a dropdown. That is rule 2 applied to a record rather than to a fetch.
-Nothing is back-filled.
+is an import whose ROW was recorded, not evidence of a Trauma Step and not
+evidence of a die: the advancement sheet has always written `roll` from the table
+ROW a player picked out of a dropdown. That is rule 2 applied to a record rather
+than to a fetch. Nothing is back-filled.
 
-**A Skill recorded by any route is one Advancement Roll taken.** Not the marking
-— the arithmetic. `advancementRollsDue` counts the circles the model's Experience
-has passed and subtracts `advancementRolls`, so every writer of a Skill
-increments it: the wizard for the ones it rolls, the importers for the ones that
-arrive on a sheet, and hand entry for the ones a player types in. Removing a
-Skill gives the roll back. Before that, importing a roster offered every model
-its Skills a second time.
+**A throw and a choice are different claims, and the record keeps them apart.**
+`Provenance.roll` is a die that came up — the 2D6 total the wizard rolled,
+NewRecruit's bracketed `Point Blank [9]`, a D66 of 52. `Provenance.row` is a line
+of a table somebody pointed at, which for a ranged Trauma row (`41-63`) is a range
+no die shows. A label reads "rolled 52" for the first and "row 41-63" for the
+second, never the other way round.
+
+**A Skill consumes an Advancement Roll if and only if its own record states the
+roll.** Not one per Skill — the record. `advancement.ts` has said why since it was
+written: a Patron grants Skills, so do some Glory Items and the `65 Bitter
+Lessons` Trauma result, so counting Skills cancels rolls the model earned. A
+Sultanate Azeb imported holding three Skills at 6 Experience has earned two rolls
+(the circles are at 2 and 4); recorded as having taken three, it is owed one at 7
+and offered none, and nothing on any screen says a roll went missing.
+
+What counts as stating the roll:
+
+| Record | Consumes a roll? |
+| --- | --- |
+| `advancement` | Yes — the app wrote it when the roll was taken |
+| `import` with a bracketed 2D6 total (`Point Blank [9]`) | Yes |
+| `import` with no roll (a Trench Companion Skill) | No |
+| `manual` / `manual-pre-app` with a 2D6 total the player gave | Yes |
+| `manual` / `manual-pre-app` with no total | No |
+| a `row` but no `roll` | No — a row is a choice, not a die |
+| no record at all | No |
+
+A 2D6 total means 2 to 12, which is what excludes a D66 injury (`26`) and a
+Trauma row's range. Removing a Skill refunds only what that Skill consumed, so
+removing a Patron's Skill refunds nothing and a mis-tap on a rolled one is not a
+penalty. Both importers set `advancementRolls` from this count and REPORT the
+Skills they did not count, because a correct reading and a parse failure look
+identical on the model otherwise.
+
+The direction of the error is the argument for counting this way: an over-offer is
+visible and the player declines it; an under-offer is silent.
 
 `rulesetId` on the **Warband** is `durable`, and it is **not** a duplicate of
 the manifest. The manifest records what the exporting BUILD had loaded; this
@@ -289,6 +318,12 @@ Lessons` Trauma result. `advancementRollsDue` subtracts it from the thresholds
 the model's Experience has passed — so a restore that dropped it would hand the
 model every roll it had already made, a second time.
 
+This paragraph was right before the app was: a release set the field to
+`skills.length`, which is exactly the shortcut it warns against here, and the
+rule that replaced it is the table under **Provenance** above. Any writer of a
+Skill — the wizard, both importers, hand entry — counts the Skills whose records
+state a 2D6 total, and nothing counts the length of the list.
+
 **`advancements`** is a legacy free-text list, and nothing writes to it any
 more. The post-battle wizard used to put the label of whichever of eight
 buttons the player pressed here — and four of those buttons were characteristic
@@ -296,10 +331,13 @@ advances (`+1 Melee`, `+1 Ranged`, `+1 Armour`, `+1" Move`) that Trench Crusade
 does not have, while three of the four named Skills do not exist. Existing
 rosters therefore carry strings for things that never happened.
 
-It stays `durable`, and it is still displayed. Those strings are the player's
-own record of what they did at their table, and clearing them on import or
-export would be a data change rather than a fix. New progression goes to
-`skills`.
+It stays `durable`, and it is still displayed **to the player whose roster it
+is**. Those strings are the player's own record of what they did at their table,
+and clearing them on import or export would be a data change rather than a fix.
+They are free text somebody typed, so the public share page omits them along with
+the Warband's lore, its notes and a provenance `note` — see
+[`DATABASE.md`](DATABASE.md) on `shareToken`, and `rosterSheet`'s `audience`. New
+progression goes to `skills`.
 
 ## `promotionMisses` — a counter the Warband carries, not the game
 

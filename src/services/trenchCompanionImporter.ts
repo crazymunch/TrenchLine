@@ -47,6 +47,7 @@ import type {
 import type { UnitProfile } from '../types/rules';
 import { book } from '../rules/ledger';
 import { nameKey } from '../rules/names';
+import { advancementRollsStated, skillsStatingNoRoll } from '../rules/provenance';
 import { recruitable } from '../rules/recruitable';
 import { sameFaction } from '../rules/variants';
 import { catalogueUnitFor } from '../rules/catalogueUnit';
@@ -379,11 +380,13 @@ export function importTrenchCompanionWarband(
       advancements: [],
       skills: companionSkills,
       /*
-        One Advancement Roll per Skill on the sheet (review round 1, finding F).
-        A Skill recorded by ANY route is a roll that was made; counting only the
-        ones this app rolled handed an imported model its Skills again.
+        Only the Skills whose record states a roll (review round 2 item 1). The
+        Companion's export carries no roll for a Skill, so this is normally
+        nought and the report says which Skills were not counted: a Patron's
+        grant among them is correct, not a parse failure.
       */
-      ...(companionSkills?.length ? { advancementRolls: companionSkills.length } : {}),
+      ...(advancementRollsStated(companionSkills)
+        ? { advancementRolls: advancementRollsStated(companionSkills) } : {}),
       injuries: companionInjuries,
       ...(companionInjuries.length
         ? { injuryRecords: injuryRecordsFor(companionInjuries) } : {}),
@@ -484,6 +487,24 @@ export function importTrenchCompanionWarband(
     fact about the Grail Devotee, not five, and a report a player scrolls
     past is a report a player does not read.
   */
+  /*
+    Which Skills cost no Advancement Roll (review round 2 item 1). Their export
+    carries no roll for a Skill, so `advancementRolls` comes out nought and a
+    player seeing three Skills against no roll taken deserves the reason in
+    words rather than having to infer it. One line, in the channel this importer
+    already reports through.
+  */
+  for (const u of warband.units) {
+    const uncounted = skillsStatingNoRoll(u.skills);
+    if (uncounted.length) {
+      warnings.push(
+        `${u.customName || u.profileSnapshot?.name || 'A model'}: `
+        + `${uncounted.join(', ')} — the share carries no roll for these, so they `
+        + 'count as no Advancement Roll taken. Correct it on the model if one was rolled.',
+      );
+    }
+  }
+
   return {
     warband,
     unmatched,

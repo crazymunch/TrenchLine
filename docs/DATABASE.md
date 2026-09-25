@@ -238,14 +238,46 @@ CREATE UNIQUE INDEX "Warband_shareToken_key" ON "Warband"("shareToken");
 `NULL`, which is "not shared", so the migration publishes nothing. No backfill,
 no contract step.
 
-**The ordering is the rule, not a convenience.** There is no release in which the
-running code sees a shape it does not expect *only because this migration goes up
-BEFORE the pull request merges* — which is what `CLAUDE.md`'s standing
-authorisation is for. The new build selects `shareToken`; a deploy that carried
-it while the column did not exist would 500 every warband read, which is the sync
-dead rather than degraded. Merge order for an additive column is therefore:
-**apply, then merge**. (An expand that the old code must tolerate is the other
-way round, and the three-release table above is when that applies.)
+### The ordering rule: a migration's name must sort after everything applied
+
+**`prisma migrate deploy` refuses to run a migration that sorts BEFORE one the
+database has already recorded.** Migrations are ordered by their folder name, the
+`_prisma_migrations` table records the names it has applied, and a folder whose
+timestamp is older than the newest recorded one is not "next" — it is a migration
+the database believes it skipped. The deploy fails rather than guessing, and the
+failure is at deploy time, on production, after review.
+
+So the rule is about **naming**, and it applies when the folder is created:
+
+> Before naming a migration folder, read back what production has recorded, and
+> give the folder a timestamp later than the newest of them.
+
+The report mode of the script is how you read it back — it prints the recorded
+set and needs no arguments and no confirmation:
+
+```bash
+node scripts/apply-migrations-http.mjs        # report: what is recorded, what is pending
+```
+
+This bites in exactly the case this repository is in: **several branches open at
+once.** A migration created on Monday and merged on Friday can easily carry a
+timestamp older than one another branch merged on Wednesday — and nothing in the
+branch, the review or CI notices, because both are valid in isolation and the
+conflict only exists against the database's record. `20260925090000_warband_share_token`
+was checked this way against a production set whose newest entry was
+`20260919090000_battle_records`.
+
+A migration already applied is never renamed or edited — `CLAUDE.md` again, and
+the script refuses on its own if one has changed since it was applied. The way
+out of a migration that sorts too early is a new migration with a later name.
+
+**When it goes up.** Pending migrations are applied **as part of merging the pull
+request that adds them**, under `CLAUDE.md`'s standing authorisation, and what
+`_prisma_migrations` reads back afterwards is reported. For an additive column the
+new build selects — `shareToken` is one — the column must exist before the build
+that reads it serves traffic, or every warband read 500s; applying it as the PR
+merges is what puts it there. (An expand the OLD code must tolerate is the case
+the three-release table above describes, and that one is staged differently.)
 
 **Nullable AND unique on purpose.** A token is what a reader presents instead of
 a session, so two rosters must never answer to one. Postgres treats `NULL`s as
@@ -269,6 +301,40 @@ Clearing it writes `NULL`, which is what makes "Stop sharing" final: the old lin
 then matches no row, so there is no state in which a stopped share still
 resolves. See [`ROSTER-FILE.md`](ROSTER-FILE.md) for why the token is absent from
 the `Warband` type altogether.
+
+### What a shared roster shows, and why that is a model rather than a page
+
+The column decides who can fetch a roster. It says nothing about what the page
+then prints, and those are two separate decisions that were confused twice.
+
+**The roster is not sent.** `rosterSheet` runs on the SERVER and the client
+component is handed a `RosterSheetModel`. A `'use client'` component's props are
+serialised into the HTML, so passing the loader's object put the owner's notes,
+every model's notes and lore, the `chronicleLog`, snapshot labels naming
+opponents, and the `ledger`'s admin entries — **another user's data** — into
+view-source on a shared page.
+
+**And the model itself takes an `audience`.** Moving the projection to the server
+stopped the roster being sent; it did not settle what the sheet prints, and four
+things it printed were the owner's alone:
+
+| Field | Why it cannot be public |
+| --- | --- |
+| PLAYER (`creatorName`) | An ACCOUNT name. For an account registered by email with no name set, `api/auth/register/route.ts` falls back to `email.split('@')[0]` — so a share link published the owner's email, less the domain |
+| the bio (`lore`) | `presentRoster` has always read it as private; a roster sheet is not the place to overrule that |
+| a provenance `note` | The player's own words about how they got something |
+| the legacy `advancements` strings | Free text they typed |
+
+`audience` defaults to **`'public'`**. That direction is the point: a field added
+to the model tomorrow is absent from the share page without anybody remembering
+to remove it, and forgetting fails closed. A unit card carries a named
+`SheetCardModel` rather than a whole `PresentedModel` for the same reason — a
+field added upstream has to be named here to reach the sheet at all.
+
+`rosterSheet.test.ts` plants fourteen distinct strings in a fixture, asserts the
+fixture really carries all fourteen, then stringifies the projection and searches
+for each. It also asserts the sheet still renders, so it cannot pass by rendering
+nothing.
 
 ## The administrator role
 

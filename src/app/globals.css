@@ -1105,6 +1105,19 @@ body {
   .roster-sheet .print-fill.bg-theme-border\/40 {
     background: #bbb !important;
   }
+  /*
+    The third fill: a box this submission is awarding (review round 2 item 11).
+    A mid grey, so it is distinguishable from both the solid held box and the
+    lighter capped one in black and white — the accent colour is a screen
+    colour and means nothing on paper.
+
+    It is here because the class exists at all: a fill the stylesheet does not
+    name is a fill the blanket `background: transparent !important` erases,
+    which is the bug item I of round 1 was.
+  */
+  .roster-sheet .print-fill.bg-theme-accent {
+    background: #777 !important;
+  }
 
   /*
     Two unit cards a page, which is the printed sheet's own density for the

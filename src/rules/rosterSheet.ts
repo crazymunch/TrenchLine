@@ -35,7 +35,7 @@
  * page has no store: the builder's route and `/w/<token>` both call this.
  */
 import type { Dataset, ExplorationLocation } from '@/types/catalogue';
-import type { Warband } from '@/types/warband';
+import type { Provenance, Warband } from '@/types/warband';
 import {
   campaignVictoryPoints, forceLimits, rollLabel, strongboxOf, victoryPointScale,
   type LedgerEntry,
@@ -61,9 +61,20 @@ export interface SheetHeader {
 
 /** L5–L7. TOTAL is everything ever credited; UNSPENT is the balance. */
 export interface SheetStrongbox {
-  ducatsTotal: number;
+  /**
+   * Everything ever credited — or `undefined` where there is no ledger to add up.
+   *
+   * Not the balance, and not zero (review round 2 item 9). Round 1 put the
+   * balance here and set `fromLedger: false` beside it, so a consumer that read
+   * the number without reading the flag printed a TOTAL the app had not
+   * computed — and it looked plausible, which is the worst property a wrong
+   * number can have. Absent is the honest shape: a reader has to handle it,
+   * and the only way to print a TOTAL is to have one.
+   */
+  ducatsTotal?: number;
   ducatsUnspent: number;
-  gloryTotal: number;
+  /** As `ducatsTotal`: absent where no ledger records the history. */
+  gloryTotal?: number;
   gloryUnspent: number;
   /**
    * False where the Warband has no ledger at all, so the pair cannot be a
@@ -71,6 +82,9 @@ export interface SheetStrongbox {
    * Strongbox's authority; a Warband from before it has the stored numbers and
    * no history, and the sheet says which it is holding rather than printing a
    * TOTAL it invented.
+   *
+   * Kept beside the two optional fields rather than replaced by them: it states
+   * the reason, which `undefined` on its own does not.
    */
   fromLedger: boolean;
 }
@@ -126,8 +140,30 @@ export interface SheetCampaignTable {
 }
 
 /** One unit card, pages 2 and 3. */
+/**
+ * The model's own line on a unit card: exactly the fields the card prints.
+ *
+ * Not a `PresentedModel` (review round 2 item 4). That type carries the legacy
+ * free-text `advancements`, and with `includePrivate` it carries a model's
+ * notes, quote and lore too — none of which the card prints, all of which went
+ * into the share page's HTML because the card held the whole object.
+ *
+ * A closed list is the structural half of the audience rule: a field added to
+ * `PresentedModel` tomorrow does not reach a public page by default, because it
+ * has to be named here to reach the sheet at all.
+ */
+export interface SheetCardModel {
+  id: string;
+  name: string;
+  profileName: string;
+  category: string;
+  ducats: number;
+  glory: number;
+  stats?: PresentedModel['stats'];
+}
+
 export interface SheetCard {
-  model: PresentedModel;
+  model: SheetCardModel;
   /** Eighteen boxes and two scars, from the dataset. `null` if it cannot be read. */
   track: ExperienceTrackModel | null;
   /** Battlekit, as the sheet's own heading groups it. */
@@ -177,14 +213,42 @@ export interface RosterSheetContext {
   /** The campaign this Warband is in, for CAMPAIGN BATTLE and the game count. */
   campaign?: { id?: string; name?: string; currentGame?: number; currentTurn?: number } | null;
   /**
-   * Whether the reader may see the player's own writing.
+   * Who is reading, which decides what the model CONTAINS.
    *
-   * False on the public share page for a model's private notes: `presentRoster`
-   * applies it, and SH-1's page is read by whoever has the link. The Warband's
-   * lore and motto ARE shown — they are what a player shares a roster for —
-   * and a model's private notes are not.
+   * One model with an audience, not one model that a page strips down (review
+   * round 2 item 4). The difference matters because of what happens to the next
+   * field somebody adds: with stripping, a new field is public until a page
+   * remembers to remove it, and the bug is invisible until it ships. Here the
+   * default is `'public'`, so a new field is private until this function is
+   * asked to include it, and forgetting fails closed.
+   *
+   * `'public'` omits, in full:
+   *
+   * - **the account**. PLAYER is blank, as the paper sheet is until somebody
+   *   fills it in. `creatorName` is an ACCOUNT name, and for an account
+   *   registered by email with no name set it is the local part of that address
+   *   — so a share link published the owner's email, near enough.
+   * - **every piece of free text the player wrote**: the Warband's lore, its
+   *   notes, a model's notes, quote and lore, a provenance note, and the legacy
+   *   `advancements` strings. Round 1 reasoned that lore is "what a player
+   *   shares a roster for" — but `presentRoster` has always treated it as
+   *   private, and a roster sheet is not the place to overrule that.
+   *
+   * The owner's own `/roster/[id]/sheet` passes `'owner'` and keeps all of it.
    */
-  includePrivate?: boolean;
+  audience?: 'owner' | 'public';
+}
+
+/**
+ * A provenance with the player's own words taken off it.
+ *
+ * Everything else on the record is derived — a kind, a game number, a die, a
+ * Location the book names — and stays. `note` is free text somebody typed, so it
+ * belongs to them (review round 2 item 4).
+ */
+function withoutNote(source: Provenance): Provenance {
+  const { note: _note, ...rest } = source;
+  return rest;
 }
 
 /** Everything ever credited in each currency. The other half of TOTAL/UNSPENT. */
@@ -318,6 +382,12 @@ export function rosterSheet(
   context: RosterSheetContext,
 ): RosterSheetModel {
   const { dataset } = context;
+  /*
+    Private by default (review round 2 item 4). A caller that says nothing gets
+    the public model, so the failure mode of forgetting is a sheet that says too
+    little rather than one that publishes an account name.
+  */
+  const audience: 'owner' | 'public' = context.audience === 'owner' ? 'owner' : 'public';
   const faction = dataset ? factionOf(dataset, warband.factionId) : undefined;
   const variant = dataset ? variantById(dataset, warband.variantId) : undefined;
 
@@ -327,7 +397,7 @@ export function rosterSheet(
       factionName: faction?.name,
       variantName: variant?.name,
     },
-    { includePrivate: context.includePrivate === true },
+    { includePrivate: audience === 'owner' },
   );
 
   const ledger = warband.ledger ?? [];
@@ -343,21 +413,37 @@ export function rosterSheet(
   return {
     header: {
       warbandName: warband.name || '',
-      player: warband.creatorName || '',
+      /* The account name, and only for its owner. Blank on a share, which is
+         what the printed sheet's PLAYER blank is until a player writes in it. */
+      player: audience === 'owner' ? (warband.creatorName || '') : '',
       warband: variant?.name || '',
       patron: warband.patron || '',
       campaignBattle: campaignName,
       faction: faction?.name || warband.factionId || '',
     },
     strongbox: {
-      ducatsTotal: credited.ducats,
+      /* A TOTAL only where a ledger produced one. See `SheetStrongbox`. */
+      ...(ledger.length ? { ducatsTotal: credited.ducats } : {}),
       ducatsUnspent: balance.ducats,
-      gloryTotal: credited.glory,
+      ...(ledger.length ? { gloryTotal: credited.glory } : {}),
       gloryUnspent: balance.glory,
       fromLedger: ledger.length > 0,
     },
-    bio: warband.lore || '',
-    holdings: holdingsOf(warband),
+    /* The player's own writing, so the owner's alone — `presentRoster` has
+       always read `lore` as private and this no longer contradicts it. */
+    bio: audience === 'owner' ? (warband.lore || '') : '',
+    /*
+      The review of what the Warband holds — and the `source` objects in it carry
+      the player's `note` verbatim (review round 2 item 4). A label built for a
+      public reader is not enough on its own: the MODEL holds the record, and the
+      model is what gets serialised into the page. So the note comes off the
+      record here, for the same reason the projection exists at all.
+    */
+    holdings: holdingsOf(warband).map((h) => (
+      audience === 'owner' || !h.source?.note
+        ? h
+        : { ...h, source: withoutNote(h.source) }
+    )),
     heraldry: warband.motto || '',
     arsenal: (warband.armoryStash ?? []).map((item) => {
       const price = stashPrice(item);
@@ -372,13 +458,23 @@ export function rosterSheet(
     cards: (warband.units ?? []).map((unit, i) => {
       const model = presented.models[i];
       return {
-        model,
+        /* Named fields only — see `SheetCardModel`. Spreading `model` here is
+           what put a model's free text into the share page's HTML. */
+        model: {
+          id: model?.id ?? unit.id,
+          name: model?.name ?? unit.customName ?? '',
+          profileName: model?.profileName ?? '',
+          category: model?.category ?? '',
+          ducats: model?.ducats ?? 0,
+          glory: model?.glory ?? 0,
+          ...(model?.stats ? { stats: model.stats } : {}),
+        },
         track: experienceTrackFor(dataset, unit),
         /* The sheet's own heading. `presentModel` already flattened the three
            equipment arrays into one list in roster order, which is what
            "Battlekit" is on the card. */
         battlekit: model?.gear ?? [],
-        abilitiesSkillsInjuries: sheetAbilities(unit, model),
+        abilitiesSkillsInjuries: sheetAbilities(unit, model, audience),
         keywords: model?.keywords ?? [],
       };
     }),
@@ -403,6 +499,7 @@ export function rosterSheet(
 function sheetAbilities(
   unit: Warband['units'][number],
   model: PresentedModel | undefined,
+  audience: 'owner' | 'public',
 ): SheetCard['abilitiesSkillsInjuries'] {
   const out: SheetCard['abilitiesSkillsInjuries'] = [];
   for (const a of model?.abilities ?? []) {
@@ -413,13 +510,24 @@ function sheetAbilities(
     out.push({
       name: h.name,
       ...(h.text ? { detail: h.text } : {}),
-      /* `skill · Advancement Roll · game 4 · rolled 9`, or as much of it as the
-         record actually holds. */
-      provenance: `${h.kind} · ${provenanceLabel({ source: h.source })}`,
+      /*
+        `skill · Advancement Roll · game 4 · rolled 9`, or as much of it as the
+        record actually holds — minus the player's `note`, which is free text
+        they wrote and is theirs (review round 2 item 4). The note is the reason
+        this asks `provenanceLabel` for a public reading rather than trimming
+        the string afterwards: a label built and then edited is a label that
+        leaks whatever the next version of it adds.
+      */
+      provenance: `${h.kind} · ${provenanceLabel({ source: h.source }, { audience })}`,
     });
   }
-  /* The legacy free-text progression notes. Still shown, because they are the
-     player's own record of what they did — see `ActiveUnit.advancements`. */
-  for (const a of unit.advancements ?? []) out.push({ name: a });
+  /*
+    The legacy free-text progression notes — `+1 Melee`, and whatever else a
+    player typed there before the app had Skills. The player's own words, so the
+    player's own sheet only.
+  */
+  if (audience === 'owner') {
+    for (const a of unit.advancements ?? []) out.push({ name: a });
+  }
   return out;
 }

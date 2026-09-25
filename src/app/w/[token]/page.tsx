@@ -43,6 +43,22 @@ import { SharedRosterSheet } from './SharedRosterSheet';
  * asserts that nothing private reaches it, because "we checked once" is not a
  * property a page keeps.
  *
+ * ## And WHICH rendering — round 2, item 4
+ *
+ * Moving the projection to the server stopped the roster being sent. It did not
+ * settle what the sheet itself prints, and four things it printed were the
+ * owner's: **PLAYER**, which is an ACCOUNT name and, for an account registered
+ * by email with no name set, the local part of that address
+ * (`api/auth/register/route.ts` falls back to `email.split('@')[0]`); the
+ * Warband's **lore** as the bio, which `presentRoster` has always treated as
+ * private; a provenance **note**, the player's own words; and the legacy
+ * free-text **advancements** strings.
+ *
+ * `rosterSheet` now takes an `audience` and this page passes `'public'`. The
+ * parameter rather than a strip here is deliberate: the default is `'public'`,
+ * so a field added to the model tomorrow is absent from this page without
+ * anybody remembering to remove it. Forgetting fails closed.
+ *
  * **The ruleset is the warband's own** (`rulesetId`, RV-1), not the reader's
  * and not the server's default — a shared roster is the owner's roster, and
  * whichever edition the reader's browser happens to be set to is not a fact
@@ -107,6 +123,7 @@ export default async function SharedWarbandPage(
         sheet={null}
         rulesetName={rulesetInfo(ruleset.id)?.name ?? ruleset.id}
         rulesetRecorded={ruleset.recorded}
+        rulesetUnavailable={ruleset.unavailable}
       />
     );
   }
@@ -116,9 +133,14 @@ export default async function SharedWarbandPage(
     /* No campaign: this reader has none, and the sheet leaves CAMPAIGN BATTLE
        blank rather than naming one it cannot verify. */
     campaign: null,
-    /* The player's own writing is not shared. `presentRoster` applies it, and
-       with the projection on the server the fields never leave the process. */
-    includePrivate: false,
+    /*
+      A public reader (review round 2 item 4). The audience is what decides what
+      the model CONTAINS — no account name, no lore, no notes of any kind — and
+      with the projection on the server those fields never leave the process.
+      Naming the audience here rather than stripping fields afterwards is what
+      makes the next field somebody adds private without this page changing.
+    */
+    audience: 'public',
   });
 
   return (
@@ -127,6 +149,7 @@ export default async function SharedWarbandPage(
       sheet={sheet}
       rulesetName={rulesetInfo(ruleset.id)?.name ?? ruleset.id}
       rulesetRecorded={ruleset.recorded}
+      rulesetUnavailable={ruleset.unavailable}
     />
   );
 }

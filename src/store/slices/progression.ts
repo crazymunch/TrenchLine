@@ -10,6 +10,9 @@ import type { UnitTitleRecord } from '../../types/warband';
 import { persistWarbands } from '../persist';
 import { book, undoPurchases } from '../../rules/ledger';
 import { campaignGameOf } from '../../rules/campaign';
+import {
+  advancementRollsStated, statesAnAdvancementRoll,
+} from '../../rules/provenance';
 import { isZero } from '../../rules/costs';
 import type { Cost } from '../../types/catalogue';
 import type { Warband } from '../../types/warband';
@@ -169,18 +172,19 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
                 ...u,
                 skills: [...existing, skill],
                 /*
-                  And the roll it used (review round 1, finding F).
+                  And the roll it used, IF its record states one (review round 2
+                  item 1).
 
-                  A Skill recorded by ANY route is one Advancement Roll taken.
-                  `advancementRollsDue` counts the circles the model's Experience
-                  has passed and subtracts the rolls TAKEN, and hand entry never
-                  incremented that — so typing in a Skill the player had rolled
-                  at the table left the app offering them the roll again.
-
-                  The post-battle wizard increments it for the Skills it rolls,
-                  in the same units, so the rule is one rule.
+                  Round 1 added one per Skill by any route, which is the mistake
+                  `advancement.ts` warns against in as many words: a Patron
+                  grants Skills, so do some Glory Items and `65 Bitter Lessons`,
+                  and counting Skills cancels rolls the model earned. A player
+                  who types in a Skill they rolled at the table records the 2D6
+                  total with it, and that is what is counted — a Patron Skill
+                  entered by hand consumes nothing.
                 */
-                advancementRolls: (u.advancementRolls ?? 0) + 1,
+                advancementRolls: (u.advancementRolls ?? 0)
+                  + (statesAnAdvancementRoll(skill) ? 1 : 0),
               };
             }),
             updatedAt: new Date().toISOString()
@@ -201,15 +205,17 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
               const kept = (u.skills || []).filter(s => s.name !== skillName);
-              const removed = (u.skills || []).length - kept.length;
+              const dropped = (u.skills || []).filter(s => s.name === skillName);
+              /* Symmetrical with adding: the roll goes back only for a Skill
+                 whose record claimed one. Otherwise a mis-tap and an undo costs
+                 the model an Advancement Roll for good — the count only ever
+                 climbing is how a correction becomes a penalty — while removing
+                 a Patron Skill would refund a roll it never spent. */
+              const refund = advancementRollsStated(dropped);
               return {
                 ...u,
                 skills: kept,
-                /* The roll goes back with the Skill. Otherwise a mis-tap and an
-                   undo costs the model an Advancement Roll for good — the
-                   count only ever climbing is how a correction becomes a
-                   penalty. Floored at zero. */
-                advancementRolls: Math.max(0, (u.advancementRolls ?? 0) - removed),
+                advancementRolls: Math.max(0, (u.advancementRolls ?? 0) - refund),
               };
             }),
             updatedAt: new Date().toISOString()

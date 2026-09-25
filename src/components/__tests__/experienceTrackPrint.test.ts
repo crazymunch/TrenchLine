@@ -65,20 +65,43 @@ describe('and the track is exempt from it', () => {
     expect(printBlock).toMatch(/\.print-fill\.bg-theme-border\\\/40\s*\{[^}]*background:\s*#bbb/s);
   });
 
-  it('the two fill classes the stylesheet names are the two the component uses', () => {
+  it('EVERY fill class the component uses is one the stylesheet names', () => {
     /*
       The join between the two files, which is the thing that actually rots: a
       renamed Tailwind class in the component would leave the stylesheet
       exempting a selector that matches nothing, and the boxes would go blank on
       paper with every test still green.
-    */
-    const filled = component.match(/b\.filled \? '([^']+)' : b\.beyondCap \? '([^']+)'/);
-    expect(filled, 'the component no longer names its fills this way').toBeTruthy();
-    const [, fill, capped] = filled!;
 
-    expect(printBlock).toContain(`.print-fill.${fill}`);
-    /* The capped class carries a slash, which CSS escapes. */
-    expect(printBlock).toContain(`.print-fill.${capped.replace('/', '\\/')}`);
+      Read as a SET rather than as a pair (review round 2 item 11 added a third:
+      the box a submission is awarding). Pulling every `bg-*` out of the box's
+      own className expression means the next fill somebody adds fails here
+      unless the stylesheet names it too — which is the property this test is
+      for, and a two-group regex did not have.
+    */
+    const expr = component.slice(
+      component.indexOf('b.gained'),
+      component.indexOf('].join', component.indexOf('b.gained')));
+    expect(expr, 'the component no longer names its fills this way').toBeTruthy();
+
+    const fills = [...new Set(
+      [...expr.matchAll(/'(bg-[a-z0-9-]+(?:\/[0-9]+)?)'/g)].map((m) => m[1]),
+    )].filter((c) => c !== 'bg-transparent');
+
+    /* The three real fills, or this test has stopped seeing them. */
+    expect(fills.length).toBeGreaterThanOrEqual(3);
+
+    for (const fill of fills) {
+      /* A class carrying a slash is escaped in CSS. */
+      expect(printBlock, `the stylesheet does not name ${fill}, so print erases it`)
+        .toContain(`.print-fill.${fill.replace('/', '\\/')}`);
+    }
+  });
+
+  it('names the awarded box in ink, distinct from held and from capped', () => {
+    /* Round 2 item 11. Three greys on paper, because the accent is a screen
+       colour: solid black held, mid grey awarded, light grey capped. */
+    expect(printBlock)
+      .toMatch(/\.print-fill\.bg-theme-accent\s*\{[^}]*background:\s*#777/s);
   });
 });
 

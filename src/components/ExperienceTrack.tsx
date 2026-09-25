@@ -89,11 +89,26 @@ export const ExperienceTrackView: React.FC<{
             className={[
               box,
               b.advancement ? 'rounded-full' : 'rounded-none',
-              b.filled ? 'bg-theme-primary' : b.beyondCap ? 'bg-theme-border/40' : 'bg-transparent',
+              /*
+                Three fills, not two (review round 2 item 11). A box the model
+                already held is the solid one; a box THIS submission awards is
+                the accent, so the player can see what the battle earned against
+                what the model brought; past the cap is the grey.
+
+                Static class names, all three — `docs/MOBILE.md`: a
+                `bg-${...}` never compiles.
+              */
+              b.gained
+                ? 'bg-theme-accent'
+                : b.filled
+                  ? 'bg-theme-primary'
+                  : b.beyondCap ? 'bg-theme-border/40' : 'bg-transparent',
             ].join(' ')}
-            title={b.advancement
-              ? `Box ${b.index} — an Advancement Roll is earned here`
-              : `Box ${b.index}`}
+            title={[
+              `Box ${b.index}`,
+              b.gained ? 'earned in this game' : '',
+              b.advancement ? 'an Advancement Roll is earned here' : '',
+            ].filter(Boolean).join(' — ')}
           />
         ))}
       </div>
@@ -129,6 +144,17 @@ export const ExperienceTrack: React.FC<{
   dataset: Dataset | null | undefined;
   unit: Pick<ActiveUnit, 'xp' | 'scars' | 'baseProfileId'>;
   showScars?: boolean;
-}> = ({ dataset, unit, showScars = true }) => (
-  <ExperienceTrackView track={experienceTrackFor(dataset, unit)} showScars={showScars} />
+  /**
+   * What the model held before the Experience in `unit.xp`, where the caller is
+   * showing a total it has not committed yet.
+   *
+   * The post-battle wizard passes it; the unit card and the Roster Sheet do not,
+   * because there the track is a statement of what the model has.
+   */
+  heldBefore?: number;
+}> = ({ dataset, unit, showScars = true, heldBefore }) => (
+  <ExperienceTrackView
+    track={experienceTrackFor(dataset, unit, { heldBefore })}
+    showScars={showScars}
+  />
 );

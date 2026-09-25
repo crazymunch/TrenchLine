@@ -61,17 +61,29 @@ export interface CasualtyRecord {
     /** The Battle Scar to add. ELITE only; the book gives Troops none. */
     scar?: { name: string; roll?: string };
     /**
-     * The Trauma Table row this result came off, as the table prints it.
+     * The D66 the player actually threw.
      *
-     * The ROW's roll, which for a ranged row (`41-63`) is the range rather than
-     * the total somebody threw — which is why `Provenance.roll` is a string.
-     * It is the provenance of the injury this step writes (FD-12 item 2): the
-     * scar already carried its own, and the injury had nowhere to put one.
+     * The provenance of the injury this step writes (FD-12 item 2): the scar
+     * already carried its own, and the injury had nowhere to put one.
      *
-     * Absent on a match recorded before this, and on a row the build could not
-     * identify. Absent means *not recorded* and nothing fills it in.
+     * Round 1 put the ROW's range here — `41-63`, which is reached by more than
+     * one total — so a sheet read "rolled 41-63" for a D66 that came up 52,
+     * while the wizard was holding the 52 all along (review round 2 item 3).
+     * The throw goes here; the row goes in `row`.
+     *
+     * Absent on a match recorded before this, and wherever the player picked a
+     * result instead of throwing for it. Absent means *not recorded* and nothing
+     * fills it in.
      */
     roll?: string;
+    /**
+     * The Trauma Table row the result came off, as the table prints it.
+     *
+     * A range (`41-63`) or a single value. Recorded where the row is what the
+     * app can honestly say — a player who picked the result out of a dropdown
+     * threw nothing — and read back as "row 41-63", never as a roll.
+     */
+    row?: string;
   };
 }
 

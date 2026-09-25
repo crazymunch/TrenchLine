@@ -24,6 +24,8 @@ import { rosterSheet } from '../rosterSheet';
 import { advancementRollsDue } from '../advancement';
 import { variantsForFaction } from '../variants';
 import type { ActiveUnit, Warband, WarbandSnapshot } from '@/types/warband';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 /* ----------------------------------------------------- the printed sheet --- */
 
@@ -210,7 +212,12 @@ describe('FD-12: the header is the sheet’s own blanks', () => {
     const variant = variantsForFaction(DATASET, 'iron-sultanate')[0];
     const { header } = rosterSheet(
       warband({ variantId: variant.id, patron: 'Sublime Gate', campaignId: 'camp1' }),
-      { dataset: DATASET, campaign: { id: 'camp1', name: 'The Carcass Front' } },
+      /* The owner's own sheet: PLAYER is their account name, and only here.
+         The public reading of this same header is asserted below. */
+      {
+        dataset: DATASET, audience: 'owner',
+        campaign: { id: 'camp1', name: 'The Carcass Front' },
+      },
     );
     expect(header).toEqual({
       warbandName: 'Al-Qarn Rihla',
@@ -254,13 +261,26 @@ describe('FD-12: STRONGBOX is a TOTAL and an UNSPENT, from the ledger', () => {
     expect(strongbox.fromLedger).toBe(true);
   });
 
-  it('a Warband with no ledger says the pair is a balance, not a total', () => {
+  it('a Warband with no ledger has no TOTAL at all, not a balance wearing its name', () => {
+    /*
+      Round 2 item 9, and it is the model that is asserted rather than the flag.
+      Round 1 put the BALANCE in `ducatsTotal` and set `fromLedger: false` beside
+      it, so anything that read the number without reading the flag printed a
+      TOTAL the app never computed — and 80 looks exactly like a real total,
+      which is what makes it worth removing rather than documenting.
+    */
     const { strongbox } = rosterSheet(
       warband({ treasuryDucats: 80, gloryPoints: 3 }), { dataset: DATASET });
     expect(strongbox.fromLedger).toBe(false);
-    expect(strongbox.ducatsTotal).toBe(80);
+    expect(strongbox.ducatsTotal).toBeUndefined();
+    expect(strongbox.gloryTotal).toBeUndefined();
+    /* The balance is known, and is still reported. */
     expect(strongbox.ducatsUnspent).toBe(80);
     expect(strongbox.gloryUnspent).toBe(3);
+    /* And the key is absent, not present-and-undefined: a reader spreading this
+       into another object must not acquire a `ducatsTotal`. */
+    expect(Object.keys(strongbox)).not.toContain('ducatsTotal');
+    expect(Object.keys(strongbox)).not.toContain('gloryTotal');
   });
 });
 
@@ -295,10 +315,18 @@ describe('FD-12: the unit cards', () => {
         }],
       })],
     });
-    const { cards, holdings } = rosterSheet(marked, { dataset: DATASET });
+    /* The note is the player's own words, so it reaches their own sheet and not
+       a share (round 2 item 4). The marker is derived and reaches both. */
+    const { cards, holdings } = rosterSheet(marked, { dataset: DATASET, audience: 'owner' });
     const line = cards[0].abilitiesSkillsInjuries.find((a) => a.name === 'Ranged Proficiency')!;
     expect(line.provenance).toContain('Recorded before the app');
     expect(line.provenance).toContain('earned in game 2, before the app');
+
+    const shared = rosterSheet(marked, { dataset: DATASET, audience: 'public' });
+    const sharedLine = shared.cards[0].abilitiesSkillsInjuries
+      .find((a) => a.name === 'Ranged Proficiency')!;
+    expect(sharedLine.provenance).toContain('Recorded before the app');
+    expect(sharedLine.provenance).not.toContain('earned in game 2, before the app');
     /* And it appears in the Warband-wide review, which is the other half of what
        the owner asked for beside the sheet. */
     expect(holdings.some((h) => h.name === 'Ranged Proficiency')).toBe(true);
@@ -335,9 +363,18 @@ describe('FD-12: ARSENAL, BIO and the fallen', () => {
 
   it('BIO is the Warband’s lore and HERALDRY its motto', () => {
     const told = warband({ lore: 'Out of the sand.', motto: 'The sand remembers.' });
-    const sheet = rosterSheet(told, { dataset: DATASET });
+    const sheet = rosterSheet(told, { dataset: DATASET, audience: 'owner' });
     expect(sheet.bio).toBe('Out of the sand.');
     expect(sheet.heraldry).toBe('The sand remembers.');
+
+    /*
+      And on a share, the motto stays and the bio goes (round 2 item 4). The
+      motto is HERALDRY — the thing a player puts on the outside of the roster —
+      while `lore` is what `presentRoster` has always read as private.
+    */
+    const shared = rosterSheet(told, { dataset: DATASET, audience: 'public' });
+    expect(shared.heraldry).toBe('The sand remembers.');
+    expect(shared.bio).toBe('');
   });
 
   it('names the fallen, which the printed sheet has no room for', () => {
@@ -417,6 +454,20 @@ describe('review round 1, finding A: nothing private reaches the projection', ()
     ledgerByUserId: 'PRIVATE-ADMIN-USER-ID',
     creatorId: 'PRIVATE-CREATOR-ID',
     campaignMember: 'PRIVATE-CAMPAIGN-MEMBER',
+    /*
+      Round 2 item 4. Four things round 1 left on the public page, each of which
+      the projection carried deliberately — which is why the earlier test passed:
+      it searched for the fields nothing printed, and these were printed.
+
+      `creatorName` is the sharpest of them. It is an ACCOUNT name, and
+      `register/route.ts` sets it to the local part of the address for an account
+      registered by email with no name given — so PLAYER on a shared roster was
+      the owner's email, less the domain.
+    */
+    creatorName: 'PRIVATE-ACCOUNT-NAME',
+    warbandLore: 'PRIVATE-WARBAND-LORE',
+    provenanceNote: 'PRIVATE-PROVENANCE-NOTE',
+    legacyAdvancement: 'PRIVATE-LEGACY-ADVANCEMENT',
   };
 
   const loaded = {
@@ -424,12 +475,17 @@ describe('review round 1, finding A: nothing private reaches the projection', ()
       notes: SECRETS.warbandNotes,
       chronicleLog: [SECRETS.chronicle],
       creatorId: SECRETS.creatorId,
-      lore: 'Out of the sand.',
+      creatorName: SECRETS.creatorName,
+      lore: SECRETS.warbandLore,
       units: [unit({
         notes: SECRETS.modelNotes,
         quote: SECRETS.modelQuote,
         lore: SECRETS.modelLore,
-        skills: [{ name: 'Point Blank', category: 'Ranged Skills', roll: '9' }],
+        advancements: [SECRETS.legacyAdvancement],
+        skills: [{
+          name: 'Point Blank', category: 'Ranged Skills', roll: '9',
+          source: { kind: 'manual', roll: '9', note: SECRETS.provenanceNote },
+        }],
       })],
       ledger: [
         { id: 'l1', at: '2026-01-01', reason: 'founding', ducats: 700, glory: 0 },
@@ -460,7 +516,7 @@ describe('review round 1, finding A: nothing private reaches the projection', ()
   });
 
   it('carries none of them, in the shape the framework serialises', () => {
-    const sheet = rosterSheet(loaded, { dataset: DATASET, includePrivate: false });
+    const sheet = rosterSheet(loaded, { dataset: DATASET, audience: 'public' });
     const wire = JSON.stringify(sheet);
 
     for (const [what, secret] of Object.entries(SECRETS)) {
@@ -468,10 +524,32 @@ describe('review round 1, finding A: nothing private reaches the projection', ()
     }
   });
 
+  it('and carries none of them when the audience is not named at all', () => {
+    /*
+      The point of the parameter over stripping (round 2 item 4): the DEFAULT is
+      public. A caller that forgets — a new route, a test, a script — gets the
+      safe model, so the next field somebody adds is private until this function
+      is asked for it.
+    */
+    const wire = JSON.stringify(rosterSheet(loaded, { dataset: DATASET }));
+    for (const [what, secret] of Object.entries(SECRETS)) {
+      expect(wire.includes(secret), `the default audience leaks ${what}`).toBe(false);
+    }
+  });
+
+  it('the public sheet leaves PLAYER and the bio blank, as the paper sheet is', () => {
+    const sheet = rosterSheet(loaded, { dataset: DATASET, audience: 'public' });
+    expect(sheet.header.player).toBe('');
+    expect(sheet.bio).toBe('');
+    /* And no free text on the card, of any of the three kinds. */
+    const details = JSON.stringify(sheet.cards[0].abilitiesSkillsInjuries);
+    expect(details).not.toContain(SECRETS.legacyAdvancement);
+    expect(details).not.toContain(SECRETS.provenanceNote);
+  });
+
   it('and still carries the sheet, so this is not passing by rendering nothing', () => {
-    const sheet = rosterSheet(loaded, { dataset: DATASET, includePrivate: false });
+    const sheet = rosterSheet(loaded, { dataset: DATASET, audience: 'public' });
     expect(sheet.header.warbandName).toBe('Al-Qarn Rihla');
-    expect(sheet.bio).toBe('Out of the sand.');
     expect(sheet.cards).toHaveLength(1);
     expect(sheet.campaign.rows).toHaveLength(12);
     /* The scenario is printed on the sheet; the snapshot's LABEL is not. */
@@ -482,18 +560,26 @@ describe('review round 1, finding A: nothing private reaches the projection', ()
     expect(sheet.strongbox.ducatsTotal).toBe(750);
   });
 
-  it('includePrivate does not change that — it was never what stopped the leak', () => {
+  it('the owner’s own sheet keeps what is theirs, and still no server fields', () => {
     /*
-      The flag hides fields on the PAGE. It is `presentRoster`'s, it works, and
-      it was never the thing standing between a private note and the HTML: the
-      whole warband went across regardless. The owner's own route passes true,
-      so this checks the model is still free of the fields the sheet does not
-      print either way.
+      The other half: `'owner'` is not a bypass. The account name, the bio, the
+      provenance note and the legacy progression string are the player's own and
+      come back — while the fields that are nobody's to read on any sheet, the
+      chronicle, another admin's id, the campaign roll, stay out of both models.
     */
-    const wire = JSON.stringify(rosterSheet(loaded, { dataset: DATASET, includePrivate: true }));
+    const sheet = rosterSheet(loaded, { dataset: DATASET, audience: 'owner' });
+    const wire = JSON.stringify(sheet);
+
+    expect(sheet.header.player).toBe(SECRETS.creatorName);
+    expect(sheet.bio).toBe(SECRETS.warbandLore);
+    const details = JSON.stringify(sheet.cards[0].abilitiesSkillsInjuries);
+    expect(details).toContain(SECRETS.legacyAdvancement);
+    expect(details).toContain(SECRETS.provenanceNote);
+
     for (const secret of [SECRETS.warbandNotes, SECRETS.chronicle, SECRETS.creatorId,
       SECRETS.ledgerByName, SECRETS.ledgerByUserId, SECRETS.campaignMember,
-      SECRETS.snapshotLabel]) {
+      SECRETS.snapshotLabel, SECRETS.modelNotes, SECRETS.modelQuote,
+      SECRETS.modelLore]) {
       expect(wire.includes(secret)).toBe(false);
     }
   });
@@ -545,5 +631,49 @@ describe('review round 1, finding P: TOTAL is blank without a ledger', () => {
     expect(strongbox.fromLedger).toBe(false);
     expect(strongbox.ducatsUnspent).toBe(80);
     expect(strongbox.gloryUnspent).toBe(3);
+  });
+});
+
+describe('round 2 item 4: the default cuts both ways, so the owner’s surfaces say so', () => {
+  /*
+    `provenanceLabel` defaults to the public reading, which is the right default —
+    forgetting it on a new share surface shows too little. The cost is that
+    forgetting it on an OWNER's surface hides the player's own note from them, and
+    the note exists for no other reason. Introducing that default introduced that
+    bug in five places at once.
+
+    So the owner-facing components are asserted to ask for the owner's reading.
+    Source-level, because these are React components and this suite has no DOM —
+    the same technique the wizard's call site is held to.
+  */
+  const OWNER_SURFACES = [
+    'src/components/builder/UnitAdvancementModal.tsx',
+    'src/components/builder/PreAppRewardModal.tsx',
+    'src/components/sheet/WarbandRosterSheet.tsx',
+  ];
+
+  it('every provenanceLabel call on an owner’s screen asks for the owner’s reading', () => {
+    for (const file of OWNER_SURFACES) {
+      const src = readFileSync(join(process.cwd(), file), 'utf8');
+      const calls = [...src.matchAll(/provenanceLabel\(([^;]*?)\)\}/g)].map((m) => m[0]);
+      expect(calls.length, `${file} no longer labels any provenance`)
+        .toBeGreaterThan(0);
+      for (const call of calls) {
+        expect(call, `${file} labels a provenance without naming the audience`)
+          .toContain("audience: 'owner'");
+      }
+    }
+  });
+
+  it('and the share page asks for the public one', () => {
+    const src = readFileSync(join(process.cwd(), 'src/app/w/[token]/page.tsx'), 'utf8');
+    expect(src).toMatch(/audience:\s*'public'/);
+    expect(src).not.toMatch(/audience:\s*'owner'/);
+  });
+
+  it('the owner’s sheet route asks for the owner', () => {
+    const src = readFileSync(
+      join(process.cwd(), 'src/app/(app)/roster/[id]/sheet/page.tsx'), 'utf8');
+    expect(src).toMatch(/audience="owner"/);
   });
 });

@@ -198,6 +198,36 @@ test.describe('reaching the sheet from the builder', () => {
   });
 });
 
+test.describe('review round 2: the sheet at 375px shows what this game earned', () => {
+  test('the awarded boxes are a different fill from the ones already held', async ({ page }) => {
+    /*
+      Item 11, asserted through the rendered shape rather than the data: the
+      wizard has to draw the track on Experience PLUS the gain, because the
+      rolls it offers are computed from that total, and a player could not see
+      which boxes the battle had just earned.
+
+      Checked on the SHEET's track, where `heldBefore` is deliberately not
+      passed — so every filled box is a plain fill and none is an award. That is
+      the half a unit test cannot see: that the two fills are actually different
+      colours once Tailwind has tree-shaken the stylesheet.
+    */
+    await seedWarband(page, WITH_A_VETERAN);
+    await page.goto('/roster/wb-sheet/sheet');
+    await expect(page.getByRole('heading', { name: /^campaign$/i }))
+      .toBeVisible({ timeout: 20_000 });
+
+    const track = page.locator('[role="img"][aria-label*="Experience"]').first();
+    const fills = await track.evaluate((el) => [...el.children]
+      .map((k) => getComputedStyle(k).backgroundColor));
+
+    /* Six filled, twelve not, and the six agree with each other: nothing on this
+       page is an award. */
+    const filled = fills.slice(0, 6);
+    expect(new Set(filled).size,
+      'the sheet marks some boxes as newly awarded, which it never should').toBe(1);
+  });
+});
+
 test.describe('review round 1: the share page sends nothing private', () => {
   /*
     Finding A, asserted where it actually matters: in the bytes the browser
@@ -217,6 +247,14 @@ test.describe('review round 1: the share page sends nothing private', () => {
     const html = await page.content();
     for (const shape of ['chronicleLog', 'campaignMembers', 'creatorId',
       'armoryStash', 'byUserId']) {
+      expect(html.includes(shape), `the 404 page mentions ${shape}`).toBe(false);
+    }
+    /*
+      Round 2 item 4 added four more fields to the list of things a share must
+      not carry, and two of them are shapes a 404 could plausibly leak: the
+      account name the loader reads, and the free-text progression list.
+    */
+    for (const shape of ['creatorName', 'advancements']) {
       expect(html.includes(shape), `the 404 page mentions ${shape}`).toBe(false);
     }
   });

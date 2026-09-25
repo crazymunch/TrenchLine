@@ -145,9 +145,10 @@ export default function RosterSheetPage() {
           warband={warband}
           dataset={dataset}
           campaign={campaign}
-          /* The owner's own device: their lore, quotes and notes are theirs to
-             see. The share page passes false. */
-          includePrivate
+          /* The owner's own device: the account name, the bio, their quotes and
+             notes and the legacy progression strings are all theirs to see. The
+             share page says `public` and the model omits every one of them. */
+          audience="owner"
         />
       )}
 

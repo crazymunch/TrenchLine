@@ -4,7 +4,9 @@ import { UnitProfile } from '../types/rules';
 import type { Dataset } from '../types/catalogue';
 import { golemOnImport, GOLEM_GRANTED_BY } from '../rules/golem';
 import { patronNamed } from '../rules/patrons';
-import { splitRecordedRoll } from '../rules/provenance';
+import {
+  advancementRollsStated, skillsStatingNoRoll, splitRecordedRoll,
+} from '../rules/provenance';
 
 /**
  * Import a NewRecruit / BattleScribe roster.
@@ -53,6 +55,20 @@ export interface ImportResult {
    * MEANS is a rules question, and the rules modules answer it.
    */
   campaignRules: string[];
+  /**
+   * Skills the import did not count as an Advancement Roll, by model.
+   *
+   * Review round 2 item 1. `advancementRolls` is set from the Skills whose
+   * record states a 2D6 total, because a Patron's Skill, a Glory Item's and
+   * `65 Bitter Lessons`'s cost no roll — so a count of Skills would cancel
+   * rolls the model earned. That is right, and it is also invisible: a player
+   * looking at a model with three Skills and one roll taken has no way to tell
+   * a correct reading from a parse failure. So the import says which ones, and
+   * the caller shows them.
+   *
+   * Absent where every Skill on the roster stated its roll.
+   */
+  skillsWithNoRoll?: { model: string; skills: string[] }[];
 }
 
 /*
@@ -903,6 +919,9 @@ function parseNewRecruitJson(
       return;
     }
     const baseProfileId = matchedProfile.id;
+    /* Counted once, and only from the Skills whose records state a roll — see
+       the note on `advancementRolls` below. */
+    const rollsTaken = advancementRollsStated(skills);
 
     units.push({
       id: `u-imp-${Date.now()}-${idx}`,
@@ -946,20 +965,23 @@ function parseNewRecruitJson(
          model with no Skills on its sheet actually has. */
       ...(skills.length ? { skills } : {}),
       /*
-        And the rolls those Skills used up (review round 1, finding F).
+        And the rolls those Skills STATE (review round 2 item 1).
 
-        `advancementRollsDue` counts the Experience track's circles the model
-        has passed and subtracts the rolls it has TAKEN — and import never
-        incremented that, so importing the owner's September export handed
-        Kasim, who already held three Skills at 6 Experience, two more
-        Advancement Rolls, and the warband eight. A Skill on the roster is a
-        roll that was made, wherever it was made.
+        `advancementRollsDue` counts the Experience track's circles the model has
+        passed and subtracts the rolls it has TAKEN, and import never incremented
+        that — so the owner's September export handed Kasim, who already held
+        three Skills at 6 Experience, two more Advancement Rolls. Round 1 fixed
+        that by counting Skills, which is the opposite mistake: a Patron grants
+        Skills and so do some Glory Items, so a count cancels rolls the model
+        earned.
 
-        A plain count, because this builds the model from scratch: NewRecruit
-        records no count of rolls taken, so the Skills on the sheet are the
-        whole of what the roster says about them.
+        NewRecruit prints the throw in brackets — `Point Blank [9]` — and that
+        bracket is the only evidence of a roll that exists anywhere in the file.
+        So the count is of Skills whose record carries a 2D6 total, and the ones
+        that do not are named in the report rather than silently counted or
+        silently dropped.
       */
-      ...(skills.length ? { advancementRolls: skills.length } : {}),
+      ...(rollsTaken ? { advancementRolls: rollsTaken } : {}),
       ...(injuryRecords.length ? { injuryRecords } : {}),
       isDead: false,
       totalCost: totalUnitCost,
@@ -1012,6 +1034,18 @@ function parseNewRecruitJson(
     unmatched,
     campaignRules,
     golem: markGolem(dataset, campaignRules, units),
+    /* Per model, and only the models that have one, so an import where every
+       Skill stated its roll carries the field absent rather than a list of
+       empty lists. */
+    ...(() => {
+      const noRoll = units
+        .map((u) => ({
+          model: u.customName || u.profileSnapshot?.name || 'Unnamed',
+          skills: skillsStatingNoRoll(u.skills),
+        }))
+        .filter((e) => e.skills.length > 0);
+      return noRoll.length ? { skillsWithNoRoll: noRoll } : {};
+    })(),
   };
 }
 

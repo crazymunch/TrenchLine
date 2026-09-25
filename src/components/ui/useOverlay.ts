@@ -69,6 +69,19 @@ export const overlayStack = {
   count: () => stack.length,
 };
 
+/**
+ * Whether this overlay is the one that should act on a keystroke.
+ *
+ * The guard itself, named and exported (review round 2 item 6). It was an inline
+ * `overlayStack.isTopmost(mine)` in the hook, and the suite tested a hand-written
+ * copy of the same line — so deleting the guard from the hook left the tests
+ * green, which is the one thing a regression test for this must not allow.
+ *
+ * Trivial by design. Its value is that there is exactly one of it: the hook calls
+ * this and the test calls this.
+ */
+export const handlesKey = (mine: object): boolean => overlayStack.isTopmost(mine);
+
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),' +
   'textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -137,15 +150,17 @@ export function useOverlay(
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         /* The topmost overlay only. Every other open overlay's handler is on
-           this same node and will run whatever this one does about the event. */
-        if (!overlayStack.isTopmost(mine)) return;
+           this same node and will run whatever this one does about the event.
+           `handlesKey` IS the guard — a named function so a test can drive the
+           real decision instead of restating it (review round 2 item 6). */
+        if (!handlesKey(mine)) return;
         e.stopPropagation();
         close();
         return;
       }
       /* And Tab, for the same reason: two traps fighting over one keystroke
          is how focus ends up somewhere neither of them meant. */
-      if (e.key !== 'Tab' || !trapFocus || !overlayStack.isTopmost(mine)) return;
+      if (e.key !== 'Tab' || !trapFocus || !handlesKey(mine)) return;
 
       const items = [...(ref.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])]
         .filter((el) => el.offsetParent !== null);

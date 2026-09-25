@@ -62,13 +62,27 @@ export const provenanceKindLabel = (kind: ProvenanceKind): string => KIND_LABEL[
  */
 export function provenanceLabel(
   entry: { source?: Provenance } | null | undefined,
+  /*
+    The reader (review round 2 item 4). `note` is the player's own words — "game
+    2 exploration, before we used the app" — and a share link is read by whoever
+    holds it, so the public reading omits it. Everything else in the label is
+    derived: a kind, a game number, a die.
+
+    Public by default, for the same reason `rosterSheet` defaults that way: a
+    caller that forgets should say too little.
+  */
+  opts: { audience?: 'owner' | 'public' } = {},
 ): string {
   const p = provenanceOf(entry);
   const parts: string[] = [KIND_LABEL[p.kind] ?? KIND_LABEL.import];
   if (typeof p.game === 'number' && Number.isFinite(p.game)) parts.push(`game ${p.game}`);
+  /* A throw and a choice are different claims, so they read differently
+     (review round 2 item 3). `roll` is a die that came up; `row` is a line a
+     player pointed at. Never "rolled" for the second. */
   if (p.roll) parts.push(`rolled ${p.roll}`);
+  else if (p.row) parts.push(`row ${p.row}`);
   if (p.location) parts.push(p.location);
-  if (p.note) parts.push(p.note);
+  if (p.note && opts.audience === 'owner') parts.push(p.note);
   return parts.join(' · ');
 }
 
@@ -135,7 +149,93 @@ export function injuriesHeld(unit: Pick<ActiveUnit, 'injuries' | 'injuryRecords'
 const recordedRoll = (
   entry: { source?: Provenance; roll?: string },
 ): Provenance => entry.source
-  ?? (entry.roll ? { kind: 'import', roll: entry.roll } : IMPLIED);
+  /*
+    And the bare `roll` is a ROW, not a throw (review round 2 item 3 — finding
+    D's leftover). Every one of these was written by the advancement sheet from
+    the table row a player picked out of a dropdown, so reading it as a roll made
+    an existing roster say "Imported · rolled 31" for a D66 nobody threw. Round 1
+    fixed the KIND and left the verb, which is half the claim.
+  */
+  ?? (entry.roll ? { kind: 'import', row: entry.roll } : IMPLIED);
+
+/**
+ * The 2D6 totals a Skills table can be reached on.
+ *
+ * Two dice, so 2 to 12 — and a D66 injury (`31`), a Trauma row's range
+ * (`41-63`) and an empty string all fall outside it. The bound is what lets an
+ * imported bracket be read for what it is: `Point Blank [9]` is a Skill roll,
+ * `Lost Arm [26]` is not.
+ */
+const TWO_D6 = { min: 2, max: 12 };
+
+const isTwoD6Total = (roll: string | undefined): boolean => {
+  if (!roll || !/^[0-9]+$/.test(roll.trim())) return false;
+  const n = Number(roll.trim());
+  return n >= TWO_D6.min && n <= TWO_D6.max;
+};
+
+/**
+ * Whether this Skill's own record says an Advancement Roll produced it.
+ *
+ * **The rule (review round 2 item 1).** A Skill consumes an Advancement Roll if
+ * and only if its record states the roll. Not one per Skill: `advancement.ts`
+ * has said so since it was written — "a model can gain a Skill without an
+ * Advancement Roll: a Patron grants them, so do some Glory Items and the
+ * `65 Bitter Lessons` Trauma result" — and round 1 counted Skills anyway, which
+ * cancels rolls a model earned. A Sultanate Azeb imported with three Skills at
+ * 6 Experience has earned two rolls (the circles at 2 and 4) and was recorded
+ * as having taken three; at 7 it is owed one and the app offered none.
+ *
+ * Which way to be wrong is not symmetric, and that is the whole argument for
+ * this being a floor rather than a guess: an over-offer is visible and the
+ * player declines it, while an under-offer silently loses a roll the model
+ * earned and nothing on any screen says so.
+ *
+ * - `advancement` — the app wrote it when the roll was taken, so it states one.
+ * - `import` — only with a bracketed 2D6 total, which is NewRecruit's record of
+ *   the throw. A Companion Skill whose export carries no roll states none.
+ * - `manual`, `manual-pre-app` — only where the entry captured a 2D6 total. A
+ *   player who typed a Skill and no number has not claimed a roll.
+ * - anything else, and a Skill with no record at all — states none.
+ *
+ * `row` is deliberately not enough: a row picked out of a dropdown is evidence
+ * of a choice, not of a die.
+ */
+export function statesAnAdvancementRoll(
+  entry: { source?: Provenance } | null | undefined,
+): boolean {
+  const p = provenanceOf(entry);
+  if (p.kind === 'advancement') return true;
+  if (p.kind === 'import' || p.kind === 'manual' || p.kind === 'manual-pre-app') {
+    return isTwoD6Total(p.roll);
+  }
+  return false;
+}
+
+/**
+ * How many Advancement Rolls this model's Skills account for.
+ *
+ * What `advancementRolls` should be set to by an importer, and what a
+ * hand-entered Skill adds to it — counted from the records rather than from the
+ * length of the list.
+ */
+export const advancementRollsStated = (
+  skills: ({ source?: Provenance } | null | undefined)[] | null | undefined,
+): number => (skills ?? []).filter((s) => statesAnAdvancementRoll(s)).length;
+
+/**
+ * The Skills whose records state no roll, by name — for an import report.
+ *
+ * An importer that sets `advancementRolls` from the stated count owes the
+ * player the reason: these are the Skills it did not count, and a Patron's
+ * grant being among them is correct rather than a parse failure.
+ */
+export const skillsStatingNoRoll = (
+  skills: ({ name?: string; source?: Provenance } | null | undefined)[] | null | undefined,
+): string[] => (skills ?? [])
+  .filter((s) => !statesAnAdvancementRoll(s))
+  .map((s) => (s?.name ?? '').trim())
+  .filter(Boolean);
 
 /**
  * One thing a Warband holds, ready to print: what it is, whose it is, and how

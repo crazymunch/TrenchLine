@@ -280,6 +280,12 @@ model's advancement sheet, and the Roster Sheet.
 A model with **LIMITED POTENTIAL** — the Brazen Bull is the entry — greys the
 boxes past its cap rather than hiding them, so the cap is visible on the model.
 
+In the **post-battle wizard** the track is drawn on the Experience the submission
+is about to award, because the Advancement Rolls offered beside it are computed
+from that total. The boxes this game earned are a **different fill** from the ones
+the model brought, so you can see four-plus-two rather than six. A model Promoted
+in this step starts from nothing, so its whole row is the gain.
+
 ## 3. How a model came by what it holds
 
 Every Skill, injury, scar and reward now records where it came from. Two things
@@ -298,6 +304,26 @@ to try:
   Trauma tab also has a new **injury without a Battle Scar** entry — a scar
   retires a model at its third and an injury does not, and the modal used to
   write everything as a scar.
+
+**Two things about this changed after the first round of review, and they are the
+ones worth checking against your own roster.**
+
+**A Skill only uses an Advancement Roll if the record says what was rolled.** The
+Skills tab has a field for *the 2D6 total you rolled, if you rolled for it* —
+fill it in for a Skill you rolled at the table, leave it empty for one a Patron or
+a Glory Item granted. A Patron's Skill costs no Advancement Roll, and counting it
+would cancel a roll the model earned: an Azeb holding three Skills at 6
+Experience has earned two rolls, and if the app records three taken it offers
+nothing at 7 and never says why. An import counts the bracketed totals only, and
+**tells you which Skills it did not count** — for a Trench Companion import that
+is usually all of them, because their share carries no rolls.
+
+**A game number is only recorded when the app can name one.** A warband in no
+campaign, or one whose campaign is not the campaign you have open, records no
+game at all rather than "game 1" — so a standalone warband's fifth battle no
+longer reads as its first. And a result you **picked** from a dropdown reads
+"row 41-63" while one you **threw** reads "rolled 52": the Trauma Step now stores
+the D66 that actually came up, which the wizard was holding all along.
 - **Play a game.** Everything the post-battle sequence writes now records where
   it came from: a Skill says *Advancement Roll · game 4 · rolled 9*, a scar and
   its injury say *Trauma Step* with the row's roll, and an Exploration find joins
@@ -344,18 +370,35 @@ Sublime Gate, the House of Wisdom and Blessed Bartolomeo.
 - The page is not indexed by search engines.
 
 **What to check.** Open your own link in a private window, or send it to somebody
-in the group: the sheet should read exactly as it does for you, minus your private
-notes on individual models. Your Warband's own lore and motto **are** shared —
-that is what a roster is shared for.
+in the group. The sheet should read as it does for you **minus everything you
+wrote in your own words**, which after the review round is more than it was:
+
+| On a share | Why |
+| --- | --- |
+| **PLAYER is blank** | It was your ACCOUNT name — and for an account made with an email and no name, that is the first half of your email address. The printed sheet's PLAYER blank is empty until somebody writes in it, and so is this |
+| **no bio** | Your Warband's lore is yours. The first version shared it on the grounds that lore is what a roster is shared for; the app has always treated it as private everywhere else, and a sheet is not the place to make an exception |
+| **no notes of any kind** | Your Warband's notes, a model's notes, quote and lore, and the note you attach to a hand-recorded entry |
+| **no legacy progression strings** | The free-text `+1 Melee` lines from before the app had Skills |
+| **your motto IS shared** | HERALDRY is the thing you put on the outside of the roster |
+
+Everything else — the statlines, the gear, the Strongbox, the campaign table, what
+the Warband holds and how each of those was earned — reads the same for both of
+you. The footer says which ruleset it was read under.
+
+**Your own `/roster/<id>/sheet` keeps all of it.** The difference is the audience,
+not the roster.
 
 ## What this pack does NOT do
 
 - **The sheet is not editable.** It renders the roster; the builder edits it.
 - **Print is not verified on paper.** Stated in millimetres and points for that
   reason.
-- **A shared roster is read under the published default ruleset**, not the
-  reader's own selection and not the owner's. A warband does not record its
-  ruleset yet — that is RV-1.
+- **A shared roster is read under the ruleset the warband records**, not the
+  reader's own selection — RV-1 put `rulesetId` on the warband and the share page
+  reads it. A warband that records none is read under the published default and
+  the footer says so; one that records a ruleset this build does not ship is read
+  under the default too, and the footer names the one it asked for rather than
+  claiming the warband records none.
 - **The campaign table's total is the per-game scale only.** Two Exploration
   results move Campaign Victory Points outside it (`16 Treasure of the Holies`
   scores D3, `23 Patron's Visit` exchanges Glory for points); neither is

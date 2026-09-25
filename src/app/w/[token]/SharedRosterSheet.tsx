@@ -35,10 +35,18 @@ export interface SharedRosterSheetProps {
   rulesetName: string;
   /** False where the warband records no ruleset and the default was used. */
   rulesetRecorded: boolean;
+  /**
+   * The ruleset the warband records where this build does not ship it.
+   *
+   * Absent when the warband records one that IS shipped, and when it records
+   * none. Present only for the third case, which is the one the footer used to
+   * misreport (review round 2 item 5).
+   */
+  rulesetUnavailable?: string;
 }
 
 export const SharedRosterSheet: React.FC<SharedRosterSheetProps> = ({
-  name, sheet, rulesetName, rulesetRecorded,
+  name, sheet, rulesetName, rulesetRecorded, rulesetUnavailable,
 }) => (
   /* `dvh`, never `vh` — docs/MOBILE.md. This is read at a table on a phone. */
   <main className="min-h-dvh bg-theme-base text-theme-text">
@@ -77,16 +85,41 @@ export const SharedRosterSheet: React.FC<SharedRosterSheetProps> = ({
       <footer className="print-hide border-t border-theme-border pt-4">
         <p className="font-mono text-xs text-theme-muted">
           {/*
-            Which ruleset it was read under, and whether that was the warband's
-            own. Absent on a warband means *not recorded*, never *the default*,
-            so the two cases read differently.
+            Which ruleset it was read under, and why. THREE readings, not two
+            (review round 2 item 5): its own; the default because it records
+            none; or the default because it records one this build does not
+            carry — which round 1 reported as "records no ruleset", a statement
+            about the roster that was simply untrue. A fallback is allowed; a
+            silent one is not.
           */}
-          {rulesetRecorded
-            ? <>Read under <strong className="text-theme-text">{rulesetName}</strong>, the ruleset this warband records.</>
-            : <>This warband records no ruleset, so it is read under <strong className="text-theme-text">{rulesetName}</strong>, the published default.</>}
-          {' '}
-          <Link href="/" className="text-theme-primary hover:underline">TrenchLine</Link>
+          {rulesetRecorded && (
+            <>Read under <strong className="text-theme-text">{rulesetName}</strong>, the ruleset this warband records.</>
+          )}
+          {!rulesetRecorded && rulesetUnavailable && (
+            <>
+              Read under <strong className="text-theme-text">{rulesetName}</strong>,
+              the published default, because this warband records{' '}
+              <strong className="text-theme-text">{rulesetUnavailable}</strong>,
+              which this build does not carry.
+            </>
+          )}
+          {!rulesetRecorded && !rulesetUnavailable && (
+            <>This warband records no ruleset, so it is read under <strong className="text-theme-text">{rulesetName}</strong>, the published default.</>
+          )}
         </p>
+        {/*
+          Its own 44px target, out of the sentence (review round 2 item 12).
+          Inline in running text it was whatever the line-height gave it — about
+          16px — and this page is read on a phone at a table by somebody who was
+          handed the link. `inline-flex` with the floor is what makes the hit
+          area the standard rather than the font size (docs/MOBILE.md §3).
+        */}
+        <Link
+          href="/"
+          className="inline-flex min-h-[44px] items-center font-mono text-xs text-theme-primary hover:underline"
+        >
+          TrenchLine
+        </Link>
       </footer>
     </div>
   </main>
