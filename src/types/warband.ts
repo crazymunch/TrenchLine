@@ -386,10 +386,17 @@ export interface Warband {
   importedCampaign?: {
     /** Which app the state came from. One today; named so it stays honest. */
     source: 'trench-companion';
-    /** Their campaign round at the moment of the import. */
-    round: number;
-    /** Their Campaign Victory Points total. Not ours, and not derived. */
-    victoryPoints: number;
+    /**
+     * Their campaign round at the moment of the import.
+     *
+     * Optional, and absent where their record did not state one. It used to
+     * default to 1, which put a fact about somebody's campaign on the record
+     * that their record never asserted — and a player reading it here would
+     * take it for their own.
+     */
+    round?: number;
+    /** Their Campaign Victory Points total. Not ours, not derived, not defaulted. */
+    victoryPoints?: number;
   };
   creatorId?: string;
   creatorName?: string;

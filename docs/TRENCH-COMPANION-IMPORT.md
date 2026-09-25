@@ -26,8 +26,13 @@ It returns an envelope — `id`, `warband_id`, `warband_user_id`,
 not a mistake, and both the route and the importer parse it.
 
 Measured on the public warband `225201` on 25 September 2026. That warband
-belongs to a stranger and is **not committed**: the fixture in the test suite is
-a warband the owner owns.
+belongs to a stranger and is **not committed**.
+
+**There is no committed fixture yet.** The design's acceptance test runs on a
+share link from a warband the owner owns, and that link has not been supplied.
+Until it is, the reading is covered by an envelope built in their shape (see
+*Checking it* below), which proves what resolves and what does not but cannot
+prove the shape is right for a real second warband.
 
 ## The etiquette
 
@@ -82,6 +87,7 @@ What is matched, in order, for each kind of thing:
 
 | thing | resolved against |
 | --- | --- |
+| the link itself | the share path **exactly**: `/warband/detail/<id>` on `trench-companion.com` (with or without `www.`). Another `/…/detail/<id>` page on their own host is refused — `/campaign/detail/4412` is a campaign, and the endpoint behind this serves warbands, so taking the id out of it would fetch a different object belonging to somebody else |
 | faction | the `fc_<slug>` part of `faction.faction_property.object_id`, against each faction's `id` and printed name |
 | Warband Variant | the `_fv_<slug>` part, against each Variant's `id` and printed name, with a leading `The` folded away on both sides |
 | model | `model.name` within the warband's faction, then the `md_` slug; then both again across the whole recruitable list, and only where exactly one entry carries the name |
@@ -119,17 +125,29 @@ warband:
 | entry | from their record |
 | --- | --- |
 | `founding` | `ducat_bank` and `glory_bank` |
-| `quartermaster` | `stored_ratings.rating_ducat` and `rating_glory`, negative |
+| `quartermaster` | `ducat_bank − spare_ducat` and `glory_bank − spare_glory`, negative |
 
-which leaves `spare_ducat` and `spare_glory` as the Strongbox.
+which leaves `spare_ducat` and `spare_glory` as the Strongbox, exactly.
 
-**The debit is their rating, not our arithmetic over the roster**, and that is
-deliberate. A model or an item that did not resolve is not on our roster and
-never cost us anything, so summing our own prices would hand the player back the
-Ducats they spent on it. Their rating is what they actually spent, and using it
-is what makes the Strongbox here the Strongbox they left. Where their own
-numbers do not add up, the report says so and their `spare_*` figure is named,
-because that is what is printed on their page.
+**The debit is derived from their Strongbox, not read off `rating_*`.** This is
+an amendment to the design, and the reason is a field the design did not have:
+`stored_ratings` carries **`stash_rating_ducat` and `stash_rating_glory`**
+beside `rating_ducat` and `rating_glory`, and the two are separate numbers.
+`rating_*` is the **roster's** value; `stash_rating_*` is the **Arsenal's**. So
+a warband holding anything in its stash had `bank − rating` larger than
+`spare` by exactly the stash's worth, and debiting `rating` alone left the
+Strongbox here richer than the Strongbox on their page by that amount.
+
+The figure that has to come out right is `spare_*` — it is what their page
+prints and what the player expects to see — so the debit is derived from it.
+Both of their own figures are named in the entry's note, so the ledger still
+says where the money went rather than only how much. Where their roster and
+stash valuations do not add up to what the bank is down by, the report says so
+and names all three; the Strongbox here is their own `spare_*` either way.
+
+**Our arithmetic over the roster is deliberately not used.** A model or an item
+that did not resolve is not on our roster and never cost us anything, so
+summing our own prices would hand the player back the Ducats they spent on it.
 
 A non-zero `debts` is a warning: this app has no debt of its own, so nothing is
 booked for it.
@@ -146,7 +164,7 @@ booked for it.
 | `context.failed_promotions` | `Warband.promotionMisses` (FD-06b) |
 | `exploration.explorationskills` | `Warband.explorationEffects` (FD-07) |
 | `exploration.locations` | `Warband.explorationDiscoveries` (FD-07) |
-| `context.campaign_round`, `context.victory_points` | `Warband.importedCampaign` |
+| `context.campaign_round`, `context.victory_points` | `Warband.importedCampaign`, **each only where their record states it** |
 
 `importedCampaign` is its own field rather than a write into our own numbers,
 and that needs saying. Our Campaign Victory Points are **derived** from the
@@ -156,6 +174,12 @@ results record to justify the number or having two answers to the same question.
 So their round and their total are kept as what they are — a fact about somebody
 else's record — and applied to a campaign only when the warband joins one, at
 which point a person decides what they mean.
+
+Both halves are optional, and absent where their record says nothing. A missing
+`campaign_round` is **not** recorded as round 1: that would put a fact about
+their campaign on the record that their record never asserted, and a player
+reading it here would take it for their own. Where neither field is stated, the
+warband carries no `importedCampaign` at all.
 
 ## Not mapped
 
@@ -193,4 +217,8 @@ from our own dataset).
 - `src/services/__tests__/trenchCompanionImport.test.ts` — the reading, against
   an envelope built in their shape. Every one of OUR numbers in it is read off
   the generated data; the numbers that are typed are theirs, and they are typed
-  precisely because they differ from ours.
+  precisely because they differ from ours. `unmatched` is asserted exactly,
+  not merely for the names it should contain.
+
+The acceptance test on a real share link is **still outstanding** and waits on
+the owner's own link, as above.

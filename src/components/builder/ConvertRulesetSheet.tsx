@@ -105,6 +105,7 @@ export const ConvertRulesetSheet: React.FC<Props> = ({
             <div className="flex flex-wrap gap-2 text-xs sm:text-[11px] font-mono">
               <Stat label="kept" value={plan.kept.length} />
               <Stat label="changed" value={plan.changed.length} />
+              <Stat label="unresolved" value={plan.unresolved.length} />
               <Stat label="lost" value={plan.lost.length} tone={plan.lost.length ? 'warn' : undefined} />
             </div>
 
@@ -124,6 +125,36 @@ export const ConvertRulesetSheet: React.FC<Props> = ({
                 </p>
                 <ul className="space-y-1.5">
                   {plan.lost.map((l, i) => <Lost key={i} item={l} />)}
+                </ul>
+              </section>
+            )}
+
+            {/*
+              Kept at what the roster records, because the target's answer was
+              not one answer — an ambiguous name, or a custom entry no ruleset
+              stocks. Not a loss and never refunded: the entry is plainly
+              still there, we simply cannot say which of them it is.
+            */}
+            {plan.unresolved.length > 0 && (
+              <section className="space-y-2">
+                <h3 className="text-xs sm:text-[10px] font-mono font-bold uppercase tracking-widest text-theme-muted">
+                  Kept, unresolved
+                </h3>
+                <ul className="space-y-1.5">
+                  {plan.unresolved.map((u, i) => (
+                    <li key={i} className="p-2.5 rounded-sm border border-theme-border bg-theme-base">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-gothic font-bold text-xs text-theme-text">{u.name}</span>
+                        <span className="text-xs sm:text-[9px] font-mono text-theme-muted uppercase">{u.kind}</span>
+                        {u.kind !== 'model' && (
+                          <span className="text-xs sm:text-[10px] font-mono text-theme-muted">on {u.where}</span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
+                        {u.why}
+                      </p>
+                    </li>
+                  ))}
                 </ul>
               </section>
             )}

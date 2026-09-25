@@ -422,7 +422,7 @@ export const WarbandBuilder: React.FC = () => {
           <button
             onClick={() => setIsConvertOpen(true)}
             disabled={!dataset}
-            className="w-full flex items-center gap-2 px-3 py-2.5 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-full min-h-[44px] flex items-center gap-2 px-3 py-2.5 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             title="Re-resolve every model, item and option in another ruleset, and see what is lost"
           >
             <RefreshCcw className="w-4 h-4 flex-shrink-0" />

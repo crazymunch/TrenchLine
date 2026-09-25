@@ -1763,13 +1763,30 @@ Three things close it.
    new warband. A player who cancels has not moved a Ducat.
 
 The report is **kept**, **changed** (a price or a statline differs, with both
-values) and **lost** (no entry in the target). Resolution is by name first,
+values), **unresolved** (kept at its recorded price, because the target's
+answer was not one answer) and **lost** (no entry in the target).
+
+Everything is resolved against what this warband can actually field, not
+against `dataset.units` and `dataset.weapons` raw. `recruitable` is what
+applies the Warband Variant, and a Variant renames and restats: the
+Procession's `Leper-Knight` IS the `Lazarist Castigator` at +2 DICE rather
+than +1, the House of Wisdom's `Fāris` is the `Janissary`, a Dirge `Bereaved`
+is the `Thrall`. Resolving against the raw list turned every one of those back
+into its base entry — while converting a warband to the ruleset it was
+**already on**. Gear is looked for on the same three shelves the Trench
+Companion importer uses, and for the same reason: a model holds an item by the
+Armoury, by its own entry's options, or off the catalogue's Battlekit, and the
+Armoury alone declared the other two lost and refunded them.
+
+Resolution is by name first,
 because the name is what a player reads and what survives a rebuild; an id is
 tried second and only where the name found nothing, since the two shipped
 rulesets are layered from the same catalogues and an entry a layer RENAMES
 still carries the same id — reporting that as a rename beats reporting it as a
-loss and refunding a model the player still has. Ambiguity resolves to nothing,
-never to the first match (ID-1).
+loss and refunding a model the player still has. **The player's own
+`customName` is not a key**: a Bereaved a player called `Weeper` is not the
+Weeper entry, and matching on it turned a nickname into a different model.
+Ambiguity resolves to nothing, never to the first match (ID-1).
 
 The money follows the book rather than the arithmetic:
 
@@ -1784,6 +1801,21 @@ The money follows the book rather than the arithmetic:
 - **A lost model's Battlekit goes to the Arsenal**, not into the refund. The
   gear did not stop existing because the model did, and refunding it as well
   would pay for it twice.
+- **Nothing that cost nothing is refunded or re-priced.** A `grantedFree`
+  model, a Golem's free Formula, forced kit: the roster records what was
+  *paid*, and zero means no money moved. Refunding zero-cost gear would invent
+  Ducats; re-pricing it would charge a player for something they were given. A
+  `grantedFree` model goes on contributing nothing to what the warband is
+  worth — the split `fromWarband` already makes — while its gear is still
+  counted.
+- **A lost Arsenal line is refunded per item held.** `buyToStash` raises
+  `quantity` rather than appending a second row, so a line of three Molotovs
+  is three Molotovs.
+- **An ambiguous name is never a loss.** A name that names two entries
+  resolves to neither, and the thing is kept at its recorded price and
+  reported as unresolved. Refunding it would pay a player for something the
+  target plainly still has. A custom entry is kept the same way: no ruleset
+  stocks one, so no ruleset has an opinion about it.
 
 One refusal: a target that does not carry the warband's faction. Every model
 would be reported as lost and the whole warband refunded, which is not a

@@ -39,7 +39,29 @@ describe('parseTrenchCompanionRef', () => {
   });
 
   it('refuses a Trench Companion link that is not a warband', () => {
-    expect(refused('https://trench-companion.com/about')).toMatch(/no warband id/);
+    expect(refused('https://trench-companion.com/about')).toMatch(/not a warband share link/);
+  });
+
+  it('refuses another /detail/ page on their own host, id and all', () => {
+    /* `/campaign/detail/4412` used to yield the id 4412, and the route would
+       then fetch WARBAND 4412 — a different object belonging to somebody
+       else. The path is matched whole, not sniffed for a `detail` segment. */
+    expect(refused('https://trench-companion.com/campaign/detail/4412'))
+      .toMatch(/not a warband share link/);
+    expect(refused('https://trench-companion.com/homebrew/detail/9'))
+      .toMatch(/not a warband share link/);
+  });
+
+  it('refuses a warband path with anything extra on it', () => {
+    expect(refused('https://trench-companion.com/warband/detail/225201/edit'))
+      .toMatch(/not a warband share link/);
+    expect(refused('https://trench-companion.com/x/warband/detail/225201'))
+      .toMatch(/not a warband share link/);
+  });
+
+  it('refuses a subdomain that is not their site proper', () => {
+    expect(refused('https://evil.trench-companion.com/warband/detail/225201'))
+      .toMatch(/not trench-companion\.com/);
   });
 
   it('refuses an empty field', () => {
@@ -53,7 +75,8 @@ describe('parseTrenchCompanionRef', () => {
   it('cannot be steered at another path or host', () => {
     /* The id becomes a path segment, so `/` and `.` must never reach it. A
        traversal is not a valid id, and is refused rather than encoded. */
-    const refusal = /neither a warband id nor a link|no warband id|not trench-companion\.com/;
+    const refusal =
+      /neither a warband id nor a link|not a warband share link|not trench-companion\.com/;
     expect(refused('../../wp-json/synod/v1/user/1')).toMatch(refusal);
     expect(refused('225201/../../admin')).toMatch(refusal);
     expect(refused('https://trench-companion.com/warband/detail/225201/../../x')).toMatch(refusal);

@@ -46,8 +46,10 @@ const ID = /^[A-Za-z0-9_-]{1,64}$/;
  *   225201
  *
  * Anything else is refused with a sentence that says what was expected, rather
- * than guessed at. A link we half-recognise and silently read the last path
- * segment of is how somebody ends up importing a different warband.
+ * than guessed at — including another page on their own host. A link we
+ * half-recognise and read a familiar-looking segment out of is how somebody
+ * ends up importing a different object: `/campaign/detail/4412` is a campaign,
+ * and the endpoint behind this serves warbands.
  */
 export function parseTrenchCompanionRef(
   input: string,
@@ -76,18 +78,28 @@ export function parseTrenchCompanionRef(
   }
 
   const host = url.hostname.toLowerCase();
-  if (host !== 'trench-companion.com' && !host.endsWith('.trench-companion.com')) {
+  if (host !== 'trench-companion.com' && host !== 'www.trench-companion.com') {
     return { ok: false, reason: `That link points at ${url.hostname}, not trench-companion.com.` };
   }
 
-  /* The share path, exactly: `/warband/detail/<id>`. */
+  /*
+    The share path, EXACTLY: `/warband/detail/<id>` and nothing else.
+
+    Scanning for a `detail` segment anywhere in the path was too generous by
+    a long way: `trench-companion.com/campaign/detail/4412` took the 4412 and
+    fetched WARBAND 4412, a different object belonging to somebody else
+    entirely. The endpoint this route calls serves warbands, so the link it
+    accepts has to be a warband link — matched whole, not sniffed for a
+    familiar-looking segment.
+  */
   const parts = url.pathname.split('/').filter(Boolean);
-  const at = parts.indexOf('detail');
-  const id = at >= 0 ? parts[at + 1] : undefined;
+  const id = parts.length === 3 && parts[0] === 'warband' && parts[1] === 'detail'
+    ? parts[2]
+    : undefined;
   if (!id || !ID.test(id)) {
     return {
       ok: false,
-      reason: `That link carries no warband id. A share link looks like `
+      reason: `That is not a warband share link. One looks like `
         + `${TRENCH_COMPANION_SHARE_PREFIX}225201`,
     };
   }

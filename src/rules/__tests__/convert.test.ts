@@ -282,6 +282,296 @@ describe('two models with the same name, one of them lost', () => {
   });
 });
 
+/* ---------------------------------------------- A: the Variant is applied */
+
+describe('a Variant warband converted to the ruleset it is already on', () => {
+  /*
+    Order 40 A. Units were resolved against the raw `to.units`, which is the
+    list BEFORE `recruitable` applies the Variant — so converting a House of
+    Wisdom warband to TrenchLine Rules, the ruleset it is already on, turned
+    every renamed model back into its base entry and reported the restat as a
+    change. A conversion that rewrites a roster nobody asked to change.
+  */
+  const WISDOM = recruitable(TL, 'iron-sultanate', APP, 'houseofwisdom');
+
+  /** Entries the House of Wisdom renames or restats away from the base list. */
+  const renamed = WISDOM.units.filter((u) => {
+    const base = TL.units.find((b) => b.entryId === u.id || b.id === u.id);
+    return base && base.name !== u.name;
+  });
+
+  it('has entries the Variant renames, or this test proves nothing', () => {
+    expect(renamed.length).toBeGreaterThan(0);
+  });
+
+  const wisdomWarband = (): Warband => ({
+    ...fixture(),
+    factionId: 'iron-sultanate',
+    variantId: 'houseofwisdom',
+    units: WISDOM.units
+      .filter((u) => u.factionId === 'iron-sultanate')
+      .slice(0, 6)
+      .map((u, i) => model(`Model ${i}`, u, { id: `u-${i}` })),
+  });
+
+  it('reports every model kept, with no change at all', () => {
+    const w = wisdomWarband();
+    const plan = planConversion(w, TL);
+    expect(plan.lost).toEqual([]);
+    expect(plan.unresolved).toEqual([]);
+    expect(plan.changed.map((c) => `${c.name}: ${c.changes.map((x) => x.field).join()}`))
+      .toEqual([]);
+    expect(plan.kept.length).toBe(w.units.length);
+  });
+
+  it('keeps the Variant\'s own name and statline on the snapshot', () => {
+    const w = wisdomWarband();
+    const after = applyConversion(w, planConversion(w, TL), TL);
+    expect(after.units.map((u) => u.profileSnapshot.name))
+      .toEqual(w.units.map((u) => u.profileSnapshot.name));
+  });
+
+  it('carries the whole profile across, not a five-field subset', () => {
+    /* `movementType`, `movementInches`, `baseSize`, the keywords and the
+       innate abilities are what Play Mode, the legality engine and the print
+       sheet read off a model. A hand-built subset dropped all of them. */
+    const w = wisdomWarband();
+    const after = applyConversion(w, planConversion(w, TL), TL);
+    const snap = after.units[0].profileSnapshot;
+    const source = w.units[0].profileSnapshot;
+    expect(snap.stats.movementType).toBe(source.stats.movementType);
+    expect(snap.stats.movementInches).toBe(source.stats.movementInches);
+    expect(snap.stats.baseSize).toBe(source.stats.baseSize);
+    expect(snap.stats.keywords).toEqual(source.stats.keywords);
+    expect(snap.innateAbilities).toEqual(source.innateAbilities);
+  });
+
+  it('keeps the player\'s Leader nomination, which the roster owns', () => {
+    const w = wisdomWarband();
+    w.units[0] = { ...w.units[0], profileSnapshot: { ...w.units[0].profileSnapshot, category: 'Leader' } };
+    const after = applyConversion(w, planConversion(w, TL), TL);
+    expect(after.units[0].profileSnapshot.category).toBe('Leader');
+  });
+});
+
+/* ------------------------------------- E: customName is not a resolution key */
+
+describe('a model the player renamed', () => {
+  it('resolves by its entry, not by the nickname', () => {
+    /* A Heretic Trooper a player called "Chorister" is not the Chorister
+       entry — and `Chorister` IS a real entry this warband can field, which
+       is what made `customName` dangerous as a key. */
+    const nickname = 'Chorister';
+    const collides = shelfTL.units.find((u) => u.name === nickname);
+    expect(collides, `the ${nickname} entry is in this ruleset`).toBeDefined();
+    expect(collides!.baseCost).not.toBe(TROOPER.baseCost);
+
+    const w: Warband = {
+      ...fixture(),
+      units: [model(nickname, TROOPER, { id: 'u-nick' })],
+    };
+    const after = applyConversion(w, planConversion(w, TL), TL);
+    expect(after.units[0].profileSnapshot.name).toBe('Heretic Trooper');
+    expect(after.units[0].profileSnapshot.baseCost).toBe(TROOPER.baseCost);
+  });
+});
+
+/* ------------------------------------------ B: the three gear shelves */
+
+describe('gear a model holds by a route other than the Armoury', () => {
+  /*
+    Order 40 B. Resolution was against the faction Armoury alone, so anything
+    bought off the model's own entry, or off the catalogue's Battlekit, was
+    declared lost and refunded — a conversion paying a player for gear they
+    still have.
+  */
+  const armouryNames = new Set(shelfTL.weapons.concat(
+    shelfTL.armour as never[], shelfTL.equipment as never[],
+  ).map((x: { name: string }) => x.name));
+
+  /** An entry in the catalogue that the Heretic Legions Armoury does not stock. */
+  const offShelf = (TL.weapons as { name: string; cost: { ducats: number; glory: number } }[])
+    .find((x) => !armouryNames.has(x.name) && x.cost.ducats > 0);
+
+  it('has an entry outside this faction\'s Armoury, or this test proves nothing', () => {
+    expect(offShelf).toBeDefined();
+  });
+
+  it('keeps an item the catalogue carries but this Armoury does not stock', () => {
+    const w: Warband = {
+      ...fixture(),
+      units: [model('Grün', TROOPER, {
+        equippedEquipment: [{
+          id: 'e-off', name: offShelf!.name, cost: offShelf!.cost.ducats,
+          effect: '', instanceId: 'e-off-1',
+        }],
+        totalCost: TROOPER.baseCost + offShelf!.cost.ducats,
+      })],
+    };
+    const plan = planConversion(w, TL);
+    expect(plan.lost).toEqual([]);
+    expect(plan.refund).toEqual({ ducats: 0, glory: 0 });
+  });
+
+  it('keeps a custom item unchanged, because no ruleset stocks one', () => {
+    const w: Warband = {
+      ...fixture(),
+      units: [model('Grün', TROOPER, {
+        equippedWeapons: [{
+          id: 'w-custom', name: 'Grandfather\'s Sabre', type: 'Melee', range: 'Melee',
+          modifiers: '+1', keywords: [], cost: 15, isCustom: true, instanceId: 'w-custom-1',
+        }],
+        totalCost: TROOPER.baseCost + 15,
+      })],
+    };
+    const plan = planConversion(w, TL);
+    expect(plan.lost).toEqual([]);
+    const after = applyConversion(w, plan, TL);
+    expect(after.units[0].equippedWeapons[0].cost).toBe(15);
+    expect(after.units[0].equippedWeapons[0].name).toBe('Grandfather\'s Sabre');
+  });
+
+  it('keeps an ambiguous name at its recorded price and calls it unresolved', () => {
+    /* A name that names two entries names neither. Refunding it would pay a
+       player for something the target plainly still has. */
+    const twice = (TL.weapons as { name: string }[])
+      .map((x) => x.name)
+      .filter((n, _i, all) => all.filter((m) => m === n).length > 1)[0];
+    expect(twice, 'a name the catalogue carries twice').toBeDefined();
+
+    const w: Warband = {
+      ...fixture(),
+      units: [model('Grün', TROOPER, {
+        equippedEquipment: [{
+          id: 'e-amb', name: twice, cost: 9, effect: '', instanceId: 'e-amb-1',
+        }],
+        totalCost: TROOPER.baseCost + 9,
+      })],
+    };
+    const plan = planConversion(w, TL);
+    expect(plan.lost).toEqual([]);
+    expect(plan.unresolved.map((u) => u.name)).toEqual([twice]);
+    expect(plan.unresolved[0].why).toMatch(/more than one entry/);
+    expect(applyConversion(w, plan, TL).units[0].equippedEquipment[0].cost).toBe(9);
+  });
+});
+
+/* ------------------------------------------- C: free and Glory-priced */
+
+describe('things nothing was paid for', () => {
+  /*
+    The shape `claimEarnedRecruitment` writes: the snapshot keeps the entry's
+    real price and `totalCost` is 0, which is what `grantedFree` means and
+    what `fromWarband` reads. A fixture that zeroed `baseCost` too would pass
+    whatever the code did.
+  */
+  const granted = (profile: typeof TROOPER, over: Partial<ActiveUnit> = {}) =>
+    model('Gift', profile, {
+      id: 'u-gift', grantedFree: 'Curse on Creation', totalCost: 0, ...over,
+    });
+
+  it('refunds nothing for a lost granted model, whatever its entry costs', () => {
+    const w: Warband = { ...fixture(), units: [granted(CAPTAIN)] };
+    expect(w.units[0].profileSnapshot.baseCost).toBe(CAPTAIN.baseCost);
+
+    const plan = planConversion(w, GH);
+    expect(plan.lost.map((l) => l.name)).toEqual(['Heretic Captain']);
+    expect(plan.refund).toEqual({ ducats: 0, glory: 0 });
+    const after = applyConversion(w, plan, GH);
+    expect((after.ledger ?? []).filter((e) => e.reason === 'conversion')).toEqual([]);
+    expect(after.treasuryDucats).toBe(100);
+  });
+
+  it('leaves a kept granted model costing the warband nothing', () => {
+    const w: Warband = {
+      ...fixture(),
+      units: [granted(TROOPER, {
+        equippedEquipment: [{ ...MASK, instanceId: 'e-mask' }],
+      })],
+    };
+    const after = applyConversion(w, planConversion(w, GH), GH);
+    /* The model is free; its gear is still bought and still counted. */
+    expect(after.units[0].totalCost).toBe(MASK.cost);
+  });
+
+  it('reports no change on an option the roster records as free', () => {
+    /* A Golem's Formula is bought at 0 out of the grant's allowance. A
+       "free → 5 Ducats" line describes a charge that is not going to happen. */
+    const entry = TL.units.find((u) => (u.options ?? []).some((o) => o.cost.ducats > 0));
+    const priced = entry!.options.find((o) => o.cost.ducats > 0)!;
+    const w: Warband = {
+      ...fixture(),
+      units: [model('Golem', TROOPER, {
+        grantedBy: 'Book of Golems',
+        specialUpgrades: [{ id: 'su-free', name: priced.name, cost: 0, category: priced.group }],
+      })],
+    };
+    const plan = planConversion(w, TL);
+    expect(plan.changed).toEqual([]);
+    expect(plan.lost).toEqual([]);
+  });
+
+  it('refunds a lost Glory-priced option in Glory, as it was booked', () => {
+    /*
+      `toggleUnitSpecialUpgrade` books `upgrade.price` whole — both
+      currencies — under the ref `<unit>:<option>`. Reading only `cost` made
+      Devouring Jaws (0 Ducats / 2 Glory) free, so it refunded nothing.
+    */
+    const w: Warband = {
+      ...fixture(),
+      units: [model('Grün', TROOPER, {
+        specialUpgrades: [{
+          id: 'su-jaws', name: 'A Rite No Ruleset Prints', cost: 0, category: 'Strains',
+          price: { ducats: 0, glory: 2 },
+        } as never],
+      })],
+    };
+    const plan = planConversion(w, TL);
+    expect(plan.lost.map((l) => l.refund)).toEqual([{ ducats: 0, glory: 2 }]);
+    expect(applyConversion(w, plan, TL).gloryPoints).toBe(2);
+  });
+
+  it('does not report a Glory change on an option the roster records no Glory for', () => {
+    const entry = TL.units.find((u) => (u.options ?? []).some((o) => o.cost.glory > 0));
+    const glorious = entry?.options.find((o) => o.cost.glory > 0);
+    if (!glorious) return;
+    const w: Warband = {
+      ...fixture(),
+      units: [model('Grün', TROOPER, {
+        baseProfileId: entry!.entryId ?? entry!.id,
+        profileSnapshot: { ...TROOPER, name: entry!.name },
+        specialUpgrades: [{
+          id: 'su-old', name: glorious.name, cost: glorious.cost.ducats || 5,
+          category: glorious.group,
+        }],
+      })],
+    };
+    const plan = planConversion(w, TL);
+    expect(plan.changed.flatMap((c) => c.changes).filter((c) => /Glory/.test(c.to))).toEqual([]);
+  });
+});
+
+/* ------------------------------------------- D: a stash line is a quantity */
+
+describe('a lost stash line', () => {
+  it('refunds once per item held, not once per line', () => {
+    /* `buyToStash` raises `quantity` rather than appending a second row. */
+    const w: Warband = {
+      ...fixture(),
+      units: [],
+      armoryStash: [{
+        id: 'stash-gone', name: 'A Relic No Ruleset Prints', type: 'Equipment',
+        cost: 20, currency: 'ducats', price: { ducats: 20, glory: 0 }, quantity: 3,
+      }],
+    };
+    const plan = planConversion(w, TL);
+    expect(plan.lost.map((l) => l.refund)).toEqual([{ ducats: 60, glory: 0 }]);
+    const after = applyConversion(w, plan, TL);
+    expect(after.treasuryDucats).toBe(100 + 60);
+    expect(after.armoryStash).toEqual([]);
+  });
+});
+
 /* -------------------------------------------------------------- the bar */
 
 describe('rulesetMismatch', () => {

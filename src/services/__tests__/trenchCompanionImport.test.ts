@@ -127,8 +127,10 @@ describe('what the import reads', () => {
     expect(r.warband.units.map((u) => u.customName)).toEqual(['Heretic Trooper']);
   });
 
-  it('names what it left out, and never guesses at a near match', () => {
-    expect(r.unmatched).toContain('Fly Bereaved (md_grailthrall_flybereaved)');
+  it('names exactly what it left out, and never guesses at a near match', () => {
+    /* `toEqual`, as the design's test asks: a list that merely CONTAINS the
+       right name would pass while quietly dropping something else too. */
+    expect(r.unmatched).toEqual(['Fly Bereaved (md_grailthrall_flybereaved)']);
   });
 
   it('prices the roster from OUR ruleset, not theirs', () => {
@@ -191,19 +193,64 @@ describe('the ledger, opened as migrateFoundingPot opens one', () => {
       ['quartermaster', -407, -4],
     ]);
     expect(out.warband.gloryPoints).toBe(7);
-    expect(out.warnings.some((w) => /do not balance/.test(w))).toBe(false);
+    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(false);
   });
 
-  it('says so when their own numbers do not balance', () => {
+  it('debits bank less spare, so a warband with a stash lands on their Strongbox', () => {
+    /*
+      `rating_*` is the ROSTER's value; `stash_rating_*` is the Arsenal's, and
+      their record keeps them apart. Debiting `rating` alone left the
+      Strongbox here 60 Ducats richer than the one on their page.
+    */
     const out = run({
       context: {
         campaign_round: 1, victory_points: 0, failed_promotions: 0,
         stored_ratings: {
-          rating_ducat: 407, rating_glory: 0, spare_ducat: 999, spare_glory: 0,
+          rating_ducat: 407, rating_glory: 0,
+          stash_rating_ducat: 60, stash_rating_glory: 0,
+          spare_ducat: 233, spare_glory: 0,
         },
       },
     });
-    expect(out.warnings.some((w) => /do not balance/.test(w))).toBe(true);
+    expect((out.warband.ledger ?? []).map((e) => [e.reason, e.ducats])).toEqual([
+      ['founding', 700],
+      ['quartermaster', -467],
+    ]);
+    expect(out.warband.treasuryDucats).toBe(233);
+    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(false);
+  });
+
+  it('names both of their figures in the quartermaster entry', () => {
+    const out = run({
+      context: {
+        campaign_round: 1, victory_points: 0, failed_promotions: 0,
+        stored_ratings: {
+          rating_ducat: 407, rating_glory: 0,
+          stash_rating_ducat: 60, stash_rating_glory: 0,
+          spare_ducat: 233, spare_glory: 0,
+        },
+      },
+    });
+    const note = (out.warband.ledger ?? [])[1].note ?? '';
+    expect(note).toContain('407 Ducats');
+    expect(note).toContain('60 Ducats');
+  });
+
+  it('lands on their Strongbox even when their own totals disagree, and says so', () => {
+    const out = run({
+      context: {
+        campaign_round: 1, victory_points: 0, failed_promotions: 0,
+        stored_ratings: {
+          rating_ducat: 407, rating_glory: 0,
+          stash_rating_ducat: 0, stash_rating_glory: 0,
+          spare_ducat: 100, spare_glory: 0,
+        },
+      },
+    });
+    /* Their page says the Strongbox holds 100, and that is what it holds
+       here — whatever their roster and stash figures add up to. */
+    expect(out.warband.treasuryDucats).toBe(100);
+    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(true);
   });
 });
 
@@ -237,6 +284,23 @@ describe('the campaign state', () => {
       .toEqual({ source: 'trench-companion', round: 4, victoryPoints: 22 });
   });
 
+  it('records no round their record did not state', () => {
+    /* A missing `campaign_round` used to be written down as round 1 — a fact
+       about their campaign their record never asserted. */
+    const out = run({
+      context: { stored_ratings: { rating_ducat: 407, spare_ducat: 293 } },
+    });
+    expect(out.warband.importedCampaign).toBeUndefined();
+  });
+
+  it('records the half of it they did state', () => {
+    const out = run({
+      context: { victory_points: 9, stored_ratings: { rating_ducat: 407, spare_ducat: 293 } },
+    });
+    expect(out.warband.importedCampaign)
+      .toEqual({ source: 'trench-companion', victoryPoints: 9 });
+  });
+
   it('resolves an Exploration Skill by name', () => {
     expect(r.warband.explorationEffects)
       .toEqual([expect.objectContaining({ name: 'Re-roll' })]);
@@ -265,6 +329,23 @@ describe('the report', () => {
     for (const field of ['scar_reserves', 'stat_selections', 'active']) {
       expect(r.unmapped.some((u) => u.startsWith(`${field}:`))).toBe(true);
     }
+  });
+
+  it('does not read a price they did not state as free', () => {
+    /* A missing `cost_value` read as 0 produced a "free in Trench Companion"
+       line — a claim about their record that their record never made. */
+    const out = run({
+      models: [{
+        purchase: {},
+        model: {
+          name: 'Heretic Trooper', model: 'md_heretictrooper', equipment: [],
+        },
+      }],
+    });
+    expect(out.priceDifferences).toEqual([]);
+    expect(out.warnings.some((w) => /does not state a price/.test(w))).toBe(true);
+    /* And it is still priced here, from our ruleset. */
+    expect(out.warband.units[0].totalCost).toBe(TROOPER.baseCost);
   });
 
   it('reports an unresolvable Skill rather than dropping it', () => {

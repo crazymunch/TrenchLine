@@ -124,6 +124,9 @@ interface TcWarbandData {
       rating_glory?: number;
       spare_ducat?: number;
       spare_glory?: number;
+      /** The Arsenal's own value, which `rating_*` does NOT include. */
+      stash_rating_ducat?: number;
+      stash_rating_glory?: number;
     };
   };
   faction?: { faction_property?: TcRef };
@@ -195,9 +198,18 @@ const slugTail = (id: string): string => id.replace(/^[a-z]{2,3}_/, '');
  * never wrong.
  */
 function theirCost(p: TcPurchase | undefined): Cost | null {
-  const v = typeof p?.cost_value === 'number' ? p.cost_value : 0;
-  if (p?.cost_type === 0 || p?.cost_type === undefined) return { ducats: v, glory: 0 };
-  if (p?.cost_type === 1) return { ducats: 0, glory: v };
+  /*
+    A price they did not state is not a price of zero.
+
+    Reading a missing `cost_value` as 0 produced a report line saying an item
+    was "free in Trench Companion" — a claim about their record that their
+    record never made, and exactly the shape of invention rule 2 forbids. An
+    unstated price is not compared, and the report says so.
+  */
+  if (typeof p?.cost_value !== 'number' || !Number.isFinite(p.cost_value)) return null;
+  const v = p.cost_value;
+  if (p.cost_type === 0 || p.cost_type === undefined) return { ducats: v, glory: 0 };
+  if (p.cost_type === 1) return { ducats: 0, glory: v };
   return null;
 }
 
@@ -205,6 +217,10 @@ const sameCost = (a: Cost, b: Cost) => a.ducats === b.ducats && a.glory === b.gl
 
 const num = (v: unknown, fallback = 0): number =>
   typeof v === 'number' && Number.isFinite(v) ? v : fallback;
+
+/** A number their record actually states, or `undefined`. Never a default. */
+const stated = (v: unknown): number | undefined =>
+  typeof v === 'number' && Number.isFinite(v) ? v : undefined;
 
 /* ------------------------------------------------------------- resolution */
 
@@ -377,8 +393,16 @@ export function importTrenchCompanionWarband(
   /* ------------------------------------------------------- campaign state */
 
   const ratings = data.context?.stored_ratings ?? {};
-  const round = num(data.context?.campaign_round, 1);
-  const victoryPoints = num(data.context?.victory_points);
+  /*
+    Only what their record actually states.
+
+    A missing `campaign_round` was being recorded as round 1 — a fact about
+    their campaign that their record never asserted, and one a player reading
+    it here would take for their own. Absent stays absent.
+  */
+  const statedRound = stated(data.context?.campaign_round);
+  const statedVp = stated(data.context?.victory_points);
+  const round = statedRound ?? 1;
   const misses = num(data.context?.failed_promotions);
 
   const debts = data.debts;
@@ -414,7 +438,16 @@ export function importTrenchCompanionWarband(
     explorationDiscoveries: exploration.discoveries,
     explorationEffects: exploration.effects,
     ...(misses > 0 ? { promotionMisses: misses } : {}),
-    importedCampaign: { source: 'trench-companion', round, victoryPoints },
+    /* Recorded only when their record says something. See `stated` above. */
+    ...(statedRound !== undefined || statedVp !== undefined
+      ? {
+        importedCampaign: {
+          source: 'trench-companion' as const,
+          ...(statedRound !== undefined ? { round: statedRound } : {}),
+          ...(statedVp !== undefined ? { victoryPoints: statedVp } : {}),
+        },
+      }
+      : {}),
     ...(typeof data.notes === 'string' && data.notes.trim() ? { notes: data.notes.trim() } : {}),
     createdAt: now,
     updatedAt: now,
@@ -593,8 +626,9 @@ function comparePrice(
   warnings: string[],
 ): void {
   if (!theirs) {
-    warnings.push(`${name}: their record prices this in a currency this import does not read, so `
-      + 'their price is not compared. It is priced here from this ruleset.');
+    warnings.push(`${name}: their record does not state a price this import can read — either `
+      + 'none at all, or one in a currency it does not know — so their price is not compared. '
+      + 'It is priced here from this ruleset, as everything on the roster is.');
     return;
   }
   if (sameCost(theirs, ours)) return;
@@ -1033,7 +1067,30 @@ function openFoundingPot(
   at: string,
 ): Warband {
   const rating = { ducats: num(ratings.rating_ducat), glory: num(ratings.rating_glory) };
+  const stashRating = {
+    ducats: num(ratings.stash_rating_ducat), glory: num(ratings.stash_rating_glory),
+  };
   const spare = { ducats: num(ratings.spare_ducat), glory: num(ratings.spare_glory) };
+
+  /*
+    The debit is what their bank less their Strongbox says was spent, not
+    `rating_*`.
+
+    `rating_*` is the ROSTER's value and `stash_rating_*` is the Arsenal's,
+    and the two are separate numbers in their record: a warband holding
+    anything in its stash had `bank - rating` larger than `spare` by exactly
+    the stash's worth, and debiting `rating` alone left the Strongbox here
+    richer than the Strongbox on their page by that amount.
+
+    So the figure that must come out right is `spare_*` — it is what their
+    page prints and what the player expects to see — and the debit is derived
+    from it. Both of their own figures are named in the note, so the entry
+    still says where the money went rather than just how much.
+  */
+  const spent = {
+    ducats: allowance.ducats - spare.ducats,
+    glory: allowance.glory - spare.glory,
+  };
 
   const credited = book(warband, {
     reason: 'founding',
@@ -1045,22 +1102,36 @@ function openFoundingPot(
 
   const debited = book(credited, {
     reason: 'quartermaster',
-    ducats: -rating.ducats,
-    glory: -rating.glory,
+    ducats: -spent.ducats,
+    glory: -spent.glory,
     game: 1,
-    note: `Roster at import: ${warband.units.length} model`
-      + `${warband.units.length === 1 ? '' : 's'}, valued by Trench Companion at `
-      + `${rating.ducats} Ducats and ${rating.glory} Glory.`,
+    note: `Roster and Arsenal at import: ${warband.units.length} model`
+      + `${warband.units.length === 1 ? '' : 's'}. Trench Companion valued the roster at `
+      + `${rating.ducats} Ducats and ${rating.glory} Glory, and the stash at `
+      + `${stashRating.ducats} Ducats and ${stashRating.glory} Glory.`,
   }, at);
 
-  const left = { ducats: debited.treasuryDucats, glory: debited.gloryPoints };
-  if (left.ducats !== spare.ducats || left.glory !== spare.glory) {
+  /*
+    Their own arithmetic, checked rather than assumed.
+
+    The debit above makes the Strongbox equal their `spare_*` by construction,
+    so what is worth reporting is whether their own three figures agree:
+    roster plus stash should be exactly what the bank is down by. Where they
+    do not, the Strongbox here is still their `spare_*` — their page's own
+    number — and the note says which of their figures did not add up.
+  */
+  const accounted = {
+    ducats: rating.ducats + stashRating.ducats,
+    glory: rating.glory + stashRating.glory,
+  };
+  if (accounted.ducats !== spent.ducats || accounted.glory !== spent.glory) {
     warnings.push(
-      `Their own numbers do not balance: ${allowance.ducats} Ducats and ${allowance.glory} Glory `
-      + `banked, less a roster of ${rating.ducats} and ${rating.glory}, leaves `
-      + `${left.ducats} and ${left.glory} — but their page shows a Strongbox of `
-      + `${spare.ducats} Ducats and ${spare.glory} Glory. The two entries above are what this `
-      + 'import booked; correct the Strongbox by hand if their figure is the right one.',
+      `Their own numbers do not add up: ${allowance.ducats} Ducats and ${allowance.glory} Glory `
+      + `banked, less a Strongbox of ${spare.ducats} and ${spare.glory}, means `
+      + `${spent.ducats} and ${spent.glory} was spent — but their roster and stash are valued at `
+      + `${accounted.ducats} and ${accounted.glory}. The Strongbox here is their own `
+      + 'Strongbox figure, which is what their page shows; the quartermaster entry above is the '
+      + 'difference, so the two agree here whatever their totals say.',
     );
   }
 
