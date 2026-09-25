@@ -922,7 +922,7 @@
       "factionId": "cult-of-the-black-grail",
       "row": {
         "name": "Blessings of Beelzebub",
-        "section": "Equipment",
+        "section": "Glory Items",
         "cost": {
           "ducats": 0,
           "glory": 9
@@ -933,7 +933,7 @@
       },
       "_src": "p.6 — 'Add the following entry to the BLACK GRAIL Glory Items Table: Blessings of Beelzebub | Lord of Tumours only, Limit: 1 | 9'",
       "_costCurrencyDerived": "Glory. The Dispatch prints the currency as a glyph and the text extraction drops it, leaving a bare number — the same problem the Grail Strain costs had. This one needs no maintainer ruling because the row is being added to a table the base rulebook already prints, and every one of the 51 priced rows in the rulebook's Glory Items Tables is in Glory, with no exceptions. The currency is read off the table the row joins, not inferred from the item.",
-      "_sectionNote": "The rulebook's Glory Items are stocked under the section of the KIND of thing they are (Equipment, Melee Weapons, Shields …), not under a 'Glory Items' section — all 30 Glory-priced rows already in the dataset follow that. This item's Type row reads 'Special' with no Range and no Keywords, which is not a weapon or a suit of armour, so it is stocked as Equipment."
+      "_sectionNote": "The Dispatch says which table these join: \"Add the following entry to the BLACK GRAIL Glory Items Table\" and \"...to the SULTANATE Glory Items Table\". Until RR-14 there was no such section to add to — the rulebook's six Glory Item Tables had never been parsed — so the row was stocked under the kind of thing it is, as an Armoury row. Now that `parseGloryItemTables` emits them, the Dispatch's own wording decides: section 'Glory Items', which is what puts the row behind the discovery gate on p.125 that every other Glory Item sits behind. Leaving it as Equipment would have sold a 9-Glory Dispatch item to a Warband that has discovered nothing, while refusing it the rulebook's 4-Glory Knighthood."
     },
     {
       "op": "add",
@@ -957,7 +957,7 @@
       "factionId": "iron-sultanate",
       "row": {
         "name": "Regimental Kaşık",
-        "section": "Equipment",
+        "section": "Glory Items",
         "cost": {
           "ducats": 0,
           "glory": 4
@@ -968,7 +968,7 @@
       },
       "_src": "p.8 — 'dd the following entry to the SULTANATE Glory Items Table: Regimental Kaşık | Janissaries & Yüzbaşı with Janissary Veteran only, Limit: 1 | 4'",
       "_costCurrencyDerived": "Glory. The Dispatch prints the currency as a glyph and the text extraction drops it, leaving a bare number — the same problem the Grail Strain costs had. This one needs no maintainer ruling because the row is being added to a table the base rulebook already prints, and every one of the 51 priced rows in the rulebook's Glory Items Tables is in Glory, with no exceptions. The currency is read off the table the row joins, not inferred from the item.",
-      "_sectionNote": "Type row reads 'Equipment', so it is stocked as Equipment."
+      "_sectionNote": "The Dispatch says which table these join: \"Add the following entry to the BLACK GRAIL Glory Items Table\" and \"...to the SULTANATE Glory Items Table\". Until RR-14 there was no such section to add to — the rulebook's six Glory Item Tables had never been parsed — so the row was stocked under the kind of thing it is, as an Armoury row. Now that `parseGloryItemTables` emits them, the Dispatch's own wording decides: section 'Glory Items', which is what puts the row behind the discovery gate on p.125 that every other Glory Item sits behind. Leaving it as Equipment would have sold a 9-Glory Dispatch item to a Warband that has discovered nothing, while refusing it the rulebook's 4-Glory Knighthood."
     },
     {
       "op": "removeAbility",

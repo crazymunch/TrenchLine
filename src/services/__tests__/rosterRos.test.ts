@@ -349,7 +349,7 @@ describe('writing the file', () => {
 describe('what this warband cannot express, named rather than dropped', () => {
   it('names what the layer cannot, and every one is a class rather than an oversight', () => {
     /*
-      Nine selections in a real thirteen-model campaign warband, and not one is
+      Eight selections in a real thirteen-model campaign warband, and not one is
       wargear the layer should have had:
 
         Ranged Proficiency [7]        campaign advancements — skills and
@@ -363,9 +363,13 @@ describe('what this warband cannot express, named rather than dropped', () => {
                                       modifier increments, which a player
                                       cannot choose
 
-        Sniper Scope                  an exploration find from
-                                      `Campaign Rules.cat`
         Fierce Lion                   an ability, not armoury gear
+
+      The Sniper Scope was the ninth, read as an exploration find from
+      `Campaign Rules.cat` that no armoury priced. It is not a find: the
+      rulebook prints it in three factions' Glory Item Tables (p.126), which
+      RR-14 now parses — so it has an Armoury row, a price and a roster path,
+      and the layer names it like any other piece of Battlekit.
 
       `docs/ROSTER-PATHS.md` says why each is deliberately outside the layer's
       wargear vocabulary. Pinned as a list rather than a count so that a
@@ -381,24 +385,29 @@ describe('what this warband cannot express, named rather than dropped', () => {
       'Lost Arm [26]',
       'Ranged Proficiency [7]',
       'Skill & Expertise [7]',
-      'Sniper Scope',
       'Strength of Samson [8]',
     ]);
   });
 
+  /*
+    `Fierce Lion` in place of the Sniper Scope, which the layer can now name.
+    It is the same class of subject the case was written for — a selection the
+    roster carries that the layer's wargear vocabulary has no path for — and
+    the only one of the eight that is not an advancement or a counter.
+  */
   it('is FATAL rather than silently short when a model carries one', () => {
     const { warband } = warbandFromRos();
     const [first, ...rest] = warband.units;
-    const withScope = {
+    const withUnnameable = {
       ...first,
       equippedWeapons: [
         ...(first.equippedWeapons ?? []),
-        { name: 'Sniper Scope', cost: 0, gloryCost: 2 },
+        { name: 'Fierce Lion', cost: 0, gloryCost: 0 },
       ],
     } as unknown as ActiveUnit;
-    const report = rosReport(layer, { ...warband, units: [withScope, ...rest] }, UNITS);
+    const report = rosReport(layer, { ...warband, units: [withUnnameable, ...rest] }, UNITS);
     expect(report.exportable).toBe(false);
-    expect(report.fatal.map((f) => f.subject)).toContain('Sniper Scope');
+    expect(report.fatal.map((f) => f.subject)).toContain('Fierce Lion');
   });
 });
 

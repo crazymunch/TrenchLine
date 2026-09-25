@@ -33,7 +33,8 @@
  * same length — Favour has twelve rows and the other three have thirteen,
  * since Favour prints `6-9` where the others print `6-8` and `9-11`.
  */
-import { chapterLines } from './cf-prose.mjs';
+import fs from 'node:fs';
+import { chapterLines, BOOK_TXT } from './cf-prose.mjs';
 import { joinWrapped } from './dehyphenate.mjs';
 
 /** `FAVOUR 👁 EXPLORATION TABLE` — the heading, with the Resource's glyph. */
@@ -78,6 +79,56 @@ function parseRange(text) {
   const one = /^(\d+)$/.exec(text);
   if (one) return { from: Number(one[1]), to: Number(one[1]) };
   return null;
+}
+
+/**
+ * The Step's own two numbers, from the sentences that state them.
+ *
+ * Both were constants in `src/rules/campaign.ts` with the book cited beside
+ * them, which is one rung short of rule 1: the citation was right and the
+ * numbers were still typed. The book says each outright —
+ *
+ * > you start with an Exploration Dice Pool of **3D6**, and you gain additional
+ * > Exploration Dice as rewards from the Campaign Tracker and for adding
+ * > Buildings to your Camp
+ *
+ * > …and collects loot equal to their **Exploration Roll × 5** in 👑.
+ *
+ * — so they are read, and a wording that stops saying it fails the build rather
+ * than leaving a stale number in place. The loot sentence appears four times,
+ * once per game result, and all four must agree: a book that paid the Aggressor
+ * and the opponent at different rates would be a rule this cannot express as
+ * one number.
+ */
+export function parseCarcassFrontExplorationStep() {
+  const text = fs.readFileSync(BOOK_TXT, 'utf8').replace(/\s+/g, ' ');
+
+  const pool = /Exploration Dice Pool of (\d+)\s*D6/i.exec(text);
+  if (!pool) {
+    throw new Error(
+      'parse-cf-exploration: the Carcass Front book no longer states the '
+      + 'starting Exploration Dice Pool ("an Exploration Dice Pool of 3D6"). '
+      + 'That pool does not grow with games played, so a default here would be '
+      + "the rulebook's growing one, which pays a late campaign twice over.");
+  }
+
+  const rates = [...text.matchAll(/loot equal to their Exploration Roll\s*[×x*]\s*(\d+)/gi)]
+    .map((m) => Number(m[1]));
+  if (!rates.length) {
+    throw new Error(
+      'parse-cf-exploration: the Carcass Front book no longer states the loot '
+      + 'rate ("loot equal to their Exploration Roll × 5"). The rulebook pays '
+      + 'ten a point and this book pays five; a default would be wrong whichever '
+      + 'way it fell.');
+  }
+  if (new Set(rates).size !== 1) {
+    throw new Error(
+      `parse-cf-exploration: the loot rate reads [${rates.join(', ')}] across the `
+      + 'four game results, which do not agree. One of them has been misread, or '
+      + 'the book now pays the Aggressor and the opponent differently.');
+  }
+
+  return { startingDice: Number(pool[1]), lootPerPoint: rates[0] };
 }
 
 /**

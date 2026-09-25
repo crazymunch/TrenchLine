@@ -1188,6 +1188,502 @@ export function parseTraumaProcedure(src = RULEBOOK_TXT) {
   };
 }
 
+/* ----------------------------------------------------- Campaign Scenario tables */
+
+/**
+ * Which scenario a campaign game is played on, p.96 (RR-14).
+ *
+ * > To determine which scenario you will use for a campaign game, count up how
+ * > many games you have played in the campaign thus far, and then roll on the
+ * > appropriate Campaign Scenario table below… If one player has played more
+ * > games than the other, then the greater number is used to decide which table
+ * > to roll on.
+ *
+ * Three D6 tables banded by game number, and a twelfth game that is not a roll
+ * at all — *"Final Battle (Battle 12) ▶ The Great War"*. The app's Mission
+ * Generator picked from the whole scenario list at every game, so a first game
+ * could land on From Below and the Great War could turn up in game two.
+ *
+ * The sixth row of each table is not a scenario: *"The player who has played
+ * fewer games chooses one of the scenarios listed above. If tied, roll-off and
+ * the winner chooses."* It is recorded as `choose: true` with its own sentence,
+ * because it is a real result and an app that quietly rerolled it would be
+ * taking the choice the rule hands to the player who is behind.
+ *
+ * Every scenario name is resolved against the shipped list, and an unresolved
+ * one throws: a table naming a scenario the dataset does not hold would offer
+ * a game nobody can play.
+ */
+export function parseCampaignScenarioTables(scenarios, src = RULEBOOK_TXT) {
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
+
+  /* `Early Campaign (Games 1-3)`, `Endgame (Games 9-11)`. */
+  const BAND = /^(.+?)\s*\(Games?\s*(\d+)\s*[-–]\s*(\d+)\)$/;
+  /* `Final Battle (Battle 12)`. */
+  const FINAL = /^(.+?)\s*\(Battles?\s*(\d+)\)$/;
+  /* `1 \t ▶ Claim No Man's Land`, and the sixth row, which has no marker. */
+  const ROW = /^(\d)\s*\t?\s*(?:▶\s*)?(.*)$/;
+
+  const key = (s) => String(s ?? '').toLowerCase()
+    .replace(/[‘’']/g, '')
+    .replace(/^the\s+/, '')
+    .replace(/[^a-z0-9]+/g, '');
+  const byName = new Map((scenarios ?? []).map((s) => [key(s.name), s]));
+  const resolve = (name, where) => {
+    const hit = byName.get(key(name));
+    if (!hit) {
+      throw new Error(
+        `parse-campaign: the ${where} names the scenario "${name}", which the `
+        + 'ruleset does not carry. A Campaign Scenario table that offers a game '
+        + 'nobody can play is worse than one the build refuses to produce.');
+    }
+    return hit.name;
+  };
+
+  const bands = [];
+  let final = null;
+  let current = null;
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i].replace(/\s+$/, '');
+    const bare = raw.trim();
+    if (!bare) continue;
+
+    const band = BAND.exec(bare);
+    if (band && /campaign|endgame|early|mid/i.test(band[1])) {
+      current = { name: band[1].trim(), from: Number(band[2]), to: Number(band[3]), rows: [] };
+      bands.push(current);
+      continue;
+    }
+
+    const fin = FINAL.exec(bare);
+    if (fin && !final && /final/i.test(fin[1])) {
+      /* The scenario is on the NEXT line, with the same `▶` marker the table
+         rows use and no roll in front of it. */
+      const next = (lines[i + 1] ?? '').trim().replace(/^▶\s*/, '');
+      final = { name: fin[1].trim(), game: Number(fin[2]), scenario: next };
+      current = null;
+      continue;
+    }
+
+    if (!current) continue;
+
+    /*
+      Anything that is not a numbered row is skipped rather than closing the
+      table: each one opens with "Roll a D6 to determine which scenario to
+      play:", and treating that as the end left every table empty. The table is
+      closed by the next band heading or by the Final Battle, which is what the
+      page itself does.
+    */
+    const row = ROW.exec(bare);
+    if (!row) continue;
+    const roll = Number(row[1]);
+    const rest = row[2].trim();
+    /*
+      A row is tabbed, or it is the sixth result, which is a sentence. The page
+      header — `96 \t Campaign Rules- \t Trench Crusade` — is tabbed and starts
+      with a digit, so the roll has to be a single digit standing alone, which
+      `96` is not.
+    */
+    if (!/^\d(\s|\t)/.test(bare) && !/^\d$/.test(bare)) continue;
+
+    /*
+      The sixth result hands the choice to the player who is behind, and its
+      sentence wraps. Collected whole rather than truncated, because the
+      tie-break — "If tied, roll-off and the winner chooses" — is the half that
+      wraps and is the half a table needs.
+    */
+    if (/^The player who has played fewer games chooses/i.test(rest)) {
+      let text = rest;
+      for (let j = i + 1; j < lines.length && !/\.$/.test(text); j++) {
+        const nxt = lines[j].trim();
+        if (!nxt || BAND.test(nxt) || FINAL.test(nxt) || /^\d\s/.test(nxt)) break;
+        text = `${text} ${nxt}`;
+        i = j;
+      }
+      current.rows.push({ roll, choose: true, text: text.replace(/\s+/g, ' ').trim() });
+      continue;
+    }
+
+    if (!rest) continue;
+    current.rows.push({ roll, scenario: resolve(rest, `${current.name} table`) });
+  }
+
+  if (bands.length !== 3) {
+    throw new Error(
+      `parse-campaign: read ${bands.length} Campaign Scenario tables, and the book `
+      + 'prints three — Early Campaign, Mid-Campaign and Endgame. A missing band '
+      + 'would leave the games it covers with no table to roll on.');
+  }
+  if (!final) {
+    throw new Error(
+      'parse-campaign: no Final Battle was read from the Campaign Scenario '
+      + 'tables. Game 12 is not a roll — the book names one scenario — and '
+      + 'without it the last game of a campaign would be generated at random.');
+  }
+  final.scenario = resolve(final.scenario, 'Final Battle');
+
+  for (const b of bands) {
+    const rolls = b.rows.map((r) => r.roll).sort((x, y) => x - y);
+    if (rolls.join(',') !== '1,2,3,4,5,6') {
+      throw new Error(
+        `parse-campaign: the ${b.name} Campaign Scenario table covers rolls `
+        + `${rolls.join(', ') || '(none)'} rather than 1 to 6. A D6 table with a `
+        + 'gap silently makes one roll mean nothing.');
+    }
+  }
+
+  /* The bands must tile the games they claim, in order and without a gap: a
+     campaign game that falls between two tables has no scenario at all. */
+  for (let i = 1; i < bands.length; i++) {
+    if (bands[i].from !== bands[i - 1].to + 1) {
+      throw new Error(
+        `parse-campaign: the Campaign Scenario bands run ${bands[i - 1].name} `
+        + `(${bands[i - 1].from}-${bands[i - 1].to}) then ${bands[i].name} `
+        + `(${bands[i].from}-${bands[i].to}), which leaves games between them with `
+        + 'no table.');
+    }
+  }
+  if (final.game !== bands.at(-1).to + 1) {
+    throw new Error(
+      `parse-campaign: the last band ends at game ${bands.at(-1).to} and the Final `
+      + `Battle is game ${final.game}. One of the two was misread.`);
+  }
+
+  return { bands, final };
+}
+
+/* --------------------------------------------------------- Glory Item Tables */
+
+/** `☼`, the Glory glyph, as the extraction leaves it. */
+const GLORY_GLYPH = '☼';
+
+/**
+ * The six Glory Item Tables, pp.125 to 127.
+ *
+ * These had never been parsed. The dataset carried Glory-PRICED rows — the
+ * Troop Flag, Martyrdom Pills, a Field Shrine — and those come from the faction
+ * Armoury Tables in the Warbands book, which is a different list that p.125 is
+ * at pains to distinguish:
+ *
+ * > Glory Items … are similar in many ways to the Battlekit that can only be
+ * > purchased with ☼ that are found in the Armoury Tables of a Faction List.
+ * > **However**, Glory Items can only be purchased during a campaign and if the
+ * > Warband has made a discovery from an Exploration Table…
+ *
+ * So the two lists are not interchangeable and the difference is a gate: a
+ * Troop Flag needs no discovery, a Battlefield Title does. Reading "priced in
+ * Glory" as "is a Glory Item" would have put three Armoury rows per faction
+ * behind a gate the book does not put them behind, which is why these are
+ * parsed as their own section rather than inferred from a currency.
+ *
+ * The shape is `Name \t Stipulations \t N ☼`, and three things complicate it.
+ *
+ * **Wrapped names.** `Great Banner` / `of New Antioch` / `Limit: 1 \t 12 ☼` —
+ * the name occupies two untabbed lines and the row proper carries only two
+ * cells. Held in a buffer and joined, the same defect ARM-1 fixed for the
+ * Armoury Tables.
+ *
+ * **Footnote markers glued to a limit.** The PDF superscripts them and the
+ * extraction flattens them, so `Limit: 1` with footnote 1 reads `Limit: 11`,
+ * and the Court's `Limit: 3` with footnote 3 reads `Limit: 33`. Left alone the
+ * dataset would state a Limit of 11 Ducal Winged Armours and 33 Restraining
+ * Muzzles — invented game data of exactly the kind rule 1 exists to prevent.
+ *
+ * They are NOT guessed apart. The page prints its own footnote list (`1. Only a
+ * model that already has a Battlefield Title…`), so a trailing digit is split
+ * only when the table defines a footnote of that number, and the footnote's
+ * text is carried onto the row as a stipulation in its own right — every one of
+ * the three is a real restriction a player needs. A multi-digit limit with no
+ * matching footnote throws rather than being split or kept.
+ *
+ * **A price that is a range.** `Trench Dog \t Limit: 1 \t 1-3 ☼`. Recorded as
+ * its lowest price with the printed range kept verbatim, because the Warband
+ * pays somewhere in it and an app that silently charged 3 would be choosing for
+ * the player.
+ */
+export function parseGloryItemTables(factions, src = RULEBOOK_TXT) {
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
+
+  /* Each table announces itself: "<Faction> Glory Items". The chapter sidebar
+     prints "Glory Item Tables" and "Glory Items", neither of which matches. */
+  const HEADING = /^(.+?)\s+Glory Items$/;
+  const FOOTNOTE = /^(\d)\.\s+(.+)$/;
+
+  const tables = [];
+  let current = null;
+  /** Untabbed lines seen since the last row: a wrapped name, in order. */
+  let pending = [];
+
+  const close = () => { if (current) tables.push(current); current = null; pending = []; };
+
+  for (let i = 0; i < lines.length; i++) {
+    const raw = lines[i].replace(/\s+$/, '');
+    const bare = raw.trim();
+    if (!bare) continue;
+
+    const head = !raw.includes('\t') && HEADING.exec(bare);
+    if (head && matchFaction(head[1], factions)) {
+      close();
+      current = { heading: head[1].trim(), line: i + 1, rows: [], footnotes: new Map() };
+      continue;
+    }
+    if (!current) continue;
+
+    /*
+      The page mark closes the table.
+
+      Every one of the six tables is printed whole on one page — heading, rows,
+      then the footnotes it needs — so the page boundary is the terminator, and
+      it is the only one available: the Court's table is the last, and without
+      this the scan ran on through the sidebar and the Glory Item Cartulary into
+      the Scenarios chapter, where it met a line of map distances (`5” \t 5”`)
+      and reported them as Glory Items priced in inches.
+    */
+    if (/^--\s*\d+\s+of\s+\d+\s*--$/.test(bare)) { close(); continue; }
+
+    if (!raw.includes('\t')) {
+      const note = FOOTNOTE.exec(bare);
+      if (note) {
+        /* A footnote definition. It may itself wrap; the continuation is
+           whatever untabbed line follows that is not another footnote. */
+        let text = note[2];
+        /*
+          A footnote may wrap, and what follows the last line of one is the
+          chapter sidebar — `Campaign`, `Games`, `Patrons` — which looks exactly
+          like a continuation. The sentence itself says where it ends: the loop
+          runs only while the text does not yet close with a full stop, which
+          is why the Heretic Legions' footnote stops at "Trench Ghost Warbands."
+          instead of reading on into the sidebar.
+        */
+        for (let j = i + 1; j < lines.length && !/\.$/.test(text); j++) {
+          const next = lines[j].trim();
+          if (!next || next.includes('\t') || FOOTNOTE.test(next)) break;
+          if (HEADING.test(next) || /^--\s*\d+\s+of\s+\d+\s*--$/.test(next)) break;
+          text = `${text} ${next}`;
+          i = j;
+        }
+        current.footnotes.set(Number(note[1]), text.replace(/\s+/g, ' ').trim());
+        pending = [];
+        continue;
+      }
+      /* Part of a wrapped item name, or the sidebar. Kept; a name is only ever
+         used by the row that immediately follows it. */
+      pending.push(bare);
+      continue;
+    }
+
+    const cells = raw.split('\t').map((c) => c.trim()).filter(Boolean);
+    const cost = cells.at(-1);
+    const m = /^(\d+)(?:\s*[-–]\s*(\d+))?\s*(\S)?$/.exec(cost);
+    if (!m) { pending = []; continue; }
+    if (m[3] !== GLORY_GLYPH) {
+      throw new Error(
+        `parse-campaign: ${src}:${i + 1} is a ${current.heading} Glory Item priced `
+        + `"${cost}", which is not in ${GLORY_GLYPH}. Every row in these tables is `
+        + 'priced in Glory, and a row that is not means the table has been misread.');
+    }
+
+    /* Two cells means the name wrapped above and this line carries only the
+       stipulations and the cost. */
+    const name = cells.length >= 3
+      ? cells[0]
+      : pending.join(' ').replace(/\s+/g, ' ').trim();
+    const stipulations = cells.length >= 3 ? cells.slice(1, -1).join(', ') : cells[0];
+    pending = [];
+
+    if (!name) {
+      throw new Error(
+        `parse-campaign: ${src}:${i + 1} is a ${current.heading} Glory Item row with `
+        + `no name — "${bare}". Its name wraps onto the lines above and none was read.`);
+    }
+
+    current.rows.push({ name, stipulations, cost, line: i + 1, glory: Number(m[1]),
+      range: m[2] ? `${m[1]}-${m[2]}` : undefined });
+  }
+  close();
+
+  for (const t of tables) {
+    if (t.rows.length) continue;
+    throw new Error(
+      `parse-campaign: the "${t.heading} Glory Items" table at ${src}:${t.line} `
+      + 'read as empty. A faction whose Glory Items all went missing would simply '
+      + 'have none on offer, which is indistinguishable from a faction the book '
+      + 'gives none — so it fails here instead.');
+  }
+
+  if (!tables.length) {
+    throw new Error(
+      'parse-campaign: no Glory Item Table was found in the rulebook. Every Glory '
+      + 'Item in the game is listed in one, and an empty result would leave the '
+      + 'Quartermaster Step with nothing to gate and nothing to sell.');
+  }
+
+  /* The footnote split, now that each table's own footnotes are known. */
+  const out = [];
+  for (const table of tables) {
+    const factionId = resolveFactionHeading(table.heading, factions);
+    const rows = table.rows.map((r) => {
+      let stipulations = r.stipulations;
+      const extra = [];
+      const limit = /Limit:\s*(\d{2,})\s*$/.exec(stipulations);
+      if (limit) {
+        const digits = limit[1];
+        const marker = Number(digits.slice(-1));
+        const real = digits.slice(0, -1);
+        if (!table.footnotes.has(marker)) {
+          throw new Error(
+            `parse-campaign: ${src}:${r.line} states "Limit: ${digits}" for the `
+            + `${table.heading} ${r.name}, and the table defines no footnote ${marker} `
+            + 'to explain the trailing digit. Either the book prints a limit in the '
+            + 'tens or the extraction has glued a marker to it; both are game data, '
+            + 'and neither may be decided here.');
+        }
+        stipulations = stipulations.replace(/Limit:\s*\d{2,}\s*$/, `Limit: ${real}`);
+        extra.push(table.footnotes.get(marker));
+      }
+      return {
+        name: r.name,
+        faction: table.heading,
+        factionId,
+        section: 'Glory Items',
+        restrictions: [stipulations, ...extra].filter(Boolean),
+        /* Glory, always: the throw above guarantees it. */
+        cost: { ducats: 0, glory: r.glory },
+        ...(r.range ? { priceRange: `${r.range} ${GLORY_GLYPH}` } : {}),
+      };
+    });
+    out.push({ factionId, faction: table.heading, rows });
+  }
+
+  return out;
+}
+
+/* ----------------------------------------------------- the Quartermaster Step */
+
+/**
+ * The two Quartermaster rules the app could not reach, because neither number
+ * was anywhere in the dataset.
+ *
+ * **Retire Injured Models** (p.123). *"You can retire any model in your Warband
+ * that has 2 Battle Scars."* This is not the third-scar retirement already
+ * parsed under `battleScars.unfitAt` and it must not be confused with it: that
+ * one is compulsory and happens in the Trauma Step, this one is the player's
+ * choice and happens here. A model at two scars is fit to fight and may be
+ * retired anyway, which is why the count is two and not three.
+ *
+ * **Glory Items** (p.125). *"Glory Items can only be purchased during a
+ * campaign and if the Warband has made a discovery from an Exploration Table
+ * that allows them to take a Glory Item for free or purchase it in the
+ * Quartermaster Step."* The sentence is carried whole, because it is a gate
+ * whose consequence is that a whole section of a faction's shopping list is
+ * absent, and a player looking for an item that is not there is owed the reason
+ * in the book's own words.
+ *
+ * Neither ceiling is read here. What a particular discovery permits is stated
+ * by that discovery — *"you can purchase Glory Items costing 5 ☼ or less"* —
+ * and those sentences are already in `campaign.exploration.locations`. Reading
+ * them there keeps one source for the rule; a list of Locations and ceilings
+ * kept beside this parser would be a second, and it would go stale the first
+ * time the Dispatch prints a fourth merchant.
+ */
+export function parseQuartermasterStep(src = RULEBOOK_TXT) {
+  const lines = toLines(fs.readFileSync(src, 'utf8'));
+
+  /*
+    `Quartermaster Step` is the chapter's running page header and appears
+    dozens of times, exactly as `Trauma Step` does. The passage is found by its
+    own opening sentence and the headings are read from there.
+  */
+  const at = lines.findIndex((l) => l.trim() === 'Retire Injured Models');
+  if (at < 0) {
+    throw new Error(
+      'parse-campaign: the Quartermaster Step no longer prints a "Retire '
+      + 'Injured Models" heading. That section is the only statement of how '
+      + 'many Battle Scars let a player retire a model, and a default here '
+      + 'would be a rule about removing models invented at the keyboard.');
+  }
+
+  /* To the next heading: a short Title Case line with no sentence punctuation,
+     the same shape the Trauma Step passage is read with. */
+  const HEADING_SHAPE = /^[A-Z][A-Za-z’'& ]{2,40}$/;
+  const body = [];
+  for (let i = at + 1; i < Math.min(at + 30, lines.length); i++) {
+    const t = lines[i].trim();
+    if (!t) continue;
+    if (HEADING_SHAPE.test(t)) break;
+    body.push(t);
+  }
+  const retireText = body.join(' ').replace(/\s+/g, ' ').trim();
+
+  const words = { one: 1, two: 2, three: 3, four: 4, five: 5 };
+  const m = /retire any model in your Warband that has (\d|one|two|three|four|five) Battle Scars?/i
+    .exec(retireText);
+  if (!m) {
+    throw new Error(
+      'parse-campaign: cannot read the Battle Scar count that permits '
+      + `retirement from "${retireText.slice(0, 160)}". Retiring at the wrong `
+      + 'count offers a player a model they may not retire, or hides one they '
+      + 'may.');
+  }
+  const atScars = /^\d$/.test(m[1]) ? Number(m[1]) : words[m[1].toLowerCase()];
+
+  /*
+    "You can sell or reallocate their Battlekit or Glory Items before you retire
+    them if you wish, or allow them to retire with their Battlekit in honour of
+    the service they have performed."
+
+    Three dispositions, and the app must offer all three: the kit is sold, it
+    goes back to the Arsenal to be reallocated, or it goes with the model.
+  */
+  if (!/sell or reallocate their Battlekit/i.test(retireText)) {
+    throw new Error(
+      'parse-campaign: the Retire Injured Models section no longer says what '
+      + `becomes of a retired model's Battlekit. Read: "${retireText.slice(0, 160)}". `
+      + 'The app offers three dispositions on the strength of that sentence.');
+  }
+
+  /* The Glory Items gate, from its own page. */
+  const gloryAt = lines.findIndex((l) =>
+    /^Glory Items are pieces of Battlekit\b/.test(l.trim()));
+  if (gloryAt < 0) {
+    throw new Error(
+      'parse-campaign: cannot find the Glory Items passage in the rulebook. It '
+      + 'is the only statement that a Glory Item needs an Exploration discovery '
+      + 'before it can be bought, and without it every Glory Item would be on '
+      + 'sale to every Warband from its first game.');
+  }
+  const gloryBody = [];
+  for (let i = gloryAt; i < Math.min(gloryAt + 12, lines.length); i++) {
+    const t = lines[i].trim();
+    if (!t) continue;
+    if (i > gloryAt && HEADING_SHAPE.test(t)) break;
+    gloryBody.push(t);
+  }
+  const gateText = gloryBody.join(' ').replace(/\s+/g, ' ').trim();
+
+  if (!/Glory Items can only be purchased during a campaign\s+and if the Warband has made a discovery/i
+    .test(gateText)) {
+    throw new Error(
+      'parse-campaign: the Glory Items passage no longer states the discovery '
+      + `gate. Read: "${gateText.slice(0, 200)}". The app hides every Glory Item `
+      + 'row until a discovery opens it, and it must not do that on a sentence '
+      + 'that has stopped saying so.');
+  }
+
+  return {
+    retireInjured: {
+      atScars,
+      text: retireText,
+    },
+    gloryItems: {
+      /* The permission is a discovery, never the passage of time or a price. */
+      needsDiscovery: true,
+      text: gateText,
+    },
+  };
+}
+
 /* ------------------------------------------- the Reinforcements Step sequence */
 
 /**

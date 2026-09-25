@@ -8,6 +8,10 @@ import type { Cost } from '../../types/catalogue';
 import { formatUnitCost } from '../../rules/savedGlory';
 import { profileCost } from '../../rules/costs';
 import { soundEffects } from '../../services/soundEffects';
+import { useDataset } from '../../rules/useDataset';
+import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
+import { armouryFor } from '../../rules/armoury';
+import { gloryItemGrants, grantableRows } from '../../rules/gloryItems';
 import { 
   Package, 
   UserCheck
@@ -19,7 +23,13 @@ interface ArmoryStashModalProps {
 }
 
 export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onClose }) => {
-  const { weapons, armour, equipment, buyToStash, sellFromStash, assignStashToUnit } = useStore();
+  const {
+    weapons, armour, equipment, buyToStash, sellFromStash, assignStashToUnit,
+    takeGrantedGloryItem,
+  } = useStore();
+  const { dataset } = useDataset(
+    (typeof window !== 'undefined'
+      && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
 
   const [activeTab, setActiveTab] = useState<'stash' | 'buy'>('stash');
   const [selectedUnitId, setSelectedUnitId] = useState<string>(warband.units[0]?.id || '');
@@ -102,6 +112,38 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
         </button>
       </div>
     );
+  };
+
+  /*
+    The one-off grants still owed, and what each may be spent on.
+
+    Read from the faction's own Glory Item Table rather than from the shelf the
+    builder was handed: the shelf is filtered by the purchase gate, and a
+    granted item is taken rather than bought, so the gate does not apply to it.
+  */
+  const outstandingGrants = gloryItemGrants(warband.explorationEffects);
+  const grantableFor = (grant: { upTo: number }) => {
+    const table = dataset ? armouryFor(dataset, warband.factionId) : undefined;
+    return grantableRows(table?.rows ?? [], grant).map((r) => ({
+      id: r.weaponId || `glory-${r.name}`,
+      name: r.name,
+      glory: r.cost.glory,
+    }));
+  };
+
+  const handleTakeGrant = (
+    row: { id: string; name: string; glory: number },
+    source: string,
+  ) => {
+    const result = takeGrantedGloryItem(warband.id, {
+      id: row.id,
+      name: row.name,
+      type: 'Equipment',
+      cost: 0,
+      price: { ducats: 0, glory: row.glory },
+      quantity: 1,
+    }, source);
+    if (result === 'taken') soundEffects.playBladeClang();
   };
 
   const handleSell = (itemId: string) => {
@@ -261,6 +303,59 @@ export const ArmoryStashModal: React.FC<ArmoryStashModalProps> = ({ warband, onC
                 </button>
               ))}
             </div>
+
+            {/*
+              A Glory Item a Location handed over, waiting to be taken
+              (finding F).
+
+              Four Locations grant one — "Relic: Choose one Glory Item worth up
+              to 7 ☼ and add it to your Arsenal" — and it is not the standing
+              permission that opens the tables for purchase. The two used to
+              cancel: the p.125 gate hid every Glory Item row from a Warband
+              with no standing permission, so a Warband that had just been
+              handed a free one could not see it to take it.
+
+              Above the purchase list rather than inside it, because it is a
+              decision owed rather than a shelf to browse — the same treatment
+              `RecreationPanel` gives an outstanding offer.
+            */}
+            {outstandingGrants.map((grant) => (
+              <div
+                key={`${grant.source}-${grant.sinceGame}`}
+                className="mb-3 space-y-2 rounded border border-theme-accent/60 bg-theme-surface p-3"
+              >
+                <span className="block font-mono text-xs font-bold uppercase text-theme-accent">
+                  {grant.source} — one Glory Item up to {grant.upTo} Glory, free
+                </span>
+                <div className="max-h-48 space-y-1.5 overflow-y-auto pr-1">
+                  {grantableFor(grant).map((row) => (
+                    <div
+                      key={row.id}
+                      className="flex items-center justify-between gap-2 rounded border border-theme-border bg-theme-elevated p-2 font-mono text-xs"
+                    >
+                      <span className="min-w-0">
+                        <strong className="text-theme-text">{row.name}</strong>
+                        <span className="block text-xs sm:text-[10px] text-theme-muted">
+                          {formatUnitCost(0, row.glory)}
+                        </span>
+                      </span>
+                      <button
+                        onClick={() => handleTakeGrant(row, grant.source)}
+                        className="min-h-[44px] flex-shrink-0 rounded border border-theme-accent/50 bg-theme-base px-3 font-bold text-theme-accent transition-colors hover:bg-theme-accent hover:text-theme-base lg:min-h-0 lg:py-1"
+                      >
+                        Take
+                      </button>
+                    </div>
+                  ))}
+                  {!grantableFor(grant).length && (
+                    <p className="text-xs leading-relaxed text-theme-muted">
+                      This faction&rsquo;s Glory Item Table has nothing at or under
+                      {' '}{grant.upTo} Glory.
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
 
             {/* Purchase Grid */}
             <div className="space-y-2 max-h-80 overflow-y-auto pr-1">

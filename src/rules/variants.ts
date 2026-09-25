@@ -68,6 +68,16 @@ export function variantById(
   if (!variantId) return undefined;
   const variants = dataset.variants ?? [];
   return variants.find((v) => v.id === variantId)
+      /*
+        The catalogue's entry id, which a saved Warband may carry: an imported
+        roster records what BattleScribe selected. `unlockedBy` in
+        `variantLocks.ts` has said this function accepts all three spellings
+        since it was written, and it accepted two — so a Warband whose
+        `variantId` was an entry id resolved to no Variant at all and was shown
+        the faction's standard list, with none of its Variant's renames, limits
+        or revealed abilities.
+      */
+      ?? variants.find((v) => !!v.entryId && v.entryId === variantId)
       ?? variants.find((v) => key(v.name) === key(variantId));
 }
 

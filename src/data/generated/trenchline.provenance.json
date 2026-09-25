@@ -310,6 +310,14 @@
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "parentEntryId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
@@ -5344,6 +5352,14 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "parentEntryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -5435,6 +5451,14 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "parentEntryId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -5532,6 +5556,14 @@
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "parentEntryId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
@@ -5623,6 +5655,14 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "parentEntryId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
@@ -7214,6 +7254,14 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "parentEntryId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -7308,6 +7356,14 @@
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "parentEntryId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
     "name": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
@@ -7399,6 +7455,14 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "hiddenByDefault": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "secondaryProfile": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "parentEntryId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },

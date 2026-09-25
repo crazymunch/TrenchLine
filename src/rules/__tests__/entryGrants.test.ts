@@ -67,14 +67,33 @@ describe('a Battlekit profile is not an Armoury Table row', () => {
   });
 });
 
-describe('the Campaign Rules catalogue is not a faction armoury', () => {
-  it('holds for every entry it carries', () => {
-    const rows = new Set(
-      DATASET.armouries.flatMap((a) => a.rows.map((r) => r.weaponId).filter(Boolean)),
-    );
+describe('the Campaign Rules catalogue is not a faction Armoury Table', () => {
+  /*
+    It is not an Armoury Table, and since RR-14 it is the source of one other
+    thing that IS a faction shelf: the Glory Item Tables (p.125 onward), whose
+    rows are entered in `Campaign Rules.cat` and nowhere else.
+
+    So the claim this test makes is narrower than it was, and more exact. A
+    Campaign Rules entry reaches a faction's rows only as a Glory Item, which
+    the rulebook prints under that faction's own heading — never as ordinary
+    Battlekit, which is what would pre-empt `stockedByEntry`.
+  */
+  it('reaches a faction\u2019s rows only as a Glory Item', () => {
+    const gloryIds = new Set(
+      DATASET.armouries.flatMap((a) => a.rows
+        .filter((r) => r.section === 'Glory Items')
+        .map((r) => r.weaponId).filter(Boolean)));
+    const otherIds = new Set(
+      DATASET.armouries.flatMap((a) => a.rows
+        .filter((r) => r.section !== 'Glory Items')
+        .map((r) => r.weaponId).filter(Boolean)));
+
     const campaign = DATASET.weapons.filter((w) => w.factionId === 'Campaign Rules');
     expect(campaign.length).toBeGreaterThan(100);
-    expect(campaign.filter((w) => rows.has(w.id))).toEqual([]);
+    /* Nothing from this catalogue is ordinary Battlekit on anyone's table. */
+    expect(campaign.filter((w) => otherIds.has(w.id))).toEqual([]);
+    /* And the Glory Items are: the tables resolve their profiles here. */
+    expect(campaign.filter((w) => gloryIds.has(w.id)).length).toBeGreaterThan(20);
   });
 
   it('stocks Curative Fluids, a Ransacked Alchemist Workshop find', () => {

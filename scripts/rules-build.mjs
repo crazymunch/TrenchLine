@@ -24,6 +24,8 @@ import { parseThresholdTable, parseStartingBudget, parseExploration,
          parseSkillsTables, parseTraumaTable, parseExperienceTrack,
          parseCampaignPhaseSteps, parseTraumaProcedure,
          parseReinforcementsSequence, parseCampaignVictoryPoints,
+         parseQuartermasterStep, parseGloryItemTables,
+         parseCampaignScenarioTables,
          parsePromotions, promotionKeywordDrift } from './lib/parse-campaign.mjs';
 import { parseBattlekit, parseBattlekitLimits, parseKeywordCarryRules, keywordGrantsFrom, parseWarbandsBattlekit } from './lib/parse-battlekit.mjs';
 import { parseCarryAllowances } from './lib/parse-carry-allowances.mjs';
@@ -34,7 +36,7 @@ import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { parseWeatherEvents } from './lib/parse-weather.mjs';
 import { parsePatrons } from './lib/parse-patrons.mjs';
-import { parseCarcassFrontExploration } from './lib/parse-cf-exploration.mjs';
+import { parseCarcassFrontExploration, parseCarcassFrontExplorationStep } from './lib/parse-cf-exploration.mjs';
 import { parseCarcassFrontCampaigns } from './lib/parse-cf-campaign.mjs';
 import { parseVisionCards } from './lib/parse-vision-cards.mjs';
 import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
@@ -304,6 +306,10 @@ for (const ruleset of RULESETS) {
     either.
   */
   const carcassFrontExploration = parseCarcassFrontExploration();
+  /* The Step's own two numbers, read from the book rather than written into
+     `src/rules/campaign.ts` beside a citation — see
+     `parseCarcassFrontExplorationStep`. */
+  const carcassFrontExplorationStep = parseCarcassFrontExplorationStep();
 
   /*
     The two campaigns the book prints, and the sixteen Vision cards.
@@ -769,6 +775,11 @@ for (const ruleset of RULESETS) {
       */
       carcassFrontExploration: ruleset.layers.includes(CARCASS_FRONT)
         ? carcassFrontExploration : undefined,
+      /* 3D6 that does not grow with games played, and loot at five a point
+         rather than ten. Undefined on a ruleset without the supplement, which
+         is the honest answer and the one the panel refuses on. */
+      carcassFrontExplorationStep: ruleset.layers.includes(CARCASS_FRONT)
+        ? carcassFrontExplorationStep : undefined,
       // The other two post-battle tables. `officialRulesData.ts` still holds
       // hand-written versions of both, and the four Skills tables there are
       // fabricated (AUDIT §1.13) — these are what replaces them.
@@ -804,6 +815,33 @@ for (const ruleset of RULESETS) {
        * docs/RULES-COVERAGE-AUDIT.md RC-09.
        */
       reinforcements: parseReinforcementsSequence(),
+      /**
+       * The Quartermaster Step's own two numbers.
+       *
+       * `retireInjured.atScars` is the count at which a player MAY retire a
+       * model (p.123) — a different rule from `traumaProcedure.battleScars`,
+       * which is the count at which the book retires one for them. The app had
+       * the compulsory one and not the voluntary one, so a Warband's two-scar
+       * veterans could only leave the roster by dying.
+       *
+       * `gloryItems` is the gate (p.125): a Glory Item needs an Exploration
+       * discovery before it can be bought at all. What a given discovery
+       * permits is stated by that discovery, in `exploration.locations`.
+       */
+      quartermaster: parseQuartermasterStep(),
+      /**
+       * Which scenario a campaign game is played on (p.96).
+       *
+       * Three D6 tables banded by game number, and a twelfth game the book
+       * names outright. The Mission Generator picked from the whole scenario
+       * list at every game, so a first game could land on From Below and the
+       * Great War could turn up in game two — the bands exist precisely so
+       * that it cannot.
+       *
+       * Resolved against `scenarios` as it is built above, so a table naming a
+       * scenario this ruleset does not carry fails the build.
+       */
+      scenarioTables: parseCampaignScenarioTables(scenarios),
       /**
        * The six Campaign Phase Steps, in the order the book states.
        *
@@ -978,6 +1016,79 @@ for (const ruleset of RULESETS) {
     });
   }
   dataset.armouries = [...armouryByFaction.values()];
+
+  /*
+    The Glory Item Tables (pp.125 to 127), which had never been parsed at all.
+
+    They join the faction's own armoury as a `Glory Items` section rather than
+    a collection of their own, because every reader of an offer already goes
+    through `armouryFor` / `offersOf` / `priceOf` / `restrictionsFor`, and a
+    second collection would be a second place each of them has to learn about.
+    It is also the shape the Dispatch's own ops assume — "Add the following
+    entry to the BLACK GRAIL Glory Items Table" had no table to add to, and
+    reported as unapplied on every build.
+
+    The SECTION is what makes them gateable. Page 125 distinguishes a Glory
+    Item from the Glory-priced Battlekit in a faction's Armoury Table, and only
+    the first needs an Exploration discovery — so `gloryItemGate` in
+    `src/rules/gloryItems.ts` keys on `section`, never on the currency. A
+    Martyrdom Pill is 1 Glory and needs no discovery; a Knighthood is 4 Glory
+    and does.
+
+    A table whose faction has no armoury is a build failure rather than a
+    dropped table: it would mean a whole faction's Glory Items silently on
+    offer to nobody.
+  */
+  /*
+    A Glory Item's profile comes from `Campaign Rules.cat` and from nowhere
+    else, because that is the catalogue the Glory Items are entered in — 25 of
+    the 34 distinct rows resolve there and the rules text on each one is the
+    Glory Item Cartulary's.
+
+    Matching by name across every catalogue instead leaks: the Iron Sultanate
+    catalogue carries a `Rocket-Propelled Grenade` gated on `Nomads of
+    Al-Badia`, which `thirdPartyGate` classes as unofficial content, and the
+    rulebook prints an official Rocket-Propelled Grenade in five Glory Item
+    Tables. A bare name match handed New Antioch's official Glory Item the
+    unofficial Sultanate profile, and third-party wargear reached the recruit
+    list of a faction that had not opted in.
+
+    A row that resolves to nothing keeps `weaponId: null`, which is the same
+    answer the Armoury Tables already give for Battlekit the catalogues lack:
+    the offer is real and priced by the book, and its rules are in the
+    Cartulary rather than in a catalogue.
+  */
+  const GLORY_CATALOGUE = 'Campaign Rules.cat';
+  const gloryProfileByName = new Map();
+  for (const w of dataset.weapons) {
+    if (w.sourceFile !== GLORY_CATALOGUE) continue;
+    const k = w.name.toLowerCase();
+    if (!gloryProfileByName.has(k)) gloryProfileByName.set(k, w);
+  }
+
+  const gloryTables = parseGloryItemTables(dataset.factions ?? []);
+  for (const table of gloryTables) {
+    const armoury = armouryByFaction.get(table.factionId)
+      ?? dataset.armouries.find((a) => a.factionId === table.factionId);
+    if (!armoury) {
+      throw new Error(
+        `rules-build: the "${table.faction} Glory Items" table resolves to faction `
+        + `"${table.factionId}", which has no Armoury Table to join. Its `
+        + `${table.rows.length} Glory Items would be readable by nobody.`);
+    }
+    for (const row of table.rows) {
+      const w = gloryProfileByName.get(row.name.toLowerCase());
+      if (!w) unmatchedRows++;
+      armoury.rows.push({
+        name: row.name,
+        weaponId: w?.id ?? null,
+        section: row.section,
+        cost: row.cost,
+        restrictions: row.restrictions,
+        ...(row.priceRange ? { priceRange: row.priceRange } : {}),
+      });
+    }
+  }
 
   /*
     Carcass Front prints its own Armoury Table per faction, in the same shape

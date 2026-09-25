@@ -556,6 +556,34 @@ export const AddUnitModal: React.FC<AddUnitModalProps> = ({ warbandId, factionId
                         </div>
                       )}
 
+                      {/*
+                        What another Variant would add (DA-01).
+
+                        These used to be printed above, as the model's own
+                        rules: a standard New Antioch Shocktrooper's card
+                        carried Axe Mastery, Shield Bash, Indomitable and Weapon
+                        Familiarity, which belong to the Remnants of Byzantium.
+                        The fact is worth having and the place for it is here,
+                        under a heading that says whose they are — a player
+                        choosing a Variant should be able to see what each one
+                        turns this entry into.
+                      */}
+                      {unit.variantAbilities && unit.variantAbilities.length > 0 && (
+                        <div className="text-xs text-theme-muted space-y-1 leading-relaxed border-l-2 border-theme-border pl-2">
+                          <span className="eyebrow text-theme-muted block">
+                            Under another Variant
+                          </span>
+                          {unit.variantAbilities.map((ab) => (
+                            <p key={ab.id}>
+                              <strong className="text-theme-text">{ab.name}</strong>
+                              {ab.variantOnly?.length
+                                ? ` (${ab.variantOnly.join(', ')})` : ''}
+                              : {ab.description}
+                            </p>
+                          ))}
+                        </div>
+                      )}
+
                       <label className="block">
                         <span className="eyebrow text-theme-muted block mb-1">
                           Name the next one (optional)
