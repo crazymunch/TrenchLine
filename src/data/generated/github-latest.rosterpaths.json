@@ -58235,6 +58235,27 @@
           "type": "model",
           "parents": [],
           "carries": {
+            "Guard Dog": [
+              {
+                "path": [1571],
+                "groupPath": [1572],
+                "group": 110
+              }
+            ],
+            "Martyrdom Dog": [
+              {
+                "path": [1573],
+                "groupPath": [1572],
+                "group": 110
+              }
+            ],
+            "Mercy Dog": [
+              {
+                "path": [1574],
+                "groupPath": [1572],
+                "group": 110
+              }
+            ],
             "Hellhound": [
               {
                 "path": [1575],
@@ -81761,6 +81782,13 @@
                 "group": 110
               }
             ],
+            "Attack Dog": [
+              {
+                "path": [1873],
+                "groupPath": [1871],
+                "group": 110
+              }
+            ],
             "Fireteam Alpha": [
               {
                 "path": [1874],
@@ -90823,6 +90851,13 @@
           {
             "path": [274],
             "type": "model"
+          }
+        ],
+        "Winged": [
+          {
+            "path": [275],
+            "groupPath": [273],
+            "group": 24
           }
         ],
         "Plague Blade": [

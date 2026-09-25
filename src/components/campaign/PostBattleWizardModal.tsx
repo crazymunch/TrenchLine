@@ -8,6 +8,7 @@ import { useScenarios } from '../../rules/useScenarios';
 import {
   explorationBandFor, resolveExploration, campaignGameOf,
   explorationPool, explorationGrants, explorationLootBonus, explorationFromModels,
+  explorationChoices,
   explorationRerolls,
   type ExplorationEffect,
   reinforcementGlory, reinforcementCost, reinforcementsSequence,
@@ -332,6 +333,21 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     (FD-07 / RR-10). It is collected here and passed to the store, so a
     Location found is a Location recorded.
   */
+  /*
+    Which of a Location's options the player took (finding B).
+
+    Thirteen of the shipped Locations print "Choose one of the following
+    options:" and the Trench Merchant's two are opposites — 2 Glory now, or the
+    Glory Item Table open for the rest of the campaign. The step read the whole
+    description and recorded the permission whichever one was chosen, so a
+    Warband that banked the Glory got the shop as well.
+
+    Held beside the roll and cleared with it: a re-roll finds a different
+    Location and the answer to the old one means nothing.
+  */
+  const [explorationChoice, setExplorationChoice] = useState<string | null>(null);
+  const [explorationLocation, setExplorationLocation] =
+    useState<{ name: string; description?: string } | null>(null);
   const [explorationFound, setExplorationFound] =
     useState<{ discovered?: string; effects: ExplorationEffect[] }>({ effects: [] });
 
@@ -381,6 +397,8 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     recorded Victory is what the book's sentence is about either way.
   */
   const explorationRerollAllowance = explorationRerolls(outcome, explorePool.rerolls);
+  /* The options the Location just found offers, if any. */
+  const explorationLocationChoices = explorationChoices(explorationLocation);
   const explorationRerollsLeft =
     explorationRerollAllowance - (explorationDiceRolled ?? []).filter((d) => d.rerolled).length;
   const openTables = band.tables.length ? { tables: band.tables, choose: band.choose } : null;
@@ -732,7 +750,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
    *     discovery. The tables are sparse on purpose: an unlisted roll finds
    *     nothing and still pays loot.
    */
-  const resolveExplorationRoll = (rollNum: number) => {
+  const resolveExplorationRoll = (rollNum: number, choice?: string) => {
     if (!dataset) return;
     const found = warband.explorationDiscoveries ?? [];
     /*
@@ -750,7 +768,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     */
     const held = explorationHeld;
     const peek = resolveExploration(dataset, total, explorationTable, found);
-    const granted = explorationGrants(dataset, peek?.location, gamesPlayed);
+    /* A Location with options grants nothing until one is picked; the radio
+       rows below re-run this through `chooseExploration`. */
+    const granted = explorationGrants(dataset, peek?.location, gamesPlayed, choice);
     const outcome = resolveExploration(dataset, total, explorationTable, found,
       explorationLootBonus([...held, ...granted]));
     if (!outcome) return;
@@ -767,12 +787,28 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     });
     /* Only a Location actually discovered is recorded: a Pillaged result is
        one this Warband already has, and a roll off the table found nothing. */
+    setExplorationLocation(outcome.location ?? null);
+    setExplorationChoice(choice ?? null);
     setExplorationFound(outcome.location
       ? { discovered: outcome.location.name, effects: granted }
       : { effects: [] });
     // Loot replaces rather than accumulates: rolling again is a correction, not
     // a second Exploration.
     setDucatsGained(outcome.loot);
+  };
+
+  /*
+    Take one of the Location's options. Re-runs the same resolution with the
+    label, so the loot, the record and the effects all come from one place —
+    the alternative was a second path that decided what a choice grants, and two
+    readers of one sentence is how they drift.
+  */
+  const chooseExploration = (label: string) => {
+    setExplorationChoice(label);
+    const total = explorationDiceRolled
+      ? explorationDiceRolled.reduce((sum, die) => sum + die.value, 0)
+      : Number(explorationResult?.roll ?? 0);
+    if (total > 0) resolveExplorationRoll(total, label);
   };
 
   const d6 = () => Math.floor(Math.random() * 6) + 1;
@@ -2610,6 +2646,50 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                       {explorationResult.roll ? `Roll ${explorationResult.roll} — ` : ''}{explorationResult.title} ({explorationResult.reward})
                     </span>
                     <p className="text-xs text-theme-text leading-relaxed">{explorationResult.description}</p>
+
+                    {/*
+                      The Location's own options, where it offers a choice
+                      (finding B). Thirteen do, and the Trench Merchant's are
+                      opposites — 2 Glory now, or the Glory Item Table open for
+                      good — so the step must ask rather than read both.
+
+                      A column of full-width 44px rows: each carries a sentence,
+                      and sentences side by side at 375px are unreadable.
+                    */}
+                    {explorationLocationChoices.length > 0 && (
+                      <fieldset className="space-y-1.5 pt-1.5">
+                        <legend className="text-xs sm:text-[11px] font-bold uppercase text-theme-primary">
+                          Choose one
+                        </legend>
+                        {explorationLocationChoices.map((c) => (
+                          <label
+                            key={c.label}
+                            className={`flex min-h-[44px] w-full cursor-pointer items-start gap-2 rounded border p-2 transition-colors ${
+                              explorationChoice === c.label
+                                ? 'border-theme-primary bg-theme-elevated'
+                                : 'border-theme-border bg-theme-surface hover:border-theme-primary/60'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="exploration-choice"
+                              className="mt-1 h-5 w-5 flex-shrink-0 accent-current text-theme-primary"
+                              checked={explorationChoice === c.label}
+                              onChange={() => chooseExploration(c.label)}
+                            />
+                            <span className="min-w-0 text-xs leading-relaxed">
+                              <strong className="block text-theme-text">{c.label}</strong>
+                              <span className="block text-theme-muted">{c.text}</span>
+                            </span>
+                          </label>
+                        ))}
+                        {!explorationChoice && (
+                          <p className="text-xs sm:text-[11px] leading-relaxed text-status-warning">
+                            Nothing is recorded on the Roster until one is chosen.
+                          </p>
+                        )}
+                      </fieldset>
+                    )}
                   </div>
                 )}
               </div>

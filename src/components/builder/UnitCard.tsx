@@ -16,7 +16,9 @@ import { formulaeHeld } from '../../rules/formulaShelf';
 import { catalogueUnitFor } from '../../rules/catalogueUnit';
 import { golemGrant, isGolem } from '../../rules/golem';
 import { mayRetire } from '../../rules/retire';
-import { visibleAbilities, modelSelections } from '../../rules/applyVariant';
+import { modelSelections } from '../../rules/applyVariant';
+import { swappedProfile } from '../../rules/statlineOptions';
+import { shownAbilitiesFor } from '../../rules/shownAbilities';
 import { variantById } from '../../rules/variants';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
@@ -24,7 +26,6 @@ import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
 import { KeywordText, KeywordChip } from '../ui/KeywordText';
 import { DATASET } from '@/data/generated/trenchline.generated';
 import { effectiveMovement, type TraumaRow } from '@/rules/effectiveStats';
-import type { Dataset } from '@/types/catalogue';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
@@ -63,16 +64,6 @@ interface UnitCardProps {
 }
 
 export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll = false }) => {
-  /* Injuries reaching the statline they modify — reported from a live game,
-     where a Leg Wound left the printed Movement on the card. */
-  const injuredMovement = effectiveMovement(
-    unit.profileSnapshot.stats.movementInches
-      ? `${unit.profileSnapshot.stats.movementInches}"`
-      : unit.profileSnapshot.stats.movement,
-    unit.injuries ?? [],
-    DATASET.campaign.trauma as TraumaRow[],
-  );
-
   const { 
     removeUnitFromWarband, 
     duplicateUnit,
@@ -127,6 +118,29 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
     [cardDataset, unit, warbandFaction]);
 
   /*
+    The second statline this model has been given, where its entry offers one
+    (DA-02, finding N). A Fly Thrall moves 6"/Flying where the Thrall walks 5";
+    a Guard Dog is its own profile. Null for a model that has taken none, which
+    is every model whose entry states one profile.
+  */
+  const swapped = React.useMemo(
+    () => swappedProfile(
+      cardDataset,
+      catalogueUnitFor(cardDataset, unit, warbandFaction),
+      modelSelections(unit)),
+    [cardDataset, unit, warbandFaction]);
+  const shownStats = swapped ? swapped.stats : unit.profileSnapshot.stats;
+  /* Injuries reaching the statline they modify — reported from a live game,
+     where a Leg Wound left the printed Movement on the card. Computed after
+     `swapped`, which it reads: a Leg Wound takes 2" off the statline the model
+     actually has, and a Fly Thrall's is not the Thrall's. */
+  const injuredMovement = effectiveMovement(
+    shownStats.movementInches ? `${shownStats.movementInches}"` : shownStats.movement,
+    unit.injuries ?? [],
+    (cardDataset?.campaign?.trauma ?? DATASET.campaign.trauma) as TraumaRow[],
+  );
+
+  /*
     The abilities this MODEL prints, as equipped (DA-01).
 
     `profileSnapshot.innateAbilities` was resolved when the model was recruited,
@@ -143,21 +157,14 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   */
   const warbandVariantId = useStore(
     (st) => st.warbands.find((w) => w.id === warbandId)?.variantId);
-  const shownAbilities = React.useMemo(() => {
-    const entry = catalogueUnitFor(cardDataset, unit, warbandFaction);
-    if (!cardDataset || !entry) return unit.profileSnapshot.innateAbilities ?? [];
-    const visible = new Set(visibleAbilities(entry, {
+  const shownAbilities = React.useMemo(
+    () => shownAbilitiesFor({
       dataset: cardDataset,
-      variant: variantById(cardDataset, warbandVariantId),
-      selections: modelSelections(unit),
-      rosterSelections: [],
-    }).map((a) => a.name.trim().toLowerCase()));
-    /* Filtered rather than replaced: the snapshot is what the roster holds,
-       including anything a campaign added to it, and this only removes the
-       ones the entry says are not printed on this model as it stands. */
-    return (unit.profileSnapshot.innateAbilities ?? [])
-      .filter((a) => visible.has(a.name.trim().toLowerCase()));
-  }, [cardDataset, unit, warbandFaction, warbandVariantId]);
+      entry: catalogueUnitFor(cardDataset, unit, warbandFaction),
+      variant: cardDataset ? variantById(cardDataset, warbandVariantId) : undefined,
+      unit,
+    }),
+    [cardDataset, unit, warbandFaction, warbandVariantId]);
   /*
     The Book of Golems, GOLEM-1.
 
@@ -195,8 +202,11 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   const [isLoreModalOpen, setIsLoreModalOpen] = useState(false);
   const [isConfirmDismissOpen, setIsConfirmDismissOpen] = useState(false);
   const [isRetireOpen, setIsRetireOpen] = useState(false);
-  /* Whether the Quartermaster Step offers to retire this model (p.123). */
-  const retirement = mayRetire(DATASET as unknown as Dataset, unit);
+  /* Whether the Quartermaster Step offers to retire this model (p.123).
+     Against the ruleset the card is READING, not the one bundled at build time:
+     a player on another ruleset was being offered a retirement its own dataset
+     may not state. */
+  const retirement = mayRetire(cardDataset, unit);
   const [expandedAbilities, setExpandedAbilities] = useState<Record<string, boolean>>({});
   const [favouriteSaved, setFavouriteSaved] = useState(false);
 
@@ -633,10 +643,10 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               */
               ['MOV', injuredMovement.effective, injuredMovement.delta !== 0
                 ? `was ${injuredMovement.base}`
-                : unit.profileSnapshot.stats.movementType],
-              ['RNG', unit.profileSnapshot.stats.ranged, undefined],
-              ['MELEE', unit.profileSnapshot.stats.melee, undefined],
-              ['ARMOUR', unit.profileSnapshot.stats.armour, undefined],
+                : shownStats.movementType],
+              ['RNG', shownStats.ranged, undefined],
+              ['MELEE', shownStats.melee, undefined],
+              ['ARMOUR', shownStats.armour, undefined],
             ] as const).map(([label, value, sub]) => (
               <div key={label} className="min-w-0 px-1 py-1.5 text-center">
                 <span className="block font-mono text-xs sm:text-[10px] tracking-[0.06em] text-theme-muted">
@@ -1112,6 +1122,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
         <RetireUnitModal
           warbandId={warbandId}
           unit={unit}
+          /* The card's own ruleset, so the modal and the button that opened it
+             cannot disagree about whether the rule exists. */
+          dataset={cardDataset}
           onClose={() => setIsRetireOpen(false)}
         />
       )}

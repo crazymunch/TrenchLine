@@ -116,16 +116,100 @@ export function offerableRows(
 }
 
 /**
+ * A Glory Item a Location handed over and the Warband has not yet taken.
+ *
+ * Four Locations grant one — *"Relic: Choose one Glory Item worth up to 7 ☼ and
+ * add it to your Arsenal"* — and it is not the standing permission above: the
+ * shop does not open, one item comes home. The two cancelled before finding F:
+ * the gate hid every Glory Item row from a Warband with no standing permission,
+ * so a Warband that had just been handed a free one could not see it to take
+ * it.
+ */
+export interface GloryItemGrant {
+  /** The Location that handed it over. */
+  source: string;
+  /** The highest Glory price the grant covers. */
+  upTo: number;
+  /** The campaign game it was granted in. */
+  sinceGame: number;
+}
+
+/** The one-off grants this Warband still owes itself, oldest first. */
+export function gloryItemGrants(
+  held: readonly ExplorationEffect[] | undefined,
+): GloryItemGrant[] {
+  return (held ?? [])
+    .filter((e) => typeof e.gloryItemOnce === 'number' && e.takenAtGame === undefined)
+    .map((e) => ({
+      source: e.source || e.name,
+      upTo: e.gloryItemOnce!,
+      sinceGame: e.sinceGame,
+    }));
+}
+
+/**
+ * The rows a one-off grant can be spent on: this faction's Glory Items at or
+ * under its ceiling.
+ *
+ * Deliberately NOT `offerableRows`, which answers a different question — what
+ * may be PURCHASED, which needs the standing permission. A granted item is
+ * taken rather than bought, so the gate does not apply to it.
+ */
+export function grantableRows(
+  rows: readonly ArmouryRow[],
+  grant: Pick<GloryItemGrant, 'upTo'>,
+): ArmouryRow[] {
+  return rows.filter((r) => isGloryItem(r) && r.cost.glory <= grant.upTo);
+}
+
+/**
  * Why the Glory Items are not on the list, in one sentence.
  *
  * Returned rather than rendered so the same words can appear in the equip sheet
  * and in a legality report. Empty where the tables ARE open, which is the
  * caller's signal to say nothing.
  */
-export function gloryItemNotice(permission: GloryItemPermission): string {
-  if (permission.upTo === null) {
-    return 'Glory Items need an Exploration discovery — a Trench Merchant, a Black '
-      + 'Market or a Black Network Contact — before they can be purchased.';
+export function gloryItemNotice(
+  permission: GloryItemPermission,
+  dataset?: Dataset | null,
+): string {
+  if (permission.upTo !== null) {
+    return `Glory Items up to ${permission.upTo} Glory, from ${permission.sources.join(' and ')}.`;
   }
-  return `Glory Items up to ${permission.upTo} Glory, from ${permission.sources.join(' and ')}.`;
+
+  /*
+    The rule in the book's own words, and the Locations named from the dataset.
+
+    Both used to be typed here — three Location names in a string literal, while
+    `permission.text` carried the rulebook's sentence and nothing read it. A
+    hand-kept list of which discoveries open the tables is the thing that goes
+    stale the first time the Dispatch prints a fourth merchant, which is the
+    same argument `explorationGrants` is built on.
+  */
+  const openers = openingLocations(dataset ?? null);
+  const rule = permission.text
+    ? permission.text.replace(/^.*?However,\s*/s, '').trim()
+    : 'Glory Items can only be purchased once the Warband has made a discovery '
+      + 'from an Exploration Table.';
+  return openers.length
+    ? `${rule} ${openers.join(', ')} ${openers.length === 1 ? 'is' : 'are'} the one${openers.length === 1 ? '' : 's'} that do.`
+    : rule;
+}
+
+/**
+ * The Locations whose own text opens the Glory Item Tables for good.
+ *
+ * Found by the sentence rather than by name — *"From now on, in the
+ * Quartermaster Step, you can purchase Glory Items costing N ☼ or less"* — so a
+ * Location the Dispatch adds is named here the day it is parsed.
+ */
+export function openingLocations(dataset: Dataset | null | undefined): string[] {
+  const tables = dataset?.campaign?.exploration?.locations;
+  if (!tables) return [];
+  const all = Object.values(tables as Record<string, { name: string; description?: string }[]>)
+    .flat();
+  return all
+    .filter((l) => /From now on,?\s+in (?:the|your) Quartermaster Step,?\s+you can purchase Glory Items/i
+      .test(l.description ?? ''))
+    .map((l) => l.name);
 }

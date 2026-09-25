@@ -26,6 +26,7 @@ import { explorationGrants } from '../campaign';
 import {
   gloryItemPermission, offerableRows, isGloryItem, gloryItemNotice,
 } from '../gloryItems';
+import { explorationChoices } from '../campaign';
 
 const dataset = DATASET as unknown as Dataset;
 const factionIds = (dataset.factions ?? []).map((f) => f.id);
@@ -104,12 +105,35 @@ describe('what opens the tables', () => {
     ceiling. None of those numbers is typed anywhere in the app.
   */
   it.each([
-    ['Trench Merchant', 5],
-    ['Black Market', 8],
-    ['Black Network Contact', 12],
-  ])('%s opens them to %i Glory, from its own sentence', (name, upTo) => {
-    const granted = explorationGrants(dataset, location(name), 1);
+    ['Trench Merchant', 'Trade', 5],
+    ['Black Market', undefined, 8],
+    ['Black Network Contact', undefined, 12],
+  ] as const)('%s opens them to %i Glory, from its own sentence', (name, choice, upTo) => {
+    const granted = explorationGrants(dataset, location(name), 1, choice);
     expect(granted.map((g) => g.gloryItemsUpTo)).toContain(upTo);
+  });
+
+  /*
+    And the Trench Merchant's OTHER option does not (finding B). Its two are
+    alternatives — "Report: Your Warband gains 2 ☼" against "Trade: From now on,
+    in the Quartermaster Step, you can purchase Glory Items costing 5 ☼ or
+    less" — and the grant used to be read off the whole description, so a
+    Warband that banked the Glory had the shop opened as well.
+  */
+  it('does not open them when the player takes the Trench Merchant\u2019s Report', () => {
+    expect(explorationGrants(dataset, location('Trench Merchant'), 1, 'Report'))
+      .toEqual([]);
+  });
+
+  it('and grants nothing at all until one of the options is chosen', () => {
+    expect(explorationGrants(dataset, location('Trench Merchant'), 1)).toEqual([]);
+  });
+
+  it('offers exactly the options the Location prints', () => {
+    expect(explorationChoices(location('Trench Merchant')).map((c) => c.label))
+      .toEqual(['Report', 'Trade']);
+    /* The Black Market states its permission outright and offers no choice. */
+    expect(explorationChoices(location('Black Market'))).toEqual([]);
   });
 
   /*
@@ -127,7 +151,7 @@ describe('what opens the tables', () => {
 
   it('takes the higher of two permissions, because the lower stays true', () => {
     const held = [
-      ...explorationGrants(dataset, location('Trench Merchant'), 1),
+      ...explorationGrants(dataset, location('Trench Merchant'), 1, 'Trade'),
       ...explorationGrants(dataset, location('Black Network Contact'), 4),
     ];
     expect(gloryItemPermission(dataset, held).upTo).toBe(12);
@@ -165,7 +189,7 @@ describe('the shelf a Warband is offered', () => {
 
   it('opens up to the discovery\'s ceiling and no further', () => {
     const merchant = gloryItemPermission(
-      dataset, explorationGrants(dataset, location('Trench Merchant'), 1));
+      dataset, explorationGrants(dataset, location('Trench Merchant'), 1, 'Trade'));
     const offered = offerableRows(rows('new-antioch'), merchant).filter(isGloryItem);
     expect(offered.length).toBeGreaterThan(0);
     expect(offered.every((r) => r.cost.glory <= 5)).toBe(true);
@@ -196,7 +220,8 @@ describe('the recruit list', () => {
 
   it('offers them once a Trench Merchant has been found', () => {
     const r = recruitable(dataset, 'new-antioch', factionIds, undefined,
-      gloryItemPermission(dataset, explorationGrants(dataset, location('Trench Merchant'), 1)));
+      gloryItemPermission(dataset,
+        explorationGrants(dataset, location('Trench Merchant'), 1, 'Trade')));
     const names = [...r.weapons, ...r.armour, ...r.equipment].map((x) => x.name);
     expect(names).toContain('Knighthood');
   });

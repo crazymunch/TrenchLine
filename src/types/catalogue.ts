@@ -168,6 +168,23 @@ export interface UnitOption {
   profileId?: string;
   /** Conditional rules attached to the option itself. */
   modifiers?: Modifier[];
+  /**
+   * The Unit profile this option swaps in, where the option IS a statline.
+   *
+   * An entry can state more than one Unit profile and let the player choose:
+   * "Grail Thralls / Fly Thralls" is one entry with two, and a Trench Dog takes
+   * one of five specializations. Those sub-entries used to be emitted as
+   * separate recruits (DA-02); taking them off the recruit list without this
+   * made them unfieldable, because `optionsOf` skips any sub-entry carrying a
+   * Unit profile.
+   *
+   * Points at `UnitProfile.id` of the matching `secondaryProfile`. The card and
+   * Play Mode's reference sheet read it to show the statline the model actually
+   * has — a Fly Thrall's 6"/Flying rather than the Thrall's 5"/Infantry.
+   *
+   * Absent on every ordinary option, which states a rule rather than a profile.
+   */
+  unitProfileId?: string;
 }
 
 /* ----------------------------------------------------------------- rules */
@@ -232,6 +249,20 @@ export interface Keyword {
  * Evaluated by `src/rules/modifiers.ts` against a roster selection.
  */
 export interface Modifier {
+  /**
+   * The id of the profile this modifier is written on, where it is written on
+   * one (DA-01, review round 1 finding J).
+   *
+   * `origin` is readable — `profile:Hateful` — and a name is not an identity:
+   * the Yoke Fiend states `Hateful` twice, once for a Fang of the Seething
+   * Black Warband and once for everybody else, each hidden by its own
+   * condition. Matched on the name alone, both modifiers applied to both
+   * profiles and the ability disappeared under every Variant.
+   *
+   * Absent on an entry-level modifier and on a ruleset generated before this,
+   * so a reader falls back to `origin`.
+   */
+  originId?: string;
   /** BattleScribe's verbs. `set` is by far the most common. */
   op: 'set' | 'increment' | 'decrement' | 'add' | 'remove'
     | 'append' | 'prepend' | 'replace' | 'set-primary' | 'unset-primary';
@@ -1804,6 +1835,20 @@ export interface Dataset {
      * is on sale".
      */
     quartermaster?: QuartermasterStep;
+    /**
+     * The Carcass Front Exploration Step's own two numbers, read from the
+     * supplement (RR-09, review round 1 finding I).
+     *
+     * `startingDice` is **3** and does not grow with games played — it grows
+     * with Campaign Tracker rewards and Camp buildings — and `lootPerPoint` is
+     * **5** where the rulebook pays 10. Both were constants in
+     * `rules/campaign.ts` with the book cited beside them, which is one rung
+     * short of rule 1: the citation was right and the numbers were typed.
+     *
+     * Undefined on a ruleset without the supplement, which is what the
+     * Exploration panel refuses on rather than falling back to the rulebook's.
+     */
+    carcassFrontExplorationStep?: { startingDice: number; lootPerPoint: number };
     /**
      * Which scenario a campaign game is played on (p.96).
      *

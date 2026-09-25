@@ -177,8 +177,23 @@ describe('every reveal in the shipped catalogues', () => {
     catalogue release that introduces a new one fails this rather than quietly
     dropping an ability for somebody mid-campaign.
   */
-  it('can be decided, so none is silently left unapplied', () => {
-    expect(unknownVisibilityLeaves(dataset)).toEqual([]);
+  it('is decided, or is named here with the reason it cannot be', () => {
+    /*
+      Two, and both are a name the dataset carries nowhere: `Banshee` on the
+      Chorister's Unholy Hymns and `Martyred` on the Trench Pilgrim's
+      Resurrection. Neither is a Variant, an Armoury row, an option or a group,
+      so membership cannot be resolved and the modifier is left unapplied —
+      which leaves the ability exactly as the catalogue printed it, the safe
+      side.
+
+      Pinned as a list rather than a count so a third has to be explained
+      rather than absorbed, and so a catalogue release that resolves one of
+      these fails here rather than passing unnoticed.
+    */
+    expect(unknownVisibilityLeaves(dataset)).toEqual([
+      { unit: 'Chorister', ability: 'Unholy Hymns', leaf: 'Banshee' },
+      { unit: 'Trench Pilgrim', ability: 'Resurrection', leaf: 'Martyred' },
+    ]);
   });
 });
 

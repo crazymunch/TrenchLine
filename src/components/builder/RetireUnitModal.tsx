@@ -30,19 +30,25 @@ import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { formatCost, profileCost } from '../../rules/costs';
 import { mayRetire, salePrice, type RetirementDisposition } from '../../rules/retire';
-import { DATASET } from '../../data/generated/trenchline.generated';
 import type { Dataset, Cost } from '../../types/catalogue';
 import type { ActiveUnit } from '../../types/warband';
-
-const dataset = DATASET as unknown as Dataset;
 
 interface Props {
   warbandId: string;
   unit: ActiveUnit;
+  /**
+   * The ruleset the card is reading, passed in rather than imported.
+   *
+   * Importing the bundled `DATASET` meant this screen answered from a different
+   * ruleset than the card that opened it: a player on `github-latest` could be
+   * offered a retirement their own dataset does not state, and the count shown
+   * beside the rule would be the other ruleset's.
+   */
+  dataset: Dataset | null | undefined;
   onClose: () => void;
 }
 
-export const RetireUnitModal: React.FC<Props> = ({ warbandId, unit, onClose }) => {
+export const RetireUnitModal: React.FC<Props> = ({ warbandId, unit, dataset, onClose }) => {
   const { retireUnit } = useStore();
   const verdict = mayRetire(dataset, unit);
 

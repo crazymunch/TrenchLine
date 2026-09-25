@@ -32,8 +32,8 @@ import { Dices } from 'lucide-react';
 import {
   resolveCarcassFrontExploration,
   carcassFrontResources,
-  CARCASS_FRONT_LOOT_PER_POINT,
-  CARCASS_FRONT_STARTING_DICE,
+  carcassFrontLootPerPoint,
+  carcassFrontStartingDice,
   type CarcassFrontExplorationOutcome,
 } from '../../rules/campaign';
 import type { Dataset } from '../../types/catalogue';
@@ -54,6 +54,9 @@ export const CarcassFrontExploration: React.FC<Props> = ({
   dataset, alreadyDiscovered, onLoot, onDiscovered,
 }) => {
   const resources = useMemo(() => carcassFrontResources(dataset), [dataset]);
+  /* Both read from the supplement's own sentences (finding I). */
+  const startingDice = carcassFrontStartingDice(dataset);
+  const lootPerPoint = carcassFrontLootPerPoint(dataset);
 
   /*
     Whether this Warband was the Aggressor. It decides whether a table is
@@ -65,13 +68,37 @@ export const CarcassFrontExploration: React.FC<Props> = ({
   const [wasAggressor, setWasAggressor] = useState(false);
   const [resource, setResource] = useState<string>(resources[0] ?? '');
   const [dice, setDice] = useState<number[] | null>(null);
+  /*
+    A total rolled on the table rather than in the app, which the rulebook's own
+    branch has offered since FD-07 and this one did not — and needs more, since
+    the pool grows with Campaign Tracker rewards and Camp buildings that the app
+    does not track, so a player past their first reward is rolling more dice
+    than the panel can.
+  */
+  const [typedTotal, setTypedTotal] = useState<number | null>(null);
   const [outcome, setOutcome] = useState<CarcassFrontExplorationOutcome | null>(null);
 
-  const settle = (total: number, rolled: number[] | null) => {
+  /**
+   * Resolve, from whatever the panel currently holds.
+   *
+   * Takes the answers as arguments rather than reading the state, because it is
+   * called from the handlers that CHANGE them and React's state is still the
+   * old value at that point. That was finding I: `settle` ran only on Roll, so
+   * ticking Aggressor or changing the Resource after rolling left the result
+   * reading "No table consulted" — the player had answered and the panel had
+   * not noticed.
+   */
+  const settle = (
+    total: number,
+    rolled: number[] | null,
+    aggressor: boolean,
+    res: string,
+  ) => {
+    if (!(total > 0)) return;
     const result = resolveCarcassFrontExploration(dataset, {
       roll: total,
       dice: rolled ?? undefined,
-      resource: wasAggressor ? (resource || null) : null,
+      resource: aggressor ? (res || null) : null,
       alreadyDiscovered,
     });
     if (!result) return;
@@ -83,10 +110,25 @@ export const CarcassFrontExploration: React.FC<Props> = ({
     onDiscovered(result.location?.name);
   };
 
+  /** The total on the panel now: the dice it rolled, or the one typed in. */
+  const currentTotal = () =>
+    (dice ? dice.reduce((a, b) => a + b, 0) : (typedTotal ?? 0));
+
   const roll = () => {
-    const rolled = Array.from({ length: CARCASS_FRONT_STARTING_DICE }, d6);
+    const rolled = Array.from({ length: startingDice }, d6);
     setDice(rolled);
-    settle(rolled.reduce((a, b) => a + b, 0), rolled);
+    setTypedTotal(null);
+    settle(rolled.reduce((a, b) => a + b, 0), rolled, wasAggressor, resource);
+  };
+
+  const setAggressor = (next: boolean) => {
+    setWasAggressor(next);
+    settle(currentTotal(), dice, next, resource);
+  };
+
+  const setResourceAnd = (next: string) => {
+    setResource(next);
+    settle(currentTotal(), dice, wasAggressor, next);
   };
 
   if (!resources.length) {
@@ -112,21 +154,42 @@ export const CarcassFrontExploration: React.FC<Props> = ({
     <div className="p-4 bg-theme-elevated border border-theme-border rounded space-y-3">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <span className="font-gothic font-bold text-sm text-theme-primary">
-          EXPLORATION — {CARCASS_FRONT_STARTING_DICE}D6, CARCASS FRONT
+          EXPLORATION — {startingDice}D6, CARCASS FRONT
         </span>
-        <button
-          onClick={roll}
-          className="flex items-center justify-center space-x-1.5 px-3 min-h-[44px] lg:min-h-0 lg:py-1 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded text-xs font-bold uppercase transition-colors"
-        >
-          <Dices className="w-3.5 h-3.5" />
-          <span>Roll Scavenge</span>
-        </button>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <button
+            onClick={roll}
+            className="flex items-center justify-center space-x-1.5 px-3 min-h-[44px] lg:min-h-0 lg:py-1 bg-theme-primary hover:bg-theme-primary-hover text-theme-base rounded text-xs font-bold uppercase transition-colors"
+          >
+            <Dices className="w-3.5 h-3.5" />
+            <span>Roll Scavenge</span>
+          </button>
+          <input
+            type="number"
+            min={1}
+            inputMode="numeric"
+            placeholder="Or the total you rolled"
+            aria-label="Carcass Front Exploration Roll total"
+            onChange={(e) => {
+              const n = parseInt(e.target.value, 10);
+              if (!(n > 0)) return;
+              /* A typed total is the one from the table, with every Tracker and
+                 Camp die already in it. The panel's own dice are cleared so the
+                 two cannot disagree — the same rule the rulebook branch uses. */
+              setDice(null);
+              setTypedTotal(n);
+              settle(n, null, wasAggressor, resource);
+            }}
+            className="w-full sm:w-40 min-h-[44px] rounded border border-theme-border bg-theme-base px-2 text-base sm:text-sm text-theme-primary focus:border-theme-primary focus:outline-none"
+          />
+        </div>
       </div>
 
       <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
-        Three dice, and the loot is the roll &times; {CARCASS_FRONT_LOOT_PER_POINT}.
-        The pool does not grow with games played — it grows with Campaign Tracker
-        rewards and Camp buildings.
+        {startingDice} dice, and the loot is the roll &times; {lootPerPoint}. The
+        pool does not grow with games played — it grows with Campaign Tracker
+        rewards and Camp buildings, so enter the total from the table when yours
+        has.
       </p>
 
       {/* Whose step this is. The Aggressor consults a table; the other player
@@ -135,7 +198,10 @@ export const CarcassFrontExploration: React.FC<Props> = ({
         <input
           type="checkbox"
           checked={wasAggressor}
-          onChange={(e) => setWasAggressor(e.target.checked)}
+          /* Through `setAggressor`, which re-settles: a step already rolled
+             must answer for what is ticked NOW, not for what was ticked when
+             the dice went down. */
+          onChange={(e) => setAggressor(e.target.checked)}
           className="mt-0.5 w-5 h-5 accent-current text-theme-primary"
         />
         <span>
@@ -159,7 +225,7 @@ export const CarcassFrontExploration: React.FC<Props> = ({
         </span>
         <select
           value={resource}
-          onChange={(e) => setResource(e.target.value)}
+          onChange={(e) => setResourceAnd(e.target.value)}
           disabled={!wasAggressor}
           className="w-full min-h-[44px] lg:min-h-0 lg:py-1 bg-theme-base border border-theme-border text-theme-primary rounded px-2 text-base sm:text-sm disabled:opacity-60"
         >

@@ -1,4 +1,7 @@
-import type { UnitProfile, WarbandVariant, Ability, Dataset } from '@/types/catalogue';
+import type {
+  UnitProfile, WarbandVariant, Ability, Dataset, Condition,
+} from '@/types/catalogue';
+import { evaluateCondition, type SelectionContext } from './modifiers';
 
 /**
  * A unit profile as a particular Warband Variant fields it.
@@ -265,20 +268,69 @@ function decide(when: unknown, ctx: VisibilityContext): boolean | null {
   }
 
   const leaf = when as Leaf;
-  /* A roster-scoped leaf naming a Variant: true when it is the Variant in play.
-     Decidable in BOTH directions, which is what keeps the Desecrated Saint's
-     seven Court Auras off a Warband that has declared no Variant at all. */
+  const held = holds(leaf, ctx);
+  if (held === null) return null;
+
+  /*
+    The comparison is `rules/modifiers.ts`'s, not a second one written here.
+
+    This used to answer the leaf directly with "is the thing present", which
+    silently assumed every condition was `atLeast 1` — and eleven are not. The
+    Artillery Witch's Creator's Shadow is hidden when the roster holds **fewer
+    than one** Cadaver Corps, so reading presence as the answer showed the
+    ability to everyone except the Warband it belongs to, and the Yoke Fiend's
+    Hateful read backwards the same way.
+
+    So membership is decided above, where the names and the groups are, and the
+    arithmetic is delegated: a one-element pool carrying this leaf's own id when
+    it is held, and `evaluateCondition` to apply `atLeast`, `lessThan`,
+    `equalTo` and the rest. An operator it does not know comes back `null` and
+    the modifier is left unapplied.
+  */
+  const pool: SelectionContext = { self: new Set(), roster: new Set() };
+  if (held && leaf.childId) {
+    if (leaf.scope === 'roster' || leaf.scope === 'force') pool.roster.add(leaf.childId);
+    else if (leaf.scope === 'parent') { pool.parent = new Set([leaf.childId]); }
+    else pool.self.add(leaf.childId);
+  } else if (leaf.scope === 'parent') {
+    pool.parent = new Set();
+  }
+  return evaluateCondition(leaf as unknown as Condition, pool);
+}
+
+/**
+ * Whether the thing a condition names is present — `null` where that cannot be
+ * decided from what the caller supplied.
+ *
+ * Separate from the comparison above because these are different questions and
+ * only this one needs the dataset. A `lessThan 1 Cadaver Corps` leaf and an
+ * `atLeast 1 Cadaver Corps` leaf ask the same thing of the roster and want
+ * opposite answers from it.
+ */
+function holds(leaf: Leaf, ctx: VisibilityContext): boolean | null {
+  /*
+    A leaf naming a Variant, at ANY scope: true when it is the Variant in play.
+    Decidable in BOTH directions, which is what keeps the Desecrated Saint's
+    seven Court Auras off a Warband that has declared no Variant at all.
+
+    Scope is not the question here. The catalogues write the same test at
+    `roster` and at `parent` — the Grail Thrall's Gluttonous Horde asks for The
+    Great Hunger with `scope="parent"` — and a Variant is declared once for the
+    Warband however the condition reaches for it. Keying on the scope left those
+    undecidable and the ability unapplied.
+  */
+  const variants = ctx.dataset?.variants ?? [];
+  const namedVariant = variants.find((v) =>
+    (leaf.childId && v.entryId === leaf.childId)
+    || (leaf.childName && key(v.name) === key(leaf.childName)));
+  if (namedVariant) {
+    const mine = ctx.variant;
+    if (!mine) return false;
+    return (!!mine.entryId && mine.entryId === namedVariant.entryId)
+      || key(mine.name) === key(namedVariant.name);
+  }
+
   if (leaf.scope === 'roster' || leaf.scope === 'force') {
-    const variants = ctx.dataset?.variants ?? [];
-    const named = variants.find((v) =>
-      (leaf.childId && v.entryId === leaf.childId)
-      || (leaf.childName && key(v.name) === key(leaf.childName)));
-    if (named) {
-      const mine = ctx.variant;
-      if (!mine) return false;
-      return (!!mine.entryId && mine.entryId === named.entryId)
-        || key(mine.name) === key(named.name);
-    }
     /* Not a Variant: a roster-level selection the Warband makes, which is the
        Court's Chosen Sin. Decidable only when the caller can say what the
        Warband has chosen — see `rosterSelections`. */
@@ -287,16 +339,92 @@ function decide(when: unknown, ctx: VisibilityContext): boolean | null {
     return ctx.rosterSelections.some((sel) => key(sel) === want);
   }
 
-  /* The model's own selections: `Shields`, `Infected`, `Lost Arm [26]`. Matched
-     by NAME, because a roster records what a model carries by name and the
-     catalogue's entry ids for those selections are not on it. */
+  /* The model's own selections: `Infected`, `Lost Arm [26]`, a Dane Axe.
+     Matched by NAME, because a roster records what a model carries by name and
+     the catalogue's entry ids for those selections are not on it. */
   if (leaf.scope === 'self' || leaf.scope === 'model' || leaf.scope === 'parent') {
     if (!leaf.childName) return null;
     const want = key(leaf.childName);
-    return (ctx.selections ?? []).some((s) => key(s) === want);
+    const selections = ctx.selections ?? [];
+    if (selections.some((s) => key(s) === want)) return true;
+
+    /*
+      A condition can name a GROUP rather than an item. Shock Charge is taken
+      away by `Shields` and a two-handed axe — `Shields` is a
+      selectionEntryGroup, not a thing a model can carry — so a Varangian Guard
+      with a Trench Shield and a Great Sword kept an ability the Varangian
+      Guard's own rule takes off it. It is the only ability in the shipped
+      catalogues gated this way; the Archeologist's `Melee Weapons` asks the
+      same question of the same index, but gates a weapon profile (Weaponized
+      Shovel) rather than an ability, so it is not read here.
+
+      Membership comes from the two places the pipeline already records it: the
+      Armoury Table section an item is stocked under, and the option group an
+      entry files a choice in. A name that is neither a group nor anything the
+      dataset knows at all is `null` rather than false, so the build's guard
+      reports it instead of it passing as "the model does not have one".
+    */
+    const index = membershipIndex(ctx.dataset);
+    if (!index) return null;
+    const members = index.groups.get(want);
+    if (members) return selections.some((s) => members.has(key(s)));
+    /* A known item the model simply does not have. */
+    if (index.items.has(want)) return false;
+    return null;
   }
 
   return null;
+}
+
+/** Group name -> the names in it, and every item name the dataset knows. */
+interface Membership {
+  groups: Map<string, Set<string>>;
+  items: Set<string>;
+}
+
+const membershipCache = new WeakMap<object, Membership>();
+
+/**
+ * What belongs to what, built once per dataset.
+ *
+ * Read from the dataset rather than listed here: the Armoury Tables already say
+ * which section stocks an item, and an entry's options already say which group
+ * a choice sits in. Those are the two sources the catalogues give, and a third
+ * written down here would be a hand-kept list of the kind rule 1 exists to
+ * prevent.
+ */
+function membershipIndex(dataset: Dataset | null | undefined): Membership | null {
+  if (!dataset) return null;
+  const cached = membershipCache.get(dataset as unknown as object);
+  if (cached) return cached;
+
+  const groups = new Map<string, Set<string>>();
+  const items = new Set<string>();
+  const add = (group: string, member: string) => {
+    if (!group || !member) return;
+    const g = key(group);
+    if (!groups.has(g)) groups.set(g, new Set());
+    groups.get(g)!.add(key(member));
+  };
+
+  for (const armoury of dataset.armouries ?? []) {
+    for (const row of armoury.rows ?? []) {
+      add(row.section, row.name);
+      items.add(key(row.name));
+    }
+  }
+  for (const unit of dataset.units ?? []) {
+    for (const option of unit.options ?? []) {
+      add(option.group, option.name);
+      for (const part of (option.groupPath ?? '').split('::')) add(part, option.name);
+      items.add(key(option.name));
+    }
+  }
+  for (const weapon of dataset.weapons ?? []) items.add(key(weapon.name));
+
+  const built = { groups, items };
+  membershipCache.set(dataset as unknown as object, built);
+  return built;
 }
 
 /** `profile:Axe Mastery` -> `Axe Mastery`. Null for a modifier on the entry. */
@@ -319,22 +447,37 @@ export function visibleAbilities(
   const abilities = profile.abilities ?? [];
   if (!abilities.length) return [];
 
-  /** Ability name -> shown. Seeded from the profile attribute. */
+  /*
+    Keyed by the ability's own id, not by its name. The Yoke Fiend states
+    `Hateful` twice — one version for a Fang of the Seething Black Warband and
+    one for everybody else — and a name-keyed map made the two one entry, so
+    whichever modifier was read last hid both and the ability appeared under no
+    Variant at all. `Modifier.originId` is what tells them apart.
+  */
   const shown = new Map<string, boolean>();
-  for (const a of abilities) shown.set(key(a.name), !a.hidden);
+  for (const a of abilities) shown.set(a.id, !a.hidden);
+
+  /** The abilities a modifier is about: the one it names by id, else by name. */
+  const targets = (m: { origin?: string; originId?: string }): Ability[] => {
+    if (m.originId) {
+      const byId = abilities.find((a) => a.id === m.originId);
+      return byId ? [byId] : [];
+    }
+    const name = abilityOfOrigin(m.origin);
+    if (name === null) return [];                // about the ENTRY, not an ability
+    return abilities.filter((a) => key(a.name) === key(name));
+  };
 
   for (const m of profile.modifiers ?? []) {
     if (m.field !== 'hidden' || m.op !== 'set') continue;
-    const name = abilityOfOrigin(m.origin);
-    if (name === null) continue;                 // about the ENTRY, not an ability
-    const k = key(name);
-    if (!shown.has(k)) continue;                 // names no ability on this entry
+    const about = targets(m);
+    if (!about.length) continue;                 // names no ability on this entry
     const ok = decide(m.when, ctx);
     if (ok !== true) continue;                   // false, or undecidable: unapplied
-    shown.set(k, String(m.value) !== 'true');
+    for (const a of about) shown.set(a.id, String(m.value) !== 'true');
   }
 
-  return abilities.filter((a) => shown.get(key(a.name)) !== false);
+  return abilities.filter((a) => shown.get(a.id) !== false);
 }
 
 /**
@@ -414,17 +557,20 @@ export function unknownVisibilityLeaves(
 
   for (const unit of dataset.units) {
     const names = new Set((unit.abilities ?? []).map((a) => key(a.name)));
+    const ids = new Set((unit.abilities ?? []).map((a) => a.id));
     for (const m of unit.modifiers ?? []) {
       if (m.field !== 'hidden' || m.op !== 'set') continue;
       const ability = abilityOfOrigin(m.origin);
-      if (ability === null || !names.has(key(ability))) continue;
+      if (m.originId ? !ids.has(m.originId) : (ability === null || !names.has(key(ability)))) continue;
       const leaves: Leaf[] = [];
       collect(m.when, leaves);
       for (const leaf of leaves) {
         if (decide(leaf, ctx) !== null) continue;
         out.push({
           unit: unit.name,
-          ability,
+          ability: ability
+            ?? (unit.abilities ?? []).find((a) => a.id === m.originId)?.name
+            ?? '(unnamed)',
           leaf: leaf.childName || leaf.childId || `${leaf.scope}:${leaf.type}`,
         });
       }

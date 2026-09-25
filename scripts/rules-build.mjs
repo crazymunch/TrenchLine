@@ -36,7 +36,7 @@ import { parseScenarios } from './lib/parse-scenarios.mjs';
 import { parseCoreRules } from './lib/parse-core-rules.mjs';
 import { parseWeatherEvents } from './lib/parse-weather.mjs';
 import { parsePatrons } from './lib/parse-patrons.mjs';
-import { parseCarcassFrontExploration } from './lib/parse-cf-exploration.mjs';
+import { parseCarcassFrontExploration, parseCarcassFrontExplorationStep } from './lib/parse-cf-exploration.mjs';
 import { parseCarcassFrontCampaigns } from './lib/parse-cf-campaign.mjs';
 import { parseVisionCards } from './lib/parse-vision-cards.mjs';
 import { parseCarcassFrontScenarios } from './lib/parse-cf-scenarios.mjs';
@@ -306,6 +306,10 @@ for (const ruleset of RULESETS) {
     either.
   */
   const carcassFrontExploration = parseCarcassFrontExploration();
+  /* The Step's own two numbers, read from the book rather than written into
+     `src/rules/campaign.ts` beside a citation — see
+     `parseCarcassFrontExplorationStep`. */
+  const carcassFrontExplorationStep = parseCarcassFrontExplorationStep();
 
   /*
     The two campaigns the book prints, and the sixteen Vision cards.
@@ -771,6 +775,11 @@ for (const ruleset of RULESETS) {
       */
       carcassFrontExploration: ruleset.layers.includes(CARCASS_FRONT)
         ? carcassFrontExploration : undefined,
+      /* 3D6 that does not grow with games played, and loot at five a point
+         rather than ten. Undefined on a ruleset without the supplement, which
+         is the honest answer and the one the panel refuses on. */
+      carcassFrontExplorationStep: ruleset.layers.includes(CARCASS_FRONT)
+        ? carcassFrontExplorationStep : undefined,
       // The other two post-battle tables. `officialRulesData.ts` still holds
       // hand-written versions of both, and the four Skills tables there are
       // fabricated (AUDIT §1.13) — these are what replaces them.

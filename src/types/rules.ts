@@ -38,6 +38,19 @@ export interface Ability {
 export interface WeaponProfile {
   id: string;
   name: string;
+  /**
+   * The offer came from a faction's **Glory Item Table**, not its Armoury Table
+   * (p.125, RR-14).
+   *
+   * Kept beside the kind rather than instead of it. `category` says what the
+   * item IS — a Ducal Winged Armour is Armour and belongs in the armour slot —
+   * and this says which table sold it, which is what needs a discovery before
+   * it can be bought and what the equip sheet labels. Filing the kind as
+   * `Glory Items` did neither job: all 54 fell through to the weapons list and
+   * a suit of armour could not reach the armour slot.
+   */
+  gloryItem?: boolean;
+
   type: 'Melee' | 'Ranged' | 'Both';
   range: string; // e.g. "Melee" or "24\""
   modifiers: string; // e.g. "+1 Melee" or "-"
@@ -72,6 +85,19 @@ export interface WeaponProfile {
 export interface ArmourProfile {
   id: string;
   name: string;
+  /**
+   * The offer came from a faction's **Glory Item Table**, not its Armoury Table
+   * (p.125, RR-14).
+   *
+   * Kept beside the kind rather than instead of it. `category` says what the
+   * item IS — a Ducal Winged Armour is Armour and belongs in the armour slot —
+   * and this says which table sold it, which is what needs a discovery before
+   * it can be bought and what the equip sheet labels. Filing the kind as
+   * `Glory Items` did neither job: all 54 fell through to the weapons list and
+   * a suit of armour could not reach the armour slot.
+   */
+  gloryItem?: boolean;
+
   armourModifier?: string; // e.g. "-1 Injury Modifier"
   modifier?: string;
   category?: string;
@@ -103,6 +129,19 @@ export interface ArmourProfile {
 export interface EquipmentItem {
   id: string;
   name: string;
+  /**
+   * The offer came from a faction's **Glory Item Table**, not its Armoury Table
+   * (p.125, RR-14).
+   *
+   * Kept beside the kind rather than instead of it. `category` says what the
+   * item IS — a Ducal Winged Armour is Armour and belongs in the armour slot —
+   * and this says which table sold it, which is what needs a discovery before
+   * it can be bought and what the equip sheet labels. Filing the kind as
+   * `Glory Items` did neither job: all 54 fell through to the weapons list and
+   * a suit of armour could not reach the armour slot.
+   */
+  gloryItem?: boolean;
+
   cost: number;
   /**
    * Glory, where the entry is priced in it. Trench Crusade has two currencies

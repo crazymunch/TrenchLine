@@ -522,9 +522,10 @@ function modifierOf(m, nameOf, fieldNameOf, origin, comment, isConstraint) {
 function modifiersOf(node, nameOf, fieldNameOf, isConstraint) {
   const out = [];
 
-  const fromNode = (n, origin, comment) => {
+  const fromNode = (n, origin, comment, originId) => {
+    const stamp = (mod) => (originId ? { ...mod, originId } : mod);
     for (const m of arr(n?.modifiers?.modifier)) {
-      out.push(modifierOf(m, nameOf, fieldNameOf, origin, comment, isConstraint));
+      out.push(stamp(modifierOf(m, nameOf, fieldNameOf, origin, comment, isConstraint)));
     }
     for (const g of arr(n?.modifierGroups?.modifierGroup)) {
       // A group carries its own conditions that gate every modifier inside it,
@@ -534,15 +535,28 @@ function modifiersOf(node, nameOf, fieldNameOf, isConstraint) {
       for (const m of arr(g?.modifiers?.modifier)) {
         const mod = modifierOf(m, nameOf, fieldNameOf, origin, label, isConstraint);
         if (gate) mod.when = mod.when ? { all: [gate, mod.when] } : gate;
-        out.push(mod);
+        out.push(stamp(mod));
       }
-      for (const inner of arr(g?.modifierGroups?.modifierGroup)) fromNode(inner, origin, label);
+      for (const inner of arr(g?.modifierGroups?.modifierGroup)) {
+        fromNode(inner, origin, label, originId);
+      }
     }
   };
 
   fromNode(node, 'entry');
   for (const p of arr(node?.profiles?.profile)) {
-    fromNode(p, `profile:${clean(attr(p, 'name'))}`);
+    /*
+      `originId` alongside the readable origin, because a NAME is not an
+      identity here. The Yoke Fiend states `Hateful` twice — one version for a
+      Fang of the Seething Black Warband and one for everybody else, each
+      hidden by its own condition — and an origin of `profile:Hateful` applies
+      to both, so whichever modifier was read last decided both profiles and
+      the ability vanished under every Variant.
+
+      The readable form stays: it is what a reader greps for, and it is what a
+      ruleset generated before this carries.
+    */
+    fromNode(p, `profile:${clean(attr(p, 'name'))}`, undefined, attr(p, 'id'));
   }
 
   /*
@@ -573,9 +587,10 @@ function modifiersOf(node, nameOf, fieldNameOf, isConstraint) {
   const seen = new Set();
   return out.filter((m) => {
     const { origin, ...rule } = m;
+    const { originId, ...bare } = rule;
     const k = ORIGIN_SENSITIVE.has(m.field)
-      ? `${origin}\u0000${JSON.stringify(rule)}`
-      : JSON.stringify(rule);
+      ? `${origin}\u0000${originId ?? ''}\u0000${JSON.stringify(bare)}`
+      : JSON.stringify(bare);
     if (seen.has(k)) return false;
     seen.add(k);
     return true;
@@ -829,6 +844,8 @@ export function parseCatalogues(dir) {
     card with the second statline rather than a blank.
   */
   const secondaryUnitEntries = new Map();
+  /** Entry id of the model -> the statline options its sub-entries offer. */
+  const profileOptionsByEntry = new Map();
   for (const { doc } of docs) {
     walk(doc, (node) => {
       if (attr(node, 'type') !== 'model') return;
@@ -854,9 +871,72 @@ export function parseCatalogues(dir) {
       /* With a Unit profile of its own the entry IS the model and every
          sub-entry is secondary; without one the first sub-entry is the model. */
       const secondary = ownUnit ? nested : nested.slice(1);
+      /* Every sub-entry under this parent, the primary one included: a
+         condition on a secondary profile that names any of them can be decided
+         where the profile is emitted. See `resolveAgainstSelf`. */
+      const siblings = nested.map((e) => attr(e, 'id')).filter(Boolean);
       for (const e of secondary) {
         const id = attr(e, 'id');
-        if (id) secondaryUnitEntries.set(id, parentId);
+        if (id) secondaryUnitEntries.set(id, { parentId, siblings });
+      }
+
+      /*
+        And the same sub-entries as OPTIONS on the model they belong to, so the
+        second statline can still be fielded.
+
+        Taking them off the recruit list without this made them unreachable:
+        `optionsOf` skips any sub-entry carrying a Unit profile, so the Grail
+        Thrall offered no way to be a Fly Thrall and the Trench Dog no way to be
+        a Guard Dog — the app had removed the wrong half of the entry. The book
+        offers exactly this choice: "Grail Thralls / Fly Thralls" is one entry
+        with two statlines, and p.121 gives a Trench Dog one of five special
+        abilities for +1 ☼.
+
+        Priced from the sub-entry's own `cost`, which is what the catalogue
+        charges for the swap — 5 Ducats for a New Antioch dog, 1 Glory for a
+        Mercenaries one, nothing for Winged.
+
+        The option is attached to whichever entry emits the MODEL: the parent
+        where it holds the Unit profile itself (the Trench Dogs), and the first
+        sub-entry where it does not (the Thrall, whose model is emitted from
+        `Grounded`).
+      */
+      const primaryId = ownUnit ? parentId : attr(nested[0], 'id');
+      if (primaryId && secondary.length) {
+        /* The group each sub-entry sits in, for the heading the builder prints
+           — `Thrall Type`, `Specialization`. Found by looking for the entry
+           rather than assumed, because the shape differs between the two. */
+        const groupOf = new Map();
+        const mapGroups = (n, name, depth) => {
+          if (depth > 3) return;
+          for (const e of arr(n?.selectionEntries?.selectionEntry)) {
+            if (name) groupOf.set(attr(e, 'id'), name);
+            mapGroups(e, name, depth + 1);
+          }
+          for (const g of arr(n?.selectionEntryGroups?.selectionEntryGroup)) {
+            mapGroups(g, clean(attr(g, 'name')) || name, depth + 1);
+          }
+        };
+        mapGroups(node, '', 0);
+
+        profileOptionsByEntry.set(primaryId, secondary.map((e) => {
+          const up = arr(e?.profiles?.profile).find((p) => attr(p, 'typeName') === 'Unit');
+          return {
+            id: attr(e, 'id'),
+            name: clean(attr(e, 'name')),
+            group: groupOf.get(attr(e, 'id')) || '',
+            cost: costsOf(e),
+            /*
+              The statline this option swaps in. It is the whole point of the
+              option — an entry with two Unit profiles is one model that can be
+              either — and it is what lets the card and Play Mode's reference
+              sheet show a Fly Thrall's 6"/Flying rather than the Thrall's 5".
+            */
+            unitProfileId: attr(up, 'id'),
+            description: '',
+            constraints: constraintsOf(e),
+          };
+        }));
       }
     });
   }
@@ -1174,7 +1254,15 @@ export function parseCatalogues(dir) {
           states its own 5-Ducat upgrade price, and keeps it. Inheriting
           wholesale would overwrite a price the catalogue prints.
         */
-        const parentId = secondaryUnitEntries.get(attr(node, 'id'));
+        /*
+          Where this profile is a second statline under one entry: which entry,
+          and which sub-entries share it. A condition naming one of those can be
+          decided here rather than carried out as an unanswerable question — see
+          `resolveAgainstSelf`.
+        */
+        const secondaryOf = secondaryUnitEntries.get(attr(node, 'id'));
+        const parentId = secondaryOf?.parentId;
+        const siblingIds = new Set(secondaryOf?.siblings ?? []);
         const parentNode = parentId ? byId.get(parentId) : null;
         const parentCost = parentNode ? costsOf(parentNode) : null;
         const parentCats = parentNode
@@ -1195,6 +1283,70 @@ export function parseCatalogues(dir) {
                 abilitiesSeen.set(a.id, a);
                 return a;
               })
+          : [];
+
+        /*
+          The parent's per-ability `hidden` modifiers, which have to travel with
+          the abilities they are about.
+
+          Copying the abilities alone put a rule on the Fly Thrall that the book
+          prints "(Grail Thralls only)": `Undead Fortitude` sits on the parent
+          entry with `set hidden=true` when the parent's selection is `Winged`,
+          and a Winged Thrall IS that selection. The ability came across and the
+          sentence that takes it away did not.
+
+          Each condition naming one of these sub-entries is settled here rather
+          than left for the runtime, because it cannot go either way: this
+          profile IS its own sub-entry, so a leaf naming it is true and a leaf
+          naming a sibling is false. `simplify` folds those in and reports a
+          modifier that can never fire, which is then dropped.
+        */
+        const resolveAgainstSelf = (when, selfId) => {
+          const simplify = (w) => {
+            if (!w || typeof w !== 'object') return w;
+            if (Array.isArray(w.all) || Array.isArray(w.any)) {
+              const kind = Array.isArray(w.all) ? 'all' : 'any';
+              const parts = [];
+              for (const sub of w[kind]) {
+                if (sub == null) continue;
+                const r = simplify(sub);
+                if (r === true) { if (kind === 'any') return true; continue; }
+                if (r === false) { if (kind === 'all') return false; continue; }
+                parts.push(r);
+              }
+              if (!parts.length) return kind === 'all';
+              return parts.length === 1 ? parts[0] : { [kind]: parts };
+            }
+            const id = w.childId;
+            if (!id || !siblingIds.has(id)) return w;
+            /* `atLeast 1` of this selection: true for its own profile. A
+               different sub-entry of the same parent is never also selected. */
+            return id === selfId;
+          };
+          return simplify(when);
+        };
+
+        const parentAbilityModifiers = parentNode && parentId
+          ? modifiersOf(parentNode, nameOf, fieldNameOf, isConstraint)
+              /* Only the ones about an ability this profile has just been
+                 given. A `hidden` modifier on the parent's Pummel WEAPON
+                 profile is about that weapon, and carrying it here would move
+                 a rule onto a unit it is not about. */
+              .filter((m) => {
+                const named = /^profile:(.*)$/.exec(String(m.origin ?? ''));
+                if (!named) return false;
+                const want = clean(named[1]).toLowerCase();
+                return parentAbilities.some((a) => a.name.toLowerCase() === want);
+              })
+              .map((m) => {
+                const when = m.when === undefined
+                  ? undefined
+                  : resolveAgainstSelf(m.when, attr(node, 'id'));
+                if (when === false) return null;       // can never fire here
+                const { when: _dropped, ...rest } = m;
+                return when === true || when === undefined ? rest : { ...rest, when };
+              })
+              .filter(Boolean)
           : [];
 
         const ownRoles = cats.filter((x) => ROLE_NAMES.has(x));
@@ -1266,14 +1418,29 @@ export function parseCatalogues(dir) {
           min,
           max,
           abilities: parentId && !abilities.length ? parentAbilities : abilities,
-          options: optionsOf(node, nameOf, fieldNameOf, isConstraint, (id) => byId.get(id)),
+          /*
+            Plus the statline options a second Unit profile under this entry
+            offers — `Winged`, `Guard Dog` — which `optionsOf` skips because
+            they carry a Unit profile. See `profileOptionsByEntry`.
+          */
+          options: [
+            ...optionsOf(node, nameOf, fieldNameOf, isConstraint, (id) => byId.get(id)),
+            ...(profileOptionsByEntry.get(attr(node, 'id')) ?? []),
+          ],
           /*
             Gear the model always has, which the app must neither omit nor sell
             it a second copy of. See forcedKitOf.
           */
           battlekit: forcedKitOf(node, (id) => byId.get(id)),
           constraints,
-          modifiers: unitModifiers,
+          /*
+            Plus the parent's per-ability modifiers, where this is a second
+            statline under one entry and the abilities came from the parent.
+            The ability and the sentence that conditions it are one rule.
+          */
+          modifiers: parentId && !abilities.length
+            ? [...unitModifiers, ...parentAbilityModifiers]
+            : unitModifiers,
           sourceFile: file,
         });
         /*
@@ -1435,10 +1602,18 @@ export function parseCatalogues(dir) {
   const gearNames = new Set(weapons.map((w) => w.name.toLowerCase()));
   for (const u of units) {
     u.options = u.options.filter((o) =>
-      !gearProfileIds.has(o.profileId) &&
-      !gearNames.has(o.name.toLowerCase()) &&
-      // An option with no rules text states no rule; it is a grouping stub.
-      o.description.length > 0);
+      /*
+        A statline option is exempt from all three tests. It carries no rules
+        text because the rule it states is the statline itself — `Winged` says
+        the model is a Fly Thrall — so the grouping-stub test would drop every
+        one of them; and its name can collide with a weapon's without being
+        that weapon. See `profileOptionsByEntry`.
+      */
+      o.unitProfileId
+      || (!gearProfileIds.has(o.profileId)
+        && !gearNames.has(o.name.toLowerCase())
+        // An option with no rules text states no rule; it is a grouping stub.
+        && o.description.length > 0));
   }
 
   /*

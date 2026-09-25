@@ -15,8 +15,9 @@ import { persistWarbands, mergeWarbands } from '../persist';
 import { outbox } from '../../services/sync';
 import { book, strongbox } from '../../rules/ledger';
 import { formatCost, isZero } from '../../rules/costs';
+import { campaignGameOf } from '../../rules/campaign';
 
-export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'setWarbandAllowThirdParty' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
+export type RosterSlice = Pick<AppState, 'takeGrantedGloryItem' | 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'setWarbandAllowThirdParty' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
 
 export const createRosterSlice = (init: InitialState): StateCreator<AppState, [], [], RosterSlice> =>
   (set, get) => ({
@@ -688,6 +689,66 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
       The caller checks first and disables the control; this is the same
       refusal for anything that reaches the store another way.
     */
+    /*
+      Take a Glory Item a Location handed over, at no cost (finding F).
+
+      "Relic: Choose one Glory Item worth up to 7 ☼ and add it to your Arsenal"
+      — the item is GIVEN, so nothing is charged and no ledger entry is written:
+      a ledger records movements of money and none happened. The grant is marked
+      spent on the effect that carries it, which is what stops a player taking a
+      second Relic off the same find.
+
+      Refused rather than clamped where the grant is already spent or does not
+      cover the price, for the same reason a purchase over the balance is.
+    */
+    takeGrantedGloryItem: (warbandId, item, grantSource) => {
+      let outcome: 'taken' | 'no-grant' | 'too-dear' = 'no-grant';
+      set((state) => {
+        let updated = state.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+
+          const price = stashPrice(item);
+          const effects = w.explorationEffects ?? [];
+          const at = effects.findIndex((e) =>
+            typeof e.gloryItemOnce === 'number'
+            && e.takenAtGame === undefined
+            && (e.source || e.name) === grantSource);
+          if (at < 0) return w;
+          if (price.glory > (effects[at].gloryItemOnce ?? 0)) {
+            outcome = 'too-dear';
+            return w;
+          }
+
+          const held = (w.armoryStash ?? []).find((i) => i.id === item.id);
+          const stash: StashedItem[] = held
+            ? w.armoryStash.map((i) => (i.id === item.id
+              ? { ...i, quantity: i.quantity + 1 } : i))
+            : [...(w.armoryStash ?? []), {
+                id: item.id, name: item.name, type: item.type,
+                cost: price.ducats, price, quantity: 1,
+              }];
+
+          /* Spent, on the effect that granted it. A second list of "grants
+             used" would be a second place to forget. */
+          const spentAt = campaignGameOf(w, state.campaign);
+          const marked = effects.map((e, i) => (i === at
+            ? { ...e, takenAtGame: spentAt, takenItem: item.name }
+            : e));
+
+          outcome = 'taken';
+          return {
+            ...w,
+            armoryStash: stash,
+            explorationEffects: marked,
+            updatedAt: new Date().toISOString(),
+          };
+        });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+      return outcome;
+    },
+
     buyToStash: (warbandId, item) => {
       set((state) => {
         let updated = state.warbands.map((w) => {

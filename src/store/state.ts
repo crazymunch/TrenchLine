@@ -14,7 +14,7 @@
  * be the same coupling spread over more files. The split that matters is of the
  * 2,000 lines of *behaviour*, not of the type.
  */
-import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
+import { Warband, ActiveUnit, UnitTitleRecord, StashedItem } from '../types/warband';
 import type { PlaceholderOpponent } from '../types/opponent';
 import { Campaign, CampaignFramework, CampaignHouseRules, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
@@ -294,6 +294,24 @@ export interface AppState {
    * Returns what happened rather than throwing. The caller is a screen, and
    * "this model has one Battle Scar, not two" is a sentence to show.
    */
+  /**
+   * Take a Glory Item a Location handed over, at no cost (p.114, finding F).
+   *
+   * "Choose one Glory Item worth up to 7 ☼ and add it to your Arsenal" — four
+   * Locations grant one, and it is not the standing permission that opens the
+   * tables for purchase: the item is given, once. Nothing is charged and no
+   * ledger entry is written, because no money moved; the grant is marked spent
+   * on the `ExplorationEffect` that carries it.
+   *
+   * Returns what happened rather than throwing: `no-grant` where none is
+   * outstanding from that Location, `too-dear` where the item costs more than
+   * the grant covers.
+   */
+  takeGrantedGloryItem: (
+    warbandId: string,
+    item: StashedItem,
+    grantSource: string,
+  ) => 'taken' | 'no-grant' | 'too-dear';
   retireUnit: (
     warbandId: string,
     unitId: string,

@@ -36,7 +36,9 @@ import { readRange } from '@/rules/weaponRange';
 import { effectiveMovement, type TraumaRow } from '@/rules/effectiveStats';
 import { formulaeHeld } from '@/rules/formulaShelf';
 import type { UnitOption, UnitProfile, Dataset, WarbandVariant } from '../../types/catalogue';
-import { visibleAbilities, modelSelections } from '@/rules/applyVariant';
+import { modelSelections } from '@/rules/applyVariant';
+import { shownAbilitiesFor } from '@/rules/shownAbilities';
+import { swappedProfile } from '@/rules/statlineOptions';
 
 interface Props {
   unit: ActiveUnit;
@@ -100,14 +102,14 @@ export const ModelReferenceSheet: React.FC<Props> = ({
     the snapshot stays; where the entry cannot be resolved the snapshot stands
     whole, which is the roster's own record rather than a guess.
   */
-  const abilities = React.useMemo(() => {
-    const listed = p.innateAbilities ?? [];
-    if (!dataset || !catalogueUnit?.abilities) return listed;
-    const visible = new Set(visibleAbilities(catalogueUnit, {
-      dataset, variant, selections: modelSelections(unit), rosterSelections: [],
-    }).map((a) => a.name.trim().toLowerCase()));
-    return listed.filter((a) => visible.has(a.name.trim().toLowerCase()));
-  }, [dataset, variant, catalogueUnit, unit, p.innateAbilities]);
+  const abilities = React.useMemo(
+    () => shownAbilitiesFor({
+      dataset,
+      entry: catalogueUnit as UnitProfile | null | undefined,
+      variant,
+      unit,
+    }),
+    [dataset, variant, catalogueUnit, unit]);
 
   /*
     Movement with the model's injuries counted.
@@ -117,17 +119,28 @@ export const ModelReferenceSheet: React.FC<Props> = ({
     the Trauma table's own text, and reports the injuries it could not express
     as a number instead of dropping them.
   */
+  /*
+    The second statline this model has been given, where its entry offers one
+    (DA-02, finding N). Play Mode is the screen this matters most on: a Fly
+    Thrall moves 6"/Flying and the Thrall 5"/Infantry, and the sheet is what the
+    players measure from mid-game.
+  */
+  const swapped = React.useMemo(
+    () => swappedProfile(dataset, catalogueUnit, modelSelections(unit)),
+    [dataset, catalogueUnit, unit]);
+  const shown = swapped ? swapped.stats : p.stats;
+
   const mov = effectiveMovement(
-    p.stats.movementInches ? `${p.stats.movementInches}"` : p.stats.movement,
+    shown.movementInches ? `${shown.movementInches}"` : shown.movement,
     unit.injuries ?? [],
     traumaTable,
   );
 
   const stats: Array<[string, string, boolean]> = [
     ['MOV', mov.effective, mov.delta !== 0],
-    ['RNG', p.stats.ranged, false],
-    ['MELEE', p.stats.melee, false],
-    ['ARMOUR', p.stats.armour, false],
+    ['RNG', shown.ranged, false],
+    ['MELEE', shown.melee, false],
+    ['ARMOUR', shown.armour, false],
   ];
 
   return (

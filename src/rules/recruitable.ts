@@ -519,19 +519,52 @@ export function recruitable(
       that matters — `fromWarband` for the validator, `rosterRos` for the
       export — so the id is a handle for the builder, not an identity.
     */
+    const gloryItem = isGloryItem(row);
+    /*
+      A Glory Item the catalogues cannot name needs an id of its own, because a
+      faction can stock the same name on both of its tables and the book says so
+      outright: the Court's footnote 3 reads "A Warband can have up to 3
+      Restraining Muzzles purchased with ☼ **in addition to** up to 3
+      Restraining Muzzles purchased with 👑". Two real offers at two prices, and
+      without this they shared the `<faction>-<name>` id and one shadowed the
+      other in the builder's lists.
+    */
     const id = grantedBy
       ? `granted:${from.factionId}:${row.weaponId || k}`
-      : (row.weaponId || `${from.factionId}-${k}`);
+      : (row.weaponId
+        || `${from.factionId}-${gloryItem ? 'glory-' : ''}${k}`);
     /*
-      The Battlekit chapter's section usually wins, because it is the
-      catalogue's own account of what an item IS. A Glory Item is the one
-      exception, and it has to be: several are named in the Battlekit chapter
-      too — a Sniper Scope is Equipment there — and taking that section would
-      file the row as Equipment, which is precisely the section the gate lets
-      through. The row would then be on sale to a Warband that has discovered
-      nothing.
+      What the item IS, which decides which list it joins.
+
+      `Glory Items` is a TABLE, not a kind. Filing the row's section as the kind
+      sent all 54 of them through to `weapons.push` — neither the Armour branch
+      nor the Equipment branch matches — so Ducal Winged Armour and Damascus
+      Armour landed in `equippedWeapons` and the armour slot never saw them.
+
+      The gate does not need it: `offerableRows` above has already decided,
+      against the row's own section, whether this row is on the shelf at all. So
+      the kind is read the way every other row's is, and `gloryItem` below
+      carries the label the equip sheet shows.
+
+      Three sources, in order of how much they know:
+        the Battlekit chapter's section  — the catalogue's own account
+        the resolved profile's kind      — Armour, or a weapon with a Range
+        Equipment                        — the row states no kind at all
     */
-    const section = isGloryItem(row) ? row.section : (b?.section ?? row.section);
+    const kindFromProfile = (() => {
+      if (!p) return undefined;
+      if (/^(armour|shield)/i.test(p.type ?? '')) return 'Armour';
+      /* A weapon is what has somewhere to reach: a Range of `Melee` or a
+         distance. The Battlekit chapter types these `1-handed`, `2-handed` and
+         `GRENADE`, and an item with none of that is gear. */
+      const range = (p.range ?? '').trim();
+      if (range && range !== '-') return 'Ranged Weapons';
+      if (/handed|grenade/i.test(p.type ?? '')) return 'Melee Weapons';
+      return undefined;
+    })();
+    const section = gloryItem
+      ? (b?.section ?? kindFromProfile ?? 'Equipment')
+      : (b?.section ?? row.section);
 
     if (section === 'Armour' || section === 'Shields') {
       armour.push({
@@ -545,6 +578,7 @@ export function recruitable(
         category: section,
         factionId: appId(from.factionId),
         grantedBy,
+        ...(gloryItem ? { gloryItem: true } : {}),
       });
       continue;
     }
@@ -575,6 +609,7 @@ export function recruitable(
         category: section,
         factionId: appId(from.factionId),
         grantedBy,
+        ...(gloryItem ? { gloryItem: true } : {}),
       });
       continue;
     }
@@ -596,6 +631,7 @@ export function recruitable(
       category: section,
       factionId: appId(from.factionId),
       grantedBy,
+      ...(gloryItem ? { gloryItem: true } : {}),
       // The armoury row's own restrictions — "ELITE only", "Limit: 2". These are
       // legality, and `wargear-not-stocked` reads them from the armoury directly.
     });
