@@ -2,11 +2,16 @@ import React, { useState } from 'react';
 import { Sheet } from '../ui/Sheet';
 import { useStore } from '../../store/useStore';
 import { importNewRecruitRoster } from '../../services/newRecruitImporter';
+import {
+  importTrenchCompanionWarband, priceDifferenceLine,
+} from '../../services/trenchCompanionImporter';
 import { decodeRosterFile, warbandFromFile } from '../../services/rosterFile';
 import { Warband } from '../../types/warband';
-import { 
-  UploadCloud, 
-  AlertCircle 
+import {
+  UploadCloud,
+  AlertCircle,
+  Link2,
+  Loader2,
 } from 'lucide-react';
 import { unitGlory, formatUnitCost } from '@/rules/savedGlory';
 import { useDataset } from '@/rules/useDataset';
@@ -40,7 +45,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
   // `units` already carries the dataset's profiles plus any custom ones. The
   // importer used to resolve against `defaultRules.ts` instead, which gave
   // every imported model a hand-written statline under a name that matched.
-  const { units, factions, setActiveWarbandId } = useStore();
+  const { units, factions, importWarband } = useStore();
 
   /*
     The ruleset, for the rules that read a WHOLE roster rather than a line of
@@ -48,9 +53,18 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     created is decided from the roster's campaign rules and every model's
     Formulae at once, so `knownUnits` alone cannot answer it.
   */
-  const { dataset: importDataset } = useDataset(
-    (typeof window !== 'undefined'
-      && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
+  const rulesetId = (typeof window !== 'undefined'
+    && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID;
+  const { dataset: importDataset } = useDataset(rulesetId);
+
+  /**
+   * Record which ruleset the import resolved against (RV-1).
+   *
+   * An imported warband was the one kind that could never be converted: the
+   * conversion report has to know what it is converting FROM, and an import
+   * that did not say left the warband with no answer for the rest of its life.
+   */
+  const withRuleset = (w: Warband): Warband => ({ ...w, rulesetId });
 
   const [inputText, setInputText] = useState('');
   const [parsedWarband, setParsedWarband] = useState<Warband | null>(null);
@@ -72,6 +86,20 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
     than swallowed: see `services/rosterFile.ts`.
   */
   const [fileNotes, setFileNotes] = useState<string[]>([]);
+  /*
+    The Trench Companion field, beside the NewRecruit upload.
+
+    Its own state rather than a second use of `inputText`: one is a link that
+    is fetched and the other is a file that is parsed, and sharing a box would
+    mean guessing which the player meant. A link in the paste box would be
+    handed to the roster parsers, which would answer "not valid NewRecruit
+    JSON" to something that is not a roster at all.
+  */
+  const [tcRef, setTcRef] = useState('');
+  const [tcBusy, setTcBusy] = useState(false);
+  /* The whole of the import's report, shown before the player confirms. */
+  const [notes, setNotes] = useState<string[]>([]);
+  const [prices, setPrices] = useState<string[]>([]);
 
   /**
    * Read one pasted or uploaded blob.
@@ -92,6 +120,8 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       setParsedWarband(warbandFromFile(decoded.file, 'clone'));
       setFileNotes(decoded.warnings);
       setUnmatched([]);
+      setNotes([]);
+      setPrices([]);
       setErrorMsg(null);
       return true;
     }
@@ -117,16 +147,70 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
         inputText, units, importDataset ?? undefined);
       setUnmatched(unmatched);
       setFileNotes(golemNote(golem));
+      setNotes([]);
+      setPrices([]);
       if (warband.units.length === 0) {
         setErrorMsg('No units could be parsed from the input. Please check the export format.');
         setParsedWarband(null);
       } else {
-        setParsedWarband(warband);
+        setParsedWarband(withRuleset(warband));
         setErrorMsg(null);
       }
     } catch (_err) {
       setErrorMsg('Failed to parse roster data. Ensure it is valid NewRecruit JSON, XML, or Text.');
       setParsedWarband(null);
+    }
+  };
+
+  /**
+   * Fetch a Trench Companion warband and read it.
+   *
+   * The fetch is a POST to our own route, which is the only thing that talks
+   * to their host — see `src/app/api/import/trench-companion/route.ts` for
+   * why, and for the etiquette. Every failure is shown with whatever the
+   * route said about it, including the upstream status: there is no cached
+   * copy and no partial warband to fall back on (rule 2).
+   */
+  const handleTrenchCompanion = async () => {
+    if (!tcRef.trim()) {
+      setErrorMsg('Paste a Trench Companion share link, or the warband id on its own.');
+      return;
+    }
+    if (!importDataset) {
+      setErrorMsg('The ruleset is still loading. Try again in a moment.');
+      return;
+    }
+
+    setTcBusy(true);
+    setErrorMsg(null);
+    try {
+      const res = await fetch('/api/import/trench-companion', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ ref: tcRef.trim() }),
+      });
+      const body = await res.json().catch(() => null);
+      if (!res.ok) {
+        /* The route explains itself and names the upstream status. Pass it
+           through rather than replacing it with a sentence of our own. */
+        setErrorMsg(body?.error ?? `That import failed (HTTP ${res.status}).`);
+        setParsedWarband(null);
+        return;
+      }
+
+      const report = importTrenchCompanionWarband(body, importDataset);
+      setParsedWarband(withRuleset(report.warband));
+      setUnmatched(report.unmatched);
+      setNotes([...report.warnings, ...report.unmapped]);
+      setPrices(report.priceDifferences.map(priceDifferenceLine));
+      setFileNotes([]);
+      setErrorMsg(null);
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message
+        : 'That warband could not be read. Nothing was imported.');
+      setParsedWarband(null);
+    } finally {
+      setTcBusy(false);
     }
   };
 
@@ -142,9 +226,11 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       try {
         const { warband, unmatched, golem } = importNewRecruitRoster(
           content, units, importDataset ?? undefined);
-        setParsedWarband(warband);
+        setParsedWarband(withRuleset(warband));
         setUnmatched(unmatched);
         setFileNotes(golemNote(golem));
+        setNotes([]);
+        setPrices([]);
         setErrorMsg(null);
       } catch (_err) {
         setErrorMsg('Error parsing uploaded file.');
@@ -156,12 +242,18 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
   const handleConfirmImport = () => {
     if (!parsedWarband) return;
 
-    useStore.setState((state) => {
-      const updated = [...state.warbands, parsedWarband];
-      setActiveWarbandId(parsedWarband.id);
-      return { warbands: updated, activeWarbandId: parsedWarband.id };
-    });
+    /*
+      Through the store's own door, not `useStore.setState`.
 
+      The direct write it used to make wrote the warband into memory and
+      NOWHERE ELSE: `persistWarbands` is what saves to this device and queues
+      the push, and skipping it meant an imported roster survived exactly
+      until the tab was reloaded. It also skipped the founding snapshot, so
+      the History screen opened on an imported warband with nothing in it.
+      Found while wiring the Trench Companion import (CI-1), which lands in
+      the same place.
+    */
+    importWarband(parsedWarband);
     onClose();
   };
 
@@ -174,7 +266,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
       onClose={onClose}
       size="lg"
       title="Import a warband"
-      subtitle="Paste a TrenchLine roster file, NewRecruit JSON, BattleScribe XML or plaintext roster"
+      subtitle="A TrenchLine roster file, a NewRecruit or BattleScribe export, or a Trench Companion share link"
       /*
         The import had no way to finish.
 
@@ -219,6 +311,51 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
             <span className="font-bold text-theme-text">Click to upload a TrenchLine or NewRecruit file</span>
             <span className="text-xs sm:text-[10px] text-theme-muted">Supports .json, .ros, .rosz, .txt</span>
           </label>
+        </div>
+
+        {/*
+          Trench Companion, beside the NewRecruit upload.
+
+          A link or a bare id, fetched by our own route on this click and
+          never by the browser — see the route for the etiquette. Its own
+          field and its own button, because it is a different act from
+          parsing a file: this one leaves the machine.
+        */}
+        <div className="space-y-1.5">
+          <label
+            htmlFor="tc-ref"
+            className="block text-xs font-mono uppercase text-theme-muted"
+          >
+            Or import from Trench Companion:
+          </label>
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input
+              id="tc-ref"
+              type="text"
+              inputMode="url"
+              value={tcRef}
+              onChange={(e) => setTcRef(e.target.value)}
+              placeholder="trench-companion.com/warband/detail/225201"
+              className="flex-1 min-h-[44px] bg-theme-base border border-theme-border rounded px-3 text-base sm:text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
+            />
+            <button
+              type="button"
+              onClick={handleTrenchCompanion}
+              disabled={tcBusy}
+              className="min-h-[44px] px-4 bg-theme-elevated hover:bg-theme-border text-theme-primary border border-theme-primary/40 rounded font-mono text-xs font-bold uppercase transition-colors flex items-center justify-center gap-1.5 disabled:opacity-60"
+            >
+              {tcBusy
+                ? <Loader2 className="w-4 h-4 animate-spin" />
+                : <Link2 className="w-4 h-4" />}
+              {tcBusy ? 'Fetching' : 'Fetch'}
+            </button>
+          </div>
+          <p className="text-xs text-theme-muted leading-relaxed">
+            Your own share link, read once, when you press Fetch. Nothing is stored and nothing
+            is sent but the warband id. Prices and statlines come from this app&rsquo;s ruleset,
+            and anything Trench Companion has that this ruleset does not is listed rather than
+            guessed at.
+          </p>
         </div>
 
         <div className="space-y-1.5">
@@ -282,6 +419,49 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
             </span>
             <ul className="text-xs text-theme-muted space-y-1 pl-4">
               {fileNotes.map((n, i) => <li key={i} className="list-disc">{n}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {/*
+          Where their price and ours differ.
+
+          Its own block rather than a line in the notes, because it is the one
+          part of the report that changes what the roster is WORTH: a model
+          5 Ducats cheaper here is a warband that may now be legal where it was
+          not, or the other way round. The roster is priced from this app's
+          ruleset either way — rule 1 — and this says where that moved.
+        */}
+        {prices.length > 0 && (
+          <div className="border border-theme-border bg-theme-base p-3 space-y-1.5">
+            <span className="eyebrow text-theme-muted flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              {prices.length} {prices.length === 1 ? 'price differs' : 'prices differ'}
+            </span>
+            <p className="text-xs text-theme-text leading-relaxed">
+              These are priced here from this app&rsquo;s ruleset, which is where every cost in
+              TrenchLine comes from. Their figures are shown so you can see what moved.
+            </p>
+            <ul className="font-mono text-xs text-theme-muted space-y-0.5 pl-4">
+              {prices.map((n, i) => <li key={i} className="list-disc">{n}</li>)}
+            </ul>
+          </div>
+        )}
+
+        {/*
+          Everything else the import wants to say: their Preview rules, a debt
+          this app has no home for, a field that is not mapped yet. Above the
+          preview with the rest, because all of it changes what a player should
+          check before pressing Import.
+        */}
+        {notes.length > 0 && (
+          <div className="border border-theme-border bg-theme-base p-3 space-y-1.5">
+            <span className="eyebrow text-theme-muted flex items-center gap-1.5">
+              <AlertCircle className="w-3.5 h-3.5" />
+              About this import
+            </span>
+            <ul className="text-xs text-theme-muted space-y-1 pl-4">
+              {notes.map((n, i) => <li key={i} className="list-disc leading-relaxed">{n}</li>)}
             </ul>
           </div>
         )}

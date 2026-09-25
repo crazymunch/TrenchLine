@@ -23,6 +23,7 @@ import type { Cost, Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SkillLearned } from '../rules/advancement';
 import type { ExplorationEffect } from '../rules/campaign';
+import type { ConversionPlan } from '../rules/convert';
 import type { SyncState } from '../services/sync';
 import type { CampaignSyncState } from '../services/campaignSync';
 
@@ -197,6 +198,14 @@ export interface AppState {
    * per-game cap from the Warband Threshold Table. 'unrestricted' lets the
    * player set both, for one-off games, imports and testing a list.
    */
+  /**
+   * Move a warband to another ruleset, on a plan the player has confirmed.
+   *
+   * RV-1. `planConversion` says what would happen and `applyConversion` does
+   * it; this is the store's half. The plan is an argument because the player
+   * confirmed that plan — recomputing it here could answer differently.
+   */
+  convertWarbandRuleset: (warbandId: string, plan: ConversionPlan, dataset: Dataset) => void;
   createWarband: (name: string, factionId: string, ducatLimit?: number,
                   forceMode?: 'campaign' | 'unrestricted',
                   founding?: { variantId?: string; gloryPoints?: number;
@@ -207,7 +216,16 @@ export interface AppState {
                                 * is ignored in campaign mode.
                                 */
                                startingGlory?: number;
-                               allowThirdParty?: boolean }) => Warband;
+                               allowThirdParty?: boolean;
+                               /**
+                                * Which ruleset this warband is built against
+                                * (RV-1). Recorded on the warband at muster,
+                                * because the app's ruleset is a per-browser
+                                * setting and a warband opened on another
+                                * device was otherwise read against whatever
+                                * that device had chosen, silently.
+                                */
+                               rulesetId?: string }) => Warband;
   /**
    * Delete a warband from this device and from the cloud.
    *
