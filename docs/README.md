@@ -23,6 +23,7 @@ no design documentation at all.
 | [`DATA-SOURCES.md`](DATA-SOURCES.md) | Where every piece of game data comes from, and how to refresh it. |
 | [`NEWRECRUIT-SPIKE.md`](NEWRECRUIT-SPIKE.md) | Whether a BattleScribe/NewRecruit `.ros` export is possible, measured against a real exported roster rather than assumed. |
 | [`NEWRECRUIT-IMPORT.md`](NEWRECRUIT-IMPORT.md) | Importing a NewRecruit roster: why a line is resolved by `entryId` and not by its name, and the fallback chain that turned a total XML failure into a plausible-looking success. |
+| [`TRENCH-COMPANION-IMPORT.md`](TRENCH-COMPANION-IMPORT.md) | Importing a warband from a Trench Companion share link: the endpoint, the etiquette of reading somebody else's server, why this one resolves by name where the NewRecruit import does not, and the fields that are not mapped yet. |
 | [`ROS-EXPORT.md`](ROS-EXPORT.md) | Writing a warband as a BattleScribe `.ros`: the fatal/warning/informational report, the decisions in the file, what it deliberately leaves out, and the acceptance gate nobody has cleared. |
 | [`ROSTER-PATHS.md`](ROSTER-PATHS.md) | The roster-path layer the build emits: what a BattleScribe roster calls each model, each thing it can carry and each Warband Variant, and what has no identity at all. |
 | [`ROSTER-FILE.md`](ROSTER-FILE.md) | The roster file TrenchLine writes and reads: the envelope, the field inventory, the round-trip promise and the compatibility policy. |

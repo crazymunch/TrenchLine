@@ -154,6 +154,9 @@ export const WarbandDashboard: React.FC = () => {
         gloryPoints: newGlory,
         startingGlory: muster?.glory ?? 0,
         allowThirdParty: newAllowThirdParty,
+        // What this muster is built against, recorded on the warband so that
+        // opening it on a device set to the other ruleset is noticed (RV-1).
+        rulesetId,
       },
     );
     setNewWarbandName('');

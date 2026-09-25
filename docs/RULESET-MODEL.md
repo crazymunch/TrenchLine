@@ -1730,6 +1730,65 @@ A general ruleset-switching diff is still wanted eventually — switching betwee
 *Latest GitHub* and *TrenchLine* needs it — but it moves to Phase 2.7 and stops
 blocking the data work.
 
+### 8a. A warband records its own ruleset, and converting it is an act
+
+*RV-1, 25 September 2026. The design is in
+[`DESIGNS-2026-09-25.md`](DESIGNS-2026-09-25.md).*
+
+The switcher above changes which ruleset **this browser** reads. It shows the
+diff first and changes no warband, which is right as far as it goes — and it
+left a hole one layer down. The app's ruleset was a `localStorage` key and
+nothing else, so a warband built on a laptop set to *TrenchLine Rules* and
+opened on a phone set to *Latest GitHub* was simply read against the other one:
+a Brazen Bull 15 Ducats cheaper, an entry the other ruleset does not carry
+still shown at its old price, and nothing said. That is the same silent
+substitution §8 forbids for the switcher, arriving by a different door.
+
+Three things close it.
+
+1. **`Warband.rulesetId`**, durable, recorded at the muster and by every
+   import. Absent means *not recorded*, never *the default*: every warband
+   saved before this has none, and a warband with no answer is not offered a
+   conversion, because we do not know that it needs one.
+
+2. **A bar when the two disagree** (`rulesetMismatch`, `RulesetMismatchBar`),
+   offering the only two honest ways out — read the warband under the ruleset
+   it was built for, or move the warband and see what that costs. There is no
+   dismiss: the mismatch does not go away, and a bar a player can silence is a
+   bar that stops being read.
+
+3. **A conversion** (`src/rules/convert.ts`), in two phases. `planConversion`
+   re-resolves every model, item and purchased option in the target and decides
+   nothing; `applyConversion` takes a plan the player confirmed and returns a
+   new warband. A player who cancels has not moved a Ducat.
+
+The report is **kept**, **changed** (a price or a statline differs, with both
+values) and **lost** (no entry in the target). Resolution is by name first,
+because the name is what a player reads and what survives a rebuild; an id is
+tried second and only where the name found nothing, since the two shipped
+rulesets are layered from the same catalogues and an entry a layer RENAMES
+still carries the same id — reporting that as a rename beats reporting it as a
+loss and refunding a model the player still has. Ambiguity resolves to nothing,
+never to the first match (ID-1).
+
+The money follows the book rather than the arithmetic:
+
+- **A price change moves no money.** The book does not re-charge a warband for
+  a reprint. The Strongbox is untouched; what the roster is *worth* moves,
+  because that is what converting means.
+- **A lost entry is refunded at its recorded price** — what the roster says was
+  paid, not what the target charges, because the target charges nothing for a
+  thing it does not have. One `conversion` ledger entry per lost thing, each
+  naming what it was, all booked against the same game so a reversal takes the
+  whole conversion.
+- **A lost model's Battlekit goes to the Arsenal**, not into the refund. The
+  gear did not stop existing because the model did, and refunding it as well
+  would pay for it twice.
+
+One refusal: a target that does not carry the warband's faction. Every model
+would be reported as lost and the whole warband refunded, which is not a
+conversion but a deletion with a receipt, so it is refused and said.
+
 ## 9. Open questions
 
 - **`Combat Engineer` is missing from the catalogues** but present in the
