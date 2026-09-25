@@ -1,5 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
-import { requireEnv, missingEnv, adminEmails } from '../env';
+import {
+  requireEnv, missingEnv, missingAdvisory, envReport, adminEmails,
+} from '../env';
 
 /**
  * Required server environment.
@@ -66,9 +68,29 @@ describe('the retired fallback secret', () => {
 });
 
 describe('the admin allowlist', () => {
-  it('falls back to the maintainer’s address when unconfigured', () => {
+  /*
+    ADM-1. The module used to hold the maintainer's personal address as
+    `DEFAULT_ADMIN_EMAILS`, three lines below a comment calling the list
+    "deliberately empty by default". A built-in default grants authority from
+    source code: a deployment cannot revoke it without a release, and every
+    fork inherits the grant.
+  */
+  it('is empty when unconfigured — there is no built-in administrator', () => {
     delete process.env.TRENCHLINE_ADMIN_EMAILS;
-    expect(adminEmails()).toEqual(['crazymunch@gmail.com']);
+    expect(adminEmails()).toEqual([]);
+  });
+
+  /*
+    The strongest form of the rule, and the one that survives a refactor: not
+    "the old address is gone" but "no address at all is baked in". A test
+    naming one address passes the moment somebody substitutes another.
+  */
+  it('bakes in no address whatsoever', () => {
+    for (const value of [undefined, '', '   ', ',', ' , , ']) {
+      if (value === undefined) delete process.env.TRENCHLINE_ADMIN_EMAILS;
+      else process.env.TRENCHLINE_ADMIN_EMAILS = value;
+      expect(adminEmails(), JSON.stringify(value)).toEqual([]);
+    }
   });
 
   /*
@@ -81,14 +103,56 @@ describe('the admin allowlist', () => {
     expect(adminEmails()).not.toContain('commander@trenchline.org');
   });
 
-  it('is replaced outright by the environment, not merged with it', () => {
+  it('is exactly what the environment lists, in order', () => {
     process.env.TRENCHLINE_ADMIN_EMAILS = 'ops@example.org, second@example.org';
     expect(adminEmails()).toEqual(['ops@example.org', 'second@example.org']);
-    expect(adminEmails()).not.toContain('crazymunch@gmail.com');
   });
 
   it('normalises case and stray whitespace', () => {
     process.env.TRENCHLINE_ADMIN_EMAILS = '  OPS@Example.ORG ,, ';
     expect(adminEmails()).toEqual(['ops@example.org']);
+  });
+});
+
+/*
+  ADM-1's other half. `missingEnv` was written so "a fresh deployment learns
+  about all of them at once rather than one restart at a time" and had no
+  caller anywhere in the app; an advisory variable has no moment of use to
+  throw at, so with nothing reporting it the deployment finds out when a
+  person cannot reach a screen. `src/instrumentation.ts` is the caller.
+*/
+describe('the startup report', () => {
+  it('names an unset administrator list, and says what it is for', () => {
+    process.env.NEXTAUTH_SECRET = 'a-real-secret';
+    delete process.env.TRENCHLINE_ADMIN_EMAILS;
+
+    const report = envReport();
+    expect(report).toHaveLength(1);
+    expect(report[0]).toMatch(/^TRENCHLINE_ADMIN_EMAILS is not set\./);
+    expect(report[0]).toMatch(/the deployment has no administrator/);
+  });
+
+  it('reports a missing secret and a missing admin list together', () => {
+    delete process.env.NEXTAUTH_SECRET;
+    delete process.env.TRENCHLINE_ADMIN_EMAILS;
+    expect(envReport().map((line) => line.split(' ')[0]))
+      .toEqual(['NEXTAUTH_SECRET', 'TRENCHLINE_ADMIN_EMAILS']);
+  });
+
+  it('says nothing when the environment is whole', () => {
+    process.env.NEXTAUTH_SECRET = 'a-real-secret';
+    process.env.TRENCHLINE_ADMIN_EMAILS = 'ops@example.org';
+    expect(envReport()).toEqual([]);
+  });
+
+  /*
+    The advisory list is advisory: a deployment with no administrator serves
+    every other request correctly, so nothing here may throw or be counted
+    among the variables the server refuses to start without.
+  */
+  it('does not make the admin list required', () => {
+    delete process.env.TRENCHLINE_ADMIN_EMAILS;
+    expect(missingEnv()).not.toContain('TRENCHLINE_ADMIN_EMAILS');
+    expect(missingAdvisory()).toEqual(['TRENCHLINE_ADMIN_EMAILS']);
   });
 });

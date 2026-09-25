@@ -144,48 +144,82 @@ function optionsOf(node, nameOf, fieldNameOf, isConstraint, resolve) {
     not `Alchemical Formulae::Eye Options` — and what several exact-match
     readers compare against.
   */
+  /*
+    The heading an option with no group is filed under.
+
+    The catalogue states none for these, and `UnitOption.group` is what the
+    builder prints as a section title, so one has to be chosen. `Upgrades` is
+    not invented: the catalogues already use it as a group name — eight priced
+    options sat under it before this — and it is the word a NewRecruit
+    roster's own importer falls back to for exactly these lines
+    (`newRecruitImporter.ts`). So a Fierce Lion bought in the app and one
+    imported from a file land under the same heading, beside the options the
+    catalogue itself files there.
+  */
+  const UNGROUPED = 'Upgrades';
+
+  /** `min` present and equal to `max` — `forcedKitOf`'s shape 3, not an option. */
+  const isForcedKit = (e) => {
+    const cs = arr(e?.constraints?.constraint);
+    const min = cs.find((c) => attr(c, 'type') === 'min');
+    const max = cs.find((c) => attr(c, 'type') === 'max');
+    if (!min || Number(attr(min, 'value')) < 1) return false;
+    return Boolean(max) && Number(attr(max, 'value')) === Number(attr(min, 'value'));
+  };
+
+  /*
+    One upgrade entry -> at most one option, wherever it was found.
+
+    Split out of `fromGroup` so a grouped entry and an ungrouped one are read
+    by the same rules: the same profile resolution, the same "not gear" test,
+    the same de-duplication. The only difference is the heading.
+  */
+  const fromEntry = (e, groupName = UNGROUPED, groupPath = groupName) => {
+    // An entry may inline its profile or reach it through an infoLink, and
+    // the catalogues use both freely — the Black Grail Strains all link.
+    // Resolve links before classifying, or every linked option is invisible.
+    const profiles = [
+      ...arr(e?.profiles?.profile),
+      ...arr(e?.infoLinks?.infoLink)
+        .filter((l) => attr(l, 'type') === 'profile')
+        .map((l) => resolve(attr(l, 'targetId')))
+        .filter(Boolean),
+    ];
+    const ability = profiles.find((pr) => attr(pr, 'typeName') === 'Ability');
+
+    // Profile type does not separate an option from gear: the catalogues type
+    // a Black Grail Strain as `Battlekit`, exactly like a piece of equipment.
+    // So take anything that carries rules text and is not a weapon, then drop
+    // whatever the pipeline already emits as gear in the post-pass below —
+    // "already represented elsewhere" is the reliable test, not the label.
+    const rules = ability
+      ?? profiles.find((pr) => attr(pr, 'typeName') === 'Battlekit');
+    if (!rules) return;
+    if (profiles.some((pr) => ['Weapon', 'Unit'].includes(attr(pr, 'typeName')))) return;
+
+    if (seen.has(attr(e, 'id'))) return;
+    seen.add(attr(e, 'id'));
+    out.push({
+      id: attr(e, 'id'),
+      name: clean(attr(e, 'name')),
+      group: groupName,
+      /* Only where it says something the leaf does not, so the dataset does
+         not grow a field repeating `group` on every top-level option. */
+      ...(groupPath && groupPath !== groupName ? { groupPath } : {}),
+      cost: costsOf(e),
+      // The id of the profile carrying the rules, so the gear post-pass can
+      // recognise an option that is really an armoury entry.
+      profileId: attr(rules, 'id'),
+      description: clean(charMap(rules).Description || charMap(rules).Rules),
+      constraints: constraintsOf(e),
+      modifiers: modifiersOf(e, nameOf, fieldNameOf, isConstraint),
+    });
+  };
+
   const fromGroup = (g, groupName, groupPath = groupName) => {
     for (const e of arr(g?.selectionEntries?.selectionEntry)) {
       if (attr(e, 'type') !== 'upgrade') continue;
-      // An entry may inline its profile or reach it through an infoLink, and
-      // the catalogues use both freely — the Black Grail Strains all link.
-      // Resolve links before classifying, or every linked option is invisible.
-      const profiles = [
-        ...arr(e?.profiles?.profile),
-        ...arr(e?.infoLinks?.infoLink)
-          .filter((l) => attr(l, 'type') === 'profile')
-          .map((l) => resolve(attr(l, 'targetId')))
-          .filter(Boolean),
-      ];
-      const ability = profiles.find((pr) => attr(pr, 'typeName') === 'Ability');
-
-      // Profile type does not separate an option from gear: the catalogues type
-      // a Black Grail Strain as `Battlekit`, exactly like a piece of equipment.
-      // So take anything that carries rules text and is not a weapon, then drop
-      // whatever the pipeline already emits as gear in the post-pass below —
-      // "already represented elsewhere" is the reliable test, not the label.
-      const rules = ability
-        ?? profiles.find((pr) => attr(pr, 'typeName') === 'Battlekit');
-      if (!rules) continue;
-      if (profiles.some((pr) => ['Weapon', 'Unit'].includes(attr(pr, 'typeName')))) continue;
-
-      if (seen.has(attr(e, 'id'))) continue;
-      seen.add(attr(e, 'id'));
-      out.push({
-        id: attr(e, 'id'),
-        name: clean(attr(e, 'name')),
-        group: groupName,
-        /* Only where it says something the leaf does not, so the dataset does
-           not grow a field repeating `group` on every top-level option. */
-        ...(groupPath && groupPath !== groupName ? { groupPath } : {}),
-        cost: costsOf(e),
-        // The id of the profile carrying the rules, so the gear post-pass can
-        // recognise an option that is really an armoury entry.
-        profileId: attr(rules, 'id'),
-        description: clean(charMap(rules).Description || charMap(rules).Rules),
-        constraints: constraintsOf(e),
-        modifiers: modifiersOf(e, nameOf, fieldNameOf, isConstraint),
-      });
+      fromEntry(e, groupName, groupPath);
     }
     // Groups nest: "Vile Corpus" sits inside a wrapper group. The leaf wins
     // for `group`, and the path keeps what the leaf drops.
@@ -197,6 +231,41 @@ function optionsOf(node, nameOf, fieldNameOf, isConstraint, resolve) {
 
   for (const g of arr(node?.selectionEntryGroups?.selectionEntryGroup)) {
     fromGroup(g, clean(attr(g, 'name')));
+  }
+
+  /*
+    An upgrade the model offers with no group around it at all.
+
+    The catalogues state some options as a direct `selectionEntry` child of the
+    model node rather than inside a `selectionEntryGroup`, and reading only
+    groups dropped every one: **fourteen across the six faction catalogues**,
+    among them the Lion of Jabir's `Fierce Lion` (+5 Ducats, gains FEAR), the
+    Yüzbaşı Captain's `Janissary Veteran` and `Akinji-Bey`, the Heretic
+    Priest's `Tank Palanquin` and the Ecclesiastic Prisoner's `Martyrdom
+    Device`. None could be bought in the app, none reached the legality
+    engine, and none had a roster path — so the owner's Fierce Lion of Jabir,
+    a model NewRecruit exports happily, could not be exported back (EXP-1).
+
+    `Janissary Veteran` is the sharpest case: `restrictions.ts` already reads
+    the Dispatch's "Janissaries & Yüzbaşı **with Janissary Veteran** only" and
+    reports `restriction-unverified` because the roster records no such thing.
+    It records none because this parser never emitted it.
+
+    Two guards, both the same ones the grouped reader and `forcedKitOf` use:
+
+    - **Not forced kit.** A `min` equal to a `max` is "always has", which is
+      `forcedKitOf`'s shape 3 — the Sin Eater's Tenderizer Maul, the Goetic
+      Warlock's Iron-Clawed Hands, the Crimson Communicant's Atonement Bell.
+      Three of the fourteen, and they must not become options a player can
+      decline.
+    - **Not gear.** A Weapon profile is emitted by the weapons pass, so the
+      Hound of the Black Grail's `Infected` and Gregori Gula's `Vomitus` stay
+      there rather than appearing twice.
+  */
+  for (const e of arr(node?.selectionEntries?.selectionEntry)) {
+    if (attr(e, 'type') !== 'upgrade') continue;
+    if (isForcedKit(e)) continue;
+    fromEntry(e);
   }
 
   // Shared groups reached by entryLink. The Black Grail's Strains and Vile

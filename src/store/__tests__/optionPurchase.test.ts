@@ -88,7 +88,16 @@ beforeEach(() => {
 });
 
 describe('the shipped options this is about', () => {
-  it('price 280 of them, across eighteen groups', () => {
+  /*
+    283, not 280: EXP-1 taught the parser to read an upgrade the catalogue
+    states as a direct child of the model entry rather than inside a group,
+    and three of the fourteen it recovered carry a price — the Lion of Jabir's
+    `Fierce Lion` (+5 Ducats, gains FEAR) and the Yüzbaşı Captain's
+    `Janissary Veteran` (10) on both of its entries. They are filed under
+    `Upgrades`, which the catalogues already use as a group name — eight
+    priced options were under it before — so the group count does not move.
+  */
+  it('price 283 of them, across eighteen groups', () => {
     const seen = new Set<string>();
     let priced = 0;
     const groups = new Set<string>();
@@ -103,7 +112,7 @@ describe('the shipped options this is about', () => {
         }
       }
     }
-    expect(priced).toBe(280);
+    expect(priced).toBe(283);
     expect(groups.size).toBe(18);
   });
 });

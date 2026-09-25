@@ -177,18 +177,60 @@ failed. Either `npm run rules:fetch` moved the catalogues under us or the walk
 has stopped holding, and both are findings.
 
 **Campaign state and BattleScribe bookkeeping are deliberately absent.** Of the
-fixture roster's 95 selections the layer names 81. The other fourteen are:
+fixture roster's 95 selections the layer names 82. The other thirteen are:
 
 | | |
 | --- | --- |
 | skills, advancements, injuries | `Ranged Proficiency [7]`, `Assassinate [4]`, `Leg Wound [31]`, `Strength of Samson [8]`, `Lost Arm [26]`, `Skill & Expertise [7]` |
 | bookkeeping the catalogues carry for BattleScribe's benefit | `I Understand 👍`, `Armour Storage`, `Equipment Storage`, `Alchemical Ammuntion (Loaded)` ×2 |
 | roster-level selections | `Unleveraged Glory`, `The House of Wisdom` — held as `campaign` and `variants` |
-| an exploration find, not armoury gear | `Sniper Scope` |
+| a campaign Glory Item, not armoury gear | `Sniper Scope` |
 
 A generator writes those from where the dataset actually holds them. `carries`
 is the wargear vocabulary — `weapons`, `unit.options`, `bundles`, `battlekit`
 and the armoury rows — and nothing else.
+
+### An upgrade with no group round it
+
+`Fierce Lion` used to be on that list, described as "an ability, not armoury
+gear". That was wrong, and the way it was wrong is worth keeping.
+
+`carries` is fed `unit.options`, so an option the **dataset** does not hold
+has no path however well the walk works. `optionsOf` in
+`scripts/lib/parse-battlescribe.mjs` read only entries inside a
+`selectionEntryGroup`, and the catalogues state some options as a direct
+`selectionEntry` child of the model node instead. Fourteen across the six
+faction catalogues were dropped before the walk ever saw them:
+
+| catalogue | model | upgrade |
+| --- | --- | --- |
+| Iron Sultanate | Lion of Jabir | `Fierce Lion` — +5 Ducats, gains FEAR |
+| Iron Sultanate | Yüzbaşı Captain | `Janissary Veteran` (10), `Akinji-Bey` |
+| Heretic Legion | Heretic Priest, Chorister | `Tank Palanquin` (60), `Banshee` |
+| Black Grail | Plague Knight, Hound, Heralds of Beelzebub, Gregori Gula | `Leader`, `Infected` (5), `Maddening Buzz` (10), `Vomitus` (40) |
+| Mercenaries | Trench Dog, Goetic Warlock | `Man's Best Friend`, `Dog's Friend` |
+| New Antioch | Trench Dogs of the Red Brigade | `Man's Best Friend` (5) |
+| Trench Pilgrims | Ecclesiastic Prisoner | `Martyrdom Device` (35) |
+
+None could be bought in the app, none reached the legality engine and none had
+a path. `Janissary Veteran` is the sharpest of them: `rules/restrictions.ts`
+already reads the Dispatch's *"Janissaries & Yüzbaşı with Janissary Veteran
+only"* and reports `restriction-unverified` because no roster records such a
+thing — and none did, because this parser never emitted it.
+
+Two guards keep the reader honest, and both reuse a rule that already existed:
+
+- **Not forced kit.** A `min` equal to a `max` is *"always has"*, which is
+  `forcedKitOf`'s shape 3 — the Sin Eater's Tenderizer Maul, the Goetic
+  Warlock's Iron-Clawed Hands, the Crimson Communicant's Atonement Bell. Three
+  of the fourteen, and they must not become options a player can decline.
+- **Not gear.** An entry carrying a Weapon profile is emitted by the weapons
+  pass, so the Hound's `Infected` and Gregori Gula's `Vomitus` stay there
+  rather than appearing twice.
+
+They are filed under `Upgrades`, which the catalogues already use as a group
+name and which a NewRecruit roster's own importer already falls back to, so an
+option bought in the app and one imported from a file land under one heading.
 
 ## Matching
 

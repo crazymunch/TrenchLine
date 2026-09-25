@@ -363,20 +363,28 @@ describe('what this warband cannot express, named rather than dropped', () => {
                                       modifier increments, which a player
                                       cannot choose
 
-        Sniper Scope                  an exploration find from
-                                      `Campaign Rules.cat`
-        Fierce Lion                   an ability, not armoury gear
+        Sniper Scope                  a Glory Item in `Campaign Rules.cat`'s
+                                      own group, won in a campaign rather
+                                      than bought from an Armoury
 
       `docs/ROSTER-PATHS.md` says why each is deliberately outside the layer's
       wargear vocabulary. Pinned as a list rather than a count so that a
       newcomer to it has to be explained rather than absorbed.
+
+      `Fierce Lion` was on this list and is not any more, and its leaving is
+      the point of EXP-1's parser change. It was never an oversight of the
+      layer: it is a real `selectionEntry` the Lion of Jabir offers for +5
+      Ducats, stated as a direct child of the model rather than inside a
+      group, and `optionsOf` read only groups — so it was absent from the
+      dataset, from the builder, from the legality engine and from this layer
+      at once. Fourteen upgrades were in that position across the six faction
+      catalogues.
     */
     const { unnameable } = warbandFromRos();
     const names = [...new Set(unnameable.map((u) => u.split(' / ')[1]))].sort();
     expect(names).toEqual([
       'Alchemical Ammuntion (Loaded)',
       'Assassinate [4]',
-      'Fierce Lion',
       'Leg Wound [31]',
       'Lost Arm [26]',
       'Ranged Proficiency [7]',

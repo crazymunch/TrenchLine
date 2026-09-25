@@ -26,6 +26,24 @@ export interface Ability {
 }
 
 export interface WeaponProfile {
+  /**
+   * The catalogue selection this came from, as a roster records it (EXP-1).
+   *
+   * An imported item keeps the identity of the LINE it was read from, not of
+   * the profile that line prints — the two are routinely different, and the
+   * importer used to keep only the profile's name. `Polearm and Shield` in
+   * the Mamluk Faris's Loadout group prints a `Polearm` weapon profile and a
+   * `Shield` one, so the model came back holding a `Polearm` no roster names
+   * and the bundle it was actually given was gone.
+   *
+   * A path, like `NrSelection.entryId` — `da5c-…::2f82-…`, the chain of
+   * `entryLink` ids by which the entry was reached with its own id last. See
+   * `docs/ROSTER-PATHS.md`.
+   *
+   * Absent on anything bought in the app and on every roster imported before
+   * this existed, so no reader may require it.
+   */
+  entryId?: string;
   id: string;
   name: string;
   type: 'Melee' | 'Ranged' | 'Both';
@@ -60,6 +78,24 @@ export interface WeaponProfile {
 }
 
 export interface ArmourProfile {
+  /**
+   * The catalogue selection this came from, as a roster records it (EXP-1).
+   *
+   * An imported item keeps the identity of the LINE it was read from, not of
+   * the profile that line prints — the two are routinely different, and the
+   * importer used to keep only the profile's name. `Polearm and Shield` in
+   * the Mamluk Faris's Loadout group prints a `Polearm` weapon profile and a
+   * `Shield` one, so the model came back holding a `Polearm` no roster names
+   * and the bundle it was actually given was gone.
+   *
+   * A path, like `NrSelection.entryId` — `da5c-…::2f82-…`, the chain of
+   * `entryLink` ids by which the entry was reached with its own id last. See
+   * `docs/ROSTER-PATHS.md`.
+   *
+   * Absent on anything bought in the app and on every roster imported before
+   * this existed, so no reader may require it.
+   */
+  entryId?: string;
   id: string;
   name: string;
   armourModifier?: string; // e.g. "-1 Injury Modifier"
@@ -91,6 +127,24 @@ export interface ArmourProfile {
 }
 
 export interface EquipmentItem {
+  /**
+   * The catalogue selection this came from, as a roster records it (EXP-1).
+   *
+   * An imported item keeps the identity of the LINE it was read from, not of
+   * the profile that line prints — the two are routinely different, and the
+   * importer used to keep only the profile's name. `Polearm and Shield` in
+   * the Mamluk Faris's Loadout group prints a `Polearm` weapon profile and a
+   * `Shield` one, so the model came back holding a `Polearm` no roster names
+   * and the bundle it was actually given was gone.
+   *
+   * A path, like `NrSelection.entryId` — `da5c-…::2f82-…`, the chain of
+   * `entryLink` ids by which the entry was reached with its own id last. See
+   * `docs/ROSTER-PATHS.md`.
+   *
+   * Absent on anything bought in the app and on every roster imported before
+   * this existed, so no reader may require it.
+   */
+  entryId?: string;
   id: string;
   name: string;
   cost: number;

@@ -96,6 +96,52 @@ in at 194 and 130. The recruit sheet and the validator both read
 `UnitProfile.baseCost` as the entry's price and add gear on top, so a total
 there is counted twice.
 
+## An item is named after the selection, not after the profile
+
+EXP-1. The importer classified each line by the profile it prints — a Weapon
+profile is a weapon, a Battlekit profile is armour or equipment — which is
+right, and then took the item's **name** from that profile too, which is not.
+A selection and the profile it prints are routinely different things, and the
+fixture has four of them:
+
+| the roster says | it prints | the model came back holding |
+| --- | --- | --- |
+| `Fireteam: Mamluk-Guarded` | `Coordinated Engagement`, `Mamluk-Guarded` | `Coordinated Engagement` |
+| `Assigned Sword` | `Coordinated Engagement`, `Assigned Sword` | `Coordinated Engagement` |
+| `Polearm and Shield` | `Shield`, `Polearm` | `Polearm` |
+| `Shovel` › `Include Weapon Profile?` | `Weaponized Shovel` | `Shovel` **and** `Weaponized Shovel` |
+
+Every one is an item the player never chose, priced and listed on the card, and
+none of them is a name a roster can write back — which is how all four arrived
+as fatal findings on the `.ros` export ([`ROS-EXPORT.md`](ROS-EXPORT.md)).
+
+So: **the profile says what kind of thing it is and supplies the statline; the
+selection says what it is called.** The item also keeps the selection's own
+`entryId`, so a later reader can ask what the line was rather than guess from
+a name.
+
+### A child that only carries a profile
+
+`Include Weapon Profile?` is a selection whose entire content is one Weapon
+profile. It is not a second item on the model — the `Shovel` above it is the
+item, and this is how the catalogue attaches the weapon statline to it. It
+folds into its parent: the parent's profiles and its own are read together,
+and the walk does not descend into it again.
+
+Narrow on purpose — a profile, no cost, no group and no children of its own. A
+genuine free sub-option has a group or children; a question mark wrapped round
+a profile has neither.
+
+### What this costs
+
+`Fireteam: Mamluk-Guarded` has no row in the dataset's flat weapons list, so
+`toRoster` now reports it in `unmatched` where before it silently matched
+`Coordinated Engagement`. That is the trade this makes on purpose: a name the
+app cannot resolve, said out loud, in place of a wrong one it resolved
+quietly ([rule 2](../CLAUDE.md#2-never-invent-a-fallback)). Nothing is lost on
+the card — the item still carries the Battlekit profile's rules text, so the
+FIRETEAM rule reads exactly as it did.
+
 ## The defect underneath all of it
 
 **Every `.ros` import had been silently falling through to the plain-text

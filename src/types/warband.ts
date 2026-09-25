@@ -164,7 +164,11 @@ export interface ActiveUnit {
 
   // Special Faction Rules & Fireteams
   fireteam?: string;
-  specialUpgrades?: { id: string; name: string; cost: number; category: string }[];
+  specialUpgrades?: {
+    id: string; name: string; cost: number; category: string;
+    /** The catalogue selection this came from — see `WeaponProfile.entryId`. */
+    entryId?: string;
+  }[];
 
   // Narrative Lore & Chronicle
   lore?: string;

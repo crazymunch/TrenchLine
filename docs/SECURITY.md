@@ -10,7 +10,7 @@ advisory lands.
 | sign-in | email **and** password, verified against a stored hash | `verifyCredentials`, `src/lib/__tests__/auth.test.ts` |
 | registration | separate endpoint; issues no session | `POST /api/auth/register` |
 | session secret | required; the server refuses to start without one | `src/lib/env.ts` |
-| admin | `TRENCHLINE_ADMIN_EMAILS`, resolved on every request | `isUserAdmin` |
+| admin | `TRENCHLINE_ADMIN_EMAILS` and nothing else, resolved on every request; **no built-in default**, so unset means nobody | `isUserAdmin`, `src/lib/__tests__/env.test.ts` |
 | warbands | a caller reads and writes only their own | route + integration tests |
 | campaigns | member to read, campaign-admin to administer, owner-and-fielded to claim | `src/lib/api/policy.ts` |
 | custom rules | scoped by `(userId, ruleType, ruleId)`; signed out is 401 | route + integration tests |
@@ -31,8 +31,18 @@ Required in every environment:
 
 Strongly recommended:
 
-- `TRENCHLINE_ADMIN_EMAILS` — set it explicitly rather than relying on the
-  in-source default.
+- `TRENCHLINE_ADMIN_EMAILS` — **admin is a deployment setting only.** There is
+  no in-source default to rely on, and there must not be one: a built-in
+  address grants authority from source code, which a deployment cannot revoke
+  without a release and which every fork and clone inherits. Unset, nobody is
+  an administrator; the server starts, serves every other request, and prints
+  the reason once at startup (`src/instrumentation.ts`).
+
+  This is ADM-1. Until 25 September the module held the maintainer's personal
+  address as `DEFAULT_ADMIN_EMAILS`, three lines below a comment calling the
+  list "deliberately empty by default". Not a credential — the sweep of that
+  date found none in the tree or its history — but an identity is half of one,
+  and it told a reader of a public repository which account to go after.
 
 See `.env.example` for the full list.
 
@@ -106,9 +116,10 @@ Written down because an unrecorded gap is one nobody revisits.
 - **No rate limiting.** It belongs at the reverse proxy, which is outside this
   repository. Until it exists, sign-in and registration are only bounded by
   bcrypt's cost.
-- **Admin is still email-derived**, now from configuration rather than source
-  code. A persisted, auditable role on the user record is the real fix and
-  needs its own migration.
+- **Admin is still email-derived**, from configuration only — no address is
+  baked in anywhere (ADM-1). Email remains a poor identity for a role; a
+  persisted, auditable role on the user record is the real fix and needs its
+  own migration.
 - **No email verification.** `emailVerified` stays null because nothing proves
   a registrant owns the address, and the column should not claim otherwise.
 - **`dependency-review` is not enabled.** It needs the Dependency graph and
