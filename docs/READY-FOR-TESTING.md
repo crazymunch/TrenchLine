@@ -94,6 +94,59 @@ two Advancement thresholds on the total.
 | A game has **as many post-battles as it has rosters** | `BattleSide.campaignMatchId` | RR-27 |
 | A snapshot is written with the game number it belongs to | `WarbandSnapshot.campaignGame` | — |
 
+## Pack G — what to test by hand
+
+Added by the Quartermaster and Variants pack (FD-10 and FD-08). None of it is
+in `mockGame.spec.ts`, because all of it happens in the builder or on a screen
+the mock game does not open, so it is listed here for the owner to drive.
+
+### In the builder
+
+| What to do | What should happen | Citation |
+| --- | --- | --- |
+| Put a `Limit: 2` item on two models, then buy a third into the Arsenal | The roster reports `wargear-limit`: 3 taken, limit 2. The Arsenal counts | p.123 L7234–7238 |
+| Sell one back out of the Arsenal | The error clears. *"if your Warband used to have 2 … then you could purchase a replacement"* | same sentence |
+| Open a model with **one** Battle Scar | No Retire button. One scar is not two | p.123 |
+| Open a model with **two** Battle Scars | **Retire at 2 Battle Scars** appears under the scars, with the rule's own words and three choices for the kit | p.123 |
+| Retire it, choosing **Sell their kit** | The model moves to the Fallen marked retired rather than killed; the Strongbox gains half of each item's Cost, fractions up, as one `sold` ledger entry | p.121, p.123 |
+| Retire another, choosing **Keep their kit in the Arsenal** | The kit stacks into the Arsenal; nothing is credited | p.123 |
+| Retire a third, choosing **Let them keep it** | The kit goes with the model; nothing is credited, nothing reaches the Arsenal | p.123 |
+| Open the equip sheet on a Warband that has discovered nothing | No Glory Items on any tab, and a line saying a Trench Merchant, Black Market or Black Network Contact is what opens them | p.125 |
+| Roll a **Trench Merchant** in an Exploration Step and take the **Trade** option | Glory Items up to 5 ☼ appear — a Knighthood, a Battlefield Title. Anything dearer stays out; New Antioch's Great Banner at 12 ☼ should not appear | p.125 |
+| Take the **Report** option on a Trench Merchant instead | Nothing opens. Discovering the Location is not the same as taking the trade | p.125 |
+| Check the Arsenal's ordinary Glory-priced Battlekit throughout | A Troop Flag, Martyrdom Pills and a Field Shrine are on sale from game one. They are Armoury Table Battlekit, not Glory Items | p.125's "However" |
+
+### In the Codex
+
+| What to do | What should happen | Citation |
+| --- | --- | --- |
+| Open **Mission Generator → Campaign Game** and roll for game 1 | A result off the Early Campaign table only: Claim No Man's Land, Hunt for Heroes, The High Ground, Relic Hunt, Supply Raid, or the players' choice on a 6 | p.96 |
+| Roll for game 5, then game 10 | The Mid-Campaign and Endgame tables. From Below cannot appear before game 9 | p.96 |
+| Roll for game 12 | **The Great War**, with no dice rolled | p.96 |
+| Roll for game 13 | The app says the published tables stop at the Final Battle, rather than picking something | rule 2 |
+| Roll a 6 on any band | The sentence that hands the choice to the player who has played fewer games, and the five scenarios it permits. Not a reroll | p.96 |
+
+### On the recruit sheet and the cards
+
+| What to do | What should happen | Citation |
+| --- | --- | --- |
+| Recruit a **New Antioch Shocktrooper** with no Variant | Two abilities: Shock Charge and Assault Drill. **Not** Axe Mastery, Shield Bash, Indomitable or Weapon Familiarity | `New Antioch.cat` L4207+ |
+| Read the same entry's detail panel | An **Under another Variant** block naming those four and the Remnants of Byzantium | DA-01 |
+| Set the Warband's Variant to **Remnants of Byzantium** and look again | The four appear; Assault Drill goes, which is the catalogue taking it away | same |
+| Give that model a **Shield** and a **two-handed axe** | Shock Charge disappears from its card and from Play Mode's reference sheet — *"They lose Shock Charge if they equip a shield together with a two-handed axe"* | Weapon Familiarity's own text |
+| Open the Black Grail recruit list | **Winged Thrall** is not on it. The Grail Thrall is one entry at one cost | p.80, `Black Grail.cat` L3166 |
+| Open the New Antioch recruit list | **Guard Dog**, **Mercy Dog** and **Attack Dog** are not on it. They are the Trench Dog's specializations at +1 ☼, not models | p.121 |
+
+### In a Carcass Front campaign
+
+| What to do | What should happen | Citation |
+| --- | --- | --- |
+| Reach the Exploration Step in a Carcass Front campaign | **3D6**, and the panel says the loot is the roll **× 5** | the supplement |
+| Play ten games and reach it again | Still 3D6. The pool grows with Campaign Tracker rewards and Camp buildings, not with games | the supplement |
+| Leave **This Warband was the Aggressor** unticked and roll | Loot, no Location, and a note if three or more dice match — that is how the other player finds Rudolf's Folly | the supplement |
+| Tick it, pick the zone's **Resource**, and roll | A Location off that Resource's table | the supplement |
+| Switch to a ruleset without the supplement and reach the step | A refusal naming the missing tables. It must **not** fall back to the rulebook's, which pay double | rule 2 |
+
 ## What it does NOT exercise
 
 Honest list. These are implemented but not reached by the mock game, or not

@@ -35,7 +35,8 @@ import type { Keyword } from '../../types/catalogue';
 import { readRange } from '@/rules/weaponRange';
 import { effectiveMovement, type TraumaRow } from '@/rules/effectiveStats';
 import { formulaeHeld } from '@/rules/formulaShelf';
-import type { UnitOption } from '../../types/catalogue';
+import type { UnitOption, UnitProfile, Dataset, WarbandVariant } from '../../types/catalogue';
+import { visibleAbilities, modelSelections } from '@/rules/applyVariant';
 
 interface Props {
   unit: ActiveUnit;
@@ -47,7 +48,20 @@ interface Props {
    * print. Resolved by the caller with `catalogueUnitFor`, so this sheet does
    * not have to know how a roster records an entry.
    */
-  catalogueUnit?: { options?: UnitOption[] } | null;
+  catalogueUnit?: (Pick<UnitProfile, 'abilities' | 'modifiers'> & { options?: UnitOption[] }) | null;
+  /**
+   * The ruleset and the Warband's Variant, for the abilities this model prints
+   * as it stands (DA-01).
+   *
+   * Play Mode is the screen this matters most on: it is read at the table,
+   * mid-game, to settle what a model can do. The Varangian Guard's Weapon
+   * Familiarity — "They lose Shock Charge if they equip a shield together with
+   * a two-handed axe" — is a rule about the loadout in front of the players,
+   * and the sheet showed the entry's whole ability list whatever the model was
+   * carrying.
+   */
+  dataset?: Dataset | null;
+  variant?: WarbandVariant;
   onClose: () => void;
 }
 
@@ -64,7 +78,7 @@ const Section: React.FC<{
 );
 
 export const ModelReferenceSheet: React.FC<Props> = ({
-  unit, keywords, traumaTable = [], catalogueUnit, onClose,
+  unit, keywords, traumaTable = [], catalogueUnit, dataset, variant, onClose,
 }) => {
   const p = unit.profileSnapshot;
   /*
@@ -79,6 +93,21 @@ export const ModelReferenceSheet: React.FC<Props> = ({
     been bought.
   */
   const formulae = formulaeHeld(unit, catalogueUnit);
+
+  /*
+    The abilities this model prints, as equipped. Filtered against its own
+    catalogue entry rather than replaced by it, so anything a campaign added to
+    the snapshot stays; where the entry cannot be resolved the snapshot stands
+    whole, which is the roster's own record rather than a guess.
+  */
+  const abilities = React.useMemo(() => {
+    const listed = p.innateAbilities ?? [];
+    if (!dataset || !catalogueUnit?.abilities) return listed;
+    const visible = new Set(visibleAbilities(catalogueUnit, {
+      dataset, variant, selections: modelSelections(unit), rosterSelections: [],
+    }).map((a) => a.name.trim().toLowerCase()));
+    return listed.filter((a) => visible.has(a.name.trim().toLowerCase()));
+  }, [dataset, variant, catalogueUnit, unit, p.innateAbilities]);
 
   /*
     Movement with the model's injuries counted.
@@ -166,10 +195,10 @@ export const ModelReferenceSheet: React.FC<Props> = ({
         )}
 
         {/* ----------------------------------------------------- abilities */}
-        {(p.innateAbilities?.length ?? 0) > 0 && (
+        {abilities.length > 0 && (
           <Section icon={<Activity className="h-3.5 w-3.5 text-theme-primary" />} title="Abilities">
             <div className="space-y-2">
-              {(p.innateAbilities ?? []).map((a, i) => (
+              {abilities.map((a, i) => (
                 <div key={`${a.name}-${i}`} className="rounded border border-theme-border bg-theme-base p-2.5">
                   <span className="block text-xs font-bold text-theme-text">{a.name}</span>
                   {/* Keywords inside the prose link too, so a rule that cites

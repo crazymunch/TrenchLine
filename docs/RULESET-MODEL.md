@@ -978,6 +978,126 @@ persists between games — five misses spread across three games still make the
 sixth die a Promotion — so it is `durable` in the roster file. See
 [`ROSTER-FILE.md`](ROSTER-FILE.md#progression-skills-advancementrolls-and-the-legacy-advancements).
 
+### `campaign.quartermaster` — the step's own two rules
+
+Derived from rulebook pp.123 and 125 by `parseQuartermasterStep`.
+
+```ts
+interface QuartermasterStep {
+  retireInjured: { atScars: number; text: string };   // p.123
+  gloryItems: { needsDiscovery: boolean; text: string };  // p.125
+}
+```
+
+`retireInjured.atScars` is **two**, and it is not
+`traumaProcedure.battleScars.unfitAt`, which is three. The two counts are one
+apart and they are opposite rules — `unfitAt` is the book removing a model in
+the Trauma Step whether the player likes it or not, `atScars` is the player
+being *allowed* to retire one in the Quartermaster Step while it is still fit to
+fight. Reading either for the other either strands a veteran on the roster or
+deletes it, so both are parsed, both throw on a wording that stops saying what
+they say, and `src/rules/retire.ts` carries the distinction in prose.
+
+`gloryItems` is the gate, not the ceiling. What a particular discovery permits —
+*"you can purchase Glory Items costing 5 ☼ or less"* — is stated by that
+discovery and read from `campaign.exploration.locations`; duplicating the three
+ceilings here would be a second source that goes stale the first time the
+Dispatch prints a fourth merchant.
+
+### `campaign.scenarioTables` — which scenario a campaign game uses
+
+Derived from rulebook p.96 by `parseCampaignScenarioTables`. Three D6 bands and
+a Final Battle that is named rather than rolled, with every scenario name
+resolved against `dataset.scenarios` — a table naming a scenario the ruleset
+does not carry fails the build rather than offering a game nobody can play.
+
+Three things are checked at build time because a silent hole in any of them
+would read as a plausible table: each band covers 1 to 6 with no gap, the bands
+tile their game range in order with no gap, and the Final Battle is the game
+after the last band. The sixth row of each table is recorded as a result in its
+own right (`choose: true`) with its own sentence, because it is one — *"The
+player who has played fewer games chooses one of the scenarios listed above"* —
+and rerolling it would take the compensation the book gives the player who is
+behind.
+
+### The Glory Item Tables are armoury rows
+
+Derived from rulebook pp.125–127 by `parseGloryItemTables`, and joined to each
+faction's existing `Armoury` as a section named `Glory Items`. Fifty-four rows
+across the six rulebook factions.
+
+They live in the armoury rather than in a collection of their own because every
+reader of an offer already goes through `armouryFor` / `offersOf` / `priceOf` /
+`restrictionsFor`, and a second collection would be a second place each of them
+has to learn about. It is also the shape the Dispatch's own ops assume — *"Add
+the following entry to the BLACK GRAIL Glory Items Table"* had no table to add
+to, and reported as unapplied on every build.
+
+**The section is load-bearing.** Page 125 distinguishes a Glory Item from the
+Glory-priced Battlekit in a faction's Armoury Table, and only the first needs an
+Exploration discovery to buy, so the gate in `src/rules/gloryItems.ts` keys on
+`row.section` and never on `row.cost.glory`. A Troop Flag is 1 Glory and needs
+no discovery; a Knighthood is 4 Glory and does. `recruitable` therefore lets a
+Glory Item keep its own section where it normally lets the Battlekit chapter's
+win — a Sniper Scope is Equipment in that chapter and would otherwise walk
+straight through the gate.
+
+Three extraction hazards are read from the page rather than guessed:
+
+| Hazard | Example | How it is read |
+|---|---|---|
+| A footnote marker glued to a limit | `Limit: 11`, `Limit: 33` | Split only when the table defines a footnote of that number, and the footnote's text is carried onto the row as a stipulation. A multi-digit limit with no matching footnote throws |
+| A name wrapped across two lines | `Great Banner` / `of New Antioch` | Buffered and joined, the same repair ARM-1 made for the Armoury Tables |
+| A price printed as a range | `Trench Dog … 1-3 ☼` | `cost` is the lowest, so nothing is refused that the Warband can afford, and `priceRange` keeps the row as printed |
+
+A Glory Item's profile is resolved from `Campaign Rules.cat` and from nowhere
+else, because that is the catalogue the Glory Items are entered in. Matching by
+name across every catalogue leaked: the Iron Sultanate catalogue carries a
+`Rocket-Propelled Grenade` gated on Nomads of Al-Badia, which `thirdPartyGate`
+classes as unofficial content, and the rulebook prints an official one in five
+Glory Item Tables. A row that resolves to nothing keeps `weaponId: null`, which
+is the answer the Armoury Tables already give for Battlekit the catalogues lack.
+
+### `hidden` on an Ability profile, and on an entry
+
+A profile marked `hidden="true"` is not on its entry until something reveals it,
+and the catalogues use it for both a MODEL and an ABILITY:
+
+```
+selectionEntry  hidden="true"   the model is off the recruit list
+profile/Ability hidden="true"   the ability is not printed on the entry
+```
+
+Both are now recorded — `UnitProfile.hiddenByDefault` and `Ability.hidden` — and
+they must not be confused, because the modifier that reveals each is written the
+same way. That is precisely what the modifier dedup was doing: it compared rules
+with the origin discarded, so an entry-level reveal and a profile-level reveal
+with the same condition became one statement. `modifiersOf` now keys `hidden` on
+its origin. Measured on the shipped catalogues, four rules are stated on more
+than one profile and every one of them is `hidden`; thirteen are stated on both
+an entry and a profile, of which one is. Keying just `hidden` recovers all five
+and changes none of the other twelve.
+
+`src/rules/applyVariant.ts` reads the two halves together. A condition it cannot
+evaluate leaves the ability exactly as printed, and `unknownVisibilityLeaves`
+counts those across the dataset so the rule cannot fail quietly; it is zero on
+the shipped catalogues, asserted by a test.
+
+### `secondaryProfile` from the catalogues
+
+A model entry may state more than one Unit profile, and only the first of them
+is a recruit. The `Grail Thrall` entry holds `Grounded` and `Winged` as
+sub-entries with a Unit profile each, for what the book prints as one entry with
+one cost; the Trench Dog's `Specialization` group holds four or five more, which
+p.121 states are *"special abilities"* the dog is given, not models.
+
+The parser marks every Unit profile after the first `secondaryProfile: true`
+with `parentEntryId`, which is the shape `carcass-front-layer.mjs` already uses
+for the Martyr Penitent and `recruitable()` already filters. Nothing is
+invented: the statline is that profile's own, and only what the sub-entry does
+not state — its cost, roles, keywords and abilities — is filled from the parent
+entry that does, so a sub-entry with a price of its own keeps it.
+
 ## 7b. Catalogue modifiers — the conditional layer
 
 The single largest thing the first pass threw away.

@@ -23,6 +23,16 @@ export interface Ability {
   id: string;
   name: string;
   description: string;
+  /**
+   * The Variants — or the roster selections — whose reveal is this ability's
+   * only route onto the entry (DA-01).
+   *
+   * Present only on an ability listed under `variantAbilities`, where it is the
+   * label that makes the list mean anything: "Axe Mastery (Remnants of
+   * Byzantium)" is a reason to pick a Variant, and "Axe Mastery" on its own is
+   * the bug.
+   */
+  variantOnly?: string[];
 }
 
 export interface WeaponProfile {
@@ -213,6 +223,19 @@ export interface UnitProfile {
    */
   mercenaryMayBuy?: 'Melee'[];
   innateAbilities?: Ability[];
+  /**
+   * Abilities this entry carries that the Warband's Variant does not reveal,
+   * each labelled with what would (DA-01).
+   *
+   * Not rules this model has — that is `innateAbilities`, and mixing the two is
+   * the defect this pair exists to end: a standard New Antioch Shocktrooper's
+   * card printed four Varangian Guard rules as its own. This is the other half
+   * of the same fact, shown where a player is CHOOSING: the recruit sheet lists
+   * them under the entry so that "Remnants of Byzantium turns this into a
+   * Varangian Guard" is visible before the Variant is picked, rather than being
+   * a discovery made afterwards.
+   */
+  variantAbilities?: Ability[];
   /**
    * Gear the model always has, from the catalogue's `min="1"` entryLinks.
    *

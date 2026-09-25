@@ -238,6 +238,31 @@ function checkWargear(
   const out: Violation[] = [];
   const rosterCounts = new Map<string, number>();
 
+  /*
+    The Arsenal counts towards a roster-wide `Limit: N`.
+
+    Page 123, L7234–7238: "if the Battlekit had a Limit of 2, and your Warband
+    already has 2 such items in its Arsenal and/or equipped by a model, then you
+    could not purchase any more". The count was built from the models' `items`
+    alone, so a Warband could hold a Limit 1 item in the Arsenal and buy a
+    second onto a model — and the Quartermaster Step is exactly where a player
+    buys into the Arsenal, so the omission bit hardest in the place the rule is
+    printed.
+
+    The same sentence gives the other half for free: "if your Warband used to
+    have 2 of the Battlekit and one has subsequently been removed … then you
+    could purchase a replacement." Nothing is needed for that — a sold copy
+    leaves `stash` and the count falls with it.
+
+    Only the roster-wide limit reads this. A `Limit: N per model` is a
+    statement about a model, and an item in the Arsenal is on no model.
+  */
+  for (const item of roster.stash) {
+    if (!item.weaponId) continue;
+    rosterCounts.set(item.weaponId,
+      (rosterCounts.get(item.weaponId) ?? 0) + (item.quantity ?? 1));
+  }
+
   for (const u of roster.units) {
     const profile = profiles.get(u.profileId);
     const perUnit = new Map<string, number>();

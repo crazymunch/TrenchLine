@@ -545,14 +545,37 @@ function modifiersOf(node, nameOf, fieldNameOf, isConstraint) {
     fromNode(p, `profile:${clean(attr(p, 'name'))}`);
   }
 
-  // The catalogues routinely state the same rule twice — once on the entry and
-  // again on the profile inside it — because BattleScribe needs both to update
-  // its own two views. It is one rule, so keep one copy: the entry-level
-  // statement, which is the one that survives if the profile is restructured.
+  /*
+    The catalogues routinely state the same rule twice — once on the entry and
+    again on the profile inside it — because BattleScribe needs both to update
+    its own two views. It is one rule, so keep one copy: the entry-level
+    statement, which is the one that survives if the profile is restructured.
+
+    `hidden` is the exception, and it has to be, because `hidden` does not mean
+    one thing wherever it is written (DA-01). On an ENTRY it says whether the
+    model is on the recruit list; on a PROFILE it says whether that one ability
+    is printed. Discarding the origin made those the same rule, so:
+
+      - four identical "reveal when Remnants of Byzantium" modifiers on the
+        Shocktrooper's four hidden abilities collapsed to one, and three of the
+        four abilities had nothing left to reveal them;
+      - the Stalker's four reveals collapsed into the entry-level reveal that
+        unlocks the MODEL, which is a different sentence about a different
+        thing.
+
+    Measured on the shipped catalogues: four rules are stated on more than one
+    profile and every one of them is `hidden`; thirteen are stated on both an
+    entry and a profile, of which one is `hidden` — the Stalker's. Keying
+    `hidden` on its origin recovers all five without changing any of the other
+    twelve.
+  */
+  const ORIGIN_SENSITIVE = new Set(['hidden']);
   const seen = new Set();
   return out.filter((m) => {
     const { origin, ...rule } = m;
-    const k = JSON.stringify(rule);
+    const k = ORIGIN_SENSITIVE.has(m.field)
+      ? `${origin}\u0000${JSON.stringify(rule)}`
+      : JSON.stringify(rule);
     if (seen.has(k)) return false;
     seen.add(k);
     return true;
@@ -774,6 +797,69 @@ export function parseCatalogues(dir) {
     const n = byId.get(id);
     return n ? clean(attr(n, 'name')) || null : null;
   };
+
+  /*
+    A model entry may state more than one Unit profile, and only the first of
+    them is a recruit (DA-02).
+
+    `Black Grail.cat` L3166 and L3207: the `Grail Thrall` entry holds two
+    `upgrade` sub-entries, `Grounded` and `Winged`, each carrying a Unit
+    profile — the book prints them as one entry with one cost, "Grail Thralls /
+    Fly Thralls". The walk below visits every selectionEntry, so it emitted
+    BOTH as units, and the second came out as a 0-Ducat `Winged Thrall` with no
+    roles, no keywords and no abilities that `recruitable()` then offered for
+    hire beside the 25-Ducat Thrall.
+
+    The same shape holds for the Trench Dog's `Specialization` group, which is
+    not a list of recruits either. The rulebook (p.121) is explicit: "When you
+    give a Trench Dog to a model, you can give the Trench Dog one of the
+    following special abilities at a Cost of +1 ☼" — Guard Dog, Mercy Dog,
+    Attack Dog, Martyrdom Dog, Hellhound. The app offered each as a separate
+    5-Ducat model.
+
+    So: the first Unit profile under a model entry is the model, and every
+    further one is a `secondaryProfile` — the shape `carcass-front-layer.mjs`
+    already uses for the Martyr Penitent, and which `recruitable()` filters at
+    its own line. They stay in the dataset, for the Codex and for a roster that
+    names one.
+
+    Nothing is invented. The statline is the second profile's own, and what the
+    sub-entry does not state — its cost, its roles, its keywords, its abilities
+    — is filled from the parent entry that does, so the card is the parent's
+    card with the second statline rather than a blank.
+  */
+  const secondaryUnitEntries = new Map();
+  for (const { doc } of docs) {
+    walk(doc, (node) => {
+      if (attr(node, 'type') !== 'model') return;
+      const parentId = attr(node, 'id');
+      if (!parentId) return;
+
+      /** Sub-entries carrying a Unit profile, in document order. */
+      const nested = [];
+      const descend = (n, depth) => {
+        if (depth > 3) return;
+        for (const e of arr(n?.selectionEntries?.selectionEntry)) {
+          if (arr(e?.profiles?.profile).some((p) => attr(p, 'typeName') === 'Unit')) {
+            nested.push(e);
+          }
+          descend(e, depth + 1);
+        }
+        for (const g of arr(n?.selectionEntryGroups?.selectionEntryGroup)) descend(g, depth + 1);
+      };
+      descend(node, 0);
+      if (!nested.length) return;
+
+      const ownUnit = arr(node?.profiles?.profile).some((p) => attr(p, 'typeName') === 'Unit');
+      /* With a Unit profile of its own the entry IS the model and every
+         sub-entry is secondary; without one the first sub-entry is the model. */
+      const secondary = ownUnit ? nested : nested.slice(1);
+      for (const e of secondary) {
+        const id = attr(e, 'id');
+        if (id) secondaryUnitEntries.set(id, parentId);
+      }
+    });
+  }
 
   const ROLE_NAMES = new Set(['Elite', 'Troop', 'Mercenary', 'Leader', 'Configuration']);
 
@@ -1015,6 +1101,24 @@ export function parseCatalogues(dir) {
             id: attr(p, 'id'),
             name: clean(attr(p, 'name')),
             description: clean(charMap(p).Description),
+            /*
+              The profile's own `hidden` attribute — whether the ability is on
+              the entry at all until something reveals it (DA-01).
+
+              The catalogues mark an Ability `hidden="true"` when a Variant owns
+              it and reveal it with a `set hidden=false` modifier naming that
+              Variant. `New Antioch.cat` L4207 is the shape: the Shocktrooper's
+              Axe Mastery, Shield Bash, Indomitable and Weapon Familiarity are
+              all hidden, and all four belong to the Remnants of Byzantium.
+
+              This was never read, so `recruitable()` copied every one of them
+              into `innateAbilities` and the card printed a standard New Antioch
+              Shocktrooper with four Varangian Guard rules it does not have —
+              twenty-eight such profiles on fourteen units. The reveal
+              modifiers were already in the dataset; only this half was missing,
+              and without it the two cannot be told apart.
+            */
+            ...(attr(p, 'hidden') === 'true' ? { hidden: true } : {}),
           };
           abilitiesSeen.set(a.id, a);
           return a;
@@ -1059,6 +1163,44 @@ export function parseCatalogues(dir) {
         const c = charMap(unitProfile);
         const mv = splitMovement(c.Movement);
         const { min, max } = recruitLimits(constraints);
+
+        /*
+          A second Unit profile under one model entry is a profile, not a
+          recruit (DA-02). See `secondaryUnitEntries` for which and why.
+
+          The parent fills only what the sub-entry does not state. A `Winged`
+          sub-entry carries a statline and nothing else, so its cost, roles,
+          keywords and abilities are the `Grail Thrall` entry's; a `Guard Dog`
+          states its own 5-Ducat upgrade price, and keeps it. Inheriting
+          wholesale would overwrite a price the catalogue prints.
+        */
+        const parentId = secondaryUnitEntries.get(attr(node, 'id'));
+        const parentNode = parentId ? byId.get(parentId) : null;
+        const parentCost = parentNode ? costsOf(parentNode) : null;
+        const parentCats = parentNode
+          ? arr(parentNode?.categoryLinks?.categoryLink)
+              .map((cl) => attr(cl, 'name') ?? categoryNames.get(attr(cl, 'targetId')))
+              .filter(Boolean).map(clean)
+          : [];
+        const parentAbilities = parentNode
+          ? arr(parentNode?.profiles?.profile)
+              .filter((p) => attr(p, 'typeName') === 'Ability')
+              .map((p) => {
+                const a = {
+                  id: attr(p, 'id'),
+                  name: clean(attr(p, 'name')),
+                  description: clean(charMap(p).Description),
+                  ...(attr(p, 'hidden') === 'true' ? { hidden: true } : {}),
+                };
+                abilitiesSeen.set(a.id, a);
+                return a;
+              })
+          : [];
+
+        const ownRoles = cats.filter((x) => ROLE_NAMES.has(x));
+        const ownKeywords = cats.filter((x) => !ROLE_NAMES.has(x)).map((k) => k.toUpperCase());
+        const statedCost = cost.ducats || cost.glory;
+
         units.push({
           id: attr(unitProfile, 'id'),
           // The id of the selectionEntry that contains this profile. Roster
@@ -1079,6 +1221,12 @@ export function parseCatalogues(dir) {
             Reading the reveal without this cannot tell them apart.
           */
           hiddenByDefault: hiddenByDefaultOf(node) || undefined,
+          /*
+            Not a recruit: a second statline under one entry. `recruitable()`
+            filters these out and the Codex keeps them, which is the treatment
+            `carcass-front-layer.mjs` already gives the Martyr Penitent.
+          */
+          ...(parentId ? { secondaryProfile: true, parentEntryId: parentId } : {}),
           name: clean(attr(unitProfile, 'name')),
           /*
             The entry's name, where it differs from the profile's.
@@ -1099,8 +1247,12 @@ export function parseCatalogues(dir) {
             return e && e !== clean(attr(unitProfile, 'name')) ? e : undefined;
           })(),
           factionId: faction,
-          roles: cats.filter((x) => ROLE_NAMES.has(x)),
-          keywords: cats.filter((x) => !ROLE_NAMES.has(x)).map((k) => k.toUpperCase()),
+          roles: parentId && !ownRoles.length
+            ? parentCats.filter((x) => ROLE_NAMES.has(x))
+            : ownRoles,
+          keywords: parentId && !ownKeywords.length
+            ? parentCats.filter((x) => !ROLE_NAMES.has(x)).map((k) => k.toUpperCase())
+            : ownKeywords,
           stats: {
             movement: mv.movement,
             movementInches: mv.movementInches,
@@ -1110,10 +1262,10 @@ export function parseCatalogues(dir) {
             armour: clean(c.Armour) || '0',
             base: clean(c.Base) || '',
           },
-          cost,
+          cost: parentId && !statedCost && parentCost ? parentCost : cost,
           min,
           max,
-          abilities,
+          abilities: parentId && !abilities.length ? parentAbilities : abilities,
           options: optionsOf(node, nameOf, fieldNameOf, isConstraint, (id) => byId.get(id)),
           /*
             Gear the model always has, which the app must neither omit nor sell

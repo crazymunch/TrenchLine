@@ -7,6 +7,7 @@ import { UnitCategory } from '../../types/rules';
 import { AddEquipmentModal } from './AddEquipmentModal';
 import { UnitLoreModal } from './UnitLoreModal';
 import { UnitAdvancementModal } from './UnitAdvancementModal';
+import { RetireUnitModal } from './RetireUnitModal';
 import { ConfirmModal } from '../ui/ConfirmModal';
 import { forcedBattlekit, battlekitProfile } from '../../rules/battlekit';
 import { isAlchemicalFormula, ALCHEMICAL_FORMULAE } from '../../rules/formulae';
@@ -14,15 +15,21 @@ import { unitGlory, formatUnitCost } from '../../rules/savedGlory';
 import { formulaeHeld } from '../../rules/formulaShelf';
 import { catalogueUnitFor } from '../../rules/catalogueUnit';
 import { golemGrant, isGolem } from '../../rules/golem';
+import { mayRetire } from '../../rules/retire';
+import { visibleAbilities, modelSelections } from '../../rules/applyVariant';
+import { variantById } from '../../rules/variants';
 import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
 import { KeywordText, KeywordChip } from '../ui/KeywordText';
 import { DATASET } from '@/data/generated/trenchline.generated';
 import { effectiveMovement, type TraumaRow } from '@/rules/effectiveStats';
+import type { Dataset } from '@/types/catalogue';
 import { soundEffects } from '../../services/soundEffects';
 import { 
   Trash2, 
+  LogOut,
+
   Plus, 
   Swords, 
   Shield, 
@@ -118,6 +125,39 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   const heldFormulae = React.useMemo(
     () => formulaeHeld(unit, catalogueUnitFor(cardDataset, unit, warbandFaction)),
     [cardDataset, unit, warbandFaction]);
+
+  /*
+    The abilities this MODEL prints, as equipped (DA-01).
+
+    `profileSnapshot.innateAbilities` was resolved when the model was recruited,
+    so it already answers for the Warband's Variant — `recruitable` applies
+    `visibleAbilities` on the way in. What it cannot answer for is what the
+    model is carrying NOW, and one shipped rule turns on exactly that: the
+    Varangian Guard's Weapon Familiarity reads "They lose Shock Charge if they
+    equip a shield together with a two-handed axe", which the catalogue states
+    as a `set hidden=true` on Shock Charge conditioned on those two selections.
+
+    So the card re-asks the question against the model's own entry. Where the
+    entry cannot be resolved — an imported roster with a hand-written profile id
+    — the snapshot stands, which is the roster's own record rather than a guess.
+  */
+  const warbandVariantId = useStore(
+    (st) => st.warbands.find((w) => w.id === warbandId)?.variantId);
+  const shownAbilities = React.useMemo(() => {
+    const entry = catalogueUnitFor(cardDataset, unit, warbandFaction);
+    if (!cardDataset || !entry) return unit.profileSnapshot.innateAbilities ?? [];
+    const visible = new Set(visibleAbilities(entry, {
+      dataset: cardDataset,
+      variant: variantById(cardDataset, warbandVariantId),
+      selections: modelSelections(unit),
+      rosterSelections: [],
+    }).map((a) => a.name.trim().toLowerCase()));
+    /* Filtered rather than replaced: the snapshot is what the roster holds,
+       including anything a campaign added to it, and this only removes the
+       ones the entry says are not printed on this model as it stands. */
+    return (unit.profileSnapshot.innateAbilities ?? [])
+      .filter((a) => visible.has(a.name.trim().toLowerCase()));
+  }, [cardDataset, unit, warbandFaction, warbandVariantId]);
   /*
     The Book of Golems, GOLEM-1.
 
@@ -154,6 +194,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
   const [isActionMenuOpen, setIsActionMenuOpen] = useState(false);
   const [isLoreModalOpen, setIsLoreModalOpen] = useState(false);
   const [isConfirmDismissOpen, setIsConfirmDismissOpen] = useState(false);
+  const [isRetireOpen, setIsRetireOpen] = useState(false);
+  /* Whether the Quartermaster Step offers to retire this model (p.123). */
+  const retirement = mayRetire(DATASET as unknown as Dataset, unit);
   const [expandedAbilities, setExpandedAbilities] = useState<Record<string, boolean>>({});
   const [favouriteSaved, setFavouriteSaved] = useState(false);
 
@@ -629,9 +672,9 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
           )}
 
           {/* Innate Abilities & Rules: Collapsed by Default with Expand Arrow */}
-          {unit.profileSnapshot.innateAbilities && unit.profileSnapshot.innateAbilities.length > 0 && (
+          {shownAbilities.length > 0 && (
             <div className="space-y-1">
-              {unit.profileSnapshot.innateAbilities.map((ab) => {
+              {shownAbilities.map((ab) => {
                 const isExpanded = expandedAbilities[ab.id];
                 return (
                   <div key={ab.id} className="text-xs bg-theme-elevated/60 p-1.5 rounded border border-theme-border/60">
@@ -977,6 +1020,25 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
                   </span>
                 ))}
               </div>
+
+              {/*
+                Retire Injured Models, p.123 (RR-14).
+
+                Offered here rather than in the action menu because the count
+                that unlocks it is the row above: a player looking at two Battle
+                Scars is looking at the reason. The threshold is the dataset's
+                (`quartermaster.retireInjured.atScars`), never the Trauma Step's
+                third-scar removal — see `rules/retire.ts`.
+              */}
+              {retirement.eligible && (
+                <button
+                  onClick={() => setIsRetireOpen(true)}
+                  className="w-full min-h-[44px] lg:min-h-0 lg:py-1.5 flex items-center justify-center gap-1.5 rounded border border-theme-accent/50 bg-theme-surface font-mono text-xs sm:text-[10px] font-bold uppercase tracking-wider text-theme-accent transition-colors hover:bg-theme-accent hover:text-theme-base"
+                >
+                  <LogOut className="w-3 h-3 flex-shrink-0" />
+                  <span>Retire at {retirement.scars} Battle Scars</span>
+                </button>
+              )}
             </div>
           )}
 
@@ -1042,6 +1104,15 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
           warbandId={warbandId}
           unit={unit}
           onClose={() => setIsLoreModalOpen(false)}
+        />
+      )}
+
+      {/* Retire Injured Models — the Quartermaster Step's own removal. */}
+      {isRetireOpen && (
+        <RetireUnitModal
+          warbandId={warbandId}
+          unit={unit}
+          onClose={() => setIsRetireOpen(false)}
         />
       )}
 

@@ -14,8 +14,10 @@ import { removeFromRoster } from '../../rules/fallen';
 import { recreationLapsed } from '../../rules/recreation';
 import { GOLEM_GRANTED_BY } from '../../rules/golem';
 import type { Warband, StashedItem } from '../../types/warband';
+import { stashPrice } from '../../types/warband';
 import type { Cost } from '../../types/catalogue';
-import { profileCost, isZero } from '../../rules/costs';
+import { profileCost, isZero, formatCost } from '../../rules/costs';
+import { mayRetire, salePrice } from '../../rules/retire';
 import { unitGlory } from '../../rules/savedGlory';
 
 /*
@@ -72,7 +74,25 @@ const refund = (w: Warband, refs: readonly string[], game: number) =>
     ? { warband: w, undone: new Set<string>() }
     : undoPurchases(w, refs, game);
 
-export type UnitsSlice = Pick<AppState, 'recreateUnit' | 'letUnitFall' | 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'setUnitAsGolem' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
+/**
+ * Add items to the Arsenal, stacking onto a row that already holds the same id.
+ *
+ * The Arsenal counts by `quantity` and a roster-wide `Limit: N` now counts the
+ * Arsenal (RR-13), so two rows for one item would be two rows the limit check
+ * adds up correctly and a player reads as a duplicated entry. Every other
+ * writer into `armoryStash` stacks; this one does too.
+ */
+const mergeIntoStash = (stash: StashedItem[], incoming: StashedItem[]): StashedItem[] => {
+  const out = [...stash];
+  for (const item of incoming) {
+    const at = out.findIndex((i) => i.id === item.id);
+    if (at >= 0) out[at] = { ...out[at], quantity: out[at].quantity + item.quantity };
+    else out.push(item);
+  }
+  return out;
+};
+
+export type UnitsSlice = Pick<AppState, 'recreateUnit' | 'letUnitFall' | 'retireUnit' | 'addUnitToWarband' | 'duplicateUnit' | 'removeUnitFromWarband' | 'updateUnitName' | 'updateUnitCategory' | 'setUnitBenched' | 'setUnitAsLeader' | 'setUnitAsGolem' | 'updateUnitLore' | 'equipWeapon' | 'removeWeapon' | 'equipArmour' | 'removeArmour' | 'equipEquipment' | 'removeEquipment'>;
 
 export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set, get) => ({
     addUnitToWarband: (warbandId, baseProfileId, customName) => {
@@ -354,6 +374,120 @@ export const createUnitsSlice: StateCreator<AppState, [], [], UnitsSlice> = (set
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });
+    },
+
+    /*
+      Retire a model with two Battle Scars — the Quartermaster Step's own
+      removal, p.123 (RR-14).
+
+      The action the book grants and the app never had. A model that survived
+      to two scars could leave a roster only by dying, or by the player deleting
+      it and losing both the record and the kit.
+
+      The eligibility test is `mayRetire`, which reads
+      `campaign.quartermaster.retireInjured.atScars` — NOT the Trauma Step's
+      `unfitAt`. See `rules/retire.ts` for why the one-scar difference between
+      those two rules matters. A model the dataset does not permit to retire is
+      refused here rather than clamped: this removes a model from a roster, and
+      it must not do that on a count the ruleset never stated.
+
+      The kit takes one of the three routes the section names, and the model
+      itself is never refunded — the book sells Battlekit, never models, which
+      is the same rule `letUnitFall` and `removeUnitFromWarband` follow.
+    */
+    retireUnit: (warbandId, unitId, disposition, dataset) => {
+      const state = get();
+      const wb = state.warbands.find((w) => w.id === warbandId);
+      const unit = wb?.units.find((u) => u.id === unitId);
+      if (!wb || !unit) return { ok: false, why: 'no-such-model' } as const;
+
+      const verdict = mayRetire(dataset, unit);
+      if (!verdict.eligible) {
+        return verdict.at === null
+          ? { ok: false, why: 'ruleset-silent' } as const
+          : { ok: false, why: 'not-enough-scars', scars: verdict.scars, at: verdict.at } as const;
+      }
+
+      /* Everything the model is carrying, in the one shape the Arsenal holds.
+         `profileCost` keeps both currencies, so a Glory Item sold out of the
+         Arsenal later still returns Glory (FD-05g). */
+      const carried: StashedItem[] = [
+        ...unit.equippedWeapons.map((x) => ({
+          id: x.id, name: x.name, type: 'Weapon' as const,
+          cost: x.cost, price: profileCost(x), quantity: 1,
+        })),
+        ...unit.equippedArmour.map((x) => ({
+          id: x.id, name: x.name, type: 'Armour' as const,
+          cost: x.cost, price: profileCost(x), quantity: 1,
+        })),
+        ...unit.equippedEquipment.map((x) => ({
+          id: x.id, name: x.name, type: 'Equipment' as const,
+          cost: x.cost, price: profileCost(x), quantity: 1,
+        })),
+      ];
+
+      const proceeds = disposition === 'sell'
+        ? carried.reduce(
+            (acc, i) => {
+              const back = salePrice(stashPrice(i));
+              return { ducats: acc.ducats + back.ducats, glory: acc.glory + back.glory };
+            },
+            { ducats: 0, glory: 0 })
+        : { ducats: 0, glory: 0 };
+
+      set((s) => {
+        let updated = s.warbands.map((w) => {
+          if (w.id !== warbandId) return w;
+
+          /*
+            `retired: true` before the move, so the memorial can tell a model
+            that was sent home from one that was killed. `removeFromRoster`
+            sets `isDead` on the way out and that flag is what older readers
+            key on, so a retired model still reads as "gone" to them — which
+            is true, and is better than reading as still on the roster.
+          */
+          const marked = w.units.map((u) => (u.id === unitId
+            ? { ...u, retired: true, retiredAtGame: campaignGameOf(w, s.campaign) }
+            : u));
+          const { units, fallen } = removeFromRoster(
+            { units: marked, fallen: w.fallen }, [unitId]);
+
+          /*
+            "sell or reallocate their Battlekit … or allow them to retire with
+            their Battlekit". `keep` is the third, and it is the default the
+            book writes last rather than an absence of a choice: the kit stays
+            on the model, which has just moved to `fallen` whole.
+          */
+          const withKit = disposition === 'arsenal'
+            ? { ...w, units, fallen, armoryStash: mergeIntoStash(w.armoryStash ?? [], carried) }
+            : { ...w, units, fallen };
+
+          const stripped = disposition === 'keep'
+            ? withKit
+            : {
+                ...withKit,
+                fallen: withKit.fallen.map((u) => (u.id === unitId
+                  ? { ...u, equippedWeapons: [], equippedArmour: [], equippedEquipment: [] }
+                  : u)),
+              };
+
+          const settled = { ...stripped, updatedAt: new Date().toISOString() };
+          if (disposition !== 'sell' || isZero(proceeds) || w.forceMode === 'unrestricted') {
+            return settled;
+          }
+          return book(settled, {
+            reason: 'sold',
+            ...(proceeds.ducats ? { ducats: proceeds.ducats } : {}),
+            ...(proceeds.glory ? { glory: proceeds.glory } : {}),
+            note: `Retired ${unit.customName}; sold their kit for ${formatCost(proceeds)}.`,
+            game: campaignGameOf(w, s.campaign),
+          });
+        });
+        updated = persistWarbands(updated, s.warbands);
+        return { warbands: updated };
+      });
+
+      return { ok: true, disposition, proceeds, items: carried.length } as const;
     },
 
     /*

@@ -47,7 +47,8 @@ export const DATASET: Dataset = {
         {
           "id": "a1da-b3f8-777e-38b9",
           "name": "Ravenous Infection",
-          "description": "Take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or a Critical Success, you can place 1 INFECTION MARKER next to any other model within 1” of the model taking the Ravenous Infection ACTION. Then, the model taking the Ravenous Infection ACTION’s Activation ends immediately."
+          "description": "Take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or a Critical Success, you can place 1 INFECTION MARKER next to any other model within 1” of the model taking the Ravenous Infection ACTION. Then, the model taking the Ravenous Infection ACTION’s Activation ends immediately.",
+          "hidden": true
         }
       ],
       "options": [
@@ -621,11 +622,19 @@ export const DATASET: Dataset = {
     {
       "id": "2055-017b-f08e-aff4",
       "entryId": "4173-8d52-ff32-03d8",
+      "secondaryProfile": true,
+      "parentEntryId": "ec39-f328-bad6-a586",
       "name": "Winged Thrall",
       "entryName": "Winged",
       "factionId": "Black Grail",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "BLACK GRAIL",
+        "FEAR",
+        "NEGATE GAS"
+      ],
       "stats": {
         "movement": "6\"/Flying",
         "movementInches": 6,
@@ -636,12 +645,35 @@ export const DATASET: Dataset = {
         "base": "25mm"
       },
       "cost": {
-        "ducats": 0,
+        "ducats": 25,
         "glory": 0
       },
       "min": null,
       "max": null,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "b4a6-25a1-64e7-5dae",
+          "name": "Overwhelming Horde",
+          "description": "A Grail Thrall or Fly Thrall can make a Melee Attack even though it does not have a Melee Weapon. In addition, add +1 DICE to the Success Roll for a Melee Attack made by a Grail Thrall or Fly Thrall for each other friendly model within 3\" of the attacking model (not including the attacking model itself)."
+        },
+        {
+          "id": "77bc-921d-3de0-55b4",
+          "name": "Ravenous Infection",
+          "description": "Ravenous Infection ACTION: A Ravenous can take a Ravenous Infection ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or a Critical Success, you can place 1 INFECTION MARKER next to any other model within 1” of the model taking the Ravenous Infection ACTION. Then, the model taking the Ravenous Infection ACTION’s Activation ends immediately.",
+          "hidden": true
+        },
+        {
+          "id": "8cce-0a3c-fe8a-6cfa",
+          "name": "Undead Fortitude",
+          "description": "Add -1 INJURY DICE to Injury Rolls for a Grail Thrall unless the attack has the FIRE Keyword."
+        },
+        {
+          "id": "3d88-4234-e03c-5cb6",
+          "name": "Gluttonous Horde",
+          "description": "A Ravenous can make a Melee Attack with the CRITICAL Keyword even though it does not have a Melee Weapon. In addition, add +1 DICE to the Success Roll for a Melee Attack made by a Ravenous for each other friendly model within 3\" of the attacking model (not including the attacking model itself).",
+          "hidden": true
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -1330,12 +1362,14 @@ export const DATASET: Dataset = {
         {
           "id": "9efd-0157-4c7e-8f26",
           "name": "Shredding",
-          "description": "Melee Attacks gain the CRITICAL Keyword."
+          "description": "Melee Attacks gain the CRITICAL Keyword.",
+          "hidden": true
         },
         {
           "id": "ef85-5b2b-f1d9-aad3",
           "name": "More Worm than Man",
-          "description": "Your opponent cannot spend a Desiccated Husk’s INFECTION MARKERS, unless they are converting an Injury Roll into a Bloodbath Roll."
+          "description": "Your opponent cannot spend a Desiccated Husk’s INFECTION MARKERS, unless they are converting an Injury Roll into a Bloodbath Roll.",
+          "hidden": true
         }
       ],
       "options": [
@@ -1591,6 +1625,21 @@ export const DATASET: Dataset = {
           "field": "hidden",
           "value": "false",
           "origin": "profile:Shredding",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:More Worm than Man",
           "when": {
             "type": "atLeast",
             "value": "1",
@@ -5883,17 +5932,20 @@ export const DATASET: Dataset = {
         {
           "id": "e548-955a-6a84-d5bd",
           "name": "Infinite Duress",
-          "description": "If a Cultist inflicts any Injury on an Enemy Model in Melee, it removes one Blood Marker from itself, if it had any."
+          "description": "If a Cultist inflicts any Injury on an Enemy Model in Melee, it removes one Blood Marker from itself, if it had any.",
+          "hidden": true
         },
         {
           "id": "5ebc-2280-dd09-b031",
           "name": "Unstable",
-          "description": "If a Cultist ever has 6 Blood Markers, it instantly is taken Out of Action, before anything else resolves."
+          "description": "If a Cultist ever has 6 Blood Markers, it instantly is taken Out of Action, before anything else resolves.",
+          "hidden": true
         },
         {
           "id": "c104-c912-a766-408f",
           "name": "Willing Sacrifice",
-          "description": "If a Cultist is taken Out of Action as a result of a friendly Goetic Spell (either through paying the spell’s cost and triggering Unstable, or being killed due to the effect of the Spell), then dies after the Battle, its equipment is returned to your warchest. Another willing soul for the Seething Black’s infinite contempt."
+          "description": "If a Cultist is taken Out of Action as a result of a friendly Goetic Spell (either through paying the spell’s cost and triggering Unstable, or being killed due to the effect of the Spell), then dies after the Battle, its equipment is returned to your warchest. Another willing soul for the Seething Black’s infinite contempt.",
+          "hidden": true
         },
         {
           "id": "70d1-6a66-9a7a-e23d",
@@ -5903,7 +5955,8 @@ export const DATASET: Dataset = {
         {
           "id": "b852-3309-a987-5ad5",
           "name": "Low on the Blood Chain",
-          "description": "Cultists are treated as Yoke Fiends for the purposes of Equipment and the spell Slavemaster. Unlike Yoke Fiends, Cultists can be promoted to ELITE."
+          "description": "Cultists are treated as Yoke Fiends for the purposes of Equipment and the spell Slavemaster. Unlike Yoke Fiends, Cultists can be promoted to ELITE.",
+          "hidden": true
         }
       ],
       "options": [
@@ -6869,6 +6922,36 @@ export const DATASET: Dataset = {
         {
           "op": "set",
           "field": "hidden",
+          "value": "false",
+          "origin": "profile:Unstable",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Willing Sacrifice",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
           "value": "true",
           "origin": "profile:Hateful",
           "when": {
@@ -6915,6 +6998,21 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "8ba8-5e95-71aa-24e8",
             "childName": "Embraced by the Void",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Low on the Blood Chain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
             "includeChildSelections": true
           }
         }
@@ -7340,42 +7438,50 @@ export const DATASET: Dataset = {
         {
           "id": "af57-dce7-c354-cfe8",
           "name": "Aura of Envy",
-          "description": "Enemy models within 12\" of this Desecrated Saint cannot Charge models that are with 1\" of a model from the Desecrated Saint’s Warband."
+          "description": "Enemy models within 12\" of this Desecrated Saint cannot Charge models that are with 1\" of a model from the Desecrated Saint’s Warband.",
+          "hidden": true
         },
         {
           "id": "91e6-c60d-e6f1-4932",
           "name": "Aura of Gluttony",
-          "description": "Add -1 DICE to rolls for enemy models within 8\" of this Desecrated Saint unless the enemy model has the BLACK GRAIL or ARTIFICIAL Keyword"
+          "description": "Add -1 DICE to rolls for enemy models within 8\" of this Desecrated Saint unless the enemy model has the BLACK GRAIL or ARTIFICIAL Keyword",
+          "hidden": true
         },
         {
           "id": "b97b-ed62-c510-0ef8",
           "name": "Aura of Greed",
-          "description": "Enemy models within 12\" of this Desecrated Saint that take a Charge ACTION must charge this Desecrated Saint if it is within 12\", in the Line of Sight of the charging model, and can be reached without having to cross Dangerous terrain or Climb, Jump, Jump Down or make a Diving Charge."
+          "description": "Enemy models within 12\" of this Desecrated Saint that take a Charge ACTION must charge this Desecrated Saint if it is within 12\", in the Line of Sight of the charging model, and can be reached without having to cross Dangerous terrain or Climb, Jump, Jump Down or make a Diving Charge.",
+          "hidden": true
         },
         {
           "id": "e8a3-79ca-652d-5277",
           "name": "Aura of Lust",
-          "description": "If an enemy model within 4\" of this Desecrated Saint is wearing Armour that does not have the IMPERVIOUS Keyword, you can negate any of the Armour’s Keywords or special rules, if you wish to do so, for as long as the model is within 4\" of the Desecrated Saint. The only rules or Keywords you cannot negate are those that affect the size of the base the model is mounted on. For example, if a model has Machine Armour, you could say that you will negate its -3 INJURY MODIFIER Keyword and Steadfast special rule while it is within 4\" of the Desecrated Saint, but that you choose not to negate the Machine Armour’s Bulky special rule."
+          "description": "If an enemy model within 4\" of this Desecrated Saint is wearing Armour that does not have the IMPERVIOUS Keyword, you can negate any of the Armour’s Keywords or special rules, if you wish to do so, for as long as the model is within 4\" of the Desecrated Saint. The only rules or Keywords you cannot negate are those that affect the size of the base the model is mounted on. For example, if a model has Machine Armour, you could say that you will negate its -3 INJURY MODIFIER Keyword and Steadfast special rule while it is within 4\" of the Desecrated Saint, but that you choose not to negate the Machine Armour’s Bulky special rule.",
+          "hidden": true
         },
         {
           "id": "51b7-8b1c-2d96-1287",
           "name": "Aura of Pride",
-          "description": "Place 1 BLOOD MARKER next to each enemy model that is within 8\" of this Desecrated Saint when the Desecrated Saint’s Activation ends."
+          "description": "Place 1 BLOOD MARKER next to each enemy model that is within 8\" of this Desecrated Saint when the Desecrated Saint’s Activation ends.",
+          "hidden": true
         },
         {
           "id": "f4c3-3158-9771-3159",
           "name": "Aura of Sloth",
-          "description": "Enemy models within 8\" of this Desecrated Saint treat Minor Hit results as Down results. The aura affects enemy models that normally treat Down results as a Minor Hit result (such as models wearing Machine Armour)."
+          "description": "Enemy models within 8\" of this Desecrated Saint treat Minor Hit results as Down results. The aura affects enemy models that normally treat Down results as a Minor Hit result (such as models wearing Machine Armour).",
+          "hidden": true
         },
         {
           "id": "01d9-f19c-3bb3-b0c3",
           "name": "Aura of the Void",
-          "description": "Every time any other model (friend or foe) within 8” would gain Blood Marker(s), it gains twice as many. Additionally, the Desecrated Saint gains -1D for any Injury rolls made against it for every 2 Blood Markers on any other model within 8”, to a maximum of -2D from this effect."
+          "description": "Every time any other model (friend or foe) within 8” would gain Blood Marker(s), it gains twice as many. Additionally, the Desecrated Saint gains -1D for any Injury rolls made against it for every 2 Blood Markers on any other model within 8”, to a maximum of -2D from this effect.",
+          "hidden": true
         },
         {
           "id": "8375-fafb-016b-d16b",
           "name": "Aura of Wrath",
-          "description": "Add +1 DICE to Melee Attacks and the Risky Success Roll for taking a Dash ACTION for friendly models that are within 8\" of this Desecrated Saint (including the Desecrated Saint themselves)."
+          "description": "Add +1 DICE to Melee Attacks and the Risky Success Roll for taking a Dash ACTION for friendly models that are within 8\" of this Desecrated Saint (including the Desecrated Saint themselves).",
+          "hidden": true
         },
         {
           "id": "dcd0-4aa5-5f3d-eefc",
@@ -8517,17 +8623,20 @@ export const DATASET: Dataset = {
         {
           "id": "231f-bbc9-438c-588e",
           "name": "Living Shadow",
-          "description": "Enemy models cannot target the Stalker with ranged attacks unless they are within 18” of it, decreased to 12” if the Stalker is in Cover from the perspective of the attacking Model."
+          "description": "Enemy models cannot target the Stalker with ranged attacks unless they are within 18” of it, decreased to 12” if the Stalker is in Cover from the perspective of the attacking Model.",
+          "hidden": true
         },
         {
           "id": "5ba1-407f-7eea-8883",
           "name": "Gruesome Cover",
-          "description": "A Stalker can take a Gruesome Cover ACTION when it takes an enemy model Out of Action in Melee. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or a Critical Success, it buries itself into the still-warm corpse, body bending at unnatural angles and ends its Activation. Until the beginning of its next Activation, it is considered to be in Cover from any angle."
+          "description": "A Stalker can take a Gruesome Cover ACTION when it takes an enemy model Out of Action in Melee. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or a Critical Success, it buries itself into the still-warm corpse, body bending at unnatural angles and ends its Activation. Until the beginning of its next Activation, it is considered to be in Cover from any angle.",
+          "hidden": true
         },
         {
           "id": "57eb-c604-6faa-c6b9",
           "name": "Undying Vassal",
-          "description": "Once per turn, whenever a model (friend or foe) is taken Out of Action, the Stalker may choose to instantly appear out of the Model’s corpse. Redeploy it and immediately place it so that the center of its base is at the location that was previously occupied by the center of the base of the removed model. If this is impossible for any reason, the Stalker remains at its original location. This ability can be used at any point during the Battle, even if it is outside of the Stalker’s Activation. Note that if the Stalker starts within 1\" of an enemy model, this is not treated as a Retreat, so the enemy model cannot make a Melee Attack before the Stalker uses that ability."
+          "description": "Once per turn, whenever a model (friend or foe) is taken Out of Action, the Stalker may choose to instantly appear out of the Model’s corpse. Redeploy it and immediately place it so that the center of its base is at the location that was previously occupied by the center of the base of the removed model. If this is impossible for any reason, the Stalker remains at its original location. This ability can be used at any point during the Battle, even if it is outside of the Stalker’s Activation. Note that if the Stalker starts within 1\" of an enemy model, this is not treated as a Retreat, so the enemy model cannot make a Melee Attack before the Stalker uses that ability.",
+          "hidden": true
         }
       ],
       "options": [
@@ -8788,6 +8897,66 @@ export const DATASET: Dataset = {
           }
         },
         {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Void Blade",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Living Shadow",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Gruesome Cover",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Undying Vassal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
           "op": "increment",
           "field": "stats.melee",
           "value": "1",
@@ -8937,7 +9106,8 @@ export const DATASET: Dataset = {
         {
           "id": "197e-2053-38ac-cce8",
           "name": "Incandescent",
-          "description": "Weapons with the FIRE keyword that this model has equipped gain +1 INJURY DICE."
+          "description": "Weapons with the FIRE keyword that this model has equipped gain +1 INJURY DICE.",
+          "hidden": true
         }
       ],
       "options": [
@@ -10323,7 +10493,8 @@ export const DATASET: Dataset = {
         {
           "id": "11cb-1c31-0802-652a",
           "name": "Appetisers",
-          "description": "The War Hyena ignores the effects of barbed wire (both difficult and dangerous)."
+          "description": "The War Hyena ignores the effects of barbed wire (both difficult and dangerous).",
+          "hidden": true
         }
       ],
       "options": [
@@ -13666,7 +13837,8 @@ export const DATASET: Dataset = {
         {
           "id": "f851-26c0-c31f-c85d",
           "name": "Improvised Trap",
-          "description": "A Sapper can take an Improvised Trap ACTION. If they do so, take a Success Roll with +2 DICE for the model. If the roll is a failure, nothing happens. If the roll is a Success or a Critical Success, the Sapper may place a single 2” trap marker within base contact of itself. When a unit comes within 1” of the marker they must immediately roll on the Injury chart. If the result of this roll is a Down, then the enemy unit is considered pinned, and cannot Stand or Move unless it succeeds on a Risky Success Roll at the start of its next Activation. Units with the keyword STRONG or on a 50mm or larger base make this roll with +1 DICE. A Sapper ignores the effects of its own set traps."
+          "description": "A Sapper can take an Improvised Trap ACTION. If they do so, take a Success Roll with +2 DICE for the model. If the roll is a failure, nothing happens. If the roll is a Success or a Critical Success, the Sapper may place a single 2” trap marker within base contact of itself. When a unit comes within 1” of the marker they must immediately roll on the Injury chart. If the result of this roll is a Down, then the enemy unit is considered pinned, and cannot Stand or Move unless it succeeds on a Risky Success Roll at the start of its next Activation. Units with the keyword STRONG or on a 50mm or larger base make this roll with +1 DICE. A Sapper ignores the effects of its own set traps.",
+          "hidden": true
         }
       ],
       "options": [
@@ -14470,7 +14642,8 @@ export const DATASET: Dataset = {
         {
           "id": "aba6-8b49-af2b-e4fd",
           "name": "Whirling Dervishes",
-          "description": "The ritual Dance of the Dervishes is hypnotic to witness, and it is as graceful as it is deadly. All Ranged attacks against Dervishes suffer -1 DICE penalty. Dervishes do not suffer the normal -1 DICE to hit for fighting with an Off-Hand weapon."
+          "description": "The ritual Dance of the Dervishes is hypnotic to witness, and it is as graceful as it is deadly. All Ranged attacks against Dervishes suffer -1 DICE penalty. Dervishes do not suffer the normal -1 DICE to hit for fighting with an Off-Hand weapon.",
+          "hidden": true
         },
         {
           "id": "1061-0baf-c232-c9a3",
@@ -19824,9 +19997,13 @@ export const DATASET: Dataset = {
     {
       "id": "381b-1e9b-e962-cb6b",
       "entryId": "4d84-784e-a2c6-53c0",
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Guard Dog",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -19895,9 +20072,13 @@ export const DATASET: Dataset = {
       "id": "a7bd-81f7-6908-8080",
       "entryId": "d196-34d1-a003-da6f",
       "hiddenByDefault": true,
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Martyrdom Dog",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -19959,9 +20140,13 @@ export const DATASET: Dataset = {
       "id": "1331-ddb8-fad3-81a3",
       "entryId": "6871-d12d-d7fc-bb03",
       "hiddenByDefault": true,
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Mercy Dog",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -20022,9 +20207,13 @@ export const DATASET: Dataset = {
       "id": "35df-a599-1589-8c23",
       "entryId": "b990-d914-9dce-66af",
       "hiddenByDefault": true,
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Hellhound",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -20041,7 +20230,18 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 1,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "eb55-7f18-ebac-da25",
+          "name": "Four Paws",
+          "description": "Add +1 DICE to rolls for a Trench Dog when they Climb, Jump, Fall or take a Dash ACTION."
+        },
+        {
+          "id": "c45a-e0c1-402d-9d28",
+          "name": "Pack Loyalty",
+          "description": "A Trench Dog has the same Faction Keyword as the model that has it. For example, the owner of a Trench Dog had the NEW ANTIOCH Faction Keyword, then the Trench Dog will have the NEW ANTIOCH Faction Keyword too."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -21928,7 +22128,8 @@ export const DATASET: Dataset = {
         {
           "id": "0eb3-b47c-4f32-e978",
           "name": "Away, Serpents!",
-          "description": "Select any enemy within 12” of the Priest and take a RISKY ACTION (targeting models on 40mm or larger bases incur -1 DICE penalty to this roll). If successful, the enemy model goes Down immediately, slithering on its belly like a snake."
+          "description": "Select any enemy within 12” of the Priest and take a RISKY ACTION (targeting models on 40mm or larger bases incur -1 DICE penalty to this roll). If successful, the enemy model goes Down immediately, slithering on its belly like a snake.",
+          "hidden": true
         },
         {
           "id": "3072-0ff0-3ea9-e748",
@@ -22725,22 +22926,26 @@ export const DATASET: Dataset = {
         {
           "id": "1d6a-335b-09ab-0d3a",
           "name": "Axe Mastery",
-          "description": "These fierce warriors often lead their charges with a wild swing, before smashing into their opponents for a bloody brawl. On a successful charge, they may immediately make a melee attack with one equipped axe. This is in addition to any other attacks."
+          "description": "These fierce warriors often lead their charges with a wild swing, before smashing into their opponents for a bloody brawl. On a successful charge, they may immediately make a melee attack with one equipped axe. This is in addition to any other attacks.",
+          "hidden": true
         },
         {
           "id": "c2f7-dd44-cc90-5d72",
           "name": "Shield Bash",
-          "description": "Varangian Guards may use any Shield as an off-hand weapon with -1 INJURY DICE. It functions otherwise like a Trench Club."
+          "description": "Varangian Guards may use any Shield as an off-hand weapon with -1 INJURY DICE. It functions otherwise like a Trench Club.",
+          "hidden": true
         },
         {
           "id": "2513-db50-fb6b-e213",
           "name": "Indomitable",
-          "description": "These warriors are immune to FEAR."
+          "description": "These warriors are immune to FEAR.",
+          "hidden": true
         },
         {
           "id": "fd74-ad2b-c80b-3e0b",
           "name": "Weapon Familiarity",
-          "description": "Varangian Guards ignore the keyword HEAVY on all axes, and treat two-handed axes as having the Shield Combo indicator. They lose Shock Charge if they equip a shield together with a two-handed axe. They can still carry only one HEAVY item, unless they are STRONG."
+          "description": "Varangian Guards ignore the keyword HEAVY on all axes, and treat two-handed axes as having the Shield Combo indicator. They lose Shock Charge if they equip a shield together with a two-handed axe. They can still carry only one HEAVY item, unless they are STRONG.",
+          "hidden": true
         }
       ],
       "options": [
@@ -23152,6 +23357,51 @@ export const DATASET: Dataset = {
           "field": "hidden",
           "value": "false",
           "origin": "profile:Axe Mastery",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Shield Bash",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Indomitable",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Weapon Familiarity",
           "when": {
             "type": "atLeast",
             "value": "1",
@@ -24038,10 +24288,16 @@ export const DATASET: Dataset = {
     {
       "id": "d52f-86b4-bf67-37b5",
       "entryId": "4f32-2acd-646e-b2c5",
+      "secondaryProfile": true,
+      "parentEntryId": "e558-982e-ccda-bbe7",
       "name": "Guard Dog",
       "factionId": "New Antioch",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "NEW ANTIOCH"
+      ],
       "stats": {
         "movement": "8\"/Infantry",
         "movementInches": 8,
@@ -24057,7 +24313,13 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 1,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "81b5-2b0d-8857-0631",
+          "name": "Four Paws",
+          "description": "Dogs may take any Dash ACTION or jump/Diving Charge ACTION with bonus +1 DICE. They cannot climb sheer surfaces."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -24075,10 +24337,16 @@ export const DATASET: Dataset = {
     {
       "id": "028d-42bd-5416-a4df",
       "entryId": "3fc9-edd8-0283-187b",
+      "secondaryProfile": true,
+      "parentEntryId": "e558-982e-ccda-bbe7",
       "name": "Mercy Dog",
       "factionId": "New Antioch",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "NEW ANTIOCH"
+      ],
       "stats": {
         "movement": "8\"/Infantry",
         "movementInches": 8,
@@ -24094,7 +24362,13 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 2,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "81b5-2b0d-8857-0631",
+          "name": "Four Paws",
+          "description": "Dogs may take any Dash ACTION or jump/Diving Charge ACTION with bonus +1 DICE. They cannot climb sheer surfaces."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -24112,10 +24386,16 @@ export const DATASET: Dataset = {
     {
       "id": "e193-81ee-658c-bbc8",
       "entryId": "ad89-2d46-a3ae-2cd6",
+      "secondaryProfile": true,
+      "parentEntryId": "e558-982e-ccda-bbe7",
       "name": "Attack Dog",
       "factionId": "New Antioch",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "NEW ANTIOCH"
+      ],
       "stats": {
         "movement": "8\"/Infantry",
         "movementInches": 8,
@@ -24131,7 +24411,13 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": null,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "81b5-2b0d-8857-0631",
+          "name": "Four Paws",
+          "description": "Dogs may take any Dash ACTION or jump/Diving Charge ACTION with bonus +1 DICE. They cannot climb sheer surfaces."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [],
@@ -26950,7 +27236,8 @@ export const DATASET: Dataset = {
         {
           "id": "8160-6b76-eb5c-dd34",
           "name": "Day of His Wrath",
-          "description": "A Cavalcade of the Tenth Plague War Prophet can take a Day of his Wrath ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure the War Prophet’s Activation ends immediately. If the roll is a Success, make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet. If the roll is a Critical Success, make an Injury Roll with +1 INJURY DICE and the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet."
+          "description": "A Cavalcade of the Tenth Plague War Prophet can take a Day of his Wrath ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure the War Prophet’s Activation ends immediately. If the roll is a Success, make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet. If the roll is a Critical Success, make an Injury Roll with +1 INJURY DICE and the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet.",
+          "hidden": true
         },
         {
           "id": "9ec3-b93c-1646-ccec",
@@ -32250,6 +32537,36 @@ export const DATASET: Dataset = {
           "field": "hidden",
           "value": "false",
           "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Ravenous Infection",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Cradle of Filth",
           "when": {
             "type": "atLeast",
             "value": "1",
@@ -44486,6 +44803,36 @@ export const DATASET: Dataset = {
         {
           "op": "set",
           "field": "hidden",
+          "value": "false",
+          "origin": "profile:Unstable",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Willing Sacrifice",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
           "value": "true",
           "origin": "profile:Hateful",
           "when": {
@@ -44532,6 +44879,21 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "8ba8-5e95-71aa-24e8",
             "childName": "Embraced by the Void",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Low on the Blood Chain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
             "includeChildSelections": true
           }
         }
@@ -44965,6 +45327,66 @@ export const DATASET: Dataset = {
           "field": "hidden",
           "value": "false",
           "origin": "entry",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Void Blade",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Living Shadow",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Gruesome Cover",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Undying Vassal",
           "when": {
             "type": "atLeast",
             "value": "1",
@@ -65940,6 +66362,121 @@ export const DATASET: Dataset = {
       "unspentLost": true,
       "forgoesExplorationAndQuartermaster": true
     },
+    "quartermaster": {
+      "retireInjured": {
+        "atScars": 2,
+        "text": "You can retire any model in your Warband that has 2 Battle Scars. If you decide to do so, remove the model from your Warband Roster. You can sell or reallocate their Battlekit or Glory Items before you retire them if you wish, or allow them to retire with their Battlekit in honour of the service they have performed."
+      },
+      "gloryItems": {
+        "needsDiscovery": true,
+        "text": "Glory Items are pieces of Battlekit. They are similar in many ways to the Battlekit that can only be purchased with ☼ that are found in the Armoury Tables of a Faction List. However, Glory Items can only be purchased during a campaign and if the Warband has made a discovery from an Exploration Table that allows them to take a Glory Item for free or purchase it in the Quartermaster Step. For example, the Trench Merchant discovery on the Common Exploration Locations Table allows a Warband to purchase Glory Items costing 5 ☼ or less."
+      }
+    },
+    "scenarioTables": {
+      "bands": [
+        {
+          "name": "Early Campaign",
+          "from": 1,
+          "to": 3,
+          "rows": [
+            {
+              "roll": 1,
+              "scenario": "Claim No Man’s Land"
+            },
+            {
+              "roll": 2,
+              "scenario": "Hunt for Heroes"
+            },
+            {
+              "roll": 3,
+              "scenario": "The High Ground"
+            },
+            {
+              "roll": 4,
+              "scenario": "Relic Hunt"
+            },
+            {
+              "roll": 5,
+              "scenario": "Supply Raid"
+            },
+            {
+              "roll": 6,
+              "choose": true,
+              "text": "The player who has played fewer games chooses one of the scenarios listed above. If tied, roll-off and the winner chooses."
+            }
+          ]
+        },
+        {
+          "name": "Mid-Campaign",
+          "from": 4,
+          "to": 8,
+          "rows": [
+            {
+              "roll": 1,
+              "scenario": "Hunt for Heroes"
+            },
+            {
+              "roll": 2,
+              "scenario": "Armoured Train"
+            },
+            {
+              "roll": 3,
+              "scenario": "Trench Warfare"
+            },
+            {
+              "roll": 4,
+              "scenario": "Claim No Man’s Land"
+            },
+            {
+              "roll": 5,
+              "scenario": "Dragon Hunt"
+            },
+            {
+              "roll": 6,
+              "choose": true,
+              "text": "The player who has played fewer games chooses one of the scenarios listed above. If tied, roll-off and the winner chooses."
+            }
+          ]
+        },
+        {
+          "name": "Endgame",
+          "from": 9,
+          "to": 11,
+          "rows": [
+            {
+              "roll": 1,
+              "scenario": "Trench Warfare"
+            },
+            {
+              "roll": 2,
+              "scenario": "Dragon Hunt"
+            },
+            {
+              "roll": 3,
+              "scenario": "From Below"
+            },
+            {
+              "roll": 4,
+              "scenario": "Fields of Glory"
+            },
+            {
+              "roll": 5,
+              "scenario": "Don’t Breathe"
+            },
+            {
+              "roll": 6,
+              "choose": true,
+              "text": "The player who has played fewer games chooses one of the scenarios listed above. If tied, roll-off and the winner chooses."
+            }
+          ]
+        }
+      ],
+      "final": {
+        "name": "Final Battle",
+        "game": 12,
+        "scenario": "Great War"
+      }
+    },
     "phaseSteps": [
       {
         "name": "Trauma Step",
@@ -66623,6 +67160,152 @@ export const DATASET: Dataset = {
             "glory": 1
           },
           "restrictions": []
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Book of Battle Prayers",
+          "weaponId": "e900-d699-609f-10c2",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 7
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Ducal Winged Armour",
+          "weaponId": "303c-e35a-9668-0fe8",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 8
+          },
+          "restrictions": [
+            "Battlefield Title or Knighthood only, Limit: 1",
+            "Only a model that already has a Battlefield Title or a Knighthood can have Ducal Winged Armour."
+          ]
+        },
+        {
+          "name": "Field Hospital",
+          "weaponId": "caee-8b72-72be-c864",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 10
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Great Banner of New Antioch",
+          "weaponId": "cc1a-f917-862d-26dc",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 12
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Resurrection Engine",
+          "weaponId": "f10c-88b8-0b18-3833",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 11
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 2"
+          ]
+        },
+        {
+          "name": "Salvage Golem",
+          "weaponId": "a465-cc89-17eb-185c",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Smokescreen",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Sniper Scope",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -67113,6 +67796,67 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Bayonet Lug, Shield Combo, Limit: 1"
           ]
+        },
+        {
+          "name": "Donkey’s Jawbone",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Holy Grenade",
+          "weaponId": "de1c-c937-a89f-d76c",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Horn of Joshua",
+          "weaponId": "6989-ce35-b217-5676",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 9
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -67583,6 +68327,115 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Limit: 2"
           ]
+        },
+        {
+          "name": "Damascus Armour",
+          "weaponId": "8b57-bf47-6a34-7732",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Field Hospital",
+          "weaponId": "caee-8b72-72be-c864",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 10
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Kilij",
+          "weaponId": "a68a-42a0-7fd5-d633",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only, Limit: 2"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Masterwork Jezzail",
+          "weaponId": "599f-5738-a80b-64ab",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 2"
+          ]
+        },
+        {
+          "name": "Sniper Scope",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Mobile Sultanate Grand Cannon",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 10
+          },
+          "restrictions": [
+            "Brazen Bull only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -68065,6 +68918,128 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Consumable"
           ]
+        },
+        {
+          "name": "Armour of Cobar",
+          "weaponId": "90f7-bbfc-d41c-2fb8",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 8
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Demonic Aura Grenade",
+          "weaponId": "4c95-f212-101f-f07f",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 3
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Executioner’s Axe",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 6
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Sniper Scope",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "The Mark of Cain",
+          "weaponId": "d31f-9638-3044-4892",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Tormentor Chain",
+          "weaponId": "36d4-9b55-fd0a-150f",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 3
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1",
+            "This item may not be taken by Trench Ghost Warbands."
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -68423,6 +69398,103 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Consumable"
           ]
+        },
+        {
+          "name": "Armour of the Fly",
+          "weaponId": "6f72-4947-54b8-efc7",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 7
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Beelzebub’s Embrace",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 12
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Cup of Filth",
+          "weaponId": "fe6e-1c07-510c-52ea",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Locust Spitter",
+          "weaponId": "cd74-1e16-33db-01b6",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 6
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -68813,6 +69885,128 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Consumable"
           ]
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Bestial Skin Cloak",
+          "weaponId": "d4f7-37c4-ce83-0e37",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 6
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Cruel Helmet",
+          "weaponId": "6155-24e1-c8ac-e4fc",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Wretched only, Headgear, Limit: 2"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Koraktor, the Great Tome of Hell",
+          "weaponId": "c05f-a1a1-50f7-afab",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 8
+          },
+          "restrictions": [
+            "Sorcerer only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Lordship of This World",
+          "weaponId": "7735-5567-9b74-b8f2",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 9
+          },
+          "restrictions": [
+            "Praetors & Sorcerers only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Piece of Silver",
+          "weaponId": "583b-2a75-d7f7-e227",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 12
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Restraining Muzzle",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Yoke Fiends only, Limit: 3",
+            "A Warband can have up to 3 Restraining Muzzles purchased with ☼ in addition to up to 3 Restaining Muzzles purchased with 👑 ."
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     }
@@ -69165,6 +70359,16 @@ export const DATASET: Dataset = {
           },
           "field": "hidden",
           "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "7e0b-de14-f14c-8ea0",
+            "name": "Corpse Guard"
+          },
+          "field": "hidden",
+          "value": "false"
         },
         {
           "op": "set",
@@ -71245,6 +72449,36 @@ export const DATASET: Dataset = {
           "value": "false"
         },
         {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
           "op": "increment",
           "target": {
             "kind": "unit",
@@ -71773,7 +73007,37 @@ export const DATASET: Dataset = {
             "name": "Yoke Fiend"
           },
           "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
           "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "false"
         },
         {
           "op": "set",
@@ -71801,6 +73065,46 @@ export const DATASET: Dataset = {
             "kind": "unit",
             "id": "4c27-9424-de7d-b905",
             "name": "Faceless"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
           },
           "field": "hidden",
           "value": "false"

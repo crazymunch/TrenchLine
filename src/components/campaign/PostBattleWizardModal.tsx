@@ -36,6 +36,8 @@ import {
   type ExtraExperienceRule,
 } from '../../rules/extraExperience';
 import type { ExplorationTableName, SkillsTableName, SkillRow } from '../../types/catalogue';
+import { frameworkOf } from '../../rules/campaignFramework';
+import { CarcassFrontExploration } from './CarcassFrontExploration';
 import { CasualtyRecord } from '../../types/campaign';
 import type { ActiveUnit } from '../../types/warband';
 import { soundEffects } from '../../services/soundEffects';
@@ -123,6 +125,12 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
   const houseRuleKeepsExploration =
     campaign?.houseRules?.reinforcementsKeepExploration === true;
   const explorationForfeited = tookReinforcements && !houseRuleKeepsExploration;
+  /*
+    Which Exploration Step this campaign runs (RR-09). Chosen at creation and
+    never afterwards — see `rules/campaignFramework.ts` — so this is a fact
+    about the campaign rather than a setting on the step.
+  */
+  const isCarcassFront = frameworkOf(campaign) === 'carcass-front';
 
   /*
     Glory the Warband's Variant is paid for calling Reinforcements.
@@ -2387,6 +2395,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                 worth showing here is the REASON, which is a decision they made
                 one screen ago and can still go back and change.
               */}
+              {/*
+                A Carcass Front campaign runs a DIFFERENT Exploration Step, and
+                until now ran the rulebook's (RR-09). Three dice rather than up
+                to six, loot at five per point rather than ten, a Resource table
+                rather than a rarity band, and a table only the Aggressor
+                consults. `rules/campaign.ts` has had all of it since the
+                supplement landed and nothing called it.
+              */}
               {explorationForfeited ? (
                 <div className="p-4 bg-theme-elevated border border-status-warning rounded space-y-2 text-xs leading-relaxed">
                   <p className="font-gothic font-bold text-sm text-status-warning">
@@ -2404,6 +2420,20 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     Go back and change it
                   </button>
                 </div>
+              ) : isCarcassFront ? (
+                dataset ? (
+                  <CarcassFrontExploration
+                    dataset={dataset}
+                    alreadyDiscovered={warband.explorationDiscoveries ?? []}
+                    onLoot={setDucatsGained}
+                    onDiscovered={(name) => setExplorationFound(
+                      /* No `effects`: the Carcass Front tables grant no
+                         Exploration Skill, and `explorationGrants` reads the
+                         rulebook's sentences, which these Locations do not
+                         print. Recording an empty list is the honest answer. */
+                      name ? { discovered: name, effects: [] } : { effects: [] })}
+                  />
+                ) : null
               ) : (
               <div className="p-4 bg-theme-elevated border border-theme-border rounded space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">

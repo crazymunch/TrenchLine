@@ -7,6 +7,7 @@ import { useStore } from '../../store/useStore';
 import { carriesAsBattlekit, forcedBattlekit } from '../../rules/battlekit';
 import { canEquip } from '../../rules/equipGate';
 import { armouryFor } from '../../rules/armoury';
+import { gloryItemPermission, gloryItemNotice } from '../../rules/gloryItems';
 import { traitsOf, chosenBy } from '../../rules/formulae';
 import { formulaShelf } from '../../rules/formulaShelf';
 import { catalogueUnitFor } from '../../rules/catalogueUnit';
@@ -25,7 +26,8 @@ import {
   Search,
   Minus,
   AlertTriangle,
-  FlaskConical
+  FlaskConical,
+  Sparkles
 } from 'lucide-react';
 
 interface AddEquipmentModalProps {
@@ -301,6 +303,16 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
   const { dataset } = useDataset(
     (typeof window !== 'undefined'
       && window.localStorage.getItem('trenchline_ruleset')) || DEFAULT_RULESET_ID);
+
+  /*
+    What this Warband may buy from its Glory Item Table, so the sheet can say
+    why the table is shut. The FILTERING is `recruitable`'s — the shelf this
+    screen is handed no longer carries the rows — and this is only the sentence
+    that explains it.
+  */
+  const gloryGate = React.useMemo(
+    () => gloryItemPermission(dataset, activeWarband?.explorationEffects),
+    [dataset, activeWarband]);
 
   const carriedNow = React.useMemo(() => ([
     ...(unit?.equippedWeapons ?? []),
@@ -729,6 +741,22 @@ export const AddEquipmentModal: React.FC<AddEquipmentModalProps> = ({
               className="w-full bg-theme-base border border-theme-border rounded pl-8 pr-2.5 py-1.5 text-xs text-theme-text focus:outline-none focus:border-theme-primary"
             />
           </div>
+        </div>
+
+        {/*
+          Why the Glory Items are, or are not, on these lists (p.125, RR-14).
+
+          The shelf is filtered by `recruitable` before it reaches this screen,
+          so without this line a player looking for a Knighthood finds a list
+          that simply does not have one and no reason why. The rule is quoted
+          from the dataset rather than paraphrased here, because the whole point
+          of the sentence is that it names what to go and do about it.
+        */}
+        <div className="px-1 pb-2">
+          <p className="flex items-start gap-1.5 text-xs sm:text-[11px] font-mono leading-relaxed text-theme-muted">
+            <Sparkles className="mt-0.5 h-3 w-3 flex-shrink-0 text-theme-accent" />
+            <span>{gloryItemNotice(gloryGate)}</span>
+          </p>
         </div>
 
         {/* Scrollable List Body */}

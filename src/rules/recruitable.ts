@@ -37,7 +37,8 @@ import { variantArmoury } from './variantArmoury';
 import { thirdPartyGate, thirdPartyVariantIds } from './thirdParty';
 import { unobtainable, variantLocks } from './variantLocks';
 import { variantLimits, variantForbids, variantReveals } from './validate';
-import { applyVariant } from './applyVariant';
+import { applyVariant, visibleAbilities, labelledAbilities } from './applyVariant';
+import { isGloryItem, offerableRows, type GloryItemPermission } from './gloryItems';
 
 /**
  * The catalogue's roles, mapped onto the four the roster format has.
@@ -73,8 +74,14 @@ export interface Recruitable {
   gloryPriced: DroppedDetail[];
 }
 
-const abilityOf = (a: { id: string; name: string; description: string }): Ability => ({
-  id: a.id, name: a.name, description: a.description,
+const abilityOf = (
+  a: { id: string; name: string; description: string; variantOnly?: string[] },
+): Ability => ({
+  id: a.id,
+  name: a.name,
+  description: a.description,
+  /* Carried so the recruit sheet can name what reveals it. */
+  ...(a.variantOnly?.length ? { variantOnly: a.variantOnly } : {}),
 });
 
 /** A weapon's type, from its range, exactly as the Battlekit chapter defines it. */
@@ -114,7 +121,21 @@ export function recruitable(
    * that raises a limit still offered the base one. The engine has known all
    * of this since Phase 2; only the recruit list was never told.
    */
-  variantId?: string
+  variantId?: string,
+  /**
+   * What this Warband may buy from its Glory Item Table (p.125, RR-14).
+   *
+   * `undefined` means no Warband is asking — the Codex, a reference sheet, a
+   * price list — and the whole table is listed, because those views describe
+   * what the game contains rather than what one roster may have today.
+   *
+   * A Warband IS asking whenever the builder hydrates the catalogs, and there
+   * the permission decides: no Exploration discovery, no Glory Items on the
+   * shelf. See `rules/gloryItems.ts`, and note that the gate keys on the row's
+   * SECTION and never on its currency — a Troop Flag costs Glory and needs no
+   * discovery.
+   */
+  gloryItems?: GloryItemPermission,
 ): Recruitable {
   const empty: Recruitable = { units: [], weapons: [], armour: [], equipment: [], gloryPriced: [] };
   if (!dataset) return empty;
@@ -291,9 +312,40 @@ export function recruitable(
       /* What this Mercenary may buy despite the glossary's blanket refusal.
          See `UnitProfile.mercenaryMayBuy` and `equipGate.ts`. */
       mercenaryMayBuy: u.mercenaryMayBuy,
-      innateAbilities: u.abilities
+      /*
+        The abilities this entry actually prints (DA-01).
+
+        `u.abilities` is every Ability profile on the entry, hidden ones
+        included, and copying all of them here is what put four Varangian Guard
+        rules on a standard New Antioch Shocktrooper's recruit card. The recruit
+        list shows an entry before anything has been chosen on it, so the model
+        has no selections yet — but the Warband's Variant is declared, and a
+        Variant is what reveals almost all of them.
+
+        `rosterSelections: []` because the app records no Chosen Sin; see
+        `VisibilityContext`. The Codex shows those with their label instead.
+      */
+      innateAbilities: visibleAbilities(u, { dataset, variant, selections: [], rosterSelections: [] })
         .filter((a) => a.name.trim().toLowerCase() !== 'third party')
         .map(abilityOf),
+      /*
+        And what this entry would gain under another Variant, labelled with
+        which. Shown on the recruit sheet, under the abilities the model does
+        have — a player picking a Shocktrooper is owed the fact that the
+        Remnants of Byzantium turns it into a Varangian Guard with four more
+        rules, and the old behaviour of simply printing all four as its own was
+        not that fact, it was a wrong statline.
+      */
+      variantAbilities: (() => {
+        const shown = new Set(
+          visibleAbilities(u, { dataset, variant, selections: [], rosterSelections: [] })
+            .map((a) => a.name.trim().toLowerCase()));
+        const labelled = labelledAbilities(u, dataset)
+          .filter((a) => a.variantOnly?.length)
+          .filter((a) => !shown.has(a.name.trim().toLowerCase()))
+          .map(abilityOf);
+        return labelled.length ? labelled : undefined;
+      })(),
       /*
         Which Warbands may hire this Mercenary.
 
@@ -426,8 +478,14 @@ export function recruitable(
     `checkVariantGrants` makes the same exclusion ("stocked at home: not
     spending anybody's allowance"), so the offer and the count agree.
   */
+  /* The Glory Item gate, applied to every shelf: a foreign Armoury opened by a
+     Variant grant is still an Armoury, and its Glory Items are still Glory
+     Items. `offerableRows` is a no-op on a table that holds none. */
+  const offerable = (rows: readonly ArmouryRow[]) =>
+    (gloryItems ? offerableRows(rows, gloryItems) : [...rows]);
+
   const shelves: { row: ArmouryRow; from: Armoury; grantedBy?: string }[] =
-    armoury.rows.map((row) => ({ row, from: armoury }));
+    offerable(armoury.rows).map((row) => ({ row, from: armoury }));
 
   const stockedAtHome = new Set(armoury.rows.map((r) => nameKey(r.name)));
   const known = (dataset.armouries ?? []).map((a) => a.factionId);
@@ -435,7 +493,7 @@ export function recruitable(
     const foreign = (dataset.armouries ?? []).find((a) =>
       nameKey(a.factionId) === nameKey(grant.factionId));
     if (!foreign) continue;
-    for (const row of foreign.rows) {
+    for (const row of offerable(foreign.rows)) {
       if (stockedAtHome.has(nameKey(row.name))) continue;
       shelves.push({ row, from: foreign, grantedBy: grant.rule });
     }
@@ -464,7 +522,16 @@ export function recruitable(
     const id = grantedBy
       ? `granted:${from.factionId}:${row.weaponId || k}`
       : (row.weaponId || `${from.factionId}-${k}`);
-    const section = b?.section ?? row.section;
+    /*
+      The Battlekit chapter's section usually wins, because it is the
+      catalogue's own account of what an item IS. A Glory Item is the one
+      exception, and it has to be: several are named in the Battlekit chapter
+      too — a Sniper Scope is Equipment there — and taking that section would
+      file the row as Equipment, which is precisely the section the gate lets
+      through. The row would then be on sale to a Warband that has discovered
+      nothing.
+    */
+    const section = isGloryItem(row) ? row.section : (b?.section ?? row.section);
 
     if (section === 'Armour' || section === 'Shields') {
       armour.push({

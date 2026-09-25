@@ -227,12 +227,28 @@ describe('third-party wargear', () => {
     expect(gatedWargear.map((w) => w.name)).toContain('Greek Fire');
   });
 
+  /*
+    Matched on the gated entry's ID, not on its name.
+
+    A name is not an identity here, and one collision proves it: the Iron
+    Sultanate catalogue carries a `Rocket-Propelled Grenade` gated on Nomads of
+    Al-Badia, and the rulebook prints an official Rocket-Propelled Grenade in
+    five factions' Glory Item Tables (p.125 onward). They are different items
+    with one name, and once the Glory Item Tables were parsed (RR-14) the
+    name test reported the official one as a leak of the unofficial one.
+
+    The id answers the question the test is actually asking — whether the
+    CATALOGUE's gated entry has reached a shelf — and it still fails loudly if
+    one ever does, which is what this test is for. An offer built from an
+    Armoury row the catalogues cannot name carries a synthetic id, so it can
+    never collide with a real one.
+  */
   it('does not reach the recruit path', () => {
-    const gatedNames = new Set(gatedWargear.map((w) => w.name));
+    const gatedIds = new Set(gatedWargear.map((w) => w.id));
     for (const f of APP_FACTIONS) {
       const r = recruitable(DATASET, f, APP_FACTIONS);
       const leaked = [...r.weapons, ...r.armour, ...r.equipment]
-        .filter((x) => gatedNames.has(x.name))
+        .filter((x) => gatedIds.has(x.id))
         .map((x) => x.name);
       expect(leaked, `${f} is offered third-party wargear`).toEqual([]);
     }

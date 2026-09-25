@@ -23,6 +23,7 @@ import type { Cost, Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SkillLearned } from '../rules/advancement';
 import type { ExplorationEffect } from '../rules/campaign';
+import type { RetirementDisposition } from '../rules/retire';
 import type { SyncState } from '../services/sync';
 import type { CampaignSyncState } from '../services/campaignSync';
 
@@ -102,7 +103,18 @@ export interface AppState {
    * Fill the catalogs from a loaded dataset, scoped to a faction for gear.
    * Wargear is priced per faction, so the armoury cannot be a shared list.
    */
-  hydrateCatalogs: (dataset: Dataset, factionId?: string, variantId?: string) => void;
+  hydrateCatalogs: (
+    dataset: Dataset,
+    factionId?: string,
+    variantId?: string,
+    /**
+     * The Warband's Exploration effects, which decide whether its Glory Item
+     * Table is open and up to what price (p.125, RR-14). Omitted where no
+     * Warband is active, and the shelf then carries no Glory Items — which is
+     * the right answer for a builder with nothing loaded.
+     */
+    held?: ExplorationEffect[],
+  ) => void;
   /**
    * Entries whose published cost includes Glory. The saved roster format has a
    * single Ducat cost, so their Glory component is not in `units`/`weapons` —
@@ -270,6 +282,26 @@ export interface AppState {
    */
   recreateUnit: (warbandId: string, unitId: string) => void;
   letUnitFall: (warbandId: string, unitId: string) => void;
+  /**
+   * Retire a model with two Battle Scars (Quartermaster Step, p.123).
+   *
+   * The count comes from `campaign.quartermaster.retireInjured.atScars`, which
+   * is NOT the Trauma Step's `unfitAt` — see `rules/retire.ts`. The dataset is
+   * passed in rather than read here for the same reason `claimEarnedRecruitment`
+   * takes it: the store does not hold one, and a rule that removes a model must
+   * not be applied against a ruleset the caller has not loaded.
+   *
+   * Returns what happened rather than throwing. The caller is a screen, and
+   * "this model has one Battle Scar, not two" is a sentence to show.
+   */
+  retireUnit: (
+    warbandId: string,
+    unitId: string,
+    disposition: RetirementDisposition,
+    dataset: Dataset | null | undefined,
+  ) => { ok: true; disposition: RetirementDisposition; proceeds: Cost; items: number }
+     | { ok: false; why: 'no-such-model' | 'ruleset-silent' }
+     | { ok: false; why: 'not-enough-scars'; scars: number; at: number };
   updateUnitName: (warbandId: string, unitId: string, name: string) => void;
   updateUnitCategory: (warbandId: string, unitId: string, category: UnitCategory) => void;
   /**

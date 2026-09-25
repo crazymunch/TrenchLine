@@ -677,6 +677,25 @@ export interface ExplorationEffect {
    * second list would be a second place to forget.
    */
   lootBonus?: number;
+  /**
+   * A standing permission to buy Glory Items, up to this price in Glory.
+   *
+   * Page 125: *"Glory Items can only be purchased during a campaign and if the
+   * Warband has made a discovery from an Exploration Table that allows them to
+   * take a Glory Item for free or purchase it in the Quartermaster Step."*
+   * Three Locations grant one, each with its own ceiling — the Trench Merchant
+   * 5, the Black Market 8, the Black Network Contact 12 — and each states the
+   * ceiling in its own sentence, which is where this number comes from.
+   *
+   * On this record for the same reason as `lootBonus`: it is a permanent change
+   * to what the Quartermaster Step may do, granted by a Location, and a second
+   * list would be a second place to forget.
+   *
+   * It is NOT recorded from the discovery alone. The Trench Merchant offers a
+   * choice — *"Report: your Warband gains 2 ☼"* or *"Trade: from now on…"* —
+   * and a Warband that took the Glory has not opened the shop.
+   */
+  gloryItemsUpTo?: number;
 }
 
 /**
@@ -849,6 +868,30 @@ export function explorationGrants(
     .exec(text);
   if (loot) {
     out.push({ name: location.name, source: location.name, sinceGame, lootBonus: Number(loot[1]) });
+  }
+
+  /*
+    "From now on, in the Quartermaster Step, you can purchase Glory Items
+    costing 5 ☼ or less" — the gate p.125 says a Glory Item needs, and the
+    ceiling that discovery sets.
+
+    Read from the sentence rather than from a list of the three Locations that
+    print it, for the reason this whole function exists: the Dispatch will print
+    a fourth merchant, and a hand-kept list would not know about it. The
+    Locations that hand out a Glory Item once — "Choose one Glory Item worth up
+    to 7 ☼ and add it to your Arsenal" — deliberately do NOT match: that is a
+    single item taken now, not a standing permission to shop, and treating it as
+    one would open the tables permanently on a one-off find.
+  */
+  const shop = /From now on,?\s+in (?:the|your) Quartermaster Step,?\s+you can purchase Glory Items costing\s+(\d+)\s*(?:☼|Glory)?\s+or less/i
+    .exec(text);
+  if (shop) {
+    out.push({
+      name: location.name,
+      source: location.name,
+      sinceGame,
+      gloryItemsUpTo: Number(shop[1]),
+    });
   }
 
   return out;

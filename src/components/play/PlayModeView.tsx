@@ -70,6 +70,7 @@ import { isRestorable, savedAgo, MATCH_VERSION, type SavedMatch, type SideScore 
 import { battleFromMatch } from '@/rules/battleFromMatch';
 import { fieldable } from '@/rules/recreation';
 import { catalogueUnitFor } from '@/rules/catalogueUnit';
+import { variantById } from '@/rules/variants';
 import {
   COALITIONS, COALITION_NAME, coalitionScore, hasCoalitions, leader,
   pruneCoalitions, suggestCoalitions, type CoalitionMap,
@@ -2183,6 +2184,11 @@ export const PlayModeView: React.FC = () => {
              name (ID-1). */
           catalogueUnit={catalogueUnitFor(
             playDataset, referenceUnit, viewingWarband?.factionId)}
+          /* And the ruleset and Variant, so the sheet shows the abilities this
+             model prints as it is equipped — the Varangian Guard loses Shock
+             Charge with a shield and a two-handed axe (DA-01). */
+          dataset={playDataset}
+          variant={playDataset ? variantById(playDataset, viewingWarband?.variantId) : undefined}
           /* The Trauma table, so a Leg Wound's -2" comes from the catalogue
              rather than being written into the component. */
           traumaTable={playDataset?.campaign?.trauma}

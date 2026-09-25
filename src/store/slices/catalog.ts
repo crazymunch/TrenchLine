@@ -13,6 +13,7 @@ import { storage } from '../../services/storage';
 import { FACTIONS } from '../../data/defaultRules';
 import { recruitable } from '../../rules/recruitable';
 import { factionOf } from '../../rules/variants';
+import { gloryItemPermission } from '../../rules/gloryItems';
 import type { InitialState } from '../init';
 
 export type CatalogSlice = Pick<AppState, 'markers' | 'factions' | 'units' | 'weapons' | 'armour' | 'equipment' | 'catalogsLoaded' | 'catalogsError' | 'gloryPriced' | 'hydrateCatalogs' | 'customUnits' | 'customWeapons' | 'customArmour' | 'customEquipment' | 'favouriteUnits' | 'saveCustomUnit' | 'deleteCustomUnit' | 'saveCustomWeapon' | 'deleteCustomWeapon' | 'saveCustomArmour' | 'deleteCustomArmour' | 'saveCustomEquipment' | 'deleteCustomEquipment'>;
@@ -28,11 +29,18 @@ export const createCatalogSlice = (init: InitialState): StateCreator<AppState, [
     catalogsLoaded: false,
     catalogsError: null,
     gloryPriced: [],
-    hydrateCatalogs: (dataset, factionId, variantId) => {
+    hydrateCatalogs: (dataset, factionId, variantId, held) => {
       // The app's faction ids, so the recruit list filters on the spelling it
       // uses rather than the catalogue's. The Variant decides what that list
       // actually contains and what each entry is called — see `recruitable`.
-      const r = recruitable(dataset, factionId, get().factions.map((f) => f.id), variantId);
+      //
+      // `held` is the Warband's Exploration effects, which is what opens its
+      // Glory Item Table (p.125, RR-14). Passed as the effects rather than as a
+      // permission so the one place that reads the Locations' sentences stays
+      // `gloryItemPermission`; a store slice is not where a rule is decided.
+      const r = recruitable(
+        dataset, factionId, get().factions.map((f) => f.id), variantId,
+        gloryItemPermission(dataset, held));
       set((s) => ({
         /*
           The battle marker pools, so the match slice clamps to the cap the
