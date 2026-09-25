@@ -28,6 +28,7 @@ import React, { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { Warband } from '@/types/warband';
 import { useStore } from '@/store/useStore';
+import { campaignGameOf } from '@/rules/campaign';
 import { provenanceLabel } from '@/rules/provenance';
 import { Sheet } from '../ui/Sheet';
 
@@ -40,10 +41,15 @@ interface Props {
 export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) => {
   const addWarbandReward = useStore((s) => s.addWarbandReward);
   const removeWarbandReward = useStore((s) => s.removeWarbandReward);
+  const campaign = useStore((s) => s.campaign);
 
   const [name, setName] = useState('');
   const [text, setText] = useState('');
   const [note, setNote] = useState('');
+  /* The same two claims the advancement sheet distinguishes (review round 1,
+     finding E): recorded by hand in the game the campaign is on, or recorded as
+     predating the app holding this Warband. */
+  const [beforeTheApp, setBeforeTheApp] = useState(false);
 
   const add = () => {
     const trimmed = name.trim();
@@ -51,10 +57,13 @@ export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) =
     addWarbandReward(warband.id, {
       name: trimmed,
       ...(text.trim() ? { text: text.trim() } : {}),
-      source: {
-        kind: 'manual-pre-app',
-        ...(note.trim() ? { note: note.trim() } : {}),
-      },
+      source: beforeTheApp
+        ? { kind: 'manual-pre-app', ...(note.trim() ? { note: note.trim() } : {}) }
+        : {
+          kind: 'manual',
+          game: campaignGameOf(warband, campaign),
+          ...(note.trim() ? { note: note.trim() } : {}),
+        },
     });
     setName('');
     setText('');
@@ -74,10 +83,10 @@ export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) =
       <div className="p-4 space-y-4">
 
         <p className="font-mono text-xs text-theme-muted leading-relaxed">
-          Exploration rewards, a Patron&rsquo;s entitlement, anything standing your
-          Warband has earned. An import reads these out of the roster; anything
-          from before the app was keeping the record goes in here, marked as
-          recorded by hand.
+          Exploration rewards, a Patron&rsquo;s entitlement, anything standing
+          your Warband has earned. An import reads these out of the roster, and
+          the Exploration Step records what it finds; anything else goes in
+          here, marked as recorded by hand.
         </p>
 
         <div className="p-3 bg-theme-base border border-theme-border space-y-2">
@@ -108,6 +117,17 @@ export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) =
               className="w-full bg-theme-surface border border-theme-border px-2 py-1.5 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
             />
           </div>
+
+          {/* The label is the hit area and clears the 44px floor. */}
+          <label className="flex min-h-[44px] items-center gap-2 font-mono text-xs text-theme-text">
+            <input
+              type="checkbox"
+              checked={beforeTheApp}
+              onChange={(e) => setBeforeTheApp(e.target.checked)}
+              className="h-4 w-4 shrink-0 accent-current"
+            />
+            <span>This was held before the app held this Warband</span>
+          </label>
 
           <div className="space-y-1">
             <label htmlFor="reward-note" className="eyebrow block">

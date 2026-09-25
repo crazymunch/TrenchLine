@@ -398,14 +398,24 @@ const UnitSheetCard: React.FC<{ card: SheetCard }> = ({ card }) => {
             <div key={label} className="border border-theme-border py-1 px-0.5 min-w-0">
               <span className="eyebrow block">{label}</span>
               {/*
-                Wraps rather than truncates. Five cells across 375px is about
-                64px each, and Movement is printed as `6"/Infantry` — which does
-                not fit. A truncated statline hides the model's movement TYPE,
-                and hiding a layout problem is what `docs/MOBILE.md` forbids; two
-                lines in one cell is the honest answer at that width.
+                Broken at the slash, not truncated and not mid-word.
+
+                Five cells across 375px is about 64px each, and Movement is
+                printed as `6"/Infantry`, which fits none of them. Truncating
+                hid the movement TYPE (`6"/Inf…`) and plain wrapping split the
+                word itself (`Infant` / `ry`). The slash is already the seam:
+                `Statline` carries `movementInches` and `movementType`
+                separately precisely because they are two facts and a card has
+                to show them as two.
               */}
-              <span className="block font-mono text-xs sm:text-sm text-theme-text break-words leading-tight">
-                {value || '—'}
+              <span className="block font-mono text-xs sm:text-sm text-theme-text leading-tight">
+                {value
+                  ? value.split('/').map((part, i, all) => (
+                    <span key={part + i} className="block">
+                      {part}{i < all.length - 1 ? '/' : ''}
+                    </span>
+                  ))
+                  : '—'}
               </span>
             </div>
           ))}

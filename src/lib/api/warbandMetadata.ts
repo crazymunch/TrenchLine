@@ -61,6 +61,18 @@ export const CLIENT_OWNED = {
   */
   campaignRules: undefined as unknown,
   rewards: undefined as unknown,
+  /*
+    Which ruleset the warband is built against, and the campaign state another
+    app's record stated (RV-1 and CI-1, #113).
+
+    Neither was in this list, so both were lost on the first pull — the same
+    hole the six fields above were found in. `rulesetId` is the one SH-1's share
+    page reads: it projects the sheet on the server under the WARBAND's ruleset
+    rather than the reader's or the default, and it can only do that if the
+    field survives the round trip.
+  */
+  rulesetId: undefined as unknown,
+  importedCampaign: undefined as unknown,
 };
 
 type ClientField = keyof typeof CLIENT_OWNED;
