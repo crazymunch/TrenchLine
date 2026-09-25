@@ -408,7 +408,11 @@ const UnitSheetCard: React.FC<{ card: SheetCard }> = ({ card }) => {
           <span className="eyebrow">{m.profileName}{m.category && ` · ${m.category}`}</span>
         </div>
         <span className="font-mono text-sm text-theme-primary flex-shrink-0">
-          {m.ducats}👑{m.glory > 0 && ` ${m.glory}☼`}
+          {/* Blank where nothing computed a cost, rather than a printed nought
+              (Order 44 item 5). A price of 0 and "we do not know" look identical
+              on paper, and one of them is a lie. */}
+          {m.ducats === undefined ? <Blank /> : <>{m.ducats}👑</>}
+          {m.glory !== undefined && m.glory > 0 && ` ${m.glory}☼`}
         </span>
       </div>
 

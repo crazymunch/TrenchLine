@@ -28,7 +28,7 @@ import React, { useState } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { Warband } from '@/types/warband';
 import { useStore } from '@/store/useStore';
-import { campaignGameOf } from '@/rules/campaign';
+import { handEnteredSource } from '@/rules/handEntry';
 import { provenanceLabel } from '@/rules/provenance';
 import { Sheet } from '../ui/Sheet';
 
@@ -57,13 +57,14 @@ export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) =
     addWarbandReward(warband.id, {
       name: trimmed,
       ...(text.trim() ? { text: text.trim() } : {}),
-      source: beforeTheApp
-        ? { kind: 'manual-pre-app', ...(note.trim() ? { note: note.trim() } : {}) }
-        : {
-          kind: 'manual',
-          game: campaignGameOf(warband, campaign),
-          ...(note.trim() ? { note: note.trim() } : {}),
-        },
+      /*
+        One decision, in `rules/handEntry.ts`, shared with the advancement sheet
+        (Order 44 item 1). This modal had its own copy and kept `campaignGameOf`
+        when round 2 moved the other one off it — so a reward entered by hand on
+        a standalone Warband read "Recorded by hand · game 1" for a game nobody
+        played. Two copies of a rule is how one of them stays wrong.
+      */
+      source: handEnteredSource({ beforeTheApp, warband, campaign, note }),
     });
     setName('');
     setText('');

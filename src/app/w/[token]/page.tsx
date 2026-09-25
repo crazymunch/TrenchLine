@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { Warband } from '@/types/warband';
 import { loadSharedWarband } from '@/lib/api/warbandLoader';
-import { loadDataset, rulesetForWarband } from '@/lib/serverDataset';
+import { loadDataset, rulesetForWarband, rulesetNote } from '@/lib/serverDataset';
 import { rosterSheet } from '@/rules/rosterSheet';
 import { rulesetInfo } from '@/rules/rulesets';
 import { SharedRosterSheet } from './SharedRosterSheet';
@@ -108,6 +108,13 @@ export default async function SharedWarbandPage(
   const warband = loaded as unknown as Warband;
 
   const ruleset = rulesetForWarband(warband);
+  /*
+    The footer's three readings as one value (Order 44 item 4c). Built once, here,
+    so both renders below say the same thing — and as a discriminated union, so
+    the reading that names the id the warband asked for cannot be constructed
+    without it.
+  */
+  const note = rulesetNote(ruleset, rulesetInfo(ruleset.id)?.name ?? ruleset.id);
   const dataset = await loadDataset(ruleset.id);
 
   /*
@@ -121,9 +128,7 @@ export default async function SharedWarbandPage(
       <SharedRosterSheet
         name={warband.name}
         sheet={null}
-        rulesetName={rulesetInfo(ruleset.id)?.name ?? ruleset.id}
-        rulesetRecorded={ruleset.recorded}
-        rulesetUnavailable={ruleset.unavailable}
+        ruleset={note}
       />
     );
   }
@@ -147,9 +152,7 @@ export default async function SharedWarbandPage(
     <SharedRosterSheet
       name={warband.name}
       sheet={sheet}
-      rulesetName={rulesetInfo(ruleset.id)?.name ?? ruleset.id}
-      rulesetRecorded={ruleset.recorded}
-      rulesetUnavailable={ruleset.unavailable}
+      ruleset={note}
     />
   );
 }

@@ -26,27 +26,27 @@ import React from 'react';
 import Link from 'next/link';
 import type { RosterSheetModel } from '@/rules/rosterSheet';
 import { RosterSheetView } from '@/components/sheet/WarbandRosterSheet';
+import type { RulesetNote } from '@/lib/serverDataset';
 
 export interface SharedRosterSheetProps {
   /** The warband's name, for the masthead. */
   name: string;
   /** `null` where the ruleset could not be loaded — reported, not substituted. */
   sheet: RosterSheetModel | null;
-  rulesetName: string;
-  /** False where the warband records no ruleset and the default was used. */
-  rulesetRecorded: boolean;
   /**
-   * The ruleset the warband records where this build does not ship it.
+   * Which ruleset this was read under, and why — one value, three shapes.
    *
-   * Absent when the warband records one that IS shipped, and when it records
-   * none. Present only for the third case, which is the one the footer used to
-   * misreport (review round 2 item 5).
+   * Three loose props (a name, a boolean and an optional id) let the id be
+   * dropped from the page's JSX without anything failing, which is how round 2's
+   * fix for the false footer could be silently undone (Order 44 item 4c). A
+   * `RulesetNote` cannot be constructed for the case that names an id without
+   * the id, so the compiler is what keeps the third reading honest.
    */
-  rulesetUnavailable?: string;
+  ruleset: RulesetNote;
 }
 
 export const SharedRosterSheet: React.FC<SharedRosterSheetProps> = ({
-  name, sheet, rulesetName, rulesetRecorded, rulesetUnavailable,
+  name, sheet, ruleset,
 }) => (
   /* `dvh`, never `vh` — docs/MOBILE.md. This is read at a table on a phone. */
   <main className="min-h-dvh bg-theme-base text-theme-text">
@@ -75,7 +75,7 @@ export const SharedRosterSheet: React.FC<SharedRosterSheetProps> = ({
               The ruleset could not be loaded
             </p>
             <p className="font-mono text-xs text-theme-muted leading-relaxed">
-              This roster was built under <strong>{rulesetName}</strong>, and this
+              This roster was built under <strong>{ruleset.name}</strong>, and this
               build cannot read it. The sheet is not shown rather than shown with
               invented numbers.
             </p>
@@ -92,19 +92,19 @@ export const SharedRosterSheet: React.FC<SharedRosterSheetProps> = ({
             about the roster that was simply untrue. A fallback is allowed; a
             silent one is not.
           */}
-          {rulesetRecorded && (
-            <>Read under <strong className="text-theme-text">{rulesetName}</strong>, the ruleset this warband records.</>
+          {ruleset.kind === 'own' && (
+            <>Read under <strong className="text-theme-text">{ruleset.name}</strong>, the ruleset this warband records.</>
           )}
-          {!rulesetRecorded && rulesetUnavailable && (
+          {ruleset.kind === 'unavailable' && (
             <>
-              Read under <strong className="text-theme-text">{rulesetName}</strong>,
+              Read under <strong className="text-theme-text">{ruleset.name}</strong>,
               the published default, because this warband records{' '}
-              <strong className="text-theme-text">{rulesetUnavailable}</strong>,
+              <strong className="text-theme-text">{ruleset.recorded}</strong>,
               which this build does not carry.
             </>
           )}
-          {!rulesetRecorded && !rulesetUnavailable && (
-            <>This warband records no ruleset, so it is read under <strong className="text-theme-text">{rulesetName}</strong>, the published default.</>
+          {ruleset.kind === 'default' && (
+            <>This warband records no ruleset, so it is read under <strong className="text-theme-text">{ruleset.name}</strong>, the published default.</>
           )}
         </p>
         {/*

@@ -16,6 +16,7 @@ import {
 import {
   traumaProcedure, eliteVerdict, survivalOutcome, rollSurvival,
   unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries, traumaWriteFor,
+  traumaRecords,
 } from '../../rules/trauma';
 import {
   cappedExperience, experienceCap, canBePromoted, eliteCount, promotionRules,
@@ -1126,21 +1127,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
         isDead: removed,
         ...(capture?.fullRecovery ? { fullRecovery: true } : {}),
         ...(capture && capture.ransom > 0 ? { ransomPaid: capture.ransom } : {}),
-        records: {
-          injury: write.injury,
-          ...(write.scar ? { scar: write.scar } : {}),
-          /*
-            Two different facts, and the record keeps them apart (review round 2
-            item 3). `roll` is the D66 the player threw — the wizard has held it
-            since the result was resolved. `row` is the line of the table it
-            landed on, which for `41-63` is a range no die shows. Round 1 wrote
-            the range into `roll`, so the sheet reported a throw that never
-            happened; a result with no throw behind it now records the row alone
-            and reads "row 41-63".
-          */
-          ...(data.thrown !== undefined ? { roll: String(data.thrown) } : {}),
-          ...(write.row?.roll ? { row: String(write.row.roll) } : {}),
-        },
+        /*
+          The throw and the row, kept apart (review round 2 item 3) — and decided
+          in `rules/trauma.ts` rather than here (Order 44 item 4b), so a test can
+          drive the decision instead of hand-building a record the store then
+          reads. `data.thrown` is the D66 this component has held since the
+          result was resolved.
+        */
+        records: traumaRecords(write, data.thrown),
       };
     });
 

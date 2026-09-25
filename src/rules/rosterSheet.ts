@@ -157,8 +157,17 @@ export interface SheetCardModel {
   name: string;
   profileName: string;
   category: string;
-  ducats: number;
-  glory: number;
+  /**
+   * The model's cost, where the projection produced one — **`undefined`, never
+   * 0, where it did not** (rule 2, Order 44 item 5).
+   *
+   * `?? 0` here printed a cost of nought Ducats for a model whose presented
+   * entry was missing, which is a number a reader has no way to tell from a
+   * model that genuinely costs nothing. A blank says the app does not know.
+   */
+  ducats?: number;
+  /** As `ducats`: absent rather than 0 where nothing computed it. */
+  glory?: number;
   stats?: PresentedModel['stats'];
 }
 
@@ -465,8 +474,9 @@ export function rosterSheet(
           name: model?.name ?? unit.customName ?? '',
           profileName: model?.profileName ?? '',
           category: model?.category ?? '',
-          ducats: model?.ducats ?? 0,
-          glory: model?.glory ?? 0,
+          /* A cost only where one was computed. `?? 0` invented a price. */
+          ...(model?.ducats !== undefined ? { ducats: model.ducats } : {}),
+          ...(model?.glory !== undefined ? { glory: model.glory } : {}),
           ...(model?.stats ? { stats: model.stats } : {}),
         },
         track: experienceTrackFor(dataset, unit),

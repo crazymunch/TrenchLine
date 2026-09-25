@@ -315,8 +315,11 @@ a Glory Item granted. A Patron's Skill costs no Advancement Roll, and counting i
 would cancel a roll the model earned: an Azeb holding three Skills at 6
 Experience has earned two rolls, and if the app records three taken it offers
 nothing at 7 and never says why. An import counts the bracketed totals only, and
-**tells you which Skills it did not count** — for a Trench Companion import that
-is usually all of them, because their share carries no rolls.
+**tells you which Skills it did not count**, in the **"About this import"** list
+on the preview screen before you press Import — for a Trench Companion import
+that is usually all of them, because their share carries no rolls. If one of the
+Skills it names WAS rolled for, add the total on the model's advancement sheet
+and the roll is counted.
 
 **A game number is only recorded when the app can name one.** A warband in no
 campaign, or one whose campaign is not the campaign you have open, records no

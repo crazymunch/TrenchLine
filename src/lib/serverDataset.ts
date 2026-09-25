@@ -73,3 +73,45 @@ export function rulesetForWarband(
     ...(own ? { unavailable: own } : {}),
   };
 }
+
+/**
+ * What the share page's footer may say about the ruleset (Order 44 item 4c).
+ *
+ * A discriminated union rather than three loose props, and that is the whole
+ * point of it. Round 2 added `rulesetUnavailable` as an optional third prop
+ * beside `rulesetName` and `rulesetRecorded` — so deleting it from the page's
+ * JSX compiled, rendered, and silently restored the false sentence it was added
+ * to fix ("this warband records no ruleset" for a warband that records one this
+ * build does not carry). Nothing failed.
+ *
+ * Here the three readings are three shapes, and the one that names an id cannot
+ * be constructed without the id. Omitting it is a type error rather than a
+ * regression.
+ */
+export type RulesetNote =
+  /** Read under the ruleset the warband itself records. */
+  | { kind: 'own'; name: string }
+  /** The warband records none, so the published default. */
+  | { kind: 'default'; name: string }
+  /**
+   * The warband records one this build does not ship, so the published default —
+   * and `recorded` is the id it asked for, which the footer names.
+   */
+  | { kind: 'unavailable'; name: string; recorded: string };
+
+/**
+ * The verdict, plus a display name for whichever ruleset was used, as a note.
+ *
+ * `name` is passed in rather than resolved here: `rulesetInfo` is the caller's
+ * to consult, and this module has no business deciding how a ruleset is spelled.
+ */
+export function rulesetNote(
+  verdict: { id: string; recorded: boolean; unavailable?: string },
+  name: string,
+): RulesetNote {
+  if (verdict.recorded) return { kind: 'own', name };
+  if (verdict.unavailable) {
+    return { kind: 'unavailable', name, recorded: verdict.unavailable };
+  }
+  return { kind: 'default', name };
+}

@@ -24,6 +24,7 @@ import { rosterSheet } from '../rosterSheet';
 import { advancementRollsDue } from '../advancement';
 import { variantsForFaction } from '../variants';
 import type { ActiveUnit, Warband, WarbandSnapshot } from '@/types/warband';
+import { presentRoster } from '@/services/rosterPresentation';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -675,5 +676,71 @@ describe('round 2 item 4: the default cuts both ways, so the owner’s surfaces 
     const src = readFileSync(
       join(process.cwd(), 'src/app/(app)/roster/[id]/sheet/page.tsx'), 'utf8');
     expect(src).toMatch(/audience="owner"/);
+  });
+});
+
+describe('Order 44 item 5: a cost nobody computed is blank, not nought', () => {
+  /*
+    `SheetCardModel` fell back to `ducats: model?.ducats ?? 0`. A model whose
+    presented entry is missing — the arrays are indexed in parallel, so a
+    projection that drops one shifts the rest — printed a cost of 0, which is a
+    number a reader cannot tell from a model that genuinely costs nothing. Rule 2:
+    a missing value is reported, not substituted.
+  */
+  it('prints the cost the projection produced, when there is one', () => {
+    const { cards } = rosterSheet(warband(), { dataset: DATASET, audience: 'owner' });
+    expect(typeof cards[0].model.ducats).toBe('number');
+  });
+
+  it('takes the cost from the presented model rather than defaulting it', () => {
+    /*
+      `presentRoster` maps units one to one, so the card's presented entry is
+      never missing in practice and the old `?? 0` was unreachable — but
+      unreachable is not the same as harmless: if the two ever fall out of step,
+      the difference between reporting nothing and printing a nought is the
+      difference between a blank and a wrong price. So the value is asserted to BE
+      the projection's, with no substitution of its own.
+    */
+    const wb = warband({
+      units: [unit({ id: 'u1' }), unit({ id: 'u2', customName: 'Second' })],
+    });
+    const { cards } = rosterSheet(wb, { dataset: DATASET, audience: 'owner' });
+    const presented = presentRoster(wb, {}, { includePrivate: true });
+
+    expect(cards).toHaveLength(presented.models.length);
+    cards.forEach((card, i) => {
+      expect(card.model.ducats).toBe(presented.models[i].ducats);
+      expect(card.model.glory).toBe(presented.models[i].glory);
+    });
+  });
+
+  it('and the projection substitutes nothing for either field', () => {
+    /* The fallback itself, gone. `?? 0` on a cost is the shape rule 2 forbids,
+       and it reads as a real price on the page. */
+    const src = readFileSync(join(process.cwd(), 'src/rules/rosterSheet.ts'), 'utf8');
+    const card = src.slice(src.indexOf('model: {'), src.indexOf('track: experienceTrackFor'));
+    expect(card).not.toMatch(/ducats: model\?\.ducats \?\? 0/);
+    expect(card).not.toMatch(/glory: model\?\.glory \?\? 0/);
+    expect(card).toMatch(/model\?\.ducats !== undefined/);
+    expect(card).toMatch(/model\?\.glory !== undefined/);
+  });
+
+  it('the keys are absent, so a spread cannot acquire a cost of nought', () => {
+    const { cards } = rosterSheet(warband(), { dataset: DATASET, audience: 'owner' });
+    const model = cards[0].model;
+    for (const key of ['ducats', 'glory'] as const) {
+      if (model[key] === undefined) {
+        expect(Object.keys(model)).not.toContain(key);
+      }
+    }
+  });
+
+  it('and the view prints a blank rather than a zero', () => {
+    /* The component, because the model being right is only half of it: a `0`
+       coerced into the JSX would print "0👑" for an unknown cost. */
+    const src = readFileSync(join(process.cwd(),
+      'src/components/sheet/WarbandRosterSheet.tsx'), 'utf8');
+    expect(src).toMatch(/m\.ducats === undefined \? <Blank \/>/);
+    expect(src).not.toMatch(/\{m\.ducats\}👑\{m\.glory > 0/);
   });
 });

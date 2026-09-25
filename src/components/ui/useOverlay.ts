@@ -82,6 +82,40 @@ export const overlayStack = {
  */
 export const handlesKey = (mine: object): boolean => overlayStack.isTopmost(mine);
 
+/**
+ * What one overlay does with an Escape keystroke (Order 44 item 4d).
+ *
+ * The behaviour, not the source text. Round 2's test asserted that the hook
+ * CONTAINED the guard, by regex — so commenting the guard out failed it, but
+ * moving it after `close()` did not, and neither did any other rearrangement that
+ * keeps the characters present and the effect wrong. A guard that runs too late
+ * is a guard that does nothing.
+ *
+ * So the decision and the action are one function, and it returns whether it
+ * closed. `isTopmost` is injectable purely so a test can stand a stack up
+ * without a DOM; every caller in the app leaves it alone.
+ *
+ * Every open overlay has its own `keydown` listener on `document`, and
+ * `stopPropagation` does not stop the listeners already registered on that same
+ * node — it stops the event reaching other nodes. So with a picker open over the
+ * post-battle wizard, one Escape ran both handlers, the wizard's first because it
+ * registered first, and the whole wizard closed with the rolls in progress. The
+ * stack is what makes only the top one act.
+ */
+export function handleEscape(
+  event: { key: string; stopPropagation: () => void },
+  mine: object,
+  close: () => void,
+  isTopmost: (token: object) => boolean = overlayStack.isTopmost,
+): boolean {
+  if (event.key !== 'Escape') return false;
+  /* Before anything else happens, and before `close`. */
+  if (!isTopmost(mine)) return false;
+  event.stopPropagation();
+  close();
+  return true;
+}
+
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),' +
   'textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -148,14 +182,12 @@ export function useOverlay(
     if (!open) return;
     const mine = token.current;
     const onKey = (e: KeyboardEvent) => {
+      /* The topmost overlay only, and the decision plus the action are one
+         function so a test can drive the behaviour rather than match the source
+         (Order 44 item 4d). Every other open overlay's handler is on this same
+         node and will run whatever this one does about the event. */
       if (e.key === 'Escape') {
-        /* The topmost overlay only. Every other open overlay's handler is on
-           this same node and will run whatever this one does about the event.
-           `handlesKey` IS the guard — a named function so a test can drive the
-           real decision instead of restating it (review round 2 item 6). */
-        if (!handlesKey(mine)) return;
-        e.stopPropagation();
-        close();
+        handleEscape(e, mine, close);
         return;
       }
       /* And Tab, for the same reason: two traps fighting over one keystroke

@@ -12,7 +12,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { rulesetForWarband } from '../serverDataset';
+import { rulesetForWarband, rulesetNote } from '../serverDataset';
 import { RULESET_IDS, DEFAULT_RULESET_ID } from '@/rules/rulesets';
 
 describe('rulesetForWarband', () => {
@@ -62,21 +62,76 @@ describe('rulesetForWarband', () => {
   });
 });
 
-describe('the share page footer says each of the three', () => {
-  it('names all three readings in the component', () => {
+describe('Order 44 item 4c: the footer\'s three readings as one value', () => {
+  /*
+    Round 2 added `rulesetUnavailable` as an optional third prop beside a name and
+    a boolean — so deleting it from the page\'s JSX compiled, rendered, and
+    silently restored the false sentence it existed to fix. The source-text
+    assertion that used to sit here could not see that either: it checked the
+    COMPONENT still had three branches, not that the page still fed the third one.
+
+    `rulesetNote` is that decision, and a discriminated union, so the reading that
+    names an id cannot be built without the id. These drive it.
+  */
+  it('reads as the warband\'s own where the build ships what it records', () => {
+    const shipped = RULESET_IDS[0];
+    expect(rulesetNote(rulesetForWarband({ rulesetId: shipped }), 'TrenchLine Rules'))
+      .toEqual({ kind: 'own', name: 'TrenchLine Rules' });
+  });
+
+  it('reads as the default where the warband records none', () => {
+    expect(rulesetNote(rulesetForWarband({}), 'TrenchLine Rules'))
+      .toEqual({ kind: 'default', name: 'TrenchLine Rules' });
+  });
+
+  it('names the id where the build does not carry it', () => {
+    const missing = 'a-ruleset-this-build-does-not-ship';
+    expect(RULESET_IDS).not.toContain(missing);
+
+    const note = rulesetNote(rulesetForWarband({ rulesetId: missing }), 'TrenchLine Rules');
+    expect(note).toEqual({
+      kind: 'unavailable', name: 'TrenchLine Rules', recorded: missing,
+    });
+    /* The id is on the note, so the footer cannot render this reading without
+       it — which is what makes the fix un-droppable rather than merely present. */
+    if (note.kind === 'unavailable') expect(note.recorded).toBe(missing);
+  });
+
+  it('the three readings are three distinct kinds, not a flag and an optional', () => {
+    const kinds = [
+      rulesetNote(rulesetForWarband({ rulesetId: RULESET_IDS[0] }), 'x').kind,
+      rulesetNote(rulesetForWarband({}), 'x').kind,
+      rulesetNote(rulesetForWarband({ rulesetId: 'nope' }), 'x').kind,
+    ];
+    expect(new Set(kinds).size).toBe(3);
+    expect(kinds).toEqual(['own', 'default', 'unavailable']);
+  });
+
+  it('and the page hands the component that value, for both of its renders', () => {
     /*
-      Source-level, because this suite has no DOM. What is asserted is that the
-      footer has three branches rather than two: the branch that reports the
-      unavailable id is the one round 1 did not have, and its absence is what
-      made the page state a falsehood.
+      Narrow and source-level on purpose: what the assertions above cannot see is
+      the page going back to spreading loose props. The type would stop that now,
+      but only while the component keeps the union — so this pins the call.
     */
+    const page = readFileSync(
+      join(process.cwd(), 'src/app/w/[token]/page.tsx'), 'utf8');
+
+    expect(page).toMatch(/const note = rulesetNote\(ruleset, /);
+    /* Twice: the sheet-less render and the full one. */
+    expect(page.match(/ruleset=\{note\}/g) ?? []).toHaveLength(2);
+    /* And the props it replaced are gone rather than passed alongside. */
+    expect(page).not.toMatch(/rulesetUnavailable=/);
+    expect(page).not.toMatch(/rulesetRecorded=/);
+  });
+
+  it('the component renders each kind, and names the id in the third', () => {
     const src = readFileSync(
       join(process.cwd(), 'src/app/w/[token]/SharedRosterSheet.tsx'), 'utf8');
 
-    expect(src).toContain('the ruleset this warband records');
+    expect(src).toContain("ruleset.kind === 'own'");
+    expect(src).toContain("ruleset.kind === 'default'");
+    expect(src).toContain("ruleset.kind === 'unavailable'");
+    expect(src).toMatch(/\{ruleset\.recorded\}/);
     expect(src).toContain('which this build does not carry');
-    expect(src).toContain('This warband records no ruleset');
-    /* And the unavailable id is rendered, not merely branched on. */
-    expect(src).toMatch(/\{rulesetUnavailable\}/);
   });
 });

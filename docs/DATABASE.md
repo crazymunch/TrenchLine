@@ -238,38 +238,57 @@ CREATE UNIQUE INDEX "Warband_shareToken_key" ON "Warband"("shareToken");
 `NULL`, which is "not shared", so the migration publishes nothing. No backfill,
 no contract step.
 
-### The ordering rule: a migration's name must sort after everything applied
+### This project's ordering rule: name a migration after the latest one applied
 
-**`prisma migrate deploy` refuses to run a migration that sorts BEFORE one the
-database has already recorded.** Migrations are ordered by their folder name, the
-`_prisma_migrations` table records the names it has applied, and a folder whose
-timestamp is older than the newest recorded one is not "next" — it is a migration
-the database believes it skipped. The deploy fails rather than guessing, and the
-failure is at deploy time, on production, after review.
-
-So the rule is about **naming**, and it applies when the folder is created:
+**The rule, and it is ours rather than the tool's:**
 
 > Before naming a migration folder, read back what production has recorded, and
-> give the folder a timestamp later than the newest of them.
+> give the folder a timestamp later than the newest of them — so the recorded
+> history stays in the order the changes actually happened.
 
-The report mode of the script is how you read it back — it prints the recorded
-set and needs no arguments and no confirmation:
+**What the tool does and does not promise.** Prisma's own reference says only that
+`migrate deploy` "applies all pending migrations"; it documents no ordering
+constraint, and nothing in its docs says a migration whose folder name sorts
+BEFORE an already-recorded one is refused. So **do not rely on a refusal** — treat
+the folder name as the only guard there is. (An earlier version of this section
+claimed `migrate deploy` refuses such a migration. That claim was not checked
+against Prisma's documentation and is not supported by it; it is withdrawn.)
+
+What that means in practice: an out-of-order migration will most likely just be
+applied, and the damage is not an error but a **history that no longer reads in
+order** — `_prisma_migrations` says A then B while the code was written assuming
+B then A, and the next person reconstructing the schema's history from it is
+misled. That is why the name is decided deliberately rather than taken from the
+clock.
+
+**How to read back what is recorded:**
 
 ```bash
-node scripts/apply-migrations-http.mjs        # report: what is recorded, what is pending
+node scripts/apply-migrations-http.mjs        # report only; no arguments, no confirmation
 ```
+
+It prints the database host, then two counts — how many folders are in
+`prisma/migrations` and how many the database records as applied — and then the
+**pending ones by name**, with a statement count each. It does not list the whole
+recorded set, so to see the newest recorded name, read the pending list against
+the folder listing: what is in `prisma/migrations` and NOT pending is what has
+been applied.
 
 This bites in exactly the case this repository is in: **several branches open at
 once.** A migration created on Monday and merged on Friday can easily carry a
 timestamp older than one another branch merged on Wednesday — and nothing in the
 branch, the review or CI notices, because both are valid in isolation and the
-conflict only exists against the database's record. `20260925090000_warband_share_token`
-was checked this way against a production set whose newest entry was
-`20260919090000_battle_records`.
+disagreement only exists against the database's record.
+`20260925090000_warband_share_token` was checked this way: the newest name
+recorded before it was `20260919090000_battle_records`.
 
-A migration already applied is never renamed or edited — `CLAUDE.md` again, and
-the script refuses on its own if one has changed since it was applied. The way
-out of a migration that sorts too early is a new migration with a later name.
+**Two things the script does check itself**, whatever Prisma does — both in
+`planPending`, and both fail loudly rather than proceeding: a migration whose SQL
+was **edited after it was applied** (the recorded checksum and the file disagree,
+so re-applying would run SQL the database has already partly seen), and a
+migration the **database records that this checkout does not have**. A migration
+already applied is never renamed or edited — `CLAUDE.md` — and the way out of a
+migration named too early is a new migration with a later name, never a rename.
 
 **When it goes up.** Pending migrations are applied **as part of merging the pull
 request that adds them**, under `CLAUDE.md`'s standing authorisation, and what

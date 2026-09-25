@@ -20,7 +20,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { handlesKey, overlayStack } from '../useOverlay';
+import { handleEscape, handlesKey, overlayStack } from '../useOverlay';
 
 /**
  * The hook's Escape branch, calling the hook's OWN guard.
@@ -126,42 +126,103 @@ describe('the overlay stack', () => {
   });
 });
 
-
-describe('round 2 item 6: the guard the hook actually runs', () => {
+describe('Order 44 item 4d: what an Escape actually DOES, per overlay', () => {
   /*
-    The suite above drives `handlesKey`, which is the hook's own guard rather
-    than a copy of it. What that cannot see is the hook DROPPING the call — so
-    this reads the hook and asserts the call is there, in both branches that need
-    it. Deleting either line fails here.
+    Round 2's version of this matched the guard with a regex — so commenting the
+    line out failed, and moving it after `close()` did not. A guard that runs too
+    late is a guard that does nothing, and the test could not tell.
 
-    Source-level because the repo has no DOM test environment; the rendering is
-    covered by Playwright. The alternative — adding jsdom and a testing library
-    for one guard — is a dependency decision that is not mine to take in this PR,
-    and it is named in the PR body.
+    `handleEscape` is the decision and the action together, and it returns whether
+    it closed. The stack is injected, so these are about behaviour and need no DOM.
   */
-  const hook = readFileSync(
-    join(process.cwd(), 'src/components/ui/useOverlay.ts'), 'utf8');
+  const press = (key = 'Escape') => {
+    let stopped = false;
+    return { event: { key, stopPropagation: () => { stopped = true; } }, stopped: () => stopped };
+  };
 
-  it('exports the guard, so there is one definition of it', () => {
-    expect(hook).toMatch(/export const handlesKey/);
+  const TOP = { id: 'top' };
+  const UNDER = { id: 'under' };
+  const stack = (top: object) => (t: object) => t === top;
+
+  it('closes the overlay that is on top', () => {
+    let closed = 0;
+    const { event, stopped } = press();
+    expect(handleEscape(event, TOP, () => { closed += 1; }, stack(TOP))).toBe(true);
+    expect(closed).toBe(1);
+    expect(stopped()).toBe(true);
   });
 
-  it('guards Escape with it', () => {
-    const escape = hook.slice(hook.indexOf("e.key === 'Escape'"));
-    const branch = escape.slice(0, escape.indexOf('return;') + 7);
-    expect(branch, 'the Escape branch does not call handlesKey')
-      .toMatch(/if \(!handlesKey\(mine\)\) return;/);
+  it('does NOTHING for an overlay underneath — the case the bug was', () => {
+    /*
+      This is the assertion a source match cannot make. With the guard removed,
+      or moved below `close()`, the wizard under the picker closes on the picker's
+      Escape and takes the rolls in progress with it.
+    */
+    let closed = 0;
+    const { event, stopped } = press();
+    expect(handleEscape(event, UNDER, () => { closed += 1; }, stack(TOP))).toBe(false);
+    expect(closed, 'an overlay that is not on top closed itself').toBe(0);
+    /* And it does not swallow the event either, or the top one never sees it. */
+    expect(stopped()).toBe(false);
   });
 
-  it('guards Tab with it too', () => {
-    expect(hook, 'the Tab branch does not call handlesKey')
-      .toMatch(/e\.key !== 'Tab'[^\n]*!handlesKey\(mine\)/);
+  it('one keystroke closes exactly one of two stacked overlays', () => {
+    /* Both handlers run, because both listeners are on `document`. */
+    const closed: string[] = [];
+    const { event } = press();
+    handleEscape(event, UNDER, () => closed.push('under'), stack(TOP));
+    handleEscape(event, TOP, () => closed.push('top'), stack(TOP));
+    expect(closed).toEqual(['top']);
   });
 
-  it('and states the decision exactly once, not inline as well', () => {
-    /* An inline `isTopmost` in the hook's key handler would be a second copy of
-       the guard, which is the shape this item exists to remove. */
+  it('and the one underneath takes the NEXT Escape, once it is on top', () => {
+    const closed: string[] = [];
+    handleEscape(press().event, UNDER, () => closed.push('under'), stack(UNDER));
+    expect(closed).toEqual(['under']);
+  });
+
+  it('ignores any other key', () => {
+    let closed = 0;
+    const { event, stopped } = press('Enter');
+    expect(handleEscape(event, TOP, () => { closed += 1; }, stack(TOP))).toBe(false);
+    expect(closed).toBe(0);
+    expect(stopped()).toBe(false);
+  });
+
+  it('defaults to the real stack, so the app gets the real behaviour', () => {
+    /* No stub: the module-level stack decides, as it does in the hook. */
+    const a = {};
+    const b = {};
+    overlayStack.push(a);
+    overlayStack.push(b);
+    try {
+      let closedA = 0;
+      let closedB = 0;
+      handleEscape(press().event, a, () => { closedA += 1; });
+      handleEscape(press().event, b, () => { closedB += 1; });
+      expect(closedA).toBe(0);
+      expect(closedB).toBe(1);
+    } finally {
+      overlayStack.remove(b);
+      overlayStack.remove(a);
+    }
+  });
+
+  it('the hook delegates to it rather than inlining the decision again', () => {
+    /* Narrow, and the only source assertion left here: the behaviour above is
+       worthless if the hook stops calling it. */
+    const hook = readFileSync(
+      join(process.cwd(), 'src/components/ui/useOverlay.ts'), 'utf8');
     const handler = hook.slice(hook.indexOf('const onKey'));
+    expect(handler).toMatch(/handleEscape\(e, mine, close\)/);
+    /* And does not re-decide it inline beside the call. */
     expect(handler).not.toMatch(/overlayStack\.isTopmost/);
+  });
+
+  it('Tab is still guarded, and still by the shared decision', () => {
+    const hook = readFileSync(
+      join(process.cwd(), 'src/components/ui/useOverlay.ts'), 'utf8');
+    expect(hook).toMatch(/e\.key !== 'Tab'[^\n]*!handlesKey\(mine\)/);
+    expect(handlesKey).toBeTypeOf('function');
   });
 });

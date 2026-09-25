@@ -14,13 +14,15 @@
  * whether or not the pipeline derives them.
  */
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import { DATASET } from '@/data/generated/trenchline.generated';
 import type { ActiveUnit } from '@/types/warband';
 import {
   traumaProcedure, eliteVerdict, casualtyRoute, survivalOutcome, rollSurvival,
   scarCount, unfitForDuty, alreadySuffered, earnsExperience, xpBarringInjuries,
-  barsExperience, traumaWriteFor, traumaRowIn,
+  barsExperience, traumaWriteFor, traumaRowIn, traumaRecords,
 } from '../trauma';
 
 const PROC = traumaProcedure(DATASET)!;
@@ -375,5 +377,70 @@ describe('what a Trauma result writes onto the model', () => {
     const injuries = write.injury ? [recorded('Full Recovery')] : [];
     const model = { injuries, scars: [] } as unknown as ActiveUnit;
     expect(alreadySuffered(model, 'Full Recovery')).toBe(false);
+  });
+
+  describe('Order 44 item 4b: the record says which die, and which row', () => {
+    /*
+      Round 2 item 3 fixed the post-battle wizard storing the matched ROW's range
+      where it was holding the thrown D66 — so a sheet read "rolled 41-63" for a die
+      that came up 52. Nothing pinned it: the only tests went through a hand-built
+      `CasualtyRecord`, which proves the store reads the fields and says nothing
+      about whether the wizard writes them. Reverting the fix left the suite green.
+
+      `traumaRecords` is that decision, lifted out of the component's JSX so it can
+      be driven directly. The wizard's own call site is asserted at the foot.
+    */
+    const LEG_WOUND = recorded('Leg Wound');
+
+    it('records the throw as the roll, and the row as the row', () => {
+      const write = traumaWriteFor(DATASET, LEG_WOUND, ELITE);
+      /* 52 is a D66 that lands on the ranged row; 31 is the Leg Wound row. */
+      const records = traumaRecords(write, 52);
+
+      expect(records.roll).toBe('52');
+      expect(records.row).toBe(write.row!.roll);
+      /* And never the range in `roll`, which is the bug this pins. */
+      expect(records.roll).not.toBe(records.row);
+    });
+
+    it('a result with no throw behind it records the row and no roll', () => {
+      /* A row picked out of a dropdown, or a match recorded before the wizard
+         carried the throw. Absent means not recorded. */
+      const records = traumaRecords(traumaWriteFor(DATASET, LEG_WOUND, ELITE));
+
+      expect(records).not.toHaveProperty('roll');
+      expect(records.row).toBe('31');
+    });
+
+    it('a row this build cannot identify records no row, rather than a guess', () => {
+      const write = traumaWriteFor(DATASET, 'a note the player typed', ELITE);
+      const records = traumaRecords(write, 52);
+
+      expect(records.roll).toBe('52');
+      expect(records).not.toHaveProperty('row');
+    });
+
+    it('carries the injury flag and the scar through unchanged', () => {
+      const write = traumaWriteFor(DATASET, LEG_WOUND, ELITE);
+      const records = traumaRecords(write, 52);
+      expect(records.injury).toBe(write.injury);
+      expect(records.scar).toEqual(write.scar ?? undefined);
+    });
+
+    it('and the wizard builds its records through this, not by hand', () => {
+      /*
+        Source-level and deliberately narrow: what the assertions above cannot see
+        is the component going back to assembling the object itself. If it does,
+        `traumaRecords` is still correct and still unused, which is exactly the
+        shape Order 44 found.
+      */
+      const wizard = readFileSync(join(process.cwd(),
+        'src/components/campaign/PostBattleWizardModal.tsx'), 'utf8');
+
+      expect(wizard).toMatch(/records: traumaRecords\(write, data\.thrown\)/);
+      /* And the throw really is carried in the component's state, or it is passing
+         `undefined` and the first assertion above is about nothing. */
+      expect(wizard).toMatch(/thrown: rollNum/);
+    });
   });
 });

@@ -7,18 +7,30 @@
  * was a string, and an imported roster's `Point Blank [9]` lost the 9 on the
  * way in.
  *
- * Two rules run through this module, and both are rule 2 of `CLAUDE.md`:
+ * Three rules run through this module. The first is rule 2 of `CLAUDE.md`:
  *
  * **An absent record reads as `import`, never as a roll.** A Skill written
  * before `source` existed came from somewhere the app cannot name. Calling
  * that an Advancement Roll would be inventing a die; calling it an import is
- * the truth about the entry — it arrived, and the record does not say how.
+ * the truth about the entry — it arrived, and the record does not say how. The
+ * same goes for a bare `roll` field on an old entry: the advancement sheet wrote
+ * that from a dropdown, so it reads as a `row` — evidence of a choice, not a die.
  *
- * **A pre-app entry counts exactly as a rolled one.** The owner's answer on
- * pre-app history was manual entry marked as such, so the marking is for the
- * reader, not for the arithmetic: `advancementRollsDue` and the scar count
- * must not treat a Skill typed in as worth less than one rolled in the app.
- * Nothing in here filters by `kind` for that reason.
+ * **The marking is for the reader, not for the arithmetic — where the arithmetic
+ * is about the entry's EXISTENCE.** A scar counts towards retirement whether it
+ * was rolled in the app or typed in afterwards, because what retires a model is
+ * having three scars. `injuriesHeld`, `holdingsOf` and the scar count do not
+ * filter by `kind`.
+ *
+ * **But an Advancement Roll is a claim about a die, and there `kind` and `roll`
+ * both matter.** This is the correction round 2 made and round 3 tidied: for a
+ * while this comment said a pre-app entry "counts exactly as a rolled one" and
+ * that "nothing here filters by kind", and `advancementRolls` was being set to
+ * `skills.length` on the strength of it. That cancels rolls a model earned — a
+ * Patron grants Skills, so do some Glory Items and `65 Bitter Lessons`. So
+ * `statesAnAdvancementRoll` reads the record and DOES look at `kind`: a Skill
+ * consumes a roll only where its own record states the 2D6 total. Hand entry is
+ * not worth less than a roll made in the app; it is worth what it says it is.
  */
 import type {
   ActiveUnit, InjuryRecord, Provenance, ProvenanceKind, Warband, WarbandReward,

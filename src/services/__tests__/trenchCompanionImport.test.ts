@@ -271,6 +271,29 @@ describe('the campaign state', () => {
     })]);
   });
 
+  it('counts that Skill as no Advancement Roll, because their share has no roll', () => {
+    /*
+      Order 44 item 4a. Round 2 changed this importer from `advancementRolls =
+      skills.length` to a count of the Skills whose records state a 2D6 total, and
+      nothing pinned it — their export carries no field for a Skill's roll at all,
+      so the two rules differ on every model this importer builds, and reverting
+      the change left every test green.
+
+      One Skill, nought rolls. Not one, which is what the length would give.
+    */
+    expect(unit().skills).toHaveLength(1);
+    expect(unit().advancementRolls ?? 0).toBe(0);
+    expect(unit().advancementRolls ?? 0).not.toBe(unit().skills!.length);
+  });
+
+  it('and says which Skills it did not count, rather than leaving it to be inferred', () => {
+    /* A model carrying a Skill against no roll taken looks identical whether the
+       reading is right or the parse failed. So the import says which. */
+    const said = r.warnings.join(' | ');
+    expect(said).toMatch(/no roll/i);
+    expect(said).toContain('Stand Firm');
+  });
+
   it('resolves an injury by name against the Trauma Table', () => {
     expect(unit().injuries).toEqual(['Severe Nerve Damage']);
   });

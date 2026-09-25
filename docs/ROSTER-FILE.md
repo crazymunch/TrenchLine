@@ -186,7 +186,10 @@ Trauma row's range. Removing a Skill refunds only what that Skill consumed, so
 removing a Patron's Skill refunds nothing and a mis-tap on a rolled one is not a
 penalty. Both importers set `advancementRolls` from this count and REPORT the
 Skills they did not count, because a correct reading and a parse failure look
-identical on the model otherwise.
+identical on the model otherwise. That report reaches the player: both land in
+the import preview's **"About this import"** list, before they press Import —
+`skillsWithNoRoll` on `ImportResult` for a NewRecruit roster, one line per model,
+and the existing `warnings` channel for a Trench Companion share.
 
 The direction of the error is the argument for counting this way: an over-offer is
 visible and the player declines it; an under-offer is silent.

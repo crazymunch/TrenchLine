@@ -10,8 +10,7 @@ import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { canBePromoted } from '../../rules/promotions';
 import { nextAdvancementAt } from '../../rules/advancement';
-import { recordedCampaignGame } from '../../rules/campaign';
-import type { Provenance } from '../../types/warband';
+import { handEnteredSource, readTwoD6Total } from '../../rules/handEntry';
 import { injuriesHeld, provenanceLabel } from '../../rules/provenance';
 import { ExperienceTrack } from '../ExperienceTrack';
 import { inFormulaGroup } from '../../rules/formulae';
@@ -289,34 +288,33 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 ;
 
   /*
-    The provenance of a hand entry, decided once.
-
-    The game comes from `recordedCampaignGame`, NOT from `campaignGameOf`
-    (review round 2 item 2): that one falls back to 1 for a Warband in no
-    campaign and for one whose campaign is not the campaign loaded, which is the
-    right Threshold to field to and an invented fact to write down. A standalone
-    Warband's fifth battle is not "game 1", so the field is simply absent and the
-    label prints no game.
-
-    A `manual-pre-app` entry carries none either way, because "before the app"
-    means there was no campaign record to place it in.
+    The provenance of a hand entry, decided in `rules/handEntry.ts` rather than
+    here (Order 44 item 1). It used to be a local closure, and the rewards modal
+    had a second copy of the same rule — so when round 2 moved this one off
+    `campaignGameOf`, the other kept writing `game: 1` for a Warband in no
+    campaign. One function, one rule, and it is a pure function of its inputs so
+    a test can drive it without a DOM.
   */
-  const handSource = (): Provenance => (beforeTheApp
-    ? {
-      kind: 'manual-pre-app',
-      ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}),
-    }
-    : {
-      kind: 'manual',
-      ...(() => {
-        const game = recordedCampaignGame({ campaignId: warbandCampaignId }, campaign);
-        return game !== undefined ? { game } : {};
-      })(),
-      ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}),
-    });
+  const handEntry = (over: { roll?: string; row?: string } = {}) => handEnteredSource({
+    beforeTheApp,
+    warband: { campaignId: warbandCampaignId },
+    campaign,
+    note: preAppNote,
+    ...over,
+  });
+
+  /* What the player typed as the 2D6 total, once, so the message and the saved
+     value cannot disagree (Order 44 item 3). */
+  const handRollRead = readTwoD6Total(handRoll);
+  const handRollError = handRollRead.ok ? null : handRollRead.why;
 
   const handleAddSkill = () => {
     if (!selectedSkillName) return;
+    /* A total the dice cannot produce is refused rather than saved (Order 44
+       item 3): `13` used to be stored and labelled "rolled 13", consume no
+       Advancement Roll, and say nothing about why. The button is disabled too;
+       this is the same refusal for anything reaching the handler another way. */
+    if (!handRollRead.ok) return;
     const skillObj = allSkillsList.find(s => s.name === selectedSkillName);
     if (skillObj) {
       addUnitSkill(warbandId, unit.id, {
@@ -338,11 +336,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
           `row` is the dropdown line they picked, which is not a die — kept apart
           from `roll` for the same reason the Trauma entry keeps them apart.
         */
-        source: {
-          ...handSource(),
-          ...(handRoll.trim() ? { roll: handRoll.trim() } : {}),
-          ...(skillObj.roll && !handRoll.trim() ? { row: String(skillObj.roll) } : {}),
-        },
+        source: handEntry(
+          handRollRead.ok && handRollRead.roll
+            ? { roll: handRollRead.roll }
+            : (skillObj.roll ? { row: String(skillObj.roll) } : {}),
+        ),
       });
       setSelectedSkillName('');
       setHandRoll('');
@@ -364,7 +362,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
           distinction is the difference between evidence of a die and evidence
           of a choice.
         */
-        source: { ...handSource(), ...(injuryObj.roll ? { row: injuryObj.roll } : {}) },
+        source: handEntry(injuryObj.roll ? { row: injuryObj.roll } : {}),
       });
       setSelectedInjuryRoll('');
     }
@@ -381,7 +379,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const handleAddInjuryOnly = () => {
     const name = selectedInjuryName.trim();
     if (!name) return;
-    addUnitInjury(warbandId, unit.id, { name, source: handSource() });
+    addUnitInjury(warbandId, unit.id, { name, source: handEntry() });
     setSelectedInjuryName('');
   };
 
@@ -651,8 +649,23 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                   onChange={(e) => setHandRoll(e.target.value)}
                   inputMode="numeric"
                   placeholder="e.g. 9 — leave empty for a Patron or Glory Item Skill"
-                  className="w-full min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+                  aria-invalid={handRollError ? true : undefined}
+                  aria-describedby={handRollError ? 'hand-roll-error' : undefined}
+                  className={[
+                    'w-full min-h-[44px] bg-theme-surface border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none',
+                    handRollError
+                      ? 'border-status-error focus:border-status-error'
+                      : 'border-theme-border focus:border-theme-primary',
+                  ].join(' ')}
                 />
+                {/* Said out loud, and the entry refused, rather than saved as a
+                    roll the dice cannot produce (Order 44 item 3). */}
+                {handRollError && (
+                  <p id="hand-roll-error" role="alert"
+                    className="text-xs sm:text-[10px] font-mono text-status-error leading-relaxed">
+                    {handRollError}
+                  </p>
+                )}
                 <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
                   Nothing here rolls dice, so every entry is marked as recorded
                   by hand rather than as a roll that did not happen. A Skill uses
@@ -696,7 +709,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
                   <button
                     onClick={handleAddSkill}
-                    disabled={!selectedSkillName}
+                    disabled={!selectedSkillName || !!handRollError}
                     className="px-4 py-2 bg-theme-primary hover:bg-theme-primary-hover text-theme-base font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
                   >
                     <Plus className="w-3.5 h-3.5" />
