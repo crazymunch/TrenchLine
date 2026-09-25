@@ -43,6 +43,22 @@ describe('robots.txt', () => {
     }
   });
 
+  it('leaves the share page crawlable, so its noindex can be read', () => {
+    /*
+      SH-1, and it is the opposite of the obvious answer (review round 1,
+      finding J). A crawler that obeys `Disallow` never fetches `/w/<token>`, so
+      it never sees the `X-Robots-Tag` header or the `robots` meta tag that tell
+      it not to index — and a disallowed URL can still be indexed from an
+      outside link, which here would list the share itself, because the URL is
+      the secret.
+
+      So the disallow is asserted ABSENT. The instruction not to index has to be
+      reachable to be obeyed.
+    */
+    expect(asList(rules().disallow)).not.toContain('/w/');
+    expect(asList(rules().disallow).some((p) => p.startsWith('/w'))).toBe(false);
+  });
+
   it('leaves the documents crawlable', () => {
     /*
       The reason these three are ALLOWED rather than merely not disallowed.

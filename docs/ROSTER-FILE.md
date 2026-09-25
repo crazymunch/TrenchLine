@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, **`rulesetId`**, **`importedCampaign`**, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, **`rulesetId`**, **`importedCampaign`**, **`rewards`**, **`injuryRecords`**, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -111,6 +111,88 @@ closed. It has to survive, because the builder's action is offered only to a
 Warband that holds the grant. Names only, exactly as the roster spells them:
 what each one MEANS is a rules question, and `golemGrant` matches the Book by
 the sentence its Exploration row prints rather than by this string.
+
+`rewards` on the **Warband** and `injuryRecords` on the **model** are both
+`durable`, and both arrived with FD-12's provenance.
+
+`rewards` is the same `Campaign Rules > Enabled` subtree that `campaignRules`
+names, with each entry's **group**, its **rules text as printed**, and how the
+Warband came by it. Two records of one subtree, written together, and neither
+derived from the other — a name the app cannot place is still a name the roster
+stated, and a reward whose text the roster did not ship is still a reward. The
+group is the load-bearing part: NewRecruit files these under `Exploration
+Rewards`, `Exploration Skills` and `Patron Selection`, so the Patron is told
+from the rewards **without the importer knowing any Patron's name**. Entries the
+roster filed under no group at all — NewRecruit's own `Unleveraged Glory`
+counter is one — are carried with no group, which is how the sheet keeps from
+presenting them as rewards the Warband earned.
+
+`injuryRecords` is parallel to `injuries` rather than a replacement for it,
+exactly as `titleRecords` is parallel to `titles`. `injuries` stays the
+authority on WHICH injuries a model carries — it is what `alreadySuffered`, the
+card, the presentation projection and every roster file ever written read — and
+this carries the D66 that caused each. `injuriesHeld` joins them.
+
+**Provenance, and what a missing one means.** Skills, scars, injuries and
+rewards each carry an optional `source`, one of six kinds: `advancement` with
+the game and the 2D6 total, `trauma` with the game and the Trauma row's roll,
+`exploration` with the game and the Location, `import`, `manual` with the game,
+or `manual-pre-app` with the player's own note.
+
+`manual` and `manual-pre-app` are two different claims. The first is "I recorded
+this by hand, in the game the campaign is on" — a player who rolled at the table
+rather than in the app. The second is "this happened before the app held this
+Warband", which carries no game because there was no campaign record then. They
+were one kind briefly, and everything hand-entered was labelled as predating an
+app that had been open all season; which of the two it is is the player's to say.
+
+A file written before any of this carries no `source` at all, and `provenanceOf`
+reads that as **`import`** — never as a roll that did not happen, and **never as
+a step**, whatever else the entry carries. A scar with a `roll` and no `source`
+is an import whose ROW was recorded, not evidence of a Trauma Step and not
+evidence of a die: the advancement sheet has always written `roll` from the table
+ROW a player picked out of a dropdown. That is rule 2 applied to a record rather
+than to a fetch. Nothing is back-filled.
+
+**A throw and a choice are different claims, and the record keeps them apart.**
+`Provenance.roll` is a die that came up — the 2D6 total the wizard rolled,
+NewRecruit's bracketed `Point Blank [9]`, a D66 of 52. `Provenance.row` is a line
+of a table somebody pointed at, which for a ranged Trauma row (`41-63`) is a range
+no die shows. A label reads "rolled 52" for the first and "row 41-63" for the
+second, never the other way round.
+
+**A Skill consumes an Advancement Roll if and only if its own record states the
+roll.** Not one per Skill — the record. `advancement.ts` has said why since it was
+written: a Patron grants Skills, so do some Glory Items and the `65 Bitter
+Lessons` Trauma result, so counting Skills cancels rolls the model earned. A
+Sultanate Azeb imported holding three Skills at 6 Experience has earned two rolls
+(the circles are at 2 and 4); recorded as having taken three, it is owed one at 7
+and offered none, and nothing on any screen says a roll went missing.
+
+What counts as stating the roll:
+
+| Record | Consumes a roll? |
+| --- | --- |
+| `advancement` | Yes — the app wrote it when the roll was taken |
+| `import` with a bracketed 2D6 total (`Point Blank [9]`) | Yes |
+| `import` with no roll (a Trench Companion Skill) | No |
+| `manual` / `manual-pre-app` with a 2D6 total the player gave | Yes |
+| `manual` / `manual-pre-app` with no total | No |
+| a `row` but no `roll` | No — a row is a choice, not a die |
+| no record at all | No |
+
+A 2D6 total means 2 to 12, which is what excludes a D66 injury (`26`) and a
+Trauma row's range. Removing a Skill refunds only what that Skill consumed, so
+removing a Patron's Skill refunds nothing and a mis-tap on a rolled one is not a
+penalty. Both importers set `advancementRolls` from this count and REPORT the
+Skills they did not count, because a correct reading and a parse failure look
+identical on the model otherwise. That report reaches the player: both land in
+the import preview's **"About this import"** list, before they press Import —
+`skillsWithNoRoll` on `ImportResult` for a NewRecruit roster, one line per model,
+and the existing `warnings` channel for a Trench Companion share.
+
+The direction of the error is the argument for counting this way: an over-offer is
+visible and the player declines it; an under-offer is silent.
 
 `rulesetId` on the **Warband** is `durable`, and it is **not** a duplicate of
 the manifest. The manifest records what the exporting BUILD had loaded; this
@@ -239,6 +321,12 @@ Lessons` Trauma result. `advancementRollsDue` subtracts it from the thresholds
 the model's Experience has passed — so a restore that dropped it would hand the
 model every roll it had already made, a second time.
 
+This paragraph was right before the app was: a release set the field to
+`skills.length`, which is exactly the shortcut it warns against here, and the
+rule that replaced it is the table under **Provenance** above. Any writer of a
+Skill — the wizard, both importers, hand entry — counts the Skills whose records
+state a 2D6 total, and nothing counts the length of the list.
+
 **`advancements`** is a legacy free-text list, and nothing writes to it any
 more. The post-battle wizard used to put the label of whichever of eight
 buttons the player pressed here — and four of those buttons were characteristic
@@ -246,10 +334,13 @@ advances (`+1 Melee`, `+1 Ranged`, `+1 Armour`, `+1" Move`) that Trench Crusade
 does not have, while three of the four named Skills do not exist. Existing
 rosters therefore carry strings for things that never happened.
 
-It stays `durable`, and it is still displayed. Those strings are the player's
-own record of what they did at their table, and clearing them on import or
-export would be a data change rather than a fix. New progression goes to
-`skills`.
+It stays `durable`, and it is still displayed **to the player whose roster it
+is**. Those strings are the player's own record of what they did at their table,
+and clearing them on import or export would be a data change rather than a fix.
+They are free text somebody typed, so the public share page omits them along with
+the Warband's lore, its notes and a provenance `note` — see
+[`DATABASE.md`](DATABASE.md) on `shareToken`, and `rosterSheet`'s `audience`. New
+progression goes to `skills`.
 
 ## `promotionMisses` — a counter the Warband carries, not the game
 
@@ -420,9 +511,32 @@ Both doors say so rather than doing it quietly. The model count and the Ducat
 total both change, and an import that silently revalues a roster is worse than
 one that explains itself.
 
+## `shareToken` — not in the file, and not on the type
+
+SH-1 puts a warband's Roster Sheet at `/w/<token>`, behind a nullable unique
+`shareToken` column on the synced warband row. **It is not a roster field**, and
+that is a decision rather than an omission:
+
+- It is a **capability granted by an account**, not a fact about the roster. The
+  same warband exported to a file and imported by somebody else is the same
+  roster; it is emphatically not the same share.
+- A roster file is handed to other people. A token in one would let whoever
+  received it read the owner's live cloud copy — including every later change —
+  with no session and no way for the owner to know.
+- The sync must never merge it. `mergeWarbands` compares `editedAt` and takes
+  the newer side's fields wholesale, so a token on the type would be resurrected
+  by a stale device after the owner had stopped sharing.
+
+So it is **absent from `Warband`** in `src/types/warband.ts`, which makes all
+three impossible by construction rather than by remembering: the `Record<keyof
+Warband, Disposition>` inventory cannot classify a field the type does not have,
+and nothing that serialises a roster can reach it. The builder asks the server
+for the share state (`GET /api/warbands/[id]/share`) rather than reading it off
+the roster. See [`DATABASE.md`](DATABASE.md) for the column and the migration.
+
 ## Not in this format
 
-Campaign export (several warbands, a season's results), match state, and
-NewRecruit/BattleScribe `.ros` output. The last is a separate compatibility
+Campaign export (several warbands, a season's results), match state, the share
+token above, and NewRecruit/BattleScribe `.ros` output. The last is a separate compatibility
 problem gated on a spike — see the [export brief](EXPORT-ARCHITECTURE-BRIEF.md)
 §3.2 and [E3/E4](EXPORT-CODEX-REVIEW.md).

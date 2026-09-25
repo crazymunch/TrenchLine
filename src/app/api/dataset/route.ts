@@ -17,26 +17,14 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { RULESET_IDS, DEFAULT_RULESET_ID } from '@/rules/rulesets';
-
-/** Loaded once per ruleset per server process. */
-const cache = new Map<string, unknown>();
-
-async function load(id: string): Promise<unknown> {
-  const hit = cache.get(id);
-  if (hit) return hit;
-
-  // The switch is deliberate: a template literal here would let a request
-  // string reach the module resolver, and would defeat static analysis of what
-  // this route can load.
-  const mod =
-    id === 'trenchline' ? await import('@/data/generated/trenchline.generated')
-    : id === 'github-latest' ? await import('@/data/generated/github-latest.generated')
-    : null;
-
-  if (!mod) return null;
-  cache.set(id, mod.DATASET);
-  return mod.DATASET;
-}
+/*
+  The dynamic import, the per-process cache and the deliberate switch moved to
+  `lib/serverDataset.ts` when SH-1's share page began projecting the sheet on
+  the server: that page needs the same read, and two copies of a loader whose
+  whole point is that a request string must never reach the module resolver is
+  one copy too many.
+*/
+import { loadDataset } from '@/lib/serverDataset';
 
 export async function GET(req: NextRequest) {
   const asked = new URL(req.url).searchParams.get('ruleset') ?? DEFAULT_RULESET_ID;
@@ -50,7 +38,7 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const dataset = await load(asked);
+  const dataset = await loadDataset(asked);
   if (!dataset) {
     return NextResponse.json(
       { error: `Ruleset '${asked}' is declared but its generated data is missing. ` +

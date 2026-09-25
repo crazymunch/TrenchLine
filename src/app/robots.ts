@@ -39,6 +39,21 @@ export default function robots(): MetadataRoute.Robots {
         '/campaign',
         '/directory',
         '/customizer',
+        /*
+          `/w/` is deliberately NOT here, and that is the opposite of the
+          obvious answer (review round 1, finding J).
+
+          A disallow and a `noindex` work against each other. A crawler that
+          obeys `Disallow` never fetches the page, so it never sees the
+          `X-Robots-Tag` header or the `robots` meta tag telling it not to index
+          — and a disallowed URL can still be indexed from a link somebody
+          posted, because indexing a URL does not require fetching it. Here the
+          URL **is** the secret: an indexed `/w/<token>` is the share, listed.
+
+          So the page is left crawlable precisely so that the instruction not to
+          index it can be read. The header and the metadata are the mechanism;
+          this file would have blocked them.
+        */
       ],
     },
     sitemap: `${siteUrl()}/sitemap.xml`,

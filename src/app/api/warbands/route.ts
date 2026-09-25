@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { clientMetadata, metadataOf } from '@/lib/api/warbandMetadata';
+/*
+  The full-roster read lives in its own module now, because SH-1's share page
+  performs the same one: `/w/<token>` must reconstruct the client-owned fields
+  that ride in `notes` exactly as the sync does, and a second copy of that
+  mapping is how six fields were silently dropped once already.
+*/
 import {
-  clientMetadata,
-  clientFieldsOf,
-  metadataOf,
-} from '@/lib/api/warbandMetadata';
+  WARBAND_OWN_INCLUDE, warbandFromRow, type WarbandRow,
+} from '@/lib/api/warbandLoader';
 import { Prisma, WarbandVisibility } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { abort, badRequest, forbidden, handle } from '@/lib/api/http';
@@ -62,62 +67,6 @@ function toPublic(wb: {
     modelCount: Array.isArray(wb.units) ? wb.units.length : 0,
     motto: typeof metadata.motto === 'string' ? metadata.motto : undefined,
     createdAt: wb.createdAt.toISOString(),
-  };
-}
-
-/**
- * The row shape the owner query returns, for `toOwn`.
- *
- * Named rather than `Record<string, any>`: the `any` meant nothing checked
- * that the fields read below existed, in the one function whose job is to
- * hand a player their whole roster back.
- */
-interface OwnRow {
-  id: string;
-  name: string;
-  factionId: string;
-  ducatLimit: number;
-  treasuryDucats: number;
-  gloryPoints: number;
-  units: unknown;
-  armoryStash: unknown;
-  visibility: string;
-  notes: string | null;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
-  user: { id: string; name: string | null } | null;
-  campaignMembers: unknown[];
-}
-
-/** The full roster, for its owner. Unchanged in shape — this is a restore. */
-function toOwn(wb: OwnRow) {
-  const metadata = metadataOf(wb.notes);
-  return {
-    id: wb.id,
-    name: wb.name,
-    factionId: wb.factionId,
-    ducatLimit: wb.ducatLimit,
-    treasuryDucats: wb.treasuryDucats,
-    gloryPoints: wb.gloryPoints,
-    units: wb.units,
-    armoryStash: wb.armoryStash,
-    visibility: wb.visibility,
-    notes: (metadata.rawNotes as string) ?? (wb.notes?.startsWith('{') ? '' : wb.notes ?? ''),
-    /*
-      Every client-owned field, from the one list. `editedAt` is among them —
-      the sync merge compares it and nothing else; see services/sync.ts for why
-      `updatedAt` could not do that job.
-
-      Deliberately NOT spread into `toPublic`. That is the directory's
-      allowlist and it stays as narrow as it is.
-    */
-    ...clientFieldsOf(metadata),
-    creatorId: wb.userId,
-    creatorName: wb.user?.name || 'Crusade Commander',
-    campaignMembers: wb.campaignMembers,
-    createdAt: wb.createdAt.toISOString(),
-    updatedAt: wb.updatedAt.toISOString(),
   };
 }
 
@@ -180,19 +129,13 @@ export async function GET(req: NextRequest) {
 
     const warbands = await prisma.warband.findMany({
       where: { userId: actor.userId },
-      include: {
-        user: { select: { id: true, name: true } },
-        campaignMembers: {
-          select: {
-            campaignId: true, glory: true, rating: true,
-            wins: true, losses: true, draws: true, treasury: true,
-          },
-        },
-      },
+      include: WARBAND_OWN_INCLUDE,
       orderBy: { updatedAt: 'desc' },
     });
 
-    return NextResponse.json({ warbands: warbands.map(toOwn) });
+    return NextResponse.json({
+      warbands: (warbands as unknown as WarbandRow[]).map(warbandFromRow),
+    });
   });
 }
 

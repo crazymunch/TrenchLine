@@ -27,6 +27,7 @@
  */
 import type { Dataset, TraumaProcedure, TraumaRow } from '../types/catalogue';
 import type { ActiveUnit } from '../types/warband';
+import type { CasualtyRecord } from '../types/campaign';
 
 /**
  * The procedure, or `null` on a dataset built before it was parsed.
@@ -369,3 +370,38 @@ export const xpBarringInjuries = (dataset: Dataset | null | undefined): string[]
     .filter((row) => barsExperience(row.description))
     .map((row) => row.name)
     .filter(Boolean);
+
+/**
+ * What a casualty's record says about the die and the row (Order 44 item 4b).
+ *
+ * Built here rather than inline in the post-battle wizard, because the wizard is
+ * a component and the repo has no DOM test environment — round 2's version of
+ * this was six lines of JSX, and the only thing a test could reach was a
+ * hand-built `CasualtyRecord`, which proves the STORE reads it and says nothing
+ * about whether the wizard writes it. Reverting the fix left every test green.
+ *
+ * The rule it encodes, from round 2 item 3:
+ *
+ * - **`roll` is the D66 the player threw.** Round 1 put the matched ROW's range
+ *   here — `41-63`, which is reached by more than one total — so a sheet read
+ *   "rolled 41-63" for a die that came up 52, while the wizard was holding the 52
+ *   in its own state all along.
+ * - **`row` is the line the result landed on**, which is what the app can say
+ *   when nobody threw anything: a result picked out of a dropdown reads
+ *   "row 41-63" and never as a throw.
+ *
+ * Absent means not recorded, either way. A result with no throw behind it carries
+ * no `roll`, and a row this build could not identify carries no `row`.
+ */
+export function traumaRecords(
+  write: Pick<TraumaWrite, 'injury' | 'scar' | 'row'>,
+  /** The D66 the player threw, where they threw one. */
+  thrown?: number,
+): NonNullable<CasualtyRecord['records']> {
+  return {
+    injury: write.injury,
+    ...(write.scar ? { scar: write.scar } : {}),
+    ...(thrown !== undefined ? { roll: String(thrown) } : {}),
+    ...(write.row?.roll ? { row: String(write.row.roll) } : {}),
+  };
+}

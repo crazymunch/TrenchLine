@@ -89,6 +89,11 @@ export const WARBAND_FIELDS: Record<keyof Warband, Disposition> = {
   ledger: 'durable',
   explorationDiscoveries: 'durable',
   explorationEffects: 'durable',
+  /* The Exploration rewards, the Patron and the other standing grants, with
+     each one's rule text and provenance (FD-12). Durable for the same reason
+     `campaignRules` is — it is what the Warband EARNED — and the provenance is
+     the half a name cannot carry. */
+  rewards: 'durable',
   ducatLimit: 'durable',
   treasuryDucats: 'durable',
   /* Promotion Dice rolled in a row without a Promotion. Durable, and it reads
@@ -157,6 +162,11 @@ export const UNIT_FIELDS: Record<keyof ActiveUnit, Disposition> = {
      it has already made, a second time. */
   advancementRolls: 'durable',
   injuries: 'durable',
+  /* How each injury was got. Durable: it cannot be reconstructed once the
+     roster leaves the device, and `provenanceOf` reads a missing record as an
+     import rather than as a roll — so dropping it would not lose the injury,
+     it would lose the truth about the injury. */
+  injuryRecords: 'durable',
   scars: 'durable',
   /* Sitting the next game out. DURABLE, and the call is not obvious: it
      reads like battle state, and it is a decision about a game not yet

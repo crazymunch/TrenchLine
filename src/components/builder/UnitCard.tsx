@@ -21,6 +21,7 @@ import { swappedProfile } from '../../rules/statlineOptions';
 import { shownAbilitiesFor } from '../../rules/shownAbilities';
 import { variantById } from '../../rules/variants';
 import { useDataset } from '../../rules/useDataset';
+import { ExperienceTrack } from '../ExperienceTrack';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { roleStyle, ROLE_STYLES } from '../ui/unitRole';
 import { KeywordText, KeywordChip } from '../ui/KeywordText';
@@ -570,6 +571,17 @@ export const UnitCard: React.FC<UnitCardProps> = ({ unit, warbandId, collapseAll
               </span>
             )}
           </div>
+
+          {/*
+            The Experience track, drawn the way the book draws it (FD-12 item 1).
+
+            The number beside the name says how much; the track says how close
+            the model is to its next Advancement Roll and where its cap stops it,
+            which is the thing a player is actually looking for in the Promotion
+            Step. Same component as the wizard's Promotions step and the Roster
+            Sheet.
+          */}
+          <ExperienceTrack dataset={cardDataset} unit={unit} />
 
           {/* Active Honorific & Earned Titles Badges */}
           {activeTitlesList.length > 0 && (

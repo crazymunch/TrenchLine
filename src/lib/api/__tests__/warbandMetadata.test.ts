@@ -37,8 +37,44 @@ describe('a warband round trip', () => {
       forceMode: 'campaign',
       ledger: { ducats: 120 },
       explorationDiscoveries: ['Rudolf’s Folly'],
+      /* The four this pull request added, each for a bug of exactly the same
+         shape as the six above. */
+      campaignRules: ['Book of Golems'],
+      rewards: [{ name: 'Ransacked Alchemist Workshop' }],
+      rulesetId: 'trenchline',
+      importedCampaign: { round: 3 },
     };
     expect(roundTrip(sent)).toEqual(sent);
+  });
+
+  /*
+    Round 2 item 10: the mechanism test below derives its expectation from
+    `CLIENT_FIELDS`, so it proves the two directions agree — and says nothing
+    about MEMBERSHIP. Deleting `rulesetId` from that list would leave it green
+    while the field silently stopped surviving a sync, which is the original bug
+    returning by the one route the guard does not watch.
+
+    So the names are written out. Each one on this list is here because losing it
+    broke something real:
+
+    - `variantId`, `allowThirdParty`, `campaignId`, `forceMode`, `ledger`,
+      `explorationDiscoveries` — the six the round trip destroyed.
+    - `campaignRules` — durable in the roster FILE since GOLEM-1 and never in the
+      sync, so a Warband that had earned the Book of Golems lost it the first
+      time the device pulled its own roster back down.
+    - `rewards` — the same, for everything FD-12 records a Warband as holding.
+    - `rulesetId` — RV-1. Without it a shared roster is read under the server's
+      default rather than the owner's ruleset, and the footer cannot say which.
+    - `importedCampaign` — what another app's record stated about its campaign.
+  */
+  it('names every field that must survive a sync, rather than only checking the mechanism', () => {
+    for (const field of [
+      'variantId', 'allowThirdParty', 'campaignId', 'forceMode', 'ledger',
+      'explorationDiscoveries', 'campaignRules', 'rewards', 'rulesetId',
+      'importedCampaign',
+    ]) {
+      expect(CLIENT_FIELDS, `${field} is not client-owned any more`).toContain(field);
+    }
   });
 
   /*

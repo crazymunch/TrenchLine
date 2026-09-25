@@ -181,6 +181,10 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         */
         ...(founding?.rulesetId ? { rulesetId: founding.rulesetId } : {}),
         allowThirdParty: founding?.allowThirdParty ?? false,
+        /* The Patron the muster picked (FD-15). Absent rather than '' where
+           none was chosen: `patronMissing` reads it, and an empty string and a
+           missing field must mean the same thing there. */
+        ...(founding?.patron ? { patron: founding.patron } : {}),
         /*
           The ledger opens empty and the founding booking below fills it.
 

@@ -110,7 +110,38 @@ const nextConfig = {
     ignoreBuildErrors: false,
   },
   async headers() {
-    return [{ source: '/:path*', headers: securityHeaders }];
+    return [
+      { source: '/:path*', headers: securityHeaders },
+      /*
+        SH-1: the public share page is not for search engines.
+
+        > `/w/<token>` renders the Roster Sheet from FD-12 read only, with no
+        > builder controls, no session required, and a `noindex` header.
+
+        A header rather than only a `<meta>` tag, and the reason is what the
+        page is: a capability URL. A crawler that reached one would put a
+        roster somebody shared with four friends into a search index that
+        outlives the share — and a `meta` tag in the HTML only helps for a
+        crawler that renders the HTML. `X-Robots-Tag` also covers the
+        request that never becomes a rendered page.
+
+        The page sets `robots: noindex` in its metadata as well. Two
+        mechanisms for one rule, because the cost of the redundancy is a
+        line of config and the cost of missing it is somebody else's roster
+        on Google.
+
+        A third — `Disallow: /w/` in robots.txt — was tried and REMOVED, and
+        the reason is worth keeping: a disallow works against a noindex. A
+        crawler that obeys it never fetches the page, so it never reads
+        either of these, and a disallowed URL can still be indexed from an
+        outside link. Here the URL is the secret, so that is the one outcome
+        to avoid. See the note in `src/app/robots.ts`.
+      */
+      {
+        source: '/w/:token*',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow, noarchive' }],
+      },
+    ];
   },
 };
 
