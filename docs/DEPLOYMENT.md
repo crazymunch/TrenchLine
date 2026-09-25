@@ -138,6 +138,16 @@ counting the same requests twice with different windows.
 | Password reset, both halves | `POST /api/auth/reset` | 5 / hour |
 | Invite preview | `GET /api/campaigns?code=` | 20 / 15 min |
 | Anonymous bug report | `POST /api/bug-reports` | 10 / hour |
+| Trench Companion import | `POST /api/import/trench-companion` | 20 / 15 min |
+
+**The Trench Companion row is the one that is not only about us.** That route
+makes a request to *somebody else's server* on ours, so an unenforced limit is
+a limit on their site as well as on this one: until an edge rule exists, the
+route can be used to walk their warband ids one at a time, from our address,
+at whatever rate a caller likes. It reads one warband, on a user's action, and
+nothing about it should be able to become a crawl of their site — see
+[`TRENCH-COMPANION-IMPORT.md`](TRENCH-COMPANION-IMPORT.md) for the rest of the
+etiquette.
 
 ### Two rules the keying follows
 

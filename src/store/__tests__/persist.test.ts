@@ -174,6 +174,38 @@ describe('the persistence choke point is not bypassed', () => {
     expect(offenders, 'slices writing warbands outside persistWarbands').toEqual([]);
   });
 
+  /*
+    The same choke point, one layer out.
+
+    `ImportWarbandModal` wrote its warband with `useStore.setState`, which puts
+    it in memory and nowhere else: `persistWarbands` is what saves to the
+    device and queues the push, so an imported roster survived exactly until
+    the tab was reloaded. Found while wiring the Trench Companion import
+    (CI-1), which lands in the same place.
+
+    A scan of what is committed, deliberately: the defect was a component
+    reaching past the store's own doors, and no unit test of the store could
+    have seen it.
+  */
+  it('leaves no component writing warbands with useStore.setState', () => {
+    const root = path.resolve(__dirname, '../../components');
+    const walk = (at: string): string[] => fs.readdirSync(at, { withFileTypes: true })
+      .flatMap((e) => (e.isDirectory()
+        ? walk(path.join(at, e.name))
+        : [path.join(at, e.name)].filter((f) => f.endsWith('.tsx') || f.endsWith('.ts'))));
+
+    const files = walk(root);
+    expect(files.length, 'the component walk found nothing').toBeGreaterThan(20);
+
+    const offenders = files.filter((f) => {
+      const src = fs.readFileSync(f, 'utf8');
+      const calls = src.match(/useStore\.setState\([\s\S]{0,400}?warbands\s*:/g) ?? [];
+      return calls.length > 0;
+    }).map((f) => path.relative(root, f));
+
+    expect(offenders, 'components writing warbands outside the store').toEqual([]);
+  });
+
   it('leaves no slice pushing to the cloud from a mutation', () => {
     const offenders: string[] = [];
     for (const [file, src] of Object.entries(slices)) {

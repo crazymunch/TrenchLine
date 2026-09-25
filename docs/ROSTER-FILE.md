@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, **`rulesetId`**, **`importedCampaign`**, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -111,6 +111,24 @@ closed. It has to survive, because the builder's action is offered only to a
 Warband that holds the grant. Names only, exactly as the roster spells them:
 what each one MEANS is a rules question, and `golemGrant` matches the Book by
 the sentence its Exploration row prints rather than by this string.
+
+`rulesetId` on the **Warband** is `durable`, and it is **not** a duplicate of
+the manifest. The manifest records what the exporting BUILD had loaded; this
+records what the WARBAND was built under, and a file exported from a device set
+to the other ruleset would otherwise lose the difference the conversion report
+exists to show (RV-1, [`RULESET-MODEL.md`](RULESET-MODEL.md) §8a). Absent means
+*not recorded*, never *the default*.
+
+`importedCampaign` on the **Warband** is `durable`. It is the campaign round
+and the Campaign Victory Points total that another app's record stated when the
+warband was imported from it (CI-1,
+[`TRENCH-COMPANION-IMPORT.md`](TRENCH-COMPANION-IMPORT.md)). It is kept as a
+fact about where the warband came from rather than folded into our own numbers,
+because our Campaign Victory Points are *derived* from the win/loss/draw record
+a campaign keeps and never stored — so writing an imported total into them
+would mean either inventing a results record to justify it or having two
+answers to the same question. A file that dropped it would silently lose the
+round a player is on.
 
 `isDead` is `durable` and the distinction matters, because it reads like battle
 state and is not. A model removed by the Trauma Step is gone from the campaign;

@@ -339,6 +339,7 @@ export type LedgerReason =
   | 'admin-grant'     // a campaign admin's catch-up allotment
   | 'admin-adjust'    // any other admin correction
   | 'reinforcements'  // the Strongbox zeroed by Calling for Reinforcements
+  | 'conversion'      // refunded because the target ruleset has no such entry
   | 'reconciliation'; // the opening balance, where no history was recorded
 
 export interface LedgerEntry {

@@ -364,6 +364,55 @@ export interface Warband {
    */
   earnedRecruitment?: EarnedClaim[];
   campaignId?: string;
+  /**
+   * Which ruleset this warband is built and checked against.
+   *
+   * RV-1. The app's ruleset was a per-BROWSER setting in `localStorage` and
+   * nothing else, so a warband built under TrenchLine Rules and opened on a
+   * device set to Latest GitHub was read against the other one silently — a
+   * Brazen Bull 15 Ducats cheaper with no explanation, which
+   * `docs/RULESET-MODEL.md` §8 says must never happen. The warband now
+   * carries its own answer, which is what lets the builder notice the
+   * mismatch and offer either to switch the app or to convert the warband.
+   *
+   * Optional, because every warband saved before this has none — and absent
+   * means "not recorded", NOT "the default". A warband with no recorded
+   * ruleset shows no mismatch bar, because there is no mismatch to show: we
+   * do not know what it was built against, and guessing would put a
+   * conversion in front of a player who needs none.
+   */
+  rulesetId?: string;
+  /**
+   * Campaign state carried in from another app's record, as that record
+   * stated it.
+   *
+   * CI-1. Trench Companion's share page carries a campaign round and a
+   * Campaign Victory Points total. Neither has a home among our own fields
+   * and that is deliberate: our CVP is DERIVED from the win/loss/draw record
+   * a campaign keeps (`campaignVictoryPoints`), never stored, so writing an
+   * imported total into it would mean either inventing a results record to
+   * justify the number or having two answers to the same question.
+   *
+   * So it is kept as what it is — a fact about somebody else's record — and
+   * applied to a campaign only when the warband joins one, at which point a
+   * person decides what it means. Absent on every warband that was not
+   * imported from such a record.
+   */
+  importedCampaign?: {
+    /** Which app the state came from. One today; named so it stays honest. */
+    source: 'trench-companion';
+    /**
+     * Their campaign round at the moment of the import.
+     *
+     * Optional, and absent where their record did not state one. It used to
+     * default to 1, which put a fact about somebody's campaign on the record
+     * that their record never asserted — and a player reading it here would
+     * take it for their own.
+     */
+    round?: number;
+    /** Their Campaign Victory Points total. Not ours, not derived, not defaulted. */
+    victoryPoints?: number;
+  };
   creatorId?: string;
   creatorName?: string;
   /**
