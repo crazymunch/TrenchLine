@@ -49,6 +49,16 @@ export const BUCKETS = {
   invite: { limit: 20, windowMs: 15 * 60_000 },
   /** Anonymous bug reports. */
   bugReport: { limit: 10, windowMs: 60 * 60_000 },
+  /**
+   * Importing a Trench Companion share link.
+   *
+   * This route makes a request to somebody else's server on ours, so the
+   * limit is theirs as much as it is a defence of ours: the import reads one
+   * warband, when a player asks for it, and nothing about it should be able
+   * to be turned into a crawl of their site. Twenty in a quarter of an hour
+   * is more than a person importing their own warbands will ever need.
+   */
+  companionImport: { limit: 20, windowMs: 15 * 60_000 },
 } as const satisfies Record<string, Bucket>;
 
 export type BucketName = keyof typeof BUCKETS;

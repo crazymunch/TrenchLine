@@ -14,9 +14,11 @@ import type { InitialState } from '../init';
 import { persistWarbands, mergeWarbands } from '../persist';
 import { outbox } from '../../services/sync';
 import { book, strongbox } from '../../rules/ledger';
+import { campaignGameOf } from '../../rules/campaign';
+import { applyConversion } from '../../rules/convert';
 import { formatCost, isZero } from '../../rules/costs';
 
-export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'setWarbandAllowThirdParty' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
+export type RosterSlice = Pick<AppState, 'allCloudWarbands' | 'fetchAllCloudWarbands' | 'syncUserWarbandsWithCloud' | 'sync' | 'warbands' | 'activeWarbandId' | 'getActiveWarband' | 'createWarband' | 'importWarband' | 'saveWarbandSnapshot' | 'restoreWarbandSnapshot' | 'enrollWarbandInCampaign' | 'removeWarbandFromCampaign' | 'deleteWarband' | 'cloneWarband' | 'setActiveWarbandId' | 'updateWarbandNotes' | 'updateWarbandDucatLimit' | 'updateWarbandTreasury' | 'updateWarbandGlory' | 'updateWarbandVariant' | 'convertWarbandRuleset' | 'setWarbandAllowThirdParty' | 'updateWarbandLore' | 'updateWarbandChronicleLog' | 'addWarbandChronicleEntry' | 'saveUnitAsFavourite' | 'removeUnitFromFavourites' | 'addUnitFromFavourite' | 'buyToStash' | 'sellFromStash' | 'assignStashToUnit'>;
 
 export const createRosterSlice = (init: InitialState): StateCreator<AppState, [], [], RosterSlice> =>
   (set, get) => ({
@@ -163,6 +165,21 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
         factionId,
         forceMode,
         variantId: founding?.variantId,
+        /*
+          The ruleset this Warband is built and checked against (RV-1).
+
+          Recorded at the muster and never rewritten by the app's own
+          setting: the setting is per browser, so a Warband built here under
+          TrenchLine Rules and opened on a phone set to Latest GitHub was read
+          against the other ruleset with nothing said — which
+          `docs/RULESET-MODEL.md` §8 forbids for the switcher and which was
+          happening anyway, one device at a time. Moving a Warband between
+          rulesets is `rules/convert.ts`, and it is a decision a player makes.
+
+          Absent where the caller does not say, and absent means "not
+          recorded", never "the default" — see `Warband.rulesetId`.
+        */
+        ...(founding?.rulesetId ? { rulesetId: founding.rulesetId } : {}),
         allowThirdParty: founding?.allowThirdParty ?? false,
         /* The Patron the muster picked (FD-15). Absent rather than '' where
            none was chosen: `patronMissing` reads it, and an empty string and a
@@ -567,6 +584,28 @@ export const createRosterSlice = (init: InitialState): StateCreator<AppState, []
           };
           return updatedWb;
         });
+        updated = persistWarbands(updated, state.warbands);
+        return { warbands: updated };
+      });
+    },
+
+    /**
+     * Move a warband to another ruleset, on a plan the player has confirmed.
+     *
+     * RV-1. The decision is `rules/convert.ts`' — which entries survive, what
+     * is refunded, what goes to the Arsenal — and this does the one thing a
+     * rules module must not: it writes the result to the store and persists
+     * it. The plan is passed in rather than computed here because the player
+     * confirmed THAT plan, and recomputing it at the moment of the click
+     * would be a different answer if the dataset finished loading in between.
+     */
+    convertWarbandRuleset: (warbandId, plan, dataset) => {
+      set((state) => {
+        const target = state.warbands.find((w) => w.id === warbandId);
+        if (!target) return {};
+        const game = campaignGameOf(target, state.campaign);
+        let updated = state.warbands.map((w) =>
+          (w.id === warbandId ? applyConversion(w, plan, dataset, game) : w));
         updated = persistWarbands(updated, state.warbands);
         return { warbands: updated };
       });

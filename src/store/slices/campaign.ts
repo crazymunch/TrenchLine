@@ -389,11 +389,28 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
       const activeWb = state.getActiveWarband();
       if (!activeWb) return;
 
+      /*
+        The campaign's game, resolved once and used by everything this step
+        writes: the provenance on each Skill, injury and scar (FD-12 item 2),
+        the snapshot's `campaignGame`, and the ledger entries that `reversible`
+        releases as a turn.
+
+        `campaignGameOf` is the one derivation of it — already used to resolve
+        the Threshold — and a second rule here would be a second answer.
+      */
+      const postBattleGame = campaignGameOf(activeWb, get().campaign);
+
       const updatedUnits = activeWb.units.map((u) => {
         const cas = casualties.find((c) => c.unitId === u.id);
         const learned = skillsLearned.filter((a) => a.unitId === u.id);
 
         const newInjuries = [...u.injuries];
+        /*
+          The same injuries with where each came from (FD-12 item 2). Written
+          alongside `injuries`, never instead of it — `injuries` is what every
+          other reader and every roster file ever written uses.
+        */
+        const newInjuryRecords = [...(u.injuryRecords ?? [])];
         /* Battle Scars, which nothing in this slice used to write at all — so
            `unfitForDuty` counted only what a player had typed in by hand, and
            retirement at the third scar was unreachable through play. */
@@ -419,9 +436,30 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
             old behaviour — write the injury, add no scar — rather than being
             reinterpreted now against a table that has since changed.
           */
+          /*
+            Where it came from: the Trauma Step of this game, and the D66 the
+            wizard rolled (FD-12 item 2, and review round 1 finding C — nothing
+            in the app wrote a provenance at all, so a scar the Trauma Step
+            produced read as an import).
+
+            The row's roll is absent on a match recorded before the wizard
+            carried it, and on a row the build could not identify; the kind and
+            the game are still true, and a roll that was not recorded stays
+            unrecorded rather than being invented.
+          */
+          const traumaSource = {
+            kind: 'trauma' as const,
+            game: postBattleGame,
+            ...(cas.records?.roll ? { roll: cas.records.roll } : {}),
+          };
           const writesInjury = cas.records ? cas.records.injury : !cas.fullRecovery;
-          if (writesInjury) newInjuries.push(cas.outcome);
-          if (cas.records?.scar) newScars.push(cas.records.scar);
+          if (writesInjury) {
+            newInjuries.push(cas.outcome);
+            newInjuryRecords.push({ name: cas.outcome, source: traumaSource });
+          }
+          if (cas.records?.scar) {
+            newScars.push({ ...cas.records.scar, source: traumaSource });
+          }
           if (cas.isDead) isDead = true;
 
           const norm = cas.outcome.toLowerCase();
@@ -533,6 +571,14 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
                against the table it came from. */
             roll: String(l.roll),
             effect: l.description,
+            /*
+              And where it came from: the Advancement Roll in THIS game, with
+              the 2D6 total (FD-12 item 2). Without it a Skill rolled in the app
+              read "Imported · rolled 9" — the one kind of entry the app knows
+              the most about, reported as the one it knows the least about
+              (review round 1, finding C).
+            */
+            source: { kind: 'advancement', game: postBattleGame, roll: String(l.roll) },
           });
         }
 
@@ -580,6 +626,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         return {
           ...u,
           injuries: newInjuries,
+          ...(newInjuryRecords.length ? { injuryRecords: newInjuryRecords } : {}),
           scars: newScars,
           isDead: offer ? false : isDead,
           ...(offer
@@ -734,11 +781,9 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         `book` ignores a movement of nothing, so a quiet battle — no loot, no
         Glory, no ransom — books nothing at all rather than three empty rows.
       */
-      /* The campaign's game, not the Warband's own count of games played —
-         `campaignGameOf` is the one derivation of that, already used to
-         resolve the Threshold, and a second rule here would be a second
-         answer. It ties this turn's entries together for `reversible`. */
-      const gameNumber = campaignGameOf(activeWb, get().campaign);
+      /* Resolved at the top of this step — see `postBattleGame`. It ties this
+         turn's entries together for `reversible`. */
+      const gameNumber = postBattleGame;
 
       const moneyAfter = bookAll(activeWb, [
         { reason: 'exploration', ducats: ducatsGained, glory: gloryGained,
@@ -817,6 +862,38 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         ? [...(activeWb.explorationEffects ?? []), ...exploration.effects]
         : activeWb.explorationEffects;
 
+      /*
+        And the Location itself, onto the Warband's record of what it holds
+        (FD-12 item 2, and review round 1 finding C).
+
+        `explorationDiscoveries` is the list the once-per-campaign rule is
+        checked against — names only, and that is all that rule needs.
+        `rewards` is what the Roster Sheet prints: the rule as the book states
+        it, and the Exploration result in THIS game that granted it. Without
+        this, a reward the app watched a player earn appeared on the sheet as
+        an import, or not at all.
+
+        Only where the Location is new to this Warband. A Pillaged result is
+        one it already holds, and a second record of it would say it was found
+        twice.
+      */
+      const newFind = exploration?.discovered
+        && !discoveredBefore.some((n) => n.toLowerCase() === exploration.discovered!.toLowerCase())
+        ? exploration.discovered
+        : null;
+      const rewardsAfter = newFind
+        ? [...(activeWb.rewards ?? []), {
+          name: newFind,
+          group: 'Exploration Rewards',
+          ...(exploration?.text ? { text: exploration.text } : {}),
+          source: {
+            kind: 'exploration' as const,
+            game: postBattleGame,
+            location: newFind,
+          },
+        }]
+        : activeWb.rewards;
+
       if (exploration?.discovered) {
         changesSummary.push(`Exploration: discovered ${exploration.discovered}.`);
       }
@@ -831,6 +908,7 @@ export const createCampaignSlice = (init: InitialState): StateCreator<AppState, 
         ...activeWb,
         explorationDiscoveries: discoveries,
         ...(effectsAfter ? { explorationEffects: effectsAfter } : {}),
+        ...(rewardsAfter ? { rewards: rewardsAfter } : {}),
         /* Totals and ledger both come from the booking, so they agree by
            construction rather than by two expressions matching. */
         ledger: moneyFinal.ledger,

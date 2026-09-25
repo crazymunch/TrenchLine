@@ -197,3 +197,27 @@ test.describe('reaching the sheet from the builder', () => {
     await expect(dialog.getByRole('button', { name: /copy the link/i })).toHaveCount(0);
   });
 });
+
+test.describe('review round 1: the share page sends nothing private', () => {
+  /*
+    Finding A, asserted where it actually matters: in the bytes the browser
+    receives. The sheet is projected on the SERVER, so a `'use client'`
+    component's serialised props carry the projection and not the roster.
+
+    This spec has no database, so the token resolves to nothing and the page
+    404s — which is still the right place to check the OTHER half of the rule:
+    a 404 must carry no roster either, and the unit tests
+    (`rosterSheet.test.ts`) hold the projection's contents against a fixture
+    stuffed with secrets.
+  */
+  test('a 404 share page carries no roster in its HTML', async ({ page }) => {
+    const res = await page.goto('/w/some-token-that-resolves-to-nothing');
+    expect(res?.status()).toBe(404);
+
+    const html = await page.content();
+    for (const shape of ['chronicleLog', 'campaignMembers', 'creatorId',
+      'armoryStash', 'byUserId']) {
+      expect(html.includes(shape), `the 404 page mentions ${shape}`).toBe(false);
+    }
+  });
+});

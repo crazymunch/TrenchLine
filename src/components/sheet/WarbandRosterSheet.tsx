@@ -8,11 +8,14 @@
  * three pages of `data-sources/rulebook/warband-roster-sheet.pdf`, filled in
  * from the roster and the campaign.
  *
- * **It takes a Warband and renders without the store.** That is SH-1's
- * constraint and it shapes this file: the builder's route reads the Warband out
- * of the store and `/w/<token>` reads it out of the database, and both hand it
- * to this component. There is no second rendering path, so a number on the
- * public page cannot differ from the same number in the builder.
+ * **Two exports, and the split is a disclosure fix.** `RosterSheetView` renders
+ * a `RosterSheetModel` and touches nothing else; `WarbandRosterSheet` projects a
+ * `Warband` into one and renders it. SH-1's share page projects on the SERVER
+ * and passes only the model, because a `'use client'` component's props are
+ * serialised into the HTML — handing it a whole warband published the owner's
+ * private notes, the ledger's admin entries and every model's lore to anybody
+ * with the link, under a page that said otherwise (review round 1, finding A).
+ * The builder's own route, where the reader IS the owner, uses the wrapper.
  *
  * **Every value comes from `rosterSheet`.** No arithmetic here, and no game
  * data: the twelve Threshold rows are the dataset's, the Experience circles are
@@ -32,9 +35,9 @@
 import React from 'react';
 import type { Dataset } from '@/types/catalogue';
 import type { Warband } from '@/types/warband';
-import { rosterSheet, type SheetCard } from '@/rules/rosterSheet';
+import { rosterSheet, type RosterSheetModel, type SheetCard } from '@/rules/rosterSheet';
 import { provenanceLabel } from '@/rules/provenance';
-import { ExperienceTrack } from '@/components/ExperienceTrack';
+import { ExperienceTrackView } from '@/components/ExperienceTrack';
 
 export interface WarbandRosterSheetProps {
   warband: Warband;
@@ -64,10 +67,8 @@ const Section: React.FC<{ title: string; children: React.ReactNode }> = ({ title
   </section>
 );
 
-export const WarbandRosterSheet: React.FC<WarbandRosterSheetProps> = ({
-  warband, dataset, campaign, includePrivate = false,
-}) => {
-  const sheet = rosterSheet(warband, { dataset, campaign, includePrivate });
+/** The sheet, from a model somebody else projected. Nothing else is read. */
+export const RosterSheetView: React.FC<{ sheet: RosterSheetModel }> = ({ sheet }) => {
   const { header, strongbox, campaign: table } = sheet;
 
   return (
@@ -118,22 +119,34 @@ export const WarbandRosterSheet: React.FC<WarbandRosterSheetProps> = ({
                 </tr>
               </thead>
               <tbody>
+                {/*
+                  TOTAL is blank without a ledger, never the balance (review
+                  round 1, finding P). A Warband from before FD-05d has a
+                  balance and no history, and printing that number under a
+                  heading reading TOTAL states something nobody computed — the
+                  same claim the "no ledger" note below then contradicts.
+                */}
                 <tr>
                   <td className="text-theme-muted">Ducats</td>
-                  <td className="text-right text-theme-text">{strongbox.ducatsTotal}</td>
+                  <td className="text-right text-theme-text">
+                    {strongbox.fromLedger ? strongbox.ducatsTotal : <Blank />}
+                  </td>
                   <td className="text-right text-theme-text font-bold">{strongbox.ducatsUnspent}</td>
                 </tr>
                 <tr>
                   <td className="text-theme-muted">Glory</td>
-                  <td className="text-right text-theme-text">{strongbox.gloryTotal}</td>
+                  <td className="text-right text-theme-text">
+                    {strongbox.fromLedger ? strongbox.gloryTotal : <Blank />}
+                  </td>
                   <td className="text-right text-theme-text font-bold">{strongbox.gloryUnspent}</td>
                 </tr>
               </tbody>
             </table>
             {!strongbox.fromLedger && (
               <p className="font-mono text-xs sm:text-[10px] text-status-warning leading-relaxed">
-                No ledger on this roster, so TOTAL is the balance rather than
-                everything ever credited. It is not a total that was computed.
+                No ledger on this roster, so there is no record of everything
+                ever credited and TOTAL is left blank. UNSPENT is the balance
+                the Warband carries.
               </p>
             )}
           </div>
@@ -297,12 +310,23 @@ export const WarbandRosterSheet: React.FC<WarbandRosterSheetProps> = ({
             </table>
 
             <p className="font-mono text-xs sm:text-[10px] text-theme-muted leading-relaxed">
+              {/*
+                No game data typed into this string (rule 1, review round 1
+                finding O). It used to name "16 Treasure of the Holies" and "23
+                Patron's Visit" and quote what they score — two Exploration rows
+                retyped into a paragraph, which is exactly how a value goes
+                stale when the dataset changes under it. `rosterSheet` finds
+                them by reading which Locations' own text names Campaign Victory
+                Points, and the names below are theirs.
+              */}
               {table.total === null
                 ? 'This ruleset publishes no Campaign Victory Point scale, so no total is shown.'
-                : 'The per-game total. Two Exploration results move Campaign Victory '
-                  + 'Points outside the scale — 16 Treasure of the Holies scores D3, and '
-                  + '23 Patron’s Visit exchanges Glory for points — and neither is '
-                  + 'derivable from a win/loss/draw record, so add those by hand.'}
+                : table.outsideTheScale.length > 0
+                  ? `The per-game total. These Exploration results move Campaign Victory `
+                    + `Points outside the scale — ${table.outsideTheScale.join(', ')} — and none `
+                    + `is derivable from a win/loss/draw record, so add those by hand.`
+                  : 'The per-game total. Anything that moves Campaign Victory Points '
+                    + 'outside the published scale is added by hand.'}
               {table.rows.some((r) => r.extrapolated)
                 && ' * past the published table: the last row holds rather than being extrapolated.'}
             </p>
@@ -316,8 +340,7 @@ export const WarbandRosterSheet: React.FC<WarbandRosterSheetProps> = ({
           <p className="font-mono text-xs text-theme-muted">No models on this roster.</p>
         ) : (
           sheet.cards.map((card) => (
-            <UnitSheetCard key={card.model?.id ?? card.model?.name} card={card}
-              dataset={dataset} warband={warband} />
+            <UnitSheetCard key={card.model?.id ?? card.model?.name} card={card} />
           ))
         )}
       </div>
@@ -346,14 +369,9 @@ export const WarbandRosterSheet: React.FC<WarbandRosterSheetProps> = ({
  * many models as the roster has, so every card is the large one. The print
  * stylesheet puts two on a page, which is the sheet's own density.
  */
-const UnitSheetCard: React.FC<{
-  card: SheetCard;
-  dataset: Dataset | null | undefined;
-  warband: Warband;
-}> = ({ card, dataset, warband }) => {
+const UnitSheetCard: React.FC<{ card: SheetCard }> = ({ card }) => {
   const m = card.model;
   if (!m) return null;
-  const unit = (warband.units ?? []).find((u) => u.id === m.id);
 
   return (
     <div className="roster-sheet-card bg-theme-surface border border-theme-border p-4 space-y-3 bevel-container">
@@ -398,7 +416,9 @@ const UnitSheetCard: React.FC<{
         </p>
       )}
 
-      {unit && <ExperienceTrack dataset={dataset} unit={unit} />}
+      {/* Already computed by `rosterSheet`, so the card needs neither the
+          dataset nor the model it came from. */}
+      <ExperienceTrackView track={card.track} />
 
       <div className="space-y-1">
         <span className="eyebrow accent block">Battlekit</span>
@@ -439,3 +459,16 @@ const UnitSheetCard: React.FC<{
     </div>
   );
 };
+
+/**
+ * The same sheet, projected from a `Warband` here in the browser.
+ *
+ * For the builder's own route, where the reader is the owner and the warband is
+ * already in their store. The share page must NOT use this: it would put the
+ * whole roster into the page's serialised props.
+ */
+export const WarbandRosterSheet: React.FC<WarbandRosterSheetProps> = ({
+  warband, dataset, campaign, includePrivate = false,
+}) => (
+  <RosterSheetView sheet={rosterSheet(warband, { dataset, campaign, includePrivate })} />
+);

@@ -67,6 +67,33 @@ function spellings(dataset: Dataset, factionId: string): string[] {
 const ALIGNMENT = /(faithful|fallen)warband/g;
 
 /**
+ * The faction a parenthesised qualifier attaches to, if the sentence has one.
+ *
+ * MAMMON is *"Heretic Legions or Court of the Seven-Headed Serpent (Greed
+ * Warband) only."* — the bracket restricts the COURT half to a Greed Warband,
+ * and the app records no Court warband's Sin. A plain substring match on the
+ * faction name ignored the bracket and offered Mammon to every Court warband
+ * (review round 1, finding G).
+ *
+ * The bracket is read structurally, never by its contents: a parenthesis
+ * qualifies the thing it FOLLOWS, so the subject is the text from the last
+ * conjunction before it up to the bracket. That keeps the reading to one rule
+ * of English punctuation rather than a list of Sins this module would then own.
+ *
+ * It attaches to one side only, which is the point: the Heretic Legions half of
+ * that same sentence carries no qualifier and stays a plain `yes`.
+ *
+ * Empty where the sentence has no bracket, which is ten of the eleven.
+ */
+function qualifiedSubject(restriction: string): string {
+  const open = restriction.indexOf('(');
+  if (open < 0) return '';
+  const before = restriction.slice(0, open);
+  const parts = before.split(/\bor\b|\band\b|&|,|\//i);
+  return nameKey(parts[parts.length - 1] ?? '');
+}
+
+/**
  * Read one Patron's restriction against one faction.
  *
  * Two things a restriction can say, and the page says only these two: a
@@ -95,6 +122,16 @@ export function patronEligibility(
   const alignsMine = alignments.length > 0 && !!myAlignment
     && alignments.includes(myAlignment);
 
+  /*
+    A qualifier on MY side of the sentence is a condition this app cannot
+    evaluate, so the verdict is `unknown` rather than `yes` — offered, with the
+    sentence printed, for the player to decide. A qualifier on somebody else's
+    side says nothing about this faction.
+  */
+  const qualified = qualifiedSubject(patron.restriction ?? '');
+  if (namesMine && qualified && mine.some((m) => m.length > 3 && qualified.includes(m))) {
+    return 'unknown';
+  }
   if (namesMine || alignsMine) return 'yes';
 
   /*

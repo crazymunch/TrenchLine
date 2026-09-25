@@ -154,10 +154,12 @@ export const PreAppRewardModal: React.FC<Props> = ({ open, onClose, warband }) =
                     </p>
                   )}
                 </div>
+                {/* 44px (docs/MOBILE.md §3): `p-1` round a 16px icon is 24. */}
                 <button
                   onClick={() => removeWarbandReward(warband.id, r.name)}
-                  className="text-theme-muted hover:text-status-error p-1"
+                  className="flex min-h-[44px] min-w-[44px] items-center justify-center text-theme-muted hover:text-status-error"
                   title="Remove this reward"
+                  aria-label={`Remove ${r.name}`}
                 >
                   <Trash2 className="w-4 h-4" />
                 </button>

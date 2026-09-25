@@ -39,6 +39,59 @@ describe('an absent record is an import, never a roll', () => {
     expect(label).not.toMatch(/roll/);
   });
 
+  it('a roll with no source is a RECORDED roll, never evidence of a step', () => {
+    /*
+      Review round 1, finding D. A scar with a `roll` and no `source` was being
+      read as `{ kind: 'trauma', roll }` — and the advancement sheet has always
+      written `roll` from the Trauma Table ROW a player picked out of a
+      dropdown, so every hand-entered scar on every existing roster began
+      reading "Trauma Step · rolled 31" for a D66 nobody threw.
+
+      The module's opening rule has no exceptions: no `source` means `import`,
+      whatever else the entry carries.
+    */
+    const scarred = holdingsOf({
+      units: [unit({ scars: [{ name: 'Leg Wound', roll: '31' }] })],
+    } as never);
+    expect(scarred[0].source).toEqual({ kind: 'import', roll: '31' });
+    expect(provenanceLabel({ source: scarred[0].source })).toBe('Imported · rolled 31');
+    expect(provenanceLabel({ source: scarred[0].source })).not.toMatch(/Trauma/);
+
+    /* And the same for a Skill, which was already read this way. */
+    const skilled = holdingsOf({
+      units: [unit({ skills: [{ name: 'Point Blank', category: 'Ranged Skills', roll: '9' }] })],
+    } as never);
+    expect(skilled[0].source).toEqual({ kind: 'import', roll: '9' });
+  });
+
+  it('but a source that IS recorded is believed, roll and all', () => {
+    const rolled = holdingsOf({
+      units: [unit({
+        scars: [{
+          name: 'Leg Wound', roll: '31',
+          source: { kind: 'trauma', game: 4, roll: '31' },
+        }],
+      })],
+    } as never);
+    expect(provenanceLabel({ source: rolled[0].source }))
+      .toBe('Trauma Step · game 4 · rolled 31');
+  });
+
+  it('the two hand-entry kinds are two different claims', () => {
+    /*
+      Review round 1, finding E. Everything hand-entered used to be
+      `manual-pre-app`, so a scar typed in during game six was labelled as
+      predating an app that had been holding the Warband all season.
+    */
+    expect(provenanceLabel({ source: { kind: 'manual', game: 6 } }))
+      .toBe('Recorded by hand · game 6');
+    expect(provenanceLabel({ source: { kind: 'manual-pre-app', note: 'before we used the app' } }))
+      .toBe('Recorded before the app · before we used the app');
+    /* And `manual-pre-app` carries no game, because there was no record then. */
+    expect(provenanceLabel({ source: { kind: 'manual-pre-app' } }))
+      .not.toMatch(/game/);
+  });
+
   it('says only what the record holds', () => {
     expect(provenanceLabel({ source: { kind: 'advancement', game: 4, roll: '9' } }))
       .toBe('Advancement Roll · game 4 · rolled 9');

@@ -1082,6 +1082,31 @@ body {
   }
 
   /*
+    Except the Experience track, whose MEANING is its fill.
+
+    The blanket rule above is right for the rest of the sheet — a lit screen's
+    panels and tints are noise on paper — and it was catastrophic here: every
+    filled Experience box and every greyed LIMITED POTENTIAL box printed empty,
+    so the sheet came out of the printer claiming every model had nought
+    Experience and no cap (review round 1, finding I).
+
+    `print-color-adjust: exact` is the instruction to the printer that these
+    fills are content rather than decoration, and it is also what stops a
+    browser's "background graphics off" default dropping them. Stated in black
+    and a grey, because this is ink: the theme's colours are not on paper.
+  */
+  .roster-sheet .print-fill {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .roster-sheet .print-fill.bg-theme-primary {
+    background: #000 !important;
+  }
+  .roster-sheet .print-fill.bg-theme-border\/40 {
+    background: #bbb !important;
+  }
+
+  /*
     Two unit cards a page, which is the printed sheet's own density for the
     large card. `break-inside: avoid` is right HERE and wrong for
     `.print-model` above, and the difference is what is inside: a roster sheet

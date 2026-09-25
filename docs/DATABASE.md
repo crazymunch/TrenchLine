@@ -235,10 +235,17 @@ CREATE UNIQUE INDEX "Warband_shareToken_key" ON "Warband"("shareToken");
 ```
 
 **Purely additive, so it is an expand and nothing else.** Every existing row gets
-`NULL`, which is "not shared", so the migration publishes nothing and there is no
-release in which the running code sees a shape it does not expect — the old build
-does not select the column and the new build treats `NULL` as the default state.
-No backfill, no contract step.
+`NULL`, which is "not shared", so the migration publishes nothing. No backfill,
+no contract step.
+
+**The ordering is the rule, not a convenience.** There is no release in which the
+running code sees a shape it does not expect *only because this migration goes up
+BEFORE the pull request merges* — which is what `CLAUDE.md`'s standing
+authorisation is for. The new build selects `shareToken`; a deploy that carried
+it while the column did not exist would 500 every warband read, which is the sync
+dead rather than degraded. Merge order for an additive column is therefore:
+**apply, then merge**. (An expand that the old code must tolerate is the other
+way round, and the three-release table above is when that applies.)
 
 **Nullable AND unique on purpose.** A token is what a reader presents instead of
 a session, so two rosters must never answer to one. Postgres treats `NULL`s as

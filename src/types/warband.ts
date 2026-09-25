@@ -15,9 +15,18 @@ import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from './rule
  *   `advancement`    an Advancement Roll. Carries the game and the 2D6 total.
  *   `trauma`         the Trauma Step. Carries the game and the D66 roll.
  *   `exploration`    an Exploration result. Carries the game and the Location.
- *   `import`         came in from a roster file or a NewRecruit export.
- *   `manual-pre-app` the player's own record of something that happened before
+ *   `import`         came in from a roster file or another app's export.
+ *   `manual`         the player recorded it by hand, in a game the app was
+ *                    already keeping. Carries the game.
+ *   `manual-pre-app` the player's own record of something that happened BEFORE
  *                    the app held the Warband, with their note.
+ *
+ * `manual` and `manual-pre-app` are two different claims and were one for a
+ * while (review round 1, finding E): every hand entry was written
+ * `manual-pre-app`, so a scar a player typed in mid-campaign — because they
+ * rolled it at the table rather than in the app — was labelled as predating an
+ * app that had been holding the Warband for six games. Which of the two it is
+ * is now the player's to say.
  *
  * **Nothing is back-filled with a guess.** An entry written before this field
  * existed has no `source`, and `provenanceOf` reads it as `import` — never as
@@ -28,6 +37,7 @@ export type ProvenanceKind =
   | 'trauma'
   | 'exploration'
   | 'import'
+  | 'manual'
   | 'manual-pre-app';
 
 export interface Provenance {
@@ -46,7 +56,7 @@ export interface Provenance {
   roll?: string;
   /** The Exploration Location that granted it, as the book spells it. */
   location?: string;
-  /** The player's own words. Only meaningful for `manual-pre-app`. */
+  /** The player's own words. Only meaningful for the two manual kinds. */
   note?: string;
 }
 
@@ -454,6 +464,55 @@ export interface Warband {
    */
   earnedRecruitment?: EarnedClaim[];
   campaignId?: string;
+  /**
+   * Which ruleset this warband is built and checked against.
+   *
+   * RV-1. The app's ruleset was a per-BROWSER setting in `localStorage` and
+   * nothing else, so a warband built under TrenchLine Rules and opened on a
+   * device set to Latest GitHub was read against the other one silently — a
+   * Brazen Bull 15 Ducats cheaper with no explanation, which
+   * `docs/RULESET-MODEL.md` §8 says must never happen. The warband now
+   * carries its own answer, which is what lets the builder notice the
+   * mismatch and offer either to switch the app or to convert the warband.
+   *
+   * Optional, because every warband saved before this has none — and absent
+   * means "not recorded", NOT "the default". A warband with no recorded
+   * ruleset shows no mismatch bar, because there is no mismatch to show: we
+   * do not know what it was built against, and guessing would put a
+   * conversion in front of a player who needs none.
+   */
+  rulesetId?: string;
+  /**
+   * Campaign state carried in from another app's record, as that record
+   * stated it.
+   *
+   * CI-1. Trench Companion's share page carries a campaign round and a
+   * Campaign Victory Points total. Neither has a home among our own fields
+   * and that is deliberate: our CVP is DERIVED from the win/loss/draw record
+   * a campaign keeps (`campaignVictoryPoints`), never stored, so writing an
+   * imported total into it would mean either inventing a results record to
+   * justify the number or having two answers to the same question.
+   *
+   * So it is kept as what it is — a fact about somebody else's record — and
+   * applied to a campaign only when the warband joins one, at which point a
+   * person decides what it means. Absent on every warband that was not
+   * imported from such a record.
+   */
+  importedCampaign?: {
+    /** Which app the state came from. One today; named so it stays honest. */
+    source: 'trench-companion';
+    /**
+     * Their campaign round at the moment of the import.
+     *
+     * Optional, and absent where their record did not state one. It used to
+     * default to 1, which put a fact about somebody's campaign on the record
+     * that their record never asserted — and a player reading it here would
+     * take it for their own.
+     */
+    round?: number;
+    /** Their Campaign Victory Points total. Not ours, not derived, not defaulted. */
+    victoryPoints?: number;
+  };
   creatorId?: string;
   creatorName?: string;
   /**

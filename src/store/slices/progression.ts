@@ -167,7 +167,20 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
               if (existing.some(s => s.name === skill.name)) return u;
               return {
                 ...u,
-                skills: [...existing, skill]
+                skills: [...existing, skill],
+                /*
+                  And the roll it used (review round 1, finding F).
+
+                  A Skill recorded by ANY route is one Advancement Roll taken.
+                  `advancementRollsDue` counts the circles the model's Experience
+                  has passed and subtracts the rolls TAKEN, and hand entry never
+                  incremented that — so typing in a Skill the player had rolled
+                  at the table left the app offering them the roll again.
+
+                  The post-battle wizard increments it for the Skills it rolls,
+                  in the same units, so the rule is one rule.
+                */
+                advancementRolls: (u.advancementRolls ?? 0) + 1,
               };
             }),
             updatedAt: new Date().toISOString()
@@ -187,9 +200,16 @@ export const createProgressionSlice: StateCreator<AppState, [], [], ProgressionS
             ...w,
             units: w.units.map((u) => {
               if (u.id !== unitId) return u;
+              const kept = (u.skills || []).filter(s => s.name !== skillName);
+              const removed = (u.skills || []).length - kept.length;
               return {
                 ...u,
-                skills: (u.skills || []).filter(s => s.name !== skillName)
+                skills: kept,
+                /* The roll goes back with the Skill. Otherwise a mis-tap and an
+                   undo costs the model an Advancement Roll for good — the
+                   count only ever climbing is how a correction becomes a
+                   penalty. Floored at zero. */
+                advancementRolls: Math.max(0, (u.advancementRolls ?? 0) - removed),
               };
             }),
             updatedAt: new Date().toISOString()

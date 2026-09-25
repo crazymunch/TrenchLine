@@ -13,6 +13,8 @@
  * `data-sources/rulebook/extracted/warband-roster-sheet.txt` is the extract.
  */
 import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import { DATASET } from '@/data/generated/trenchline.generated';
 import { experienceTrackFor } from '../experienceTrack';
 import { traumaProcedure } from '../trauma';
@@ -138,5 +140,58 @@ describe('a ruleset with no Experience track reports one rather than assuming ei
   it('returns null', () => {
     expect(experienceTrackFor(null, unit())).toBeNull();
     expect(experienceTrackFor({ campaign: {} } as never, unit())).toBeNull();
+  });
+});
+
+describe('review round 1, finding L: the wizard draws the Experience it is awarding', () => {
+  /*
+    The post-battle wizard computes the Advancement Rolls due from
+    `unit.xp + gain` — the Experience this submission is about to award — and
+    drew the track on `unit.xp` alone. So a model one point short of a circle
+    was shown one box short of it while being offered the roll that circle
+    earns, which reads as the app contradicting itself mid-step.
+
+    The component takes a unit, so the wizard hands it one with the award
+    applied. This is that arithmetic, asserted where the track is decided.
+  */
+  const at = DATASET.campaign.experience!.advancementAt[1];
+
+  it('a model that crosses a circle on this submission is drawn across it', () => {
+    const before = experienceTrackFor(DATASET, unit({ xp: at - 1 }))!;
+    const after = experienceTrackFor(DATASET, unit({ xp: at }))!;
+
+    expect(before.boxes[at - 1].filled).toBe(false);
+    expect(after.boxes[at - 1].filled).toBe(true);
+    /* And that box is a circle, or this test is about the wrong one. */
+    expect(after.boxes[at - 1].advancement).toBe(true);
+  });
+
+  it('and the wizard is the caller that applies the award', () => {
+    /*
+      The arithmetic above is the component's; the BUG was which number the
+      wizard handed it. Read from the source, because this suite has no DOM and
+      the alternative is a comment claiming the call site is right.
+    */
+    const wizard = fs.readFileSync(
+      path.join(process.cwd(), 'src/components/campaign/PostBattleWizardModal.tsx'), 'utf8');
+    const call = wizard.slice(
+      wizard.indexOf('<ExperienceTrack'),
+      wizard.indexOf('/>', wizard.indexOf('<ExperienceTrack')));
+
+    expect(call, 'the wizard draws the track on the Experience from before the battle')
+      .toMatch(/unit\.xp \+ xp\.points/);
+    /* And resets a model Promoted in this step, as the commit does. */
+    expect(call).toMatch(/promoted/);
+  });
+
+  it('a Promotion resets to the award alone, as the commit does', () => {
+    /*
+      "They begin with 0 Experience Points, but will gain at least 1 due to
+      surviving the game after which they were Promoted." So a model Promoted in
+      this step is drawn on the award, not on the award plus what it held as a
+      Troop.
+    */
+    const promoted = experienceTrackFor(DATASET, unit({ xp: 1 }))!;
+    expect(promoted.boxes.filter((b) => b.filled)).toHaveLength(1);
   });
 });

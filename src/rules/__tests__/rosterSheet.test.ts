@@ -359,3 +359,161 @@ describe('a sheet rendered with no ruleset says nothing it cannot know', () => {
     expect(sheet.header.warbandName).toBe('Al-Qarn Rihla');
   });
 });
+
+describe('review round 1, finding A: nothing private reaches the projection', () => {
+  /*
+    SH-1's share page projects the sheet on the SERVER and hands the client the
+    `RosterSheetModel` and nothing else — because a `'use client'` component's
+    props are SERIALISED INTO THE HTML, and the first version passed the whole
+    warband. View-source on a shared roster carried the owner's private notes,
+    every model's notes, quote and lore, the `chronicleLog`, the `snapshots`
+    whose labels name opponents, the `ledger` including the `byUserId` and
+    `byName` of admin entries — another user's data — plus `campaignMembers`
+    and `creatorId`.
+
+    So this asserts the boundary rather than trusting it: the projection is
+    stringified, exactly as the framework will stringify it, and searched for
+    every one of those secrets. "We checked once" is not a property a page
+    keeps.
+  */
+  const SECRETS = {
+    warbandNotes: 'PRIVATE-WARBAND-NOTE',
+    modelNotes: 'PRIVATE-MODEL-NOTE',
+    modelQuote: 'PRIVATE-MODEL-QUOTE',
+    modelLore: 'PRIVATE-MODEL-LORE',
+    chronicle: 'PRIVATE-CHRONICLE-LINE',
+    snapshotLabel: 'PRIVATE-OPPONENT-NAME',
+    ledgerByName: 'PRIVATE-ADMIN-NAME',
+    ledgerByUserId: 'PRIVATE-ADMIN-USER-ID',
+    creatorId: 'PRIVATE-CREATOR-ID',
+    campaignMember: 'PRIVATE-CAMPAIGN-MEMBER',
+  };
+
+  const loaded = {
+    ...warband({
+      notes: SECRETS.warbandNotes,
+      chronicleLog: [SECRETS.chronicle],
+      creatorId: SECRETS.creatorId,
+      lore: 'Out of the sand.',
+      units: [unit({
+        notes: SECRETS.modelNotes,
+        quote: SECRETS.modelQuote,
+        lore: SECRETS.modelLore,
+        skills: [{ name: 'Point Blank', category: 'Ranged Skills', roll: '9' }],
+      })],
+      ledger: [
+        { id: 'l1', at: '2026-01-01', reason: 'founding', ducats: 700, glory: 0 },
+        {
+          id: 'l2', at: '2026-02-01', reason: 'admin-grant', ducats: 50, glory: 0,
+          byName: SECRETS.ledgerByName, byUserId: SECRETS.ledgerByUserId,
+        },
+      ],
+      snapshots: [{
+        ...post(1, 'No Man’s Land', 'Victory'),
+        label: `Post-Battle vs ${SECRETS.snapshotLabel}`,
+      }],
+    }),
+    /* Server-owned fields the loader returns alongside the roster. */
+    campaignMembers: [{ warbandName: SECRETS.campaignMember }],
+  } as unknown as Warband;
+
+  it('the fixture really carries every secret, or the next test proves nothing', () => {
+    /*
+      The guard that makes this suite honest. A `unit()` or `warband()` helper
+      that quietly dropped one of these fields would leave the leak test passing
+      on a roster that never held the secret in the first place.
+    */
+    const input = JSON.stringify(loaded);
+    for (const [what, secret] of Object.entries(SECRETS)) {
+      expect(input.includes(secret), `the fixture does not carry ${what}`).toBe(true);
+    }
+  });
+
+  it('carries none of them, in the shape the framework serialises', () => {
+    const sheet = rosterSheet(loaded, { dataset: DATASET, includePrivate: false });
+    const wire = JSON.stringify(sheet);
+
+    for (const [what, secret] of Object.entries(SECRETS)) {
+      expect(wire.includes(secret), `the projection leaks ${what}`).toBe(false);
+    }
+  });
+
+  it('and still carries the sheet, so this is not passing by rendering nothing', () => {
+    const sheet = rosterSheet(loaded, { dataset: DATASET, includePrivate: false });
+    expect(sheet.header.warbandName).toBe('Al-Qarn Rihla');
+    expect(sheet.bio).toBe('Out of the sand.');
+    expect(sheet.cards).toHaveLength(1);
+    expect(sheet.campaign.rows).toHaveLength(12);
+    /* The scenario is printed on the sheet; the snapshot's LABEL is not. */
+    expect(sheet.campaign.rows[0].scenarioName).toBe('No Man’s Land');
+    expect(sheet.holdings.some((h) => h.name === 'Point Blank')).toBe(true);
+    /* The Strongbox is summed from the ledger even though no entry reaches the
+       wire: a total is not the entry that produced it. */
+    expect(sheet.strongbox.ducatsTotal).toBe(750);
+  });
+
+  it('includePrivate does not change that — it was never what stopped the leak', () => {
+    /*
+      The flag hides fields on the PAGE. It is `presentRoster`'s, it works, and
+      it was never the thing standing between a private note and the HTML: the
+      whole warband went across regardless. The owner's own route passes true,
+      so this checks the model is still free of the fields the sheet does not
+      print either way.
+    */
+    const wire = JSON.stringify(rosterSheet(loaded, { dataset: DATASET, includePrivate: true }));
+    for (const secret of [SECRETS.warbandNotes, SECRETS.chronicle, SECRETS.creatorId,
+      SECRETS.ledgerByName, SECRETS.ledgerByUserId, SECRETS.campaignMember,
+      SECRETS.snapshotLabel]) {
+      expect(wire.includes(secret)).toBe(false);
+    }
+  });
+});
+
+describe('review round 1, finding O: the Locations are read, not typed', () => {
+  it('names the Exploration rows whose own text moves Campaign Victory Points', () => {
+    /*
+      The sheet used to type "16 Treasure of the Holies scores D3, and 23
+      Patron's Visit" into a UI string — two rows of game data retyped into a
+      paragraph (rule 1). They are found now by reading which Locations' printed
+      description names Campaign Victory Points at all.
+
+      The expectation is derived the same way, from the dataset, so this test
+      cannot be the place the numbers are hard-coded either; then it checks the
+      list is neither empty nor everything.
+    */
+    const { outsideTheScale } = rosterSheet(warband(), { dataset: DATASET }).campaign;
+    const locations = Object.values(
+      DATASET.campaign.exploration!.locations as Record<string, { name: string; description: string }[]>,
+    ).flat();
+    const expected = [...new Set(locations
+      .filter((l) => /campaign victory point/i.test(l.description))
+      .map((l) => l.name))];
+
+    expect(outsideTheScale.length).toBe(expected.length);
+    for (const name of expected) {
+      expect(outsideTheScale.some((s) => s.includes(name)), name).toBe(true);
+    }
+    expect(outsideTheScale.length).toBeGreaterThan(0);
+    expect(outsideTheScale.length).toBeLessThan(locations.length);
+  });
+
+  it('a ruleset with no Exploration tables names nothing rather than guessing', () => {
+    expect(rosterSheet(warband(), { dataset: null }).campaign.outsideTheScale).toEqual([]);
+  });
+});
+
+describe('review round 1, finding P: TOTAL is blank without a ledger', () => {
+  it('reports the balance as UNSPENT and no TOTAL at all', () => {
+    const { strongbox } = rosterSheet(
+      warband({ treasuryDucats: 80, gloryPoints: 3 }), { dataset: DATASET });
+    /*
+      The projection still carries the numbers; `fromLedger` is the flag the
+      view reads to leave the TOTAL column blank. Printing the balance under a
+      heading that says TOTAL states something nobody computed — and the note
+      beside it then contradicts it.
+    */
+    expect(strongbox.fromLedger).toBe(false);
+    expect(strongbox.ducatsUnspent).toBe(80);
+    expect(strongbox.gloryUnspent).toBe(3);
+  });
+});

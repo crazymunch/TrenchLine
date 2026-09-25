@@ -680,7 +680,7 @@ export const CampaignHubView: React.FC = () => {
                       {warbands.some((w) => w.id === member.warbandId) ? (
                         <Link
                           href={`/roster/${encodeURIComponent(member.warbandId)}/sheet`}
-                          className="font-gothic font-bold text-base text-theme-text hover:text-theme-primary"
+                          className="flex min-h-[44px] items-center font-gothic font-bold text-base text-theme-text hover:text-theme-primary"
                           title="Open this warband's Roster Sheet"
                         >
                           {member.warbandName}

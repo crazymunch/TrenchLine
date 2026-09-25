@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, **`rewards`**, **`injuryRecords`**, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, **`rulesetId`**, **`importedCampaign`**, **`rewards`**, **`injuryRecords`**, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -134,18 +134,51 @@ card, the presentation projection and every roster file ever written read — an
 this carries the D66 that caused each. `injuriesHeld` joins them.
 
 **Provenance, and what a missing one means.** Skills, scars, injuries and
-rewards each carry an optional `source`: `advancement` with the game and the 2D6
-total, `trauma` with the D66, `exploration` with the game and the Location,
-`import`, or `manual-pre-app` with the player's own note. A file written before
-this carries none, and `provenanceOf` reads that as **`import`** — never as a
-roll that did not happen. That is rule 2 applied to a record rather than to a
-fetch: the entry arrived, and the record does not say how, and saying so is the
-truth about the entry. Nothing is back-filled.
+rewards each carry an optional `source`, one of six kinds: `advancement` with
+the game and the 2D6 total, `trauma` with the game and the Trauma row's roll,
+`exploration` with the game and the Location, `import`, `manual` with the game,
+or `manual-pre-app` with the player's own note.
 
-A hand-entered record counts exactly as a rolled one for every counter that
-reads it. The marking is for the reader, not for the arithmetic:
-`advancementRollsDue` reads `advancementRolls`, and the scar count reads
-`scars`, so a Skill a player typed in neither grants nor cancels a roll.
+`manual` and `manual-pre-app` are two different claims. The first is "I recorded
+this by hand, in the game the campaign is on" — a player who rolled at the table
+rather than in the app. The second is "this happened before the app held this
+Warband", which carries no game because there was no campaign record then. They
+were one kind briefly, and everything hand-entered was labelled as predating an
+app that had been open all season; which of the two it is is the player's to say.
+
+A file written before any of this carries no `source` at all, and `provenanceOf`
+reads that as **`import`** — never as a roll that did not happen, and **never as
+a step**, whatever else the entry carries. A scar with a `roll` and no `source`
+is an import whose roll was recorded, not evidence of a Trauma Step: the
+advancement sheet has always written `roll` from the table ROW a player picked
+out of a dropdown. That is rule 2 applied to a record rather than to a fetch.
+Nothing is back-filled.
+
+**A Skill recorded by any route is one Advancement Roll taken.** Not the marking
+— the arithmetic. `advancementRollsDue` counts the circles the model's Experience
+has passed and subtracts `advancementRolls`, so every writer of a Skill
+increments it: the wizard for the ones it rolls, the importers for the ones that
+arrive on a sheet, and hand entry for the ones a player types in. Removing a
+Skill gives the roll back. Before that, importing a roster offered every model
+its Skills a second time.
+
+`rulesetId` on the **Warband** is `durable`, and it is **not** a duplicate of
+the manifest. The manifest records what the exporting BUILD had loaded; this
+records what the WARBAND was built under, and a file exported from a device set
+to the other ruleset would otherwise lose the difference the conversion report
+exists to show (RV-1, [`RULESET-MODEL.md`](RULESET-MODEL.md) §8a). Absent means
+*not recorded*, never *the default*.
+
+`importedCampaign` on the **Warband** is `durable`. It is the campaign round
+and the Campaign Victory Points total that another app's record stated when the
+warband was imported from it (CI-1,
+[`TRENCH-COMPANION-IMPORT.md`](TRENCH-COMPANION-IMPORT.md)). It is kept as a
+fact about where the warband came from rather than folded into our own numbers,
+because our Campaign Victory Points are *derived* from the win/loss/draw record
+a campaign keeps and never stored — so writing an imported total into them
+would mean either inventing a results record to justify it or having two
+answers to the same question. A file that dropped it would silently lose the
+round a player is on.
 
 `isDead` is `durable` and the distinction matters, because it reads like battle
 state and is not. A model removed by the Trauma Step is gone from the campaign;

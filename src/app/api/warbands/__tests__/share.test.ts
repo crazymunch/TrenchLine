@@ -19,7 +19,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
  */
 
 const db = {
-  warband: { findUnique: vi.fn(), update: vi.fn() },
+  warband: { findUnique: vi.fn(), update: vi.fn(), updateMany: vi.fn() },
 };
 vi.mock('@/lib/prisma', () => ({ prisma: db }));
 
@@ -33,6 +33,7 @@ const { loadSharedWarband } = await import('@/lib/api/warbandLoader');
 
 const OWNER = { id: 'owner-1', email: 'owner@example.org' };
 const STRANGER = { id: 'stranger-1', email: 'stranger@example.org' };
+const ADMIN_NOT_OWNER = { id: 'ops-1', email: 'ops@example.org' };
 
 const signedInAs = (user: { id: string; email: string } | null) =>
   getServerSession.mockResolvedValue(user ? { user } : null);
@@ -78,6 +79,7 @@ const row = (over: Record<string, unknown> = {}) => ({
 beforeEach(() => {
   db.warband.findUnique.mockReset();
   db.warband.update.mockReset();
+  db.warband.updateMany.mockReset();
   getServerSession.mockReset();
 });
 
@@ -90,13 +92,40 @@ describe('only the owner decides that a roster is shared', () => {
   });
 
   it('somebody else’s roster is refused, and nothing is written', async () => {
-    /* `requireOwnedWarband`'s own answer: 403 for a roster that exists and is
-       not yours, 404 for one that does not exist. The bodies are identical
-       (`http.ts`), so neither describes the roster. */
+    /* 403 for a roster that exists and is not yours, 404 for one that does not
+       exist. The bodies are identical (`http.ts`), so neither describes it. */
     signedInAs(STRANGER);
     db.warband.findUnique.mockResolvedValue({ id: 'wb1', userId: OWNER.id });
     expect((await call(POST)).status).toBe(403);
     expect(db.warband.update).not.toHaveBeenCalled();
+    expect(db.warband.updateMany).not.toHaveBeenCalled();
+  });
+
+  it('an ADMIN who does not own the roster is refused too, on all three', async () => {
+    /*
+      Review round 1, finding B. `requireOwnedWarband` lets `actor.isAdmin`
+      through — right for an operator repairing a roster, wrong here: sharing
+      PUBLISHES a roster, and that is the owner's decision alone. An admin
+      signed in as somebody else got 200 and a fresh token for a roster they did
+      not own, and the owner was never told.
+
+      All three handlers, because a bypass on the read is a bypass on the link.
+    */
+    for (const handler of [GET, POST, DELETE]) {
+      db.warband.findUnique.mockReset();
+      db.warband.update.mockReset();
+      db.warband.updateMany.mockReset();
+      /* An admin session: `isAdmin` is resolved from the persisted role and
+         carried on the session, which is what `currentActor` reads. */
+      getServerSession.mockResolvedValue({ user: { ...ADMIN_NOT_OWNER, isAdmin: true } });
+      db.warband.findUnique.mockResolvedValue({ id: 'wb1', userId: OWNER.id });
+
+      const { status, body } = await call(handler);
+      expect(status, `${handler.name} let an admin through`).toBe(403);
+      expect(body.error).toMatch(/owner/i);
+      expect(db.warband.update).not.toHaveBeenCalled();
+      expect(db.warband.updateMany).not.toHaveBeenCalled();
+    }
   });
 
   it('a roster the cloud has never seen is a 404, which is what "local only" means', async () => {
@@ -121,13 +150,32 @@ describe('sharing, and stopping', () => {
     });
   });
 
+  /**
+   * A stand-in for the column's own `WHERE shareToken IS NULL`.
+   *
+   * `updateMany` writes only while the column is still null and reports how
+   * many rows it changed; the read afterwards returns whatever stuck. Modelling
+   * it this way is what lets the two-taps test below be a real race rather than
+   * two calls in a row.
+   */
+  const conditionalColumn = () => {
+    let token: string | null = null;
+    db.warband.updateMany.mockImplementation(
+      async ({ where, data }: { where: { shareToken: null }; data: { shareToken: string } }) => {
+        if (where.shareToken !== null || token !== null) return { count: 0 };
+        token = data.shareToken;
+        return { count: 1 };
+      });
+    db.warband.findUnique.mockImplementation(async ({ select }: { select?: Record<string, boolean> }) =>
+      (select && 'userId' in select
+        ? { id: 'wb1', userId: OWNER.id }
+        : { shareToken: token }));
+    return { read: () => token };
+  };
+
   it('mints a token and returns the path, not an absolute URL', async () => {
     signedInAs(OWNER);
-    db.warband.findUnique
-      .mockResolvedValueOnce({ id: 'wb1', userId: OWNER.id })
-      .mockResolvedValueOnce({ shareToken: null });
-    db.warband.update.mockImplementation(async ({ data }: { data: { shareToken: string } }) =>
-      ({ shareToken: data.shareToken }));
+    conditionalColumn();
 
     const { status, body } = await call(POST);
     expect(status).toBe(200);
@@ -144,11 +192,9 @@ describe('sharing, and stopping', () => {
   it('the token is random, and is not the warband id or anything derived from it', async () => {
     const mint = async () => {
       signedInAs(OWNER);
-      db.warband.findUnique
-        .mockResolvedValueOnce({ id: 'wb1', userId: OWNER.id })
-        .mockResolvedValueOnce({ shareToken: null });
-      db.warband.update.mockImplementation(async ({ data }: { data: { shareToken: string } }) =>
-        ({ shareToken: data.shareToken }));
+      db.warband.updateMany.mockReset();
+      db.warband.findUnique.mockReset();
+      conditionalColumn();
       return (await call(POST)).body.token as string;
     };
 
@@ -169,15 +215,42 @@ describe('sharing, and stopping', () => {
     /* Re-minting would break a link the player had already sent, and they would
        have no way to know: the old URL would 404 with nothing to say why. */
     signedInAs(OWNER);
-    db.warband.findUnique
-      .mockResolvedValueOnce({ id: 'wb1', userId: OWNER.id })
-      .mockResolvedValueOnce({ shareToken: 'already-minted' });
+    db.warband.updateMany.mockResolvedValue({ count: 0 });
+    db.warband.findUnique.mockImplementation(async ({ select }: { select?: Record<string, boolean> }) =>
+      (select && 'userId' in select
+        ? { id: 'wb1', userId: OWNER.id }
+        : { shareToken: 'already-minted' }));
 
     expect(await call(POST)).toEqual({
       status: 200,
       body: { shared: true, token: 'already-minted', path: '/w/already-minted' },
     });
-    expect(db.warband.update).not.toHaveBeenCalled();
+    /* The conditional write matched no row, because the column is not null. */
+    expect(db.warband.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: 'wb1', shareToken: null } }));
+  });
+
+  it('two Share taps at once mint ONE token, and both get the live one', async () => {
+    /*
+      Review round 1, finding M. A read-then-write got this wrong: both reads
+      saw `null`, both wrote, the second overwrote the first — and the first
+      response handed the player a link that was already dead.
+
+      The write is conditional (`updateMany` where the column is still null), so
+      whichever call loses updates no rows; both then read the row back and both
+      return the token that actually stuck.
+    */
+    signedInAs(OWNER);
+    const column = conditionalColumn();
+
+    const [a, b] = await Promise.all([call(POST), call(POST)]);
+
+    expect(db.warband.updateMany).toHaveBeenCalledTimes(2);
+    /* One token in the column, and it is the one both callers were given. */
+    expect(a.body.token).toBe(column.read());
+    expect(b.body.token).toBe(column.read());
+    expect(a.body.token).toBe(b.body.token);
+    expect(a.body.path).toBe(`/w/${column.read()}`);
   });
 
   it('stopping sharing nulls the column, which is what breaks the old link', async () => {

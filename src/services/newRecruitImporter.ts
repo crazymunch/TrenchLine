@@ -945,6 +945,21 @@ function parseNewRecruitJson(
          and no list are the same thing to every reader, and absent is what a
          model with no Skills on its sheet actually has. */
       ...(skills.length ? { skills } : {}),
+      /*
+        And the rolls those Skills used up (review round 1, finding F).
+
+        `advancementRollsDue` counts the Experience track's circles the model
+        has passed and subtracts the rolls it has TAKEN — and import never
+        incremented that, so importing the owner's September export handed
+        Kasim, who already held three Skills at 6 Experience, two more
+        Advancement Rolls, and the warband eight. A Skill on the roster is a
+        roll that was made, wherever it was made.
+
+        A plain count, because this builds the model from scratch: NewRecruit
+        records no count of rolls taken, so the Skills on the sheet are the
+        whole of what the roster says about them.
+      */
+      ...(skills.length ? { advancementRolls: skills.length } : {}),
       ...(injuryRecords.length ? { injuryRecords } : {}),
       isDead: false,
       totalCost: totalUnitCost,

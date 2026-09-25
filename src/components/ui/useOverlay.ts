@@ -23,6 +23,52 @@
  */
 import { useCallback, useEffect, useRef } from 'react';
 
+/**
+ * Every open overlay, innermost last.
+ *
+ * Escape must close **one** overlay: the topmost. Each overlay adds its own
+ * capture-phase `keydown` listener to `document`, and `stopPropagation` does
+ * not stop the other listeners already registered on that same node — it stops
+ * the event travelling to other nodes. So with a picker open over the
+ * post-battle wizard, one Escape ran both handlers, and because the wizard's
+ * was added first it ran first: the whole wizard closed and the rolls in
+ * progress went with it (review round 1, finding K).
+ *
+ * A module-level stack is the fix, and it is the general case rather than a
+ * special one for that picker: an overlay handles Escape only while it is the
+ * last entry. Module-level because the overlays are siblings in the tree with
+ * no common ancestor to hang a context on, and because `Sheet` and the thirty
+ * modals that still roll their own both come through this hook.
+ *
+ * Entries are the hook's own token objects, so two overlays can never collide
+ * and an unmount removes exactly its own.
+ */
+const stack: object[] = [];
+
+/**
+ * The three operations the hook performs on it, exported so the test drives the
+ * REAL mechanism rather than a copy of the guard that could drift from it.
+ *
+ * This suite runs without a DOM, and what broke was the ORDER two listeners on
+ * one node run in — a property of the stack, not of the rendering.
+ */
+export const overlayStack = {
+  push(token: object) { stack.push(token); },
+  /*
+    By identity, never by popping. React may unmount an OUTER overlay first — a
+    route change closing the page that owns the wizard while the picker is still
+    up — and popping would then remove the wrong entry, leaving the picker
+    unable to handle its own Escape for the rest of its life.
+  */
+  remove(token: object) {
+    const at = stack.lastIndexOf(token);
+    if (at >= 0) stack.splice(at, 1);
+  },
+  /** Whether this overlay is the one a keystroke belongs to. */
+  isTopmost: (token: object) => stack[stack.length - 1] === token,
+  count: () => stack.length,
+};
+
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),' +
   'textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
@@ -70,11 +116,36 @@ export function useOverlay(
     return () => restoreFocus.current?.focus?.();
   }, [open, trapFocus]);
 
+  /*
+    This overlay's place in the stack, for as long as it is open.
+
+    Pushed in the same effect that registers the key handler so the two can
+    never disagree about whether this overlay is open, and removed by identity
+    rather than by popping — React may unmount an outer overlay first.
+  */
+  const token = useRef<object>({});
   useEffect(() => {
     if (!open) return;
+    const mine = token.current;
+    overlayStack.push(mine);
+    return () => overlayStack.remove(mine);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const mine = token.current;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { e.stopPropagation(); close(); return; }
-      if (e.key !== 'Tab' || !trapFocus) return;
+      if (e.key === 'Escape') {
+        /* The topmost overlay only. Every other open overlay's handler is on
+           this same node and will run whatever this one does about the event. */
+        if (!overlayStack.isTopmost(mine)) return;
+        e.stopPropagation();
+        close();
+        return;
+      }
+      /* And Tab, for the same reason: two traps fighting over one keystroke
+         is how focus ends up somewhere neither of them meant. */
+      if (e.key !== 'Tab' || !trapFocus || !overlayStack.isTopmost(mine)) return;
 
       const items = [...(ref.current?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? [])]
         .filter((el) => el.offsetParent !== null);

@@ -31,6 +31,7 @@ import { DATASET } from '@/data/generated/trenchline.generated';
 import { recruitable } from '@/rules/recruitable';
 import { rosterSheet } from '@/rules/rosterSheet';
 import { holdingsOf } from '@/rules/provenance';
+import { advancementRollsDue } from '@/rules/advancement';
 import { importNewRecruitRoster } from '../newRecruitImporter';
 import type { ActiveUnit, Warband } from '@/types/warband';
 import type { UnitProfile } from '@/types/rules';
@@ -306,5 +307,44 @@ describe('FD-12 acceptance: the sheet the two exports produce', () => {
     expect(after.rows.filter((r) => !r.scenarioName)).toHaveLength(11);
     expect(after.rows[11].threshold).toBe(1800);
     expect(after.rows[11].fieldStrength).toBe(22);
+  });
+});
+
+describe('review round 1, finding F: an imported Skill uses the roll it used', () => {
+  it('leaves nobody owed a roll they have already taken', () => {
+    /*
+      `advancementRollsDue` counts the circles a model's Experience has passed
+      and subtracts the rolls TAKEN — and import never incremented that. So
+      importing the owner's September export handed Kasim, who already holds
+      three Skills at 6 Experience, two more Advancement Rolls, and the warband
+      eight across the roster.
+
+      Measured against the shipped dataset and the owner's real file, because
+      that is where the number came from.
+    */
+    const owed = SEPTEMBER.units.map((u) => ({
+      name: u.customName,
+      skills: (u.skills ?? []).length,
+      due: advancementRollsDue(DATASET, u),
+    }));
+
+    for (const model of owed) {
+      expect(model.due, `${model.name} is owed ${model.due} rolls it has already taken`)
+        .toBe(0);
+    }
+    /* And the models that hold Skills really do, or this proves nothing. */
+    expect(owed.filter((m) => m.skills > 0).length).toBeGreaterThan(0);
+  });
+
+  it('records one roll per Skill on the sheet', () => {
+    for (const u of SEPTEMBER.units) {
+      expect(u.advancementRolls ?? 0, u.customName).toBe((u.skills ?? []).length);
+    }
+  });
+
+  it('and the provenance is an import, with the roll the roster printed', () => {
+    const kasim = byName(SEPTEMBER).get('Kasim bin Malik, the Living Engineer')!;
+    const pointBlank = kasim.skills!.find((s) => s.name === 'Point Blank')!;
+    expect(pointBlank.source).toEqual({ kind: 'import', roll: '9' });
   });
 });

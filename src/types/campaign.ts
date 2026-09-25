@@ -60,6 +60,18 @@ export interface CasualtyRecord {
     injury: boolean;
     /** The Battle Scar to add. ELITE only; the book gives Troops none. */
     scar?: { name: string; roll?: string };
+    /**
+     * The Trauma Table row this result came off, as the table prints it.
+     *
+     * The ROW's roll, which for a ranged row (`41-63`) is the range rather than
+     * the total somebody threw — which is why `Provenance.roll` is a string.
+     * It is the provenance of the injury this step writes (FD-12 item 2): the
+     * scar already carried its own, and the injury had nowhere to put one.
+     *
+     * Absent on a match recorded before this, and on a row the build could not
+     * identify. Absent means *not recorded* and nothing fills it in.
+     */
+    roll?: string;
   };
 }
 

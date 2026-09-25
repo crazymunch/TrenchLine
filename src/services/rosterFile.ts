@@ -72,6 +72,16 @@ export const WARBAND_FIELDS: Record<keyof Warband, Disposition> = {
      Book of Golems action is offered on the strength of it (GOLEM-1). */
   campaignRules: 'durable',
   factionId: 'durable',
+  /* Which ruleset the roster was built against (RV-1). Durable, and not a
+     duplicate of the manifest: the manifest records what the EXPORTING build
+     had loaded, this records what the WARBAND was built under, and a file
+     exported from a device set to the other ruleset would otherwise lose the
+     difference the conversion report exists to show. */
+  rulesetId: 'durable',
+  /* Campaign state carried in from another app's record (CI-1). Durable: it
+     is a fact about where the warband came from, it cannot be reconstructed,
+     and a file that dropped it would silently lose the round a player is on. */
+  importedCampaign: 'durable',
   variantId: 'durable',
   allowThirdParty: 'durable',
   earnedRecruitment: 'durable',

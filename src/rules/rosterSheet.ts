@@ -34,10 +34,10 @@
  * It takes a `Warband` and renders without the store, because SH-1's public
  * page has no store: the builder's route and `/w/<token>` both call this.
  */
-import type { Dataset } from '@/types/catalogue';
+import type { Dataset, ExplorationLocation } from '@/types/catalogue';
 import type { Warband } from '@/types/warband';
 import {
-  campaignVictoryPoints, forceLimits, strongboxOf, victoryPointScale,
+  campaignVictoryPoints, forceLimits, rollLabel, strongboxOf, victoryPointScale,
   type LedgerEntry,
 } from './campaign';
 import { experienceTrackFor, type ExperienceTrackModel } from './experienceTrack';
@@ -108,6 +108,21 @@ export interface SheetCampaignTable {
    */
   total: number | null;
   adjustmentsPending: boolean;
+  /**
+   * The Exploration Locations whose own text moves Campaign Victory Points,
+   * by name, in the order the dataset lists them.
+   *
+   * **Derived, never typed.** The sheet used to name `16 Treasure of the
+   * Holies` and `23 Patron's Visit` and quote what each scores, in a UI string
+   * (review round 1, finding O) — two rows of game data retyped into a
+   * paragraph. These are found by reading which Locations' printed text names
+   * Campaign Victory Points at all, so a Dispatch that adds a third one says so
+   * and a reworded row does not leave a stale sentence behind.
+   *
+   * Empty where the ruleset publishes no Exploration tables, and the view then
+   * says that points can move outside the scale without naming anything.
+   */
+  outsideTheScale: string[];
 }
 
 /** One unit card, pages 2 and 3. */
@@ -239,7 +254,46 @@ function campaignTable(
     rows,
     total: scale === null ? null : scored.reduce((n, r) => n + (r.vps ?? 0), 0),
     adjustmentsPending: scored.length > 0,
+    outsideTheScale: locationsMovingVictoryPoints(dataset),
   };
+}
+
+/**
+ * Exploration Locations whose printed text moves Campaign Victory Points.
+ *
+ * Read out of the dataset's own Exploration tables by the phrase the rows use,
+ * because the alternative is retyping two row numbers and what they score into
+ * a sentence in a component — which is rule 1, and which is what this replaces.
+ *
+ * `16 Treasure of the Holies` scores D3 of them and `23 Patron's Visit`
+ * exchanges Glory for them; both say so in their own description, and a third
+ * row that said so would be found by the same reading rather than by somebody
+ * remembering to add it here.
+ *
+ * Named with their roll, as the book prints them, and de-duplicated: the same
+ * Location appears on more than one rarity table.
+ */
+function locationsMovingVictoryPoints(dataset: Dataset | null | undefined): string[] {
+  /* `exploration.locations` is the Locations, keyed by table name;
+     `exploration.tables` is the games-played band that decides WHICH tables a
+     Warband may consult, which is a different thing. */
+  const locations = (dataset as {
+    campaign?: { exploration?: { locations?: Record<string, ExplorationLocation[]> } };
+  } | null | undefined)?.campaign?.exploration?.locations ?? {};
+
+  const moves = /campaign victory point/i;
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const rows of Object.values(locations)) {
+    for (const row of rows ?? []) {
+      if (!moves.test(row.description ?? '')) continue;
+      const label = `${rollLabel(row.roll)} ${row.name}`.trim();
+      if (seen.has(label)) continue;
+      seen.add(label);
+      out.push(label);
+    }
+  }
+  return out;
 }
 
 /**

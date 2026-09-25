@@ -23,6 +23,7 @@ import type { Cost, Dataset, BattleMarker } from '../types/catalogue';
 import { type DroppedDetail } from '../rules/recruitable';
 import type { SkillLearned } from '../rules/advancement';
 import type { ExplorationEffect } from '../rules/campaign';
+import type { ConversionPlan } from '../rules/convert';
 import type { SyncState } from '../services/sync';
 import type { CampaignSyncState } from '../services/campaignSync';
 
@@ -197,6 +198,14 @@ export interface AppState {
    * per-game cap from the Warband Threshold Table. 'unrestricted' lets the
    * player set both, for one-off games, imports and testing a list.
    */
+  /**
+   * Move a warband to another ruleset, on a plan the player has confirmed.
+   *
+   * RV-1. `planConversion` says what would happen and `applyConversion` does
+   * it; this is the store's half. The plan is an argument because the player
+   * confirmed that plan — recomputing it here could answer differently.
+   */
+  convertWarbandRuleset: (warbandId: string, plan: ConversionPlan, dataset: Dataset) => void;
   createWarband: (name: string, factionId: string, ducatLimit?: number,
                   forceMode?: 'campaign' | 'unrestricted',
                   founding?: { variantId?: string; gloryPoints?: number;
@@ -218,7 +227,16 @@ export interface AppState {
                                 * founded without one is a record with a gap
                                 * the Promotions step then cannot fill in.
                                 */
-                               patron?: string }) => Warband;
+                               patron?: string;
+                               /**
+                                * Which ruleset this warband is built against
+                                * (RV-1). Recorded on the warband at muster,
+                                * because the app's ruleset is a per-browser
+                                * setting and a warband opened on another
+                                * device was otherwise read against whatever
+                                * that device had chosen, silently.
+                                */
+                               rulesetId?: string }) => Warband;
   /**
    * Delete a warband from this device and from the cloud.
    *
@@ -462,7 +480,10 @@ export interface AppState {
      * own text hands over, from `explorationGrants`. Appended, never replaced:
      * page 115 says a Warband can hold multiples of any of them.
      */
-    exploration?: { discovered?: string; effects?: ExplorationEffect[] },
+    /* `text` is the Location's own printed description, carried so the
+       Warband's record of what it holds can print the rule beside the name
+       (FD-12 item 2). */
+    exploration?: { discovered?: string; text?: string; effects?: ExplorationEffect[] },
   ) => void;
 
   // Multiplayer Campaign State

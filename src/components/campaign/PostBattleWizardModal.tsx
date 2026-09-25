@@ -354,7 +354,7 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     Location found is a Location recorded.
   */
   const [explorationFound, setExplorationFound] =
-    useState<{ discovered?: string; effects: ExplorationEffect[] }>({ effects: [] });
+    useState<{ discovered?: string; text?: string; effects: ExplorationEffect[] }>({ effects: [] });
 
   /*
     Above the early return, and it has to be. React identifies a hook by its
@@ -789,7 +789,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     /* Only a Location actually discovered is recorded: a Pillaged result is
        one this Warband already has, and a roll off the table found nothing. */
     setExplorationFound(outcome.location
-      ? { discovered: outcome.location.name, effects: granted }
+      ? {
+        discovered: outcome.location.name,
+        /* The Location's own printed text, so the Warband's record of what it
+           holds carries the rule rather than just its name (FD-12 item 2).
+           Copied from the dataset, never retyped. */
+        text: outcome.location.description,
+        effects: granted,
+      }
       : { effects: [] });
     // Loot replaces rather than accumulates: rolling again is a correction, not
     // a second Exploration.
@@ -1068,6 +1075,9 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
         records: {
           injury: write.injury,
           ...(write.scar ? { scar: write.scar } : {}),
+          /* The row the result came off, so the injury the store writes can say
+             where it came from as the scar already could (FD-12 item 2). */
+          ...(write.row?.roll ? { roll: String(write.row.roll) } : {}),
         },
       };
     });
@@ -1140,7 +1150,11 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
       */
       explorationForfeited
         ? undefined
-        : { discovered: explorationFound.discovered, effects: explorationFound.effects },
+        : {
+          discovered: explorationFound.discovered,
+          text: explorationFound.text,
+          effects: explorationFound.effects,
+        },
     );
   };
 
@@ -2117,8 +2131,26 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                       and the Roster Sheet draw. The circles are where the rolls
                       below come from, so the player can see the one they are
                       about to spend and the next one coming.
+
+                      `xp + xp.points`, not `unit.xp`: the rolls due beneath it
+                      are computed from the Experience this submission awards,
+                      so a track drawn on the figure from BEFORE the battle
+                      showed a model one box short of a circle while offering it
+                      the roll that circle earns (review round 1, finding L).
+                      `justPromoted` resets to zero first, exactly as the commit
+                      does — a model Promoted in this step "begins with 0
+                      Experience Points, but will gain at least 1".
                     */}
-                    <ExperienceTrack dataset={dataset} unit={unit} />
+                    <ExperienceTrack
+                      dataset={dataset}
+                      unit={{
+                        ...unit,
+                        xp: (promotionRolls?.outcomes ?? []).some(
+                          (o) => o.promoted && o.unitId === unit.id)
+                          ? xp.points
+                          : unit.xp + xp.points,
+                      }}
+                    />
 
                     {/*
                       The Advancement Roll, in the book's three steps.

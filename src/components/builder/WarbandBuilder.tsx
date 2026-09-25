@@ -16,12 +16,15 @@ import { PatronPicker } from './PatronPicker';
 import { soundEffects } from '../../services/soundEffects';
 import { LegalityStrip } from './LegalityStrip';
 import { RulesetSwitcher } from './RulesetSwitcher';
+import { RulesetMismatchBar } from './RulesetMismatchBar';
+import { ConvertRulesetSheet } from './ConvertRulesetSheet';
 import { VariantPicker } from './VariantPicker';
 import { useDataset } from '../../rules/useDataset';
 import { variantById } from '../../rules/variants';
 import { forceLimits, forceBudget, campaignGameOf, canChangeVariant } from '../../rules/campaign';
 import { checkForceLimits } from '../../rules/validate';
 import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
+import { rulesetMismatch } from '../../rules/convert';
 import { warbandCode } from '../../rules/warbandCode';
 import { patronMissing } from '../../rules/patrons';
 import Link from 'next/link';
@@ -46,6 +49,7 @@ import {
   ShieldCheck,
   ClipboardList,
   Link2,
+  RefreshCcw,
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 import { byRank } from '../ui/unitRole';
@@ -59,6 +63,7 @@ export const WarbandBuilder: React.FC = () => {
     updateWarbandTreasury,
     updateWarbandGlory,
     updateWarbandVariant,
+    convertWarbandRuleset,
     setWarbandAllowThirdParty,
     updateWarbandLore,
     campaign
@@ -79,6 +84,8 @@ export const WarbandBuilder: React.FC = () => {
     return window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID;
   });
   const [isRulesetOpen, setIsRulesetOpen] = useState(false);
+  /* RV-1: the conversion report, open only when the player asks for it. */
+  const [isConvertOpen, setIsConvertOpen] = useState(false);
   const [isVariantOpen, setIsVariantOpen] = useState(false);
   const { dataset, loading: datasetLoading, error: datasetError } = useDataset(rulesetId);
   
@@ -122,6 +129,7 @@ export const WarbandBuilder: React.FC = () => {
   const faction = factions.find((f) => f.id === warband.factionId);
   // Matched by id or name, so a warband saved with either spelling resolves.
   const activeVariant = dataset ? variantById(dataset, warband.variantId) : undefined;
+  const mismatch = rulesetMismatch(warband, rulesetId);
 
   // A campaign warband's limit is published, not chosen: it comes from the
   // Warband Threshold Table for the game being prepared for. Only an
@@ -235,6 +243,25 @@ export const WarbandBuilder: React.FC = () => {
         reflows moves the button you were reaching for.
       */}
       <div className="bg-theme-surface border border-theme-border relative bevel-container">
+
+        {/*
+          RV-1. This warband's own ruleset against the one this device is set
+          to. `null` when they agree AND when the warband records none — a
+          warband saved before `rulesetId` existed has no answer, and offering
+          to convert one that may already be correct puts a decision in front
+          of a player who has no way to make it.
+        */}
+        {mismatch && (
+          <RulesetMismatchBar
+            warbandRulesetId={mismatch.warbandRulesetId}
+            appRulesetId={mismatch.appRulesetId}
+            onSwitchApp={() => {
+              setRulesetId(mismatch.warbandRulesetId);
+              window.localStorage.setItem('trenchline_ruleset', mismatch.warbandRulesetId);
+            }}
+            onConvert={() => setIsConvertOpen(true)}
+          />
+        )}
 
         {/* Identity */}
         <div className="border-l-2 border-l-theme-primary p-4 sm:p-6 space-y-2.5">
@@ -407,6 +434,28 @@ export const WarbandBuilder: React.FC = () => {
             </button>
           </div>
 
+          {/*
+            Convert THIS warband, as opposed to the button above, which
+            changes what this device reads (RV-1).
+
+            Its own row because the two are a trap side by side: one is a
+            setting and the other permanently re-prices a roster and books
+            refunds. Offered whatever the warband records — a player may want
+            to move a warband to the ruleset they are already on — and the
+            report inside says what it would do before anything happens.
+          */}
+          <button
+            onClick={() => setIsConvertOpen(true)}
+            disabled={!dataset}
+            className="w-full min-h-[44px] flex items-center gap-2 px-3 py-2.5 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            title="Re-resolve every model, item and option in another ruleset, and see what is lost"
+          >
+            <RefreshCcw className="w-4 h-4 flex-shrink-0" />
+            <span className="truncate">
+              Convert to {rulesetInfo(rulesetId)?.name ?? rulesetId}
+            </span>
+          </button>
+
           <div>
             <div className="flex flex-wrap items-center gap-2">
               <button
@@ -453,7 +502,7 @@ export const WarbandBuilder: React.FC = () => {
               {/* SH-1: the link you paste into the group chat. */}
               <button
                 onClick={() => setIsShareOpen(true)}
-                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                className="flex items-center space-x-1.5 px-3 py-2 min-h-[44px] lg:min-h-0 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
                 title="Put this roster's sheet at a public read-only link"
               >
                 <Link2 className="w-4 h-4 text-theme-primary" />
@@ -507,6 +556,29 @@ export const WarbandBuilder: React.FC = () => {
               setIsRulesetOpen(false);
             }}
             onClose={() => setIsRulesetOpen(false)}
+          />
+        )}
+
+        {/*
+          The conversion report (RV-1).
+
+          `dataset` is the app's current ruleset, which is the TARGET: the bar
+          offers to convert the warband to what this device is reading, and
+          the Convert button in the toolbar does the same for a warband that
+          records nothing or already agrees. Nothing is applied until the
+          player confirms inside the sheet.
+        */}
+        {isConvertOpen && (
+          <ConvertRulesetSheet
+            warband={warband}
+            target={dataset}
+            error={datasetError}
+            onConvert={(plan) => {
+              if (!dataset) return;
+              convertWarbandRuleset(warband.id, plan, dataset);
+              setIsConvertOpen(false);
+            }}
+            onClose={() => setIsConvertOpen(false)}
           />
         )}
 

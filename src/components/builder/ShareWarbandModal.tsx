@@ -47,7 +47,16 @@ export const ShareWarbandModal: React.FC<Props> = ({
   const { data: session } = useSession();
   const [state, setState] = useState<State>({ kind: 'loading' });
   const [busy, setBusy] = useState(false);
-  const [copied, setCopied] = useState(false);
+  /*
+    `idle` until the player taps Copy, then what actually happened.
+
+    It used to be a boolean set before the write resolved, so "Copied" appeared
+    whether or not the clipboard took it (review round 1, finding N) — and a
+    clipboard write is refused often: an insecure origin, a browser that wants
+    a fresh gesture, a denied permission. The input above is already selectable,
+    so a failure has somewhere to point.
+  */
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
 
   const endpoint = `/api/warbands/${encodeURIComponent(warbandId)}/share`;
 
@@ -95,7 +104,7 @@ export const ShareWarbandModal: React.FC<Props> = ({
 
   useEffect(() => {
     if (!open) return;
-    setCopied(false);
+    setCopyState('idle');
     setState({ kind: 'loading' });
     if (!session?.user) {
       setState({
@@ -191,15 +200,30 @@ export const ShareWarbandModal: React.FC<Props> = ({
               />
               <button
                 onClick={() => {
-                  navigator.clipboard?.writeText(absolute).catch(() => {});
-                  setCopied(true);
-                  window.setTimeout(() => setCopied(false), 1500);
+                  const write = navigator.clipboard?.writeText(absolute);
+                  if (!write) { setCopyState('failed'); return; }
+                  write.then(
+                    () => {
+                      setCopyState('copied');
+                      window.setTimeout(() => setCopyState('idle'), 1500);
+                    },
+                    /* Reported, not swallowed. A "Copied" the clipboard refused
+                       sends the player off to paste nothing. */
+                    () => setCopyState('failed'),
+                  );
                 }}
                 className="w-full flex items-center justify-center gap-2 min-h-[44px] px-4 bg-theme-elevated hover:bg-theme-border text-theme-text border border-theme-border font-mono text-xs font-bold uppercase tracking-widest"
               >
                 <Copy className="w-4 h-4" />
-                <span>{copied ? 'Copied' : 'Copy the link'}</span>
+                <span>{copyState === 'copied' ? 'Copied' : 'Copy the link'}</span>
               </button>
+
+              {copyState === 'failed' && (
+                <p className="font-mono text-xs text-status-warning leading-relaxed">
+                  This browser would not let the page write to the clipboard.
+                  The link is in the box above — select it and copy it by hand.
+                </p>
+              )}
             </div>
 
             <p className="font-mono text-xs text-theme-muted leading-relaxed">

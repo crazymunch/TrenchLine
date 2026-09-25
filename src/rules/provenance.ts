@@ -38,7 +38,7 @@ export const provenanceOf = (
 
 /** The kinds, in the order FD-12 lists them. For a picker, and for a test. */
 export const PROVENANCE_KINDS: ProvenanceKind[] = [
-  'advancement', 'trauma', 'exploration', 'import', 'manual-pre-app',
+  'advancement', 'trauma', 'exploration', 'import', 'manual', 'manual-pre-app',
 ];
 
 const KIND_LABEL: Record<ProvenanceKind, string> = {
@@ -46,6 +46,7 @@ const KIND_LABEL: Record<ProvenanceKind, string> = {
   trauma: 'Trauma Step',
   exploration: 'Exploration',
   import: 'Imported',
+  manual: 'Recorded by hand',
   'manual-pre-app': 'Recorded before the app',
 };
 
@@ -115,6 +116,26 @@ export function injuriesHeld(unit: Pick<ActiveUnit, 'injuries' | 'injuryRecords'
   }
   return joined;
 }
+
+/**
+ * What an entry with no `source` but a `roll` actually says.
+ *
+ * **`import`, with the roll carried as a recorded roll.** Never `trauma` and
+ * never `advancement`: the roll is a number somebody wrote down, and it is not
+ * evidence that a step in this app produced it.
+ *
+ * This was wrong for a release (review round 1, finding D). A scar with a
+ * `roll` and no `source` was read as `{ kind: 'trauma', roll }` — but the
+ * advancement sheet has always written `roll` from the Trauma Table ROW a
+ * player picked out of a dropdown, so every hand-entered scar on every existing
+ * roster began reading "Trauma Step · rolled 31" for a D66 nobody threw. The
+ * rule is the one the module opens with and it has no exceptions: a record with
+ * no `source` is an `import`, whatever else it carries.
+ */
+const recordedRoll = (
+  entry: { source?: Provenance; roll?: string },
+): Provenance => entry.source
+  ?? (entry.roll ? { kind: 'import', roll: entry.roll } : IMPLIED);
 
 /**
  * One thing a Warband holds, ready to print: what it is, whose it is, and how
@@ -187,10 +208,7 @@ export function holdingsOf(
     for (const s of unit.skills ?? []) {
       out.push({
         kind: 'skill', name: s.name, text: s.effect, model: who,
-        /* A Skill imported before `source` existed carries its roll in `roll`
-           and nothing else. That roll is a fact; presenting it is not a guess
-           about WHERE it came from, which stays `import`. */
-        source: s.source ?? (s.roll ? { kind: 'import', roll: s.roll } : IMPLIED),
+        source: recordedRoll(s),
       });
     }
     for (const i of injuriesHeld(unit)) {
@@ -199,7 +217,7 @@ export function holdingsOf(
     for (const sc of unit.scars ?? []) {
       out.push({
         kind: 'scar', name: sc.name, text: sc.effect, model: who,
-        source: sc.source ?? (sc.roll ? { kind: 'trauma', roll: sc.roll } : IMPLIED),
+        source: recordedRoll(sc),
       });
     }
   }

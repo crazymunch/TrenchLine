@@ -10,6 +10,8 @@ import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { canBePromoted } from '../../rules/promotions';
 import { nextAdvancementAt } from '../../rules/advancement';
+import { campaignGameOf } from '../../rules/campaign';
+import type { Provenance } from '../../types/warband';
 import { injuriesHeld, provenanceLabel } from '../../rules/provenance';
 import { ExperienceTrack } from '../ExperienceTrack';
 import { inFormulaGroup } from '../../rules/formulae';
@@ -109,6 +111,19 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     and why. Optional: a marked entry with no note is still marked.
   */
   const [preAppNote, setPreAppNote] = useState<string>('');
+  /*
+    Which of the two hand-entry kinds this is (review round 1, finding E).
+
+    Every hand entry used to be written `manual-pre-app`, so a scar a player
+    typed in during game six — because they rolled it at the table rather than
+    in the app — was labelled as predating an app that had been holding the
+    Warband all season. `manual` carries the game; `manual-pre-app` carries the
+    player's note and no game, because there was no campaign record then.
+
+    Defaults to `manual`: an app already open on a Warband is the ordinary case,
+    and "before the app" is the claim that has to be made deliberately.
+  */
+  const [beforeTheApp, setBeforeTheApp] = useState(false);
   const [selectedInjuryName, setSelectedInjuryName] = useState<string>('');
 
 
@@ -229,6 +244,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     anything (docs/RULES-COVERAGE-AUDIT.md RC-07).
   */
   const warbandUnits = useStore((st) => st.warbands.find((w) => w.id === warbandId)?.units) ?? [];
+  /* For a hand entry's `manual` provenance: which game of which campaign the
+     player is recording it against. */
+  const warbandCampaignId = useStore(
+    (st) => st.warbands.find((w) => w.id === warbandId)?.campaignId);
+  const campaign = useStore((st) => st.campaign);
   const othersCost = {
     ducats: warbandUnits.filter((u) => u.id !== unit.id)
       .reduce((n, u) => n + (u.totalCost ?? 0), 0),
@@ -264,6 +284,25 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
 
 ;
 
+  /*
+    The provenance of a hand entry, decided once.
+
+    The game comes from `campaignGameOf`, the one derivation of it — a
+    `manual-pre-app` entry deliberately carries none, because "before the app"
+    means there was no campaign record to place it in.
+  */
+  const handSource = (): Provenance => (beforeTheApp
+    ? {
+      kind: 'manual-pre-app',
+      ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}),
+    }
+    : {
+      kind: 'manual',
+      game: campaignGameOf(
+        { campaignId: warbandCampaignId }, campaign),
+      ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}),
+    });
+
   const handleAddSkill = () => {
     if (!selectedSkillName) return;
     const skillObj = allSkillsList.find(s => s.name === selectedSkillName);
@@ -275,16 +314,15 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         effect: skillObj.description,
         /*
           Hand-entered, and marked as such. NOT `advancement`: nothing here
-          rolled 2D6, and recording a roll that did not happen is the fabrication
-          rule 2 forbids. The wizard's Promotions step writes `advancement` with
-          the game and the total it actually rolled.
+          rolled 2D6, and recording a roll that did not happen is the
+          fabrication rule 2 forbids. The wizard's Promotions step writes
+          `advancement` with the game and the total it actually rolled.
 
-          The counters treat this exactly as they treat a rolled entry —
-          `advancementRollsDue` reads `advancementRolls`, not the Skill list —
-          which is the owner's ruling: the marking is for the reader, not for
-          the arithmetic.
+          It still USES a roll: `addUnitSkill` increments `advancementRolls`,
+          because a Skill recorded by any route is one Advancement Roll taken.
+          The marking is for the reader; the arithmetic is the same either way.
         */
-        source: { kind: 'manual-pre-app', ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}) },
+        source: handSource(),
       });
       setSelectedSkillName('');
     }
@@ -300,7 +338,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         effect: injuryObj.description,
         /* The roll is the table ROW the player chose, not a D66 anybody threw,
            so the kind is the hand entry it is. */
-        source: { kind: 'manual-pre-app', ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}) },
+        source: handSource(),
       });
       setSelectedInjuryRoll('');
     }
@@ -317,10 +355,7 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const handleAddInjuryOnly = () => {
     const name = selectedInjuryName.trim();
     if (!name) return;
-    addUnitInjury(warbandId, unit.id, {
-      name,
-      source: { kind: 'manual-pre-app', ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}) },
-    });
+    addUnitInjury(warbandId, unit.id, { name, source: handSource() });
     setSelectedInjuryName('');
   };
 
@@ -536,21 +571,42 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                 (docs/MOBILE.md §3).
               */}
               <div className="p-3 bg-theme-base rounded-md border border-theme-border space-y-1.5">
+                {/*
+                  Which of the two hand-entry kinds this is (FD-12 item 2, review
+                  round 1 finding E). Unticked is `manual` — recorded by hand in
+                  the game the campaign is on. Ticked is `manual-pre-app`, the
+                  claim that it happened before the app held this Warband, which
+                  is a different statement and is the player's to make.
+
+                  The label is the hit area, and it clears the 44px floor: the
+                  box itself is 16px and the browser makes its label toggle it
+                  (docs/MOBILE.md §3).
+                */}
+                <label className="flex min-h-[44px] items-center gap-2 text-xs font-mono text-theme-text">
+                  <input
+                    type="checkbox"
+                    checked={beforeTheApp}
+                    onChange={(e) => setBeforeTheApp(e.target.checked)}
+                    className="h-4 w-4 shrink-0 accent-current"
+                  />
+                  <span>This happened before the app held this Warband</span>
+                </label>
+
                 <label htmlFor="pre-app-note" className="eyebrow block">
-                  Recorded before the app — your note
+                  Your note
                 </label>
                 <input
                   id="pre-app-note"
                   value={preAppNote}
                   onChange={(e) => setPreAppNote(e.target.value)}
-                  placeholder="e.g. earned in game 3, before we started using TrenchLine"
+                  placeholder="e.g. rolled at the table in game 3"
                   className="w-full min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                 />
                 <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
-                  Nothing here rolls dice, so every entry is marked as recorded by
-                  hand rather than as a roll that did not happen. It still counts
-                  the same towards the next Advancement Roll and towards
-                  retirement.
+                  Nothing here rolls dice, so every entry is marked as recorded
+                  by hand rather than as a roll that did not happen. It still
+                  counts the same: a Skill uses an Advancement Roll and a scar
+                  counts towards retirement, whichever way it was recorded.
                 </p>
               </div>
 
@@ -652,21 +708,42 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                 (docs/MOBILE.md §3).
               */}
               <div className="p-3 bg-theme-base rounded-md border border-theme-border space-y-1.5">
+                {/*
+                  Which of the two hand-entry kinds this is (FD-12 item 2, review
+                  round 1 finding E). Unticked is `manual` — recorded by hand in
+                  the game the campaign is on. Ticked is `manual-pre-app`, the
+                  claim that it happened before the app held this Warband, which
+                  is a different statement and is the player's to make.
+
+                  The label is the hit area, and it clears the 44px floor: the
+                  box itself is 16px and the browser makes its label toggle it
+                  (docs/MOBILE.md §3).
+                */}
+                <label className="flex min-h-[44px] items-center gap-2 text-xs font-mono text-theme-text">
+                  <input
+                    type="checkbox"
+                    checked={beforeTheApp}
+                    onChange={(e) => setBeforeTheApp(e.target.checked)}
+                    className="h-4 w-4 shrink-0 accent-current"
+                  />
+                  <span>This happened before the app held this Warband</span>
+                </label>
+
                 <label htmlFor="pre-app-note" className="eyebrow block">
-                  Recorded before the app — your note
+                  Your note
                 </label>
                 <input
                   id="pre-app-note"
                   value={preAppNote}
                   onChange={(e) => setPreAppNote(e.target.value)}
-                  placeholder="e.g. earned in game 3, before we started using TrenchLine"
+                  placeholder="e.g. rolled at the table in game 3"
                   className="w-full min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
                 />
                 <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
-                  Nothing here rolls dice, so every entry is marked as recorded by
-                  hand rather than as a roll that did not happen. It still counts
-                  the same towards the next Advancement Roll and towards
-                  retirement.
+                  Nothing here rolls dice, so every entry is marked as recorded
+                  by hand rather than as a roll that did not happen. It still
+                  counts the same: a Skill uses an Advancement Roll and a scar
+                  counts towards retirement, whichever way it was recorded.
                 </p>
               </div>
 
@@ -796,10 +873,13 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                           {provenanceLabel(inj)}
                         </p>
                       </div>
+                      {/* 44px, like every other control at this width
+                          (docs/MOBILE.md §3) — `p-1` round a 16px icon is 24. */}
                       <button
                         onClick={() => removeUnitInjury(warbandId, unit.id, inj.name)}
-                        className="text-theme-muted hover:text-status-error p-1"
+                        className="flex min-h-[44px] min-w-[44px] items-center justify-center text-theme-muted hover:text-status-error"
                         title="Remove this injury"
+                        aria-label={`Remove ${inj.name}`}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

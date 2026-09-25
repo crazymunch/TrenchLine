@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { randomBytes } from 'node:crypto';
 import { prisma } from '@/lib/prisma';
-import { handle } from '@/lib/api/http';
-import { requireActor, requireOwnedWarband } from '@/lib/api/policy';
+import { abort, forbidden, handle, notFound } from '@/lib/api/http';
+import { requireActor, type Actor } from '@/lib/api/policy';
 
 /**
  * The share token for one warband: read it, mint it, clear it (SH-1).
@@ -20,17 +20,42 @@ import { requireActor, requireOwnedWarband } from '@/lib/api/policy';
  *   `DELETE` stop sharing. Sets the column to NULL, which makes the old link
  *            match no row at all — see `loadSharedWarband`.
  *
- * **Every handler requires the owner.** The token is a capability: whoever holds
- * it reads the roster with no session, so deciding that the roster has one is a
- * decision only its owner may make. `requireOwnedWarband` decides, and its two
- * refusals carry identical bodies (`http.ts`), so neither describes the roster to
- * a caller who should not see it.
+ * **Every handler requires the OWNER, strictly.** The token is a capability:
+ * whoever holds it reads the roster with no session. Sharing therefore publishes
+ * a roster, and that is the owner's decision alone.
+ *
+ * `requireOwnedWarband` is deliberately NOT used, and the difference is the
+ * whole of review round 1 finding B: that helper lets `actor.isAdmin` through,
+ * which is right for an operator repairing a roster and wrong here — an admin
+ * who does not own a roster could mint a public link for it, and read it, with
+ * the owner never told. `requireStrictOwner` below has no bypass. The two
+ * refusals carry identical bodies (`http.ts`), so neither describes the roster
+ * to a caller who should not see it.
  *
  * **A local-only warband has no row here**, so it 404s — which is the honest
  * answer and the one the builder turns into "sharing needs the warband in the
  * cloud". The refusal is not invented in the client: the client asks and this
  * says no.
  */
+
+/**
+ * The roster, only for the account that owns it.
+ *
+ * No admin bypass, on purpose — see the note above. A missing roster is a 404
+ * and somebody else's is a 403, exactly as `requireOwnedWarband` answers them,
+ * so an admin probing this route learns nothing a stranger would not.
+ */
+async function requireStrictOwner(warbandId: string, actor: Actor): Promise<string> {
+  const warband = await prisma.warband.findUnique({
+    where: { id: warbandId },
+    select: { id: true, userId: true },
+  });
+  if (!warband) return abort(notFound());
+  if (warband.userId !== actor.userId) {
+    return abort(forbidden('Only the owner of a roster can share it.'));
+  }
+  return warband.id;
+}
 
 /**
  * 192 bits, base64url.
@@ -66,7 +91,7 @@ export async function GET(
   return handle('warbands.share.GET', async () => {
     const { id } = await params;
     const actor = await requireActor();
-    await requireOwnedWarband(id, actor);
+    await requireStrictOwner(id, actor);
 
     const row = await prisma.warband.findUnique({
       where: { id }, select: { shareToken: true },
@@ -82,24 +107,32 @@ export async function POST(
   return handle('warbands.share.POST', async () => {
     const { id } = await params;
     const actor = await requireActor();
-    await requireOwnedWarband(id, actor);
+    await requireStrictOwner(id, actor);
 
-    const existing = await prisma.warband.findUnique({
+    /*
+      Idempotent, and it has to be atomic to be idempotent.
+
+      Re-minting on every Share would quietly break a link the player had
+      already sent, and they would have no way to know: the old URL would 404
+      with nothing to say why. A read-then-write got that wrong under two quick
+      taps (review round 1, finding M) — both reads saw `null`, both wrote a
+      token, the second overwrote the first, and the first response handed the
+      player a link that was already dead.
+
+      So the write is CONDITIONAL: `updateMany` where the column is still null
+      sets it at most once, and whichever call loses simply updates no rows.
+      Then both read the row back, and both return the token that actually
+      stuck.
+    */
+    await prisma.warband.updateMany({
+      where: { id, shareToken: null },
+      data: { shareToken: mintToken() },
+    });
+
+    const row = await prisma.warband.findUnique({
       where: { id }, select: { shareToken: true },
     });
-    /*
-      Idempotent. Re-minting on every Share would quietly break a link the
-      player had already sent, and they would have no way to know: the old URL
-      would 404 with nothing to say why.
-    */
-    if (existing?.shareToken) return NextResponse.json(shareBody(existing.shareToken));
-
-    const updated = await prisma.warband.update({
-      where: { id },
-      data: { shareToken: mintToken() },
-      select: { shareToken: true },
-    });
-    return NextResponse.json(shareBody(updated.shareToken));
+    return NextResponse.json(shareBody(row?.shareToken ?? null));
   });
 }
 
@@ -110,7 +143,7 @@ export async function DELETE(
   return handle('warbands.share.DELETE', async () => {
     const { id } = await params;
     const actor = await requireActor();
-    await requireOwnedWarband(id, actor);
+    await requireStrictOwner(id, actor);
 
     await prisma.warband.update({ where: { id }, data: { shareToken: null } });
     return NextResponse.json(shareBody(null));

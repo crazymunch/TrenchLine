@@ -19,12 +19,14 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { ArrowLeft, Plus, Printer } from 'lucide-react';
+import { ArrowLeft, Crown, Plus, Printer } from 'lucide-react';
 import { useStore } from '@/store/useStore';
 import { useDataset } from '@/rules/useDataset';
 import { DEFAULT_RULESET_ID } from '@/rules/rulesets';
 import { WarbandRosterSheet } from '@/components/sheet/WarbandRosterSheet';
 import { PreAppRewardModal } from '@/components/builder/PreAppRewardModal';
+import { PatronPicker } from '@/components/builder/PatronPicker';
+import { patronMissing } from '@/rules/patrons';
 
 export default function RosterSheetPage() {
   const params = useParams<{ id: string }>();
@@ -43,6 +45,9 @@ export default function RosterSheetPage() {
     : window.localStorage.getItem('trenchline_ruleset') || DEFAULT_RULESET_ID;
   const { dataset, loading, error } = useDataset(rulesetId);
   const [isRewardOpen, setIsRewardOpen] = useState(false);
+  const [isPatronOpen, setIsPatronOpen] = useState(false);
+  const updateWarbandLore = useStore((s) => s.updateWarbandLore);
+  const factions = useStore((s) => s.factions);
 
   if (!id) return null;
 
@@ -72,6 +77,21 @@ export default function RosterSheetPage() {
             already happened; the rewards are read here, so the entry for them
             is here.
           */}
+          {/*
+            The sheet's header names a missing Patron; this is how it is set
+            (review round 1, finding H). Naming a gap and giving no way to close
+            it from the page that names it is half a feature.
+          */}
+          {warband && patronMissing(warband) && (
+            <button
+              onClick={() => setIsPatronOpen(true)}
+              className="flex items-center gap-2 min-h-[44px] lg:min-h-0 lg:py-2 px-4 bg-status-warning/15 hover:bg-status-warning/25 text-status-warning border border-status-warning/50 font-mono text-xs font-bold uppercase tracking-widest"
+            >
+              <Crown className="w-4 h-4" />
+              <span>Set the Patron</span>
+            </button>
+          )}
+
           {warband && (
             <button
               onClick={() => setIsRewardOpen(true)}
@@ -136,6 +156,22 @@ export default function RosterSheetPage() {
           open={isRewardOpen}
           onClose={() => setIsRewardOpen(false)}
           warband={warband}
+        />
+      )}
+
+      {warband && (
+        <PatronPicker
+          open={isPatronOpen}
+          onClose={() => setIsPatronOpen(false)}
+          dataset={dataset}
+          factionId={warband.factionId}
+          factionName={factions.find((f) => f.id === warband.factionId)?.name}
+          current={warband.patron}
+          onPick={(name) => {
+            /* Through the lore action, the one writer of this field. */
+            updateWarbandLore(warband.id, warband.lore ?? '', warband.motto ?? '', name);
+            setIsPatronOpen(false);
+          }}
         />
       )}
     </div>

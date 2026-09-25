@@ -42,6 +42,16 @@ export const notFound = (error = 'Not found.') =>
 
 export const conflict = (error: string) => failure(409, 'conflict', error);
 
+/**
+ * A service this one depends on answered badly.
+ *
+ * Distinct from `serverError` because it is not our fault and the caller can
+ * usefully be told whose it was: the Trench Companion import passes the
+ * upstream status through in `error`, which is what lets a player tell a
+ * deleted warband from an outage. Nothing from the upstream BODY is echoed.
+ */
+export const badGateway = (error: string) => failure(502, 'bad_gateway', error);
+
 export const payloadTooLarge = (error = 'That request body is too large.') =>
   failure(413, 'payload_too_large', error);
 

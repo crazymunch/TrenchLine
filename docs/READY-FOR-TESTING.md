@@ -222,13 +222,20 @@ to try:
   NewRecruit prints in brackets — Point Blank [9], Champion [11] — and each
   injury with its D66. Kasim's Skills should read "Imported · rolled 9" rather
   than sitting in the free-text advancements list.
-- **Record something from before the app.** A model's advancement sheet (Skills
-  and Trauma Scars tabs) has a note field: what you add there is marked
-  *Recorded before the app* with your note, and it counts towards the next
-  Advancement Roll and towards retirement exactly as a rolled one does. The
+- **Record something by hand.** A model's advancement sheet (Skills and Trauma
+  Scars tabs) has a note field and a tickbox: leave it unticked and the entry is
+  *Recorded by hand* against the game the campaign is on; tick **this happened
+  before the app held this Warband** and it is *Recorded before the app* with no
+  game, because there was no campaign record then. Either way it counts the same:
+  a Skill uses an Advancement Roll and a scar counts towards retirement. The
   Trauma tab also has a new **injury without a Battle Scar** entry — a scar
   retires a model at its third and an injury does not, and the modal used to
   write everything as a scar.
+- **Play a game.** Everything the post-battle sequence writes now records where
+  it came from: a Skill says *Advancement Roll · game 4 · rolled 9*, a scar and
+  its injury say *Trauma Step* with the row's roll, and an Exploration find joins
+  the Warband's rewards with the Location's own text. Before this the app's own
+  rolls read as imports.
 - **Warband-level rewards** have their own entry on the Sheet page, under
   **Rewards**: an Exploration reward, a Patron's entitlement, anything standing.
 

@@ -118,7 +118,7 @@ export const PatronPicker: React.FC<Props> = ({
 
                 <button
                   onClick={() => setExpanded(open6 ? null : patron.id)}
-                  className="w-full text-left px-3 pb-2 eyebrow hover:text-theme-primary"
+                  className="flex w-full min-h-[44px] items-center px-3 pb-2 text-left eyebrow hover:text-theme-primary"
                   aria-expanded={open6}
                 >
                   {open6 ? 'Hide the Skills' : `The ${patron.skills.length} Patron Skills`}

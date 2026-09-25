@@ -75,8 +75,33 @@ describe('a Skill learned from an Advancement Roll', () => {
   it('lands on skills, with the table and the roll that produced it', () => {
     apply([learned()]);
     expect(unitAfter().skills).toEqual([
-      { name: 'Bloodlust', category: 'melee', roll: '7', effect: 'The model may re-roll…' },
+      {
+        name: 'Bloodlust', category: 'melee', roll: '7',
+        effect: 'The model may re-roll…',
+        /*
+          And where it came from (FD-12 item 2, review round 1 finding C).
+
+          The app knows the most about this entry of any on the roster — which
+          step, which game, which 2D6 total — and until this it recorded the
+          least: a Skill the Promotions step had just rolled read back as
+          "Imported · rolled 7", indistinguishable from a name that arrived in
+          a file.
+        */
+        source: { kind: 'advancement', game: 1, roll: '7' },
+      },
     ]);
+  });
+
+  it('counts the Advancement Roll it used', () => {
+    /*
+      Review round 1, finding F: one rule for every writer of a Skill.
+      `advancementRollsDue` subtracts the rolls TAKEN, and this is the writer
+      that has always incremented it — the importers and hand entry now do too,
+      so a Skill from any route costs the roll it cost.
+    */
+    expect(unitAfter().advancementRolls ?? 0).toBe(0);
+    apply([learned()]);
+    expect(unitAfter().advancementRolls).toBe(1);
   });
 
   it('does not write to the legacy advancements array', () => {

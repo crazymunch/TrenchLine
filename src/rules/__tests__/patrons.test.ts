@@ -39,21 +39,48 @@ describe('the Patrons are parsed, and their restrictions are readable', () => {
     }
   });
 
-  it('every faction can be offered at least one, and every restriction resolves', () => {
+  it('every faction can be offered at least one, and exactly one restriction is unreadable', () => {
+    /*
+      There is exactly ONE `unknown` in the shipped data, and it is Mammon for
+      the Court of the Seven-Headed Serpent (review round 1, finding G).
+
+      The sentence is "Heretic Legions or Court of the Seven-Headed Serpent
+      (Greed Warband) only." — the bracket restricts the COURT half to a Greed
+      Warband, and this app records no Court warband's Sin. A substring match on
+      the faction name ignored the qualifier and offered Mammon to every Court
+      warband. By the module's own rule a condition it cannot evaluate is
+      `unknown`: the Patron is still OFFERED, with the sentence printed, so the
+      player decides — neither hidden nor silently allowed.
+
+      The Heretic Legions half of the same sentence carries no qualifier and
+      stays a plain `yes`, which is what makes this a reading of the punctuation
+      rather than a blanket refusal of any sentence with a bracket in it.
+    */
+    const unknowns: string[] = [];
     for (const factionId of CORE) {
       const offers = patronsFor(DATASET, factionId);
       expect(offers, factionId).toHaveLength(DATASET.patrons.length);
-
-      /*
-        No `unknown`. A restriction this app cannot read against a faction is
-        reported rather than guessed, and the shipped data has none — which is
-        what makes the eligibility below a fact rather than a default.
-      */
-      expect(offers.filter((o) => o.eligible === 'unknown').map((o) => o.patron.name), factionId)
-        .toEqual([]);
+      for (const o of offers.filter((x) => x.eligible === 'unknown')) {
+        unknowns.push(`${factionId}: ${o.patron.name}`);
+      }
       expect(offers.filter((o) => o.eligible === 'yes').length, factionId)
         .toBeGreaterThan(0);
     }
+    expect(unknowns).toEqual(['court-seven-serpents: MAMMON']);
+  });
+
+  it('an unknown is offered, not hidden', () => {
+    const mammon = patronsFor(DATASET, 'court-seven-serpents')
+      .find((o) => o.patron.name === 'MAMMON')!;
+    expect(mammon.eligible).toBe('unknown');
+    /* With the sentence that made it unknown, so the player can read it. */
+    expect(mammon.restriction).toMatch(/Greed Warband/);
+  });
+
+  it('a qualifier on somebody else’s half of the sentence says nothing about mine', () => {
+    /* The Legions are named unqualified in Mammon's sentence. */
+    expect(patronsFor(DATASET, 'heretic-legions')
+      .find((o) => o.patron.name === 'MAMMON')!.eligible).toBe('yes');
   });
 
   it('eligible Patrons are listed before ineligible ones', () => {

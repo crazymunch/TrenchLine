@@ -129,6 +129,13 @@ const nextConfig = {
         mechanisms for one rule, because the cost of the redundancy is a
         line of config and the cost of missing it is somebody else's roster
         on Google.
+
+        A third — `Disallow: /w/` in robots.txt — was tried and REMOVED, and
+        the reason is worth keeping: a disallow works against a noindex. A
+        crawler that obeys it never fetches the page, so it never reads
+        either of these, and a disallowed URL can still be indexed from an
+        outside link. Here the URL is the secret, so that is the one outcome
+        to avoid. See the note in `src/app/robots.ts`.
       */
       {
         source: '/w/:token*',
