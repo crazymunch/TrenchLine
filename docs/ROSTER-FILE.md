@@ -72,7 +72,7 @@ notices until they need the file.
 
 | Disposition | Meaning | Examples |
 | --- | --- | --- |
-| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, and the legacy `advancements` |
+| `durable` | In the file. The roster's content and its campaign history | name, faction, variant, units, treasury, ledger, injuries, scars, XP, **Skills**, **`advancementRolls`**, **`promotionMisses`**, **`fallen`**, **`benched`**, titles, snapshots, `isDead`, **`awaitingRecreation`**, **`campaignRules`**, **`rewards`**, **`injuryRecords`**, and the legacy `advancements` |
 | `identity` | In the file, but as a **reference**. Confers no ownership, membership, overwrite authority or sync precedence | `Warband.id`, `ActiveUnit.id` |
 | `live` | Never. Battle state that happens to live on the roster today — a known defect, see `LIVE-PLAY-CLAUDE-REVIEW.md` D3 | `currentWounds`, `maxWounds`, `bloodMarkers`, `blessingMarkers`, `status`, `hasActedThisTurn` |
 | `local` | Never. This device's bookkeeping, or an id that would travel to someone it does not belong to | `editedAt`, `campaignId`, `creatorId` |
@@ -111,6 +111,41 @@ closed. It has to survive, because the builder's action is offered only to a
 Warband that holds the grant. Names only, exactly as the roster spells them:
 what each one MEANS is a rules question, and `golemGrant` matches the Book by
 the sentence its Exploration row prints rather than by this string.
+
+`rewards` on the **Warband** and `injuryRecords` on the **model** are both
+`durable`, and both arrived with FD-12's provenance.
+
+`rewards` is the same `Campaign Rules > Enabled` subtree that `campaignRules`
+names, with each entry's **group**, its **rules text as printed**, and how the
+Warband came by it. Two records of one subtree, written together, and neither
+derived from the other — a name the app cannot place is still a name the roster
+stated, and a reward whose text the roster did not ship is still a reward. The
+group is the load-bearing part: NewRecruit files these under `Exploration
+Rewards`, `Exploration Skills` and `Patron Selection`, so the Patron is told
+from the rewards **without the importer knowing any Patron's name**. Entries the
+roster filed under no group at all — NewRecruit's own `Unleveraged Glory`
+counter is one — are carried with no group, which is how the sheet keeps from
+presenting them as rewards the Warband earned.
+
+`injuryRecords` is parallel to `injuries` rather than a replacement for it,
+exactly as `titleRecords` is parallel to `titles`. `injuries` stays the
+authority on WHICH injuries a model carries — it is what `alreadySuffered`, the
+card, the presentation projection and every roster file ever written read — and
+this carries the D66 that caused each. `injuriesHeld` joins them.
+
+**Provenance, and what a missing one means.** Skills, scars, injuries and
+rewards each carry an optional `source`: `advancement` with the game and the 2D6
+total, `trauma` with the D66, `exploration` with the game and the Location,
+`import`, or `manual-pre-app` with the player's own note. A file written before
+this carries none, and `provenanceOf` reads that as **`import`** — never as a
+roll that did not happen. That is rule 2 applied to a record rather than to a
+fetch: the entry arrived, and the record does not say how, and saying so is the
+truth about the entry. Nothing is back-filled.
+
+A hand-entered record counts exactly as a rolled one for every counter that
+reads it. The marking is for the reader, not for the arithmetic:
+`advancementRollsDue` reads `advancementRolls`, and the scar count reads
+`scars`, so a Skill a player typed in neither grants nor cancels a roll.
 
 `isDead` is `durable` and the distinction matters, because it reads like battle
 state and is not. A model removed by the Trauma Step is gone from the campaign;
@@ -385,9 +420,32 @@ Both doors say so rather than doing it quietly. The model count and the Ducat
 total both change, and an import that silently revalues a roster is worse than
 one that explains itself.
 
+## `shareToken` — not in the file, and not on the type
+
+SH-1 puts a warband's Roster Sheet at `/w/<token>`, behind a nullable unique
+`shareToken` column on the synced warband row. **It is not a roster field**, and
+that is a decision rather than an omission:
+
+- It is a **capability granted by an account**, not a fact about the roster. The
+  same warband exported to a file and imported by somebody else is the same
+  roster; it is emphatically not the same share.
+- A roster file is handed to other people. A token in one would let whoever
+  received it read the owner's live cloud copy — including every later change —
+  with no session and no way for the owner to know.
+- The sync must never merge it. `mergeWarbands` compares `editedAt` and takes
+  the newer side's fields wholesale, so a token on the type would be resurrected
+  by a stale device after the owner had stopped sharing.
+
+So it is **absent from `Warband`** in `src/types/warband.ts`, which makes all
+three impossible by construction rather than by remembering: the `Record<keyof
+Warband, Disposition>` inventory cannot classify a field the type does not have,
+and nothing that serialises a roster can reach it. The builder asks the server
+for the share state (`GET /api/warbands/[id]/share`) rather than reading it off
+the roster. See [`DATABASE.md`](DATABASE.md) for the column and the migration.
+
 ## Not in this format
 
-Campaign export (several warbands, a season's results), match state, and
-NewRecruit/BattleScribe `.ros` output. The last is a separate compatibility
+Campaign export (several warbands, a season's results), match state, the share
+token above, and NewRecruit/BattleScribe `.ros` output. The last is a separate compatibility
 problem gated on a spike — see the [export brief](EXPORT-ARCHITECTURE-BRIEF.md)
 §3.2 and [E3/E4](EXPORT-CODEX-REVIEW.md).

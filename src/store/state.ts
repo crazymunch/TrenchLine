@@ -14,7 +14,7 @@
  * be the same coupling spread over more files. The split that matters is of the
  * 2,000 lines of *behaviour*, not of the type.
  */
-import { Warband, ActiveUnit, UnitTitleRecord } from '../types/warband';
+import { Warband, ActiveUnit, UnitTitleRecord, Provenance, WarbandReward } from '../types/warband';
 import type { PlaceholderOpponent } from '../types/opponent';
 import { Campaign, CampaignFramework, CampaignHouseRules, CasualtyRecord, TerritoryNode } from '../types/campaign';
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem, Faction, RuleKeyword, UnitCategory, RulesetVersion } from '../types/rules';
@@ -207,7 +207,18 @@ export interface AppState {
                                 * is ignored in campaign mode.
                                 */
                                startingGlory?: number;
-                               allowThirdParty?: boolean }) => Warband;
+                               allowThirdParty?: boolean;
+                               /**
+                                * The Patron, chosen at the muster (FD-15).
+                                *
+                                * "Once they have recruited their Warband, they
+                                * must pick a Patron for it" — so this is a
+                                * founding decision like the Variant, and the
+                                * muster screen asks for it. A campaign Warband
+                                * founded without one is a record with a gap
+                                * the Promotions step then cannot fill in.
+                                */
+                               patron?: string }) => Warband;
   /**
    * Delete a warband from this device and from the cloud.
    *
@@ -539,10 +550,31 @@ export interface AppState {
 
   // Warrior Progression, Skills & Faction Upgrades
   updateUnitAdvancement: (warbandId: string, unitId: string, xp: number, isElite: boolean) => void;
-  addUnitSkill: (warbandId: string, unitId: string, skill: { name: string; category: string; roll?: string; effect?: string }) => void;
+  addUnitSkill: (warbandId: string, unitId: string, skill: { name: string; category: string; roll?: string; effect?: string; source?: Provenance }) => void;
   removeUnitSkill: (warbandId: string, unitId: string, skillName: string) => void;
-  addUnitScar: (warbandId: string, unitId: string, scar: { name: string; roll?: string; effect?: string }) => void;
+  addUnitScar: (warbandId: string, unitId: string, scar: { name: string; roll?: string; effect?: string; source?: Provenance }) => void;
   removeUnitScar: (warbandId: string, unitId: string, scarName: string) => void;
+  /**
+   * An injury, with where it came from (FD-12 item 2).
+   *
+   * Writes BOTH `injuries` — the array every other reader and every roster file
+   * ever written uses — and `injuryRecords`, which carries the provenance. One
+   * action, because two callers each writing one array is how the two would
+   * drift apart.
+   */
+  addUnitInjury: (warbandId: string, unitId: string, injury: { name: string; source?: Provenance }) => void;
+  removeUnitInjury: (warbandId: string, unitId: string, name: string) => void;
+  /**
+   * A standing grant the Warband holds: an Exploration reward, a Patron's
+   * entitlement, something recorded from before the app (FD-12 item 2).
+   *
+   * Writes `rewards`, and adds the name to `campaignRules` where it is not
+   * already there — that list is what the Book of Golems action is offered on
+   * the strength of (GOLEM-1), and a reward the player recorded by hand is
+   * evidence of exactly the same kind as one the importer read.
+   */
+  addWarbandReward: (warbandId: string, reward: WarbandReward) => void;
+  removeWarbandReward: (warbandId: string, name: string) => void;
   setUnitFireteam: (warbandId: string, unitId: string, fireteam?: string) => void;
   /**
    * Buy or sell back a unit option, charged to the Strongbox through the

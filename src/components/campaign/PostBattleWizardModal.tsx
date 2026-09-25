@@ -31,6 +31,9 @@ import type { MatchHandover } from '../../rules/matchHandover';
 import { entitlementOf, eligibility } from '../../rules/earnedRecruitment';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { fieldable } from '../../rules/recreation';
+import { PatronPicker } from '../builder/PatronPicker';
+import { patronMissing } from '../../rules/patrons';
+import { ExperienceTrack } from '../ExperienceTrack';
 import {
   warStoriesOffer, warStoriesEligible, extraExperienceFor, isValidRoll,
   type ExtraExperienceRule,
@@ -67,7 +70,7 @@ interface PostBattleWizardModalProps {
 export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ handover, onClose }) => {
   const {
     getActiveWarband, applyPostBattleResults, campaign, setCampaignHouseRule,
-    claimEarnedRecruitment, opponents, factions, warbands,
+    claimEarnedRecruitment, opponents, factions, warbands, updateWarbandLore,
   } = useStore();
 
   const warband = getActiveWarband();
@@ -273,6 +276,32 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
     rolls: [number, number] | null;
   }>>({});
   const [skillPicks, setSkillPicks] = useState<SkillLearned[]>([]);
+  /*
+    FD-15: the step asks for the Patron on the spot.
+
+    A Patron Skill result on a Warband with none recorded used to end the roll —
+    "nothing can be offered" — with the player's only route out being to close
+    the wizard, open the Chronicle dossier, type the Patron's name correctly and
+    start the post-battle again. The rule is not optional ("they MUST pick a
+    Patron for it", L4753-4755), so the gap is closable here.
+  */
+  const [patronAskOpen, setPatronAskOpen] = useState(false);
+  /*
+    And the wizard ASKS when it opens on a campaign Warband with none (FD-15: "a
+    Warband already in a campaign with none recorded is asked for it the first
+    time the wizard opens").
+
+    Asked as a prompt on the first step rather than as a picker opened over it,
+    which is a deviation from the design's wording and a deliberate one. This is
+    a Sheet, and opening a second Sheet on top of it the moment the wizard mounts
+    puts a dialog in front of a player who has not done anything yet — and hides
+    the step they came for behind it. The prompt is unmissable, it is on the
+    screen the player is already reading, and the picker is one tap away.
+
+    Computed, not stored: it has to stop showing the moment the Patron is picked,
+    and a flag would have to be cleared by every path that sets one.
+  */
+  const patronGap = patronMissing(warband);
 
   /*
     War Stories (Wildcard Skill 11), taken or left — FD-06d.
@@ -1218,6 +1247,32 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
           {/* STEP 1: OUTCOME & SCENARIO */}
           {step === 1 && (
             <div className="space-y-4">
+              {/*
+                FD-15. "Once they have recruited their Warband, they must pick a
+                Patron for it" — so a campaign Warband with none recorded is a gap
+                in the record, and the post-battle is where it starts to matter:
+                an Advancement Roll of 2 sends the player to a list this Warband
+                does not have.
+              */}
+              {patronGap && (
+                <div className="rounded border border-status-warning bg-status-warning/10 p-3 space-y-2">
+                  <p className="text-xs text-theme-muted leading-relaxed">
+                    <strong className="text-status-warning">No Patron recorded.</strong>{' '}
+                    &ldquo;Once they have recruited their Warband, they must pick a
+                    Patron for it.&rdquo; The Patron decides which Skill you may
+                    take on a Patron Skill result, so that roll cannot be answered
+                    until one is set.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setPatronAskOpen(true)}
+                    className="min-h-[44px] w-full rounded border border-status-warning bg-theme-base px-3 text-xs font-bold uppercase text-status-warning"
+                  >
+                    Pick this Warband&rsquo;s Patron
+                  </button>
+                </div>
+              )}
+
               <div>
                 <label className="block text-xs uppercase text-theme-muted mb-1">
                   Official Scenario Fought (12 Official Scenarios)
@@ -2058,6 +2113,14 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                     )}
 
                     {/*
+                      The track (FD-12 item 1), the same component the unit card
+                      and the Roster Sheet draw. The circles are where the rolls
+                      below come from, so the player can see the one they are
+                      about to spend and the next one coming.
+                    */}
+                    <ExperienceTrack dataset={dataset} unit={unit} />
+
+                    {/*
                       The Advancement Roll, in the book's three steps.
 
                       Shown only for a model that has actually earned one. The
@@ -2165,14 +2228,30 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
                                       and substituting a Skill from elsewhere is
                                       what this step used to do.
                                     */
-                                    <p className="text-xs sm:text-[11px] text-theme-muted">
-                                      {SKILL_TABLE_LABEL[offer.table]} on {offer.rolled}:{' '}
-                                      {offer.substitution === 'patron'
-                                        ? 'Patron Skill — this Warband has no Patron recorded, so nothing can be offered.'
-                                        : offer.landedOn === null
-                                          ? 'that total is not on this table.'
-                                          : 'the model already has every Skill on this table.'}
-                                    </p>
+                                    <>
+                                      <p className="text-xs sm:text-[11px] text-theme-muted">
+                                        {SKILL_TABLE_LABEL[offer.table]} on {offer.rolled}:{' '}
+                                        {offer.substitution === 'patron'
+                                          ? 'Patron Skill — this Warband has no Patron recorded, so nothing can be offered.'
+                                          : offer.landedOn === null
+                                            ? 'that total is not on this table.'
+                                            : 'the model already has every Skill on this table.'}
+                                      </p>
+                                      {/*
+                                        FD-15. The gap is closable here: pick the
+                                        Patron and the same roll offers its Skills,
+                                        without leaving the post-battle.
+                                      */}
+                                      {offer.substitution === 'patron' && (
+                                        <button
+                                          type="button"
+                                          onClick={() => setPatronAskOpen(true)}
+                                          className="min-h-[44px] w-full rounded border border-theme-accent bg-theme-base px-3 text-xs font-bold uppercase text-theme-accent"
+                                        >
+                                          Pick this Warband&rsquo;s Patron
+                                        </button>
+                                      )}
+                                    </>
                                   ) : offer.offered.map((row) => (
                                     <button
                                       key={row.name}
@@ -2710,6 +2789,30 @@ export const PostBattleWizardModal: React.FC<PostBattleWizardModalProps> = ({ ha
 
             </div>
           )}
+
+      {/*
+        FD-15. Rendered at the modal's root rather than inside the model's row:
+        the picker is a Sheet of its own, and nesting one inside a mapped row
+        would mount one per model.
+      */}
+      {warband && (
+        <PatronPicker
+          open={patronAskOpen}
+          onClose={() => setPatronAskOpen(false)}
+          dataset={dataset}
+          factionId={warband.factionId}
+          factionName={factions.find((f) => f.id === warband.factionId)?.name}
+          current={warband.patron}
+          reason={'A Patron Skill was rolled and this Warband has no Patron recorded. '
+            + '“If a Patron Skill is rolled, use one of the Patron Skills for the Patron '
+            + 'you picked for your Warband.” Pick it here and the roll offers that '
+            + 'Patron’s Skills.'}
+          onPick={(name) => {
+            updateWarbandLore(warband.id, warband.lore ?? '', warband.motto ?? '', name);
+            setPatronAskOpen(false);
+          }}
+        />
+      )}
 
     </Sheet>
   );

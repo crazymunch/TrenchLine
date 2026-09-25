@@ -10,6 +10,8 @@ import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { optionGroupsOf, allowanceGiven } from '../../rules/optionGroups';
 import { canBePromoted } from '../../rules/promotions';
 import { nextAdvancementAt } from '../../rules/advancement';
+import { injuriesHeld, provenanceLabel } from '../../rules/provenance';
+import { ExperienceTrack } from '../ExperienceTrack';
 import { inFormulaGroup } from '../../rules/formulae';
 import { catalogueUnitFor } from '../../rules/catalogueUnit';
 import { 
@@ -64,6 +66,8 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
     removeUnitSkill, 
     addUnitScar, 
     removeUnitScar,
+    addUnitInjury,
+    removeUnitInjury,
     setUnitFireteam,
     toggleUnitSpecialUpgrade
   } = useStore();
@@ -95,6 +99,17 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
   const [selectedSkillCategory, setSelectedSkillCategory] = useState<'melee' | 'ranged' | 'stealth' | 'wildcard'>('melee');
   const [selectedSkillName, setSelectedSkillName] = useState<string>('');
   const [selectedInjuryRoll, setSelectedInjuryRoll] = useState<string>('');
+  /*
+    The note that goes with a hand-entered record (FD-12 item 2).
+
+    Everything added on these two tabs is added BY HAND: the player picks a row
+    off the table rather than rolling for it in the app. The owner's answer on
+    pre-app history was "manual entry marked as such", so each entry is written
+    `manual-pre-app` and this is the "as such" — the player's own words for when
+    and why. Optional: a marked entry with no note is still marked.
+  */
+  const [preAppNote, setPreAppNote] = useState<string>('');
+  const [selectedInjuryName, setSelectedInjuryName] = useState<string>('');
 
 
   const rulesetId = typeof window !== 'undefined'
@@ -257,7 +272,19 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
         name: skillObj.name,
         category: skillObj.category,
         roll: skillObj.roll,
-        effect: skillObj.description
+        effect: skillObj.description,
+        /*
+          Hand-entered, and marked as such. NOT `advancement`: nothing here
+          rolled 2D6, and recording a roll that did not happen is the fabrication
+          rule 2 forbids. The wizard's Promotions step writes `advancement` with
+          the game and the total it actually rolled.
+
+          The counters treat this exactly as they treat a rolled entry —
+          `advancementRollsDue` reads `advancementRolls`, not the Skill list —
+          which is the owner's ruling: the marking is for the reader, not for
+          the arithmetic.
+        */
+        source: { kind: 'manual-pre-app', ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}) },
       });
       setSelectedSkillName('');
     }
@@ -270,14 +297,36 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
       addUnitScar(warbandId, unit.id, {
         name: injuryObj.name,
         roll: injuryObj.roll,
-        effect: injuryObj.description
+        effect: injuryObj.description,
+        /* The roll is the table ROW the player chose, not a D66 anybody threw,
+           so the kind is the hand entry it is. */
+        source: { kind: 'manual-pre-app', ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}) },
       });
       setSelectedInjuryRoll('');
     }
   };
 
+  /*
+    An injury with no Battle Scar.
+
+    Several Trauma results award one and not the other, and the modal only ever
+    wrote scars — so a Leg Wound recorded from before the app became a scar,
+    and `unfitForDuty` counted it towards retirement. `injuries` is its own
+    array for that reason (RC-05), and this is the entry for it.
+  */
+  const handleAddInjuryOnly = () => {
+    const name = selectedInjuryName.trim();
+    if (!name) return;
+    addUnitInjury(warbandId, unit.id, {
+      name,
+      source: { kind: 'manual-pre-app', ...(preAppNote.trim() ? { note: preAppNote.trim() } : {}) },
+    });
+    setSelectedInjuryName('');
+  };
+
   const unitSkills = unit.skills || [];
   const unitScars = unit.scars || [];
+  const unitInjuries = injuriesHeld(unit);
   const unitUpgrades = unit.specialUpgrades || [];
 
   return (
@@ -398,6 +447,15 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                 </div>
               </div>
 
+              {/*
+                The track itself (FD-12 item 1). The counter above says how much;
+                this says where the circles are and where the cap stops, which is
+                what the book asks a player to read off their Roster Sheet.
+              */}
+              <div className="p-4 bg-theme-base rounded-md border border-theme-border">
+                <ExperienceTrack dataset={dataset} unit={unit} />
+              </div>
+
               {/* Promotion / Elite Designation */}
               <div className="p-4 bg-theme-base rounded-md border border-theme-border flex items-center justify-between gap-4">
                 <div className="space-y-1">
@@ -470,6 +528,32 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                 ))}
               </div>
 
+              {/*
+                FD-12 item 2: everything added on this tab is a record of
+                something that happened outside the app, so it is marked
+                `manual-pre-app` and this is the note that goes with it. 16px on
+                the input, or iOS zooms the dialog the moment it is focused
+                (docs/MOBILE.md §3).
+              */}
+              <div className="p-3 bg-theme-base rounded-md border border-theme-border space-y-1.5">
+                <label htmlFor="pre-app-note" className="eyebrow block">
+                  Recorded before the app — your note
+                </label>
+                <input
+                  id="pre-app-note"
+                  value={preAppNote}
+                  onChange={(e) => setPreAppNote(e.target.value)}
+                  placeholder="e.g. earned in game 3, before we started using TrenchLine"
+                  className="w-full min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+                />
+                <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
+                  Nothing here rolls dice, so every entry is marked as recorded by
+                  hand rather than as a roll that did not happen. It still counts
+                  the same towards the next Advancement Roll and towards
+                  retirement.
+                </p>
+              </div>
+
               {/* Add Skill Dropdown */}
               <div className="p-4 bg-theme-base rounded-md border border-theme-border space-y-3">
                 <strong className="text-xs uppercase text-theme-primary font-bold block">
@@ -534,6 +618,11 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                         <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                           {s.effect}
                         </p>
+                        {/* How it was earned. A Skill with no record reads as an
+                            import — never as a roll nobody made. */}
+                        <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
+                          {provenanceLabel(s)}
+                        </p>
                       </div>
 
                       <button
@@ -555,6 +644,32 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
           {activeTab === 'injuries' && (
             <div className="space-y-4">
               
+              {/*
+                FD-12 item 2: everything added on this tab is a record of
+                something that happened outside the app, so it is marked
+                `manual-pre-app` and this is the note that goes with it. 16px on
+                the input, or iOS zooms the dialog the moment it is focused
+                (docs/MOBILE.md §3).
+              */}
+              <div className="p-3 bg-theme-base rounded-md border border-theme-border space-y-1.5">
+                <label htmlFor="pre-app-note" className="eyebrow block">
+                  Recorded before the app — your note
+                </label>
+                <input
+                  id="pre-app-note"
+                  value={preAppNote}
+                  onChange={(e) => setPreAppNote(e.target.value)}
+                  placeholder="e.g. earned in game 3, before we started using TrenchLine"
+                  className="w-full min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-theme-primary"
+                />
+                <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
+                  Nothing here rolls dice, so every entry is marked as recorded by
+                  hand rather than as a roll that did not happen. It still counts
+                  the same towards the next Advancement Roll and towards
+                  retirement.
+                </p>
+              </div>
+
               {/* Add Injury Form */}
               <div className="p-4 bg-theme-base rounded-md border border-theme-border space-y-3">
                 <strong className="text-xs uppercase text-status-error font-bold block">
@@ -608,12 +723,83 @@ export const UnitAdvancementModal: React.FC<UnitAdvancementModalProps> = ({
                         <p className="text-xs sm:text-[11px] text-theme-muted leading-relaxed">
                           {s.effect}
                         </p>
+                        <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
+                          {provenanceLabel(s)}
+                        </p>
                       </div>
 
                       <button
                         onClick={() => removeUnitScar(warbandId, unit.id, s.name)}
                         className="text-theme-muted hover:text-status-error p-1"
                         title="Remove Scar"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/*
+                Injuries WITHOUT a Battle Scar.
+
+                Several Trauma results award one and not the other, and this
+                modal could only ever write a scar — so every injury recorded
+                here became a scar, and a model retired at its third injury
+                instead of its third scar (RC-05). `injuries` is the array for
+                those, and `injuryRecords` carries where each came from.
+              */}
+              <div className="p-4 bg-theme-base rounded-md border border-theme-border space-y-3">
+                <strong className="text-xs uppercase text-status-error font-bold block">
+                  Add an injury that is not a Battle Scar
+                </strong>
+                <p className="text-xs sm:text-[10px] font-mono text-theme-muted leading-relaxed">
+                  A scar counts towards retirement and an injury does not, so
+                  they are two lists. Use this for an injury the model carries
+                  with no scar against it.
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    value={selectedInjuryName}
+                    onChange={(e) => setSelectedInjuryName(e.target.value)}
+                    placeholder="The injury, as it is written on your sheet"
+                    className="flex-1 min-h-[44px] bg-theme-surface border border-theme-border rounded px-2 text-base sm:text-xs text-theme-text focus:outline-none focus:border-status-error"
+                    aria-label="The injury to record"
+                  />
+                  <button
+                    onClick={handleAddInjuryOnly}
+                    disabled={!selectedInjuryName.trim()}
+                    className="px-4 min-h-[44px] bg-theme-accent hover:bg-status-error text-white font-bold uppercase rounded text-xs shadow flex items-center space-x-1 disabled:opacity-50"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                    <span>Record</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <span className="text-xs sm:text-[10px] uppercase font-bold text-theme-muted block">
+                  Injuries without a scar ({unitInjuries.length}):
+                </span>
+                {unitInjuries.length === 0 ? (
+                  <p className="text-xs text-theme-muted italic p-4 bg-theme-base rounded border border-theme-border text-center">
+                    None recorded.
+                  </p>
+                ) : (
+                  unitInjuries.map((inj, idx) => (
+                    <div key={`${inj.name}-${idx}`} className="p-3 bg-theme-base rounded border border-theme-border flex items-start justify-between gap-3">
+                      <div className="space-y-1 flex-1 min-w-0">
+                        <strong className="text-xs text-status-error font-bold break-words">
+                          {inj.name}
+                        </strong>
+                        <p className="text-xs sm:text-[10px] font-mono text-theme-muted">
+                          {provenanceLabel(inj)}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => removeUnitInjury(warbandId, unit.id, inj.name)}
+                        className="text-theme-muted hover:text-status-error p-1"
+                        title="Remove this injury"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

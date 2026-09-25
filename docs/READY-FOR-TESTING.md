@@ -160,3 +160,132 @@ npx playwright test e2e/mockGame.spec.ts
 Phone, tablet and desktop. The mobile-floor case skips on desktop, because
 `docs/MOBILE.md` §3 restores density at `lg:` and asserting 44px there would
 ask the app to break its own standard.
+
+---
+
+# READY FOR TESTING 2
+
+*What pack D2 adds, for the owner to test. Three designs: FD-12 (the official
+Warband Roster Sheet, the Experience track, provenance), FD-15 (a Patron Skill
+result needs a Patron) and SH-1 (a public share page).*
+
+## 1. The Warband Roster Sheet
+
+**Where.** The roster screen's toolbar has a new **Sheet** button, and a
+warband's name in the campaign Hub's standings is now a link to the same page.
+The URL is `/roster/<id>/sheet`.
+
+**What to check, side by side with your paper sheet.** This is the acceptance
+case and it needs your eyes, not a test:
+
+- the header's six blanks — WARBAND NAME, PLAYER, WARBAND (the Variant), PATRON,
+  CAMPAIGN BATTLE, FACTION;
+- **STRONGBOX** as a pair per currency: TOTAL is everything ever credited,
+  UNSPENT is what is left. A roster with no ledger says so rather than printing a
+  TOTAL it did not compute;
+- **WARBAND BIO & EXPLORATION NOTES**, with the review underneath it: every
+  reward, Skill, injury and scar the Warband holds, whose it is, and how it was
+  got;
+- **HERALDRY** (your motto — the paper box is for a drawn device) and **ARSENAL**;
+- the **campaign table**: twelve rows, Threshold and Field Strength on each, the
+  scenario and W/L/D on the games you have played, and the Campaign VP total at
+  the foot. Games not yet played stay blank;
+- a **unit card** per model: the five characteristics including Base, the
+  Experience track, SCARS, Battlekit, Abilities/Skills & Injuries, Keywords.
+- **The Fallen** at the bottom, which the printed sheet has no room for.
+
+**Print / PDF.** The button calls the browser's own print, so use its dialog to
+save a PDF. Page 1 comes out landscape, then two unit cards a page. **Nothing
+here has been tested on paper** — if the pagination is wrong on your printer,
+that is the thing to report.
+
+**The numbers to distrust first.** Everything on the table and the track is read
+from the dataset, and the tests assert it matches the printed sheet. If a
+Threshold or a circle is in the wrong place, the dataset is wrong, not the sheet.
+
+## 2. The Experience track
+
+Eighteen boxes with circles at 2, 4, 7, 10, 14 and 18, filled to the model's
+Experience, with two SCARS boxes beside them. It appears in **three** places, and
+they should agree: the unit card in the builder, the XP & Promotion tab of a
+model's advancement sheet, and the Roster Sheet.
+
+A model with **LIMITED POTENTIAL** — the Brazen Bull is the entry — greys the
+boxes past its cap rather than hiding them, so the cap is visible on the model.
+
+## 3. How a model came by what it holds
+
+Every Skill, injury, scar and reward now records where it came from. Two things
+to try:
+
+- **Import your September export again.** Each Skill should arrive with the roll
+  NewRecruit prints in brackets — Point Blank [9], Champion [11] — and each
+  injury with its D66. Kasim's Skills should read "Imported · rolled 9" rather
+  than sitting in the free-text advancements list.
+- **Record something from before the app.** A model's advancement sheet (Skills
+  and Trauma Scars tabs) has a note field: what you add there is marked
+  *Recorded before the app* with your note, and it counts towards the next
+  Advancement Roll and towards retirement exactly as a rolled one does. The
+  Trauma tab also has a new **injury without a Battle Scar** entry — a scar
+  retires a model at its third and an injury does not, and the modal used to
+  write everything as a scar.
+- **Warband-level rewards** have their own entry on the Sheet page, under
+  **Rewards**: an Exploration reward, a Patron's entitlement, anything standing.
+
+**An entry with no record reads as "Imported", never as a roll.** Nothing was
+back-filled with a guess.
+
+## 4. The Patron
+
+Your Iron Sultanate warband's Patron is the **Sublime Gate**, and the import now
+reads that out of the roster's own `Campaign Rules > Enabled` subtree.
+
+- **At the muster.** New Warband → Campaign Force now asks for a Patron, from the
+  book's list for the faction. It is not enforced: "Not decided yet" is allowed.
+- **On the roster masthead.** The Patron is now a button beside the faction. A
+  campaign Warband with none reads **Patron not set** in amber.
+- **In the post-battle wizard.** It asks once when the wizard opens on a campaign
+  Warband with no Patron, and it asks **on the spot** if a Patron Skill result
+  lands with none set — pick the Patron and the same roll immediately offers that
+  Patron's six Skills. Before this, that roll dead-ended and the only way out was
+  to close the wizard.
+
+Which Patrons a faction may take is read from each Patron's own printed
+restriction, so check the list against the book: New Antioch should see Temporal
+Lord, Warrior Saint, Learned Saint and Blessed Bartolomeo; the Iron Sultanate the
+Sublime Gate, the House of Wisdom and Blessed Bartolomeo.
+
+## 5. The share link
+
+**Where.** The roster toolbar's new **Share** button.
+
+- A roster that is **only on this device** cannot be shared, and the button says
+  so — sharing needs the warband in the cloud, which means signed in and synced.
+- **Share** gives you a link like `https://…/w/<token>`. Paste it anywhere: it
+  opens the Roster Sheet, read only, with no sign-in.
+- **Sharing twice keeps the same link**, on purpose — a second tap must not break
+  a link you have already sent.
+- **Stop sharing** breaks it for good. The old link then answers **404**, not an
+  empty sheet. Sharing again mints a **different** link.
+- The page is not indexed by search engines.
+
+**What to check.** Open your own link in a private window, or send it to somebody
+in the group: the sheet should read exactly as it does for you, minus your private
+notes on individual models. Your Warband's own lore and motto **are** shared —
+that is what a roster is shared for.
+
+## What this pack does NOT do
+
+- **The sheet is not editable.** It renders the roster; the builder edits it.
+- **Print is not verified on paper.** Stated in millimetres and points for that
+  reason.
+- **A shared roster is read under the published default ruleset**, not the
+  reader's own selection and not the owner's. A warband does not record its
+  ruleset yet — that is RV-1.
+- **The campaign table's total is the per-game scale only.** Two Exploration
+  results move Campaign Victory Points outside it (`16 Treasure of the Holies`
+  scores D3, `23 Patron's Visit` exchanges Glory for points); neither is
+  derivable from a win/loss/draw record, so the sheet says so and you write those
+  in.
+- **The Patron is not enforced** at the muster, and a Patron the dataset cannot
+  place is not written by the importer.

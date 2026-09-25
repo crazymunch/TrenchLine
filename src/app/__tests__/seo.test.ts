@@ -43,6 +43,17 @@ describe('robots.txt', () => {
     }
   });
 
+  it('keeps them out of the share page, which is a capability URL', () => {
+    /*
+      SH-1. `/w/<token>` is readable by whoever holds the token, so an indexed
+      one outlives the share and "Stop sharing" cannot take back a search result.
+      This is the third mechanism for that rule — the page's `noindex` metadata
+      and the `X-Robots-Tag` header in `next.config.mjs` are the other two — and
+      the weakest of the three, which is why all three are asserted.
+    */
+    expect(asList(rules().disallow)).toContain('/w/');
+  });
+
   it('leaves the documents crawlable', () => {
     /*
       The reason these three are ALLOWED rather than merely not disallowed.

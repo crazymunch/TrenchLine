@@ -224,6 +224,45 @@ Destructive steps — dropping a column, tightening a constraint, adding a
 `NOT NULL` without a default — belong in **contract**, alone, after the code
 that needed them has been running for long enough to be trusted.
 
+## `Warband.shareToken` — the one column SH-1 adds
+
+`20260925090000_warband_share_token`: one nullable column and one unique index,
+which is the whole of it.
+
+```sql
+ALTER TABLE "Warband" ADD COLUMN "shareToken" TEXT;
+CREATE UNIQUE INDEX "Warband_shareToken_key" ON "Warband"("shareToken");
+```
+
+**Purely additive, so it is an expand and nothing else.** Every existing row gets
+`NULL`, which is "not shared", so the migration publishes nothing and there is no
+release in which the running code sees a shape it does not expect — the old build
+does not select the column and the new build treats `NULL` as the default state.
+No backfill, no contract step.
+
+**Nullable AND unique on purpose.** A token is what a reader presents instead of
+a session, so two rosters must never answer to one. Postgres treats `NULL`s as
+distinct under a unique index, so any number of rosters may be unshared while no
+two shared rosters can collide — and "not shared" is a state the column can hold
+rather than a sentinel value someone has to remember.
+
+**A real column, not a key in the `notes` metadata JSON.** That JSON is where
+`editedAt` and the other client-owned fields ride, and the note in
+`src/app/api/warbands/route.ts` explains why they do. This one cannot: the share
+page looks a roster up **by** this value, with no session, so it has to be
+indexed and unique, and a JSON key can be neither. It is also not the client's
+statement about the client's copy — it is a grant the server issued.
+
+**The token is random, never derived from the id.** `warbandCode(id)` is derived
+from the id and is printed in the builder for anybody to read out; a token
+derived the same way would make every roster in the database publicly readable
+the moment one person shared theirs. `crypto.randomBytes(24)`, base64url.
+
+Clearing it writes `NULL`, which is what makes "Stop sharing" final: the old link
+then matches no row, so there is no state in which a stopped share still
+resolves. See [`ROSTER-FILE.md`](ROSTER-FILE.md) for why the token is absent from
+the `Warband` type altogether.
+
 ## The administrator role
 
 Authority used to be derived from an **address** — a constant list in

@@ -1,0 +1,361 @@
+/**
+ * The Warband Roster Sheet against the printed sheet (FD-12 item 3).
+ *
+ * FD-12's own test list: *"the table's twelve rows equal `campaign.thresholds`;
+ * the circles equal `advancementAt`; a warband with three recorded matches fills
+ * three rows and leaves nine blank with the total right; a pre-app skill renders
+ * with its marker and counts toward the next Advancement Roll; a LIMITED
+ * POTENTIAL model greys boxes past its cap."* The circles and the cap are in
+ * `experienceTrack.test.ts`; the rest are here.
+ *
+ * The twelve rows are checked twice on purpose — against the dataset, which is
+ * the operative source, and against the numbers the official sheet actually
+ * prints, read out of
+ * `data-sources/rulebook/extracted/warband-roster-sheet.txt`. A sheet built from
+ * the picture would pass the second check and mean nothing; a sheet built from
+ * the dataset that did not match the paper would mean the dataset was wrong.
+ */
+import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
+
+import { DATASET } from '@/data/generated/trenchline.generated';
+import { rosterSheet } from '../rosterSheet';
+import { advancementRollsDue } from '../advancement';
+import { variantsForFaction } from '../variants';
+import type { ActiveUnit, Warband, WarbandSnapshot } from '@/types/warband';
+
+/* ----------------------------------------------------- the printed sheet --- */
+
+const EXTRACT = fs.readFileSync(
+  path.join(process.cwd(), 'data-sources/rulebook/extracted/warband-roster-sheet.txt'),
+  'utf8',
+);
+
+/**
+ * The GAME / THRESHOLD / FIELD STRENGTH rows as the paper prints them.
+ *
+ * Parsed out of the extract rather than retyped here, so this test reads the
+ * committed source the same way the pipeline does.
+ */
+const PRINTED_ROWS = EXTRACT.split('\n')
+  .map((l) => /^\s*(\d+)\s+(\d+)\s+(\d+)\s*$/.exec(l.replace(/\t/g, ' ')))
+  .filter(Boolean)
+  .map((m) => ({ game: Number(m![1]), threshold: Number(m![2]), fieldStrength: Number(m![3]) }));
+
+/* ------------------------------------------------------------- fixtures --- */
+
+const unit = (over: Partial<ActiveUnit> = {}): ActiveUnit => ({
+  id: 'u1',
+  customName: 'Kasim ibn Rashid',
+  baseProfileId: DATASET.units.find((u) => u.name === 'Azeb')?.id ?? 'p1',
+  profileSnapshot: {
+    name: 'Azeb',
+    category: 'Trooper',
+    stats: {
+      movement: '6"/Infantry', ranged: '+1', melee: '+0', armour: '0',
+      baseSize: '30mm', keywords: ['SULTANATE'],
+    },
+    innateAbilities: [],
+  } as never,
+  equippedWeapons: [], equippedArmour: [], equippedEquipment: [],
+  xp: 0, advancements: [], injuries: [], isDead: false, totalCost: 25,
+  currentWounds: 1, maxWounds: 1, bloodMarkers: 0,
+  status: 'Active', hasActedThisTurn: false,
+  ...over,
+});
+
+const post = (game: number, scenarioName: string, outcome: 'Victory' | 'Defeat' | 'Draw') => ({
+  id: `snap-${game}`,
+  timestamp: '2026-09-01T00:00:00Z',
+  label: `Post-Battle: ${scenarioName} (${outcome})`,
+  type: 'post_battle' as const,
+  campaignGame: game,
+  scenarioName,
+  outcome,
+  ducatCost: 0, treasuryDucats: 0, gloryPoints: 0, unitCount: 1,
+  units: [], armoryStash: [], changesSummary: [],
+}) as WarbandSnapshot;
+
+const warband = (over: Partial<Warband> = {}): Warband => ({
+  id: 'wb1',
+  name: 'Al-Qarn Rihla',
+  factionId: 'iron-sultanate',
+  creatorName: 'Nick',
+  forceMode: 'campaign',
+  ducatLimit: 700,
+  treasuryDucats: 0,
+  gloryPoints: 0,
+  units: [unit()],
+  armoryStash: [],
+  createdAt: '2026-01-01T00:00:00Z',
+  updatedAt: '2026-01-01T00:00:00Z',
+  ...over,
+});
+
+/* ---------------------------------------------------------------- tests --- */
+
+describe('FD-12: the campaign table is the dataset’s Threshold table', () => {
+  it('the extract yields twelve printed rows, or the parse above is wrong', () => {
+    expect(PRINTED_ROWS).toHaveLength(12);
+    expect(PRINTED_ROWS[0]).toEqual({ game: 1, threshold: 700, fieldStrength: 10 });
+    /* Game 12's Field Strength jumps to 22, which is the row that makes this
+       table worth reading off the page rather than extrapolating. */
+    expect(PRINTED_ROWS[11]).toEqual({ game: 12, threshold: 1800, fieldStrength: 22 });
+  });
+
+  it('twelve rows, equal to campaign.thresholds', () => {
+    const sheet = rosterSheet(warband(), { dataset: DATASET });
+    expect(sheet.campaign.rows).toHaveLength(DATASET.campaign.thresholds!.length);
+    expect(sheet.campaign.rows.map((r) => ({
+      game: r.game, threshold: r.threshold, fieldStrength: r.fieldStrength,
+    }))).toEqual(DATASET.campaign.thresholds!.map((t) => ({
+      game: t.game, threshold: t.threshold, fieldStrength: t.fieldStrength,
+    })));
+  });
+
+  it('and the dataset equals what the official sheet prints', () => {
+    const sheet = rosterSheet(warband(), { dataset: DATASET });
+    expect(sheet.campaign.rows.map((r) => ({
+      game: r.game, threshold: r.threshold, fieldStrength: r.fieldStrength,
+    }))).toEqual(PRINTED_ROWS);
+  });
+
+  it('a Variant’s Threshold delta reaches the sheet through forceLimits', () => {
+    /* Papal States: "In a campaign, their Threshold Value is reduced by 200 👑."
+       Resolved in one place, so the sheet gets it without knowing the rule. */
+    const shifted = DATASET.variants.find((v) => (v.thresholdDelta ?? 0) !== 0);
+    expect(shifted, 'no Variant in this ruleset shifts the Threshold').toBeTruthy();
+    const sheet = rosterSheet(
+      warband({ factionId: shifted!.factionId, variantId: shifted!.id }),
+      { dataset: DATASET },
+    );
+    expect(sheet.campaign.rows[0].threshold)
+      .toBe(Math.max(0, DATASET.campaign.thresholds![0].threshold + shifted!.thresholdDelta!));
+  });
+});
+
+describe('FD-12: three recorded matches fill three rows and leave nine blank', () => {
+  const played = warband({
+    snapshots: [
+      post(1, 'No Man’s Land', 'Victory'),
+      post(2, 'The Reliquary', 'Defeat'),
+      post(3, 'Trench Raid', 'Draw'),
+    ],
+  });
+
+  it('fills exactly the games played, in order', () => {
+    const { campaign } = rosterSheet(played, { dataset: DATASET });
+    expect(campaign.rows.filter((r) => r.scenarioName).map((r) => [r.game, r.scenarioName]))
+      .toEqual([[1, 'No Man’s Land'], [2, 'The Reliquary'], [3, 'Trench Raid']]);
+    expect(campaign.rows.filter((r) => !r.scenarioName)).toHaveLength(9);
+  });
+
+  it('records W, L and D', () => {
+    const { campaign } = rosterSheet(played, { dataset: DATASET });
+    expect(campaign.rows.slice(0, 3).map((r) => r.result)).toEqual(['W', 'L', 'D']);
+    expect(campaign.rows[3].result).toBeUndefined();
+  });
+
+  it('totals the Campaign Victory Points from the published scale', () => {
+    const scale = DATASET.campaign.victoryPoints!;
+    const { campaign } = rosterSheet(played, { dataset: DATASET });
+    expect(campaign.rows.slice(0, 3).map((r) => r.vps))
+      .toEqual([scale.win, scale.loss, scale.draw]);
+    expect(campaign.total).toBe(scale.win + scale.loss + scale.draw);
+    /* An unplayed game scores nothing, and nothing is not zero on the sheet. */
+    expect(campaign.rows[3].vps).toBeNull();
+  });
+
+  it('says the per-game total is not the whole score', () => {
+    const { campaign } = rosterSheet(played, { dataset: DATASET });
+    /*
+      Two Exploration results move Campaign Victory Points outside the scale and
+      neither is derivable from a win/loss/draw record. The sheet says so rather
+      than presenting a final score it cannot compute.
+    */
+    expect(campaign.adjustmentsPending).toBe(true);
+    expect(rosterSheet(warband(), { dataset: DATASET }).campaign.adjustmentsPending)
+      .toBe(false);
+  });
+
+  it('a snapshot with no campaignGame is placed on no row at all', () => {
+    /* Read strictly: a snapshot written before the field existed is not evidence
+       for any game, and putting it on a row would print a scenario against a
+       Threshold it was never played under. */
+    const vague = { ...post(1, 'Unknown', 'Victory') };
+    delete (vague as { campaignGame?: number }).campaignGame;
+    const { campaign } = rosterSheet(warband({ snapshots: [vague] }), { dataset: DATASET });
+    expect(campaign.rows.every((r) => !r.scenarioName)).toBe(true);
+    expect(campaign.total).toBe(0);
+  });
+
+  it('a game past the published table gets a row, flagged rather than extrapolated', () => {
+    const { campaign } = rosterSheet(
+      warband({ snapshots: [post(13, 'The Long Season', 'Victory')] }),
+      { dataset: DATASET },
+    );
+    const row = campaign.rows.find((r) => r.game === 13)!;
+    expect(row.scenarioName).toBe('The Long Season');
+    expect(row.extrapolated).toBe(true);
+    const last = DATASET.campaign.thresholds![DATASET.campaign.thresholds!.length - 1];
+    expect(row.threshold).toBe(last.threshold);
+  });
+});
+
+describe('FD-12: the header is the sheet’s own blanks', () => {
+  it('fills each one from the roster and the campaign', () => {
+    /* Through `variantsForFaction`, because the catalogues and the app spell a
+       faction differently and that resolution is its own function. */
+    const variant = variantsForFaction(DATASET, 'iron-sultanate')[0];
+    const { header } = rosterSheet(
+      warband({ variantId: variant.id, patron: 'Sublime Gate', campaignId: 'camp1' }),
+      { dataset: DATASET, campaign: { id: 'camp1', name: 'The Carcass Front' } },
+    );
+    expect(header).toEqual({
+      warbandName: 'Al-Qarn Rihla',
+      player: 'Nick',
+      warband: variant.name,
+      patron: 'Sublime Gate',
+      campaignBattle: 'The Carcass Front',
+      faction: 'Iron Sultanate',
+    });
+  });
+
+  it('leaves CAMPAIGN BATTLE blank for a campaign that is not this Warband’s', () => {
+    const { header } = rosterSheet(
+      warband({ campaignId: 'camp1' }),
+      { dataset: DATASET, campaign: { id: 'camp2', name: 'Somebody else’s crusade' } },
+    );
+    expect(header.campaignBattle).toBe('');
+  });
+
+  it('and blank for no campaign at all, rather than naming one', () => {
+    expect(rosterSheet(warband(), { dataset: DATASET }).header.campaignBattle).toBe('');
+  });
+});
+
+describe('FD-12: STRONGBOX is a TOTAL and an UNSPENT, from the ledger', () => {
+  const led = warband({
+    ledger: [
+      { id: 'l1', at: '2026-01-01', reason: 'founding', ducats: 700, glory: 0 },
+      { id: 'l2', at: '2026-01-02', reason: 'quartermaster', ducats: -620, glory: 0 },
+      { id: 'l3', at: '2026-02-01', reason: 'exploration', ducats: 40, glory: 6 },
+      { id: 'l4', at: '2026-02-02', reason: 'quartermaster', ducats: 0, glory: -2 },
+    ],
+  });
+
+  it('TOTAL is everything ever credited; UNSPENT is the balance', () => {
+    const { strongbox } = rosterSheet(led, { dataset: DATASET });
+    expect(strongbox.ducatsTotal).toBe(740);
+    expect(strongbox.ducatsUnspent).toBe(120);
+    expect(strongbox.gloryTotal).toBe(6);
+    expect(strongbox.gloryUnspent).toBe(4);
+    expect(strongbox.fromLedger).toBe(true);
+  });
+
+  it('a Warband with no ledger says the pair is a balance, not a total', () => {
+    const { strongbox } = rosterSheet(
+      warband({ treasuryDucats: 80, gloryPoints: 3 }), { dataset: DATASET });
+    expect(strongbox.fromLedger).toBe(false);
+    expect(strongbox.ducatsTotal).toBe(80);
+    expect(strongbox.ducatsUnspent).toBe(80);
+    expect(strongbox.gloryUnspent).toBe(3);
+  });
+});
+
+describe('FD-12: the unit cards', () => {
+  it('carry the five characteristics the sheet prints, Base included', () => {
+    const { cards } = rosterSheet(warband(), { dataset: DATASET });
+    expect(cards[0].model.stats).toEqual({
+      movement: '6"/Infantry', ranged: '+1', melee: '+0', armour: '0', base: '30mm',
+    });
+  });
+
+  it('carry a track, Battlekit and keywords', () => {
+    const armed = warband({
+      units: [unit({
+        equippedWeapons: [{ instanceId: 'w1', name: 'Machine Gun' } as never],
+        equippedArmour: [{ instanceId: 'a1', name: 'Heavy Armour' } as never],
+        xp: 6,
+      })],
+    });
+    const { cards } = rosterSheet(armed, { dataset: DATASET });
+    expect(cards[0].battlekit).toEqual(['Machine Gun', 'Heavy Armour']);
+    expect(cards[0].keywords).toEqual(['SULTANATE']);
+    expect(cards[0].track!.boxes.filter((b) => b.filled)).toHaveLength(6);
+  });
+
+  it('a pre-app Skill renders with its marker', () => {
+    const marked = warband({
+      units: [unit({
+        skills: [{
+          name: 'Ranged Proficiency', category: 'Ranged Skills',
+          source: { kind: 'manual-pre-app', note: 'earned in game 2, before the app' },
+        }],
+      })],
+    });
+    const { cards, holdings } = rosterSheet(marked, { dataset: DATASET });
+    const line = cards[0].abilitiesSkillsInjuries.find((a) => a.name === 'Ranged Proficiency')!;
+    expect(line.provenance).toContain('Recorded before the app');
+    expect(line.provenance).toContain('earned in game 2, before the app');
+    /* And it appears in the Warband-wide review, which is the other half of what
+       the owner asked for beside the sheet. */
+    expect(holdings.some((h) => h.name === 'Ranged Proficiency')).toBe(true);
+  });
+
+  it('a pre-app Skill counts towards the next Advancement Roll exactly as a rolled one', () => {
+    /*
+      The marking is for the reader, not for the arithmetic. `advancementRollsDue`
+      counts the Experience track against rolls TAKEN, so a hand-entered Skill
+      neither grants nor cancels a roll — which is the owner's ruling, and the
+      reason nothing in `provenance.ts` filters by kind.
+    */
+    const at = DATASET.campaign.experience!.advancementAt[1];
+    const rolled = unit({ xp: at, advancementRolls: 1, skills: [{ name: 'A', category: 'x', source: { kind: 'advancement', game: 2, roll: '7' } }] });
+    const byHand = unit({ xp: at, advancementRolls: 1, skills: [{ name: 'A', category: 'x', source: { kind: 'manual-pre-app' } }] });
+    expect(advancementRollsDue(DATASET, byHand)).toBe(advancementRollsDue(DATASET, rolled));
+  });
+});
+
+describe('FD-12: ARSENAL, BIO and the fallen', () => {
+  it('lists the stash with what each item cost, in its own currency', () => {
+    const stocked = warband({
+      armoryStash: [
+        { id: 's1', name: 'Anti-Tank Hammer', type: 'Weapon', cost: 35, quantity: 1 },
+        { id: 's2', name: 'Relic', type: 'Equipment', cost: 4, currency: 'glory', quantity: 2 },
+      ],
+    });
+    const { arsenal } = rosterSheet(stocked, { dataset: DATASET });
+    expect(arsenal).toEqual([
+      { name: 'Anti-Tank Hammer', quantity: 1, ducats: 35, glory: 0 },
+      { name: 'Relic', quantity: 2, ducats: 0, glory: 4 },
+    ]);
+  });
+
+  it('BIO is the Warband’s lore and HERALDRY its motto', () => {
+    const told = warband({ lore: 'Out of the sand.', motto: 'The sand remembers.' });
+    const sheet = rosterSheet(told, { dataset: DATASET });
+    expect(sheet.bio).toBe('Out of the sand.');
+    expect(sheet.heraldry).toBe('The sand remembers.');
+  });
+
+  it('names the fallen, which the printed sheet has no room for', () => {
+    const bereaved = warband({
+      fallen: [unit({ id: 'u9', customName: 'Zayd' })],
+    });
+    expect(rosterSheet(bereaved, { dataset: DATASET }).fallen)
+      .toEqual([{ name: 'Zayd', profileName: 'Azeb' }]);
+  });
+});
+
+describe('a sheet rendered with no ruleset says nothing it cannot know', () => {
+  it('has no Threshold rows and no track, rather than invented ones', () => {
+    const sheet = rosterSheet(warband(), { dataset: null });
+    expect(sheet.campaign.rows).toEqual([]);
+    expect(sheet.campaign.total).toBeNull();
+    expect(sheet.cards[0].track).toBeNull();
+    /* The roster's own facts still render: the name is the name. */
+    expect(sheet.header.warbandName).toBe('Al-Qarn Rihla');
+  });
+});

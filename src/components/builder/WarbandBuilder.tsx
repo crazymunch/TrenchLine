@@ -11,6 +11,8 @@ import { ArmoryStashModal } from './ArmoryStashModal';
 import { RecreationPanel } from './RecreationPanel';
 import { WarbandChronicleModal } from './WarbandChronicleModal';
 import { WarbandChangelogModal } from './WarbandChangelogModal';
+import { ShareWarbandModal } from './ShareWarbandModal';
+import { PatronPicker } from './PatronPicker';
 import { soundEffects } from '../../services/soundEffects';
 import { LegalityStrip } from './LegalityStrip';
 import { RulesetSwitcher } from './RulesetSwitcher';
@@ -21,6 +23,8 @@ import { forceLimits, forceBudget, campaignGameOf, canChangeVariant } from '../.
 import { checkForceLimits } from '../../rules/validate';
 import { DEFAULT_RULESET_ID, rulesetInfo } from '../../rules/rulesets';
 import { warbandCode } from '../../rules/warbandCode';
+import { patronMissing } from '../../rules/patrons';
+import Link from 'next/link';
 import { 
   ChevronDown,
   UserPlus, 
@@ -40,6 +44,8 @@ import {
   FlaskConical,
   Lock,
   ShieldCheck,
+  ClipboardList,
+  Link2,
 } from 'lucide-react';
 import { useOverlay } from '../ui/useOverlay';
 import { byRank } from '../ui/unitRole';
@@ -54,6 +60,7 @@ export const WarbandBuilder: React.FC = () => {
     updateWarbandGlory,
     updateWarbandVariant,
     setWarbandAllowThirdParty,
+    updateWarbandLore,
     campaign
   } = useStore();
 
@@ -77,6 +84,8 @@ export const WarbandBuilder: React.FC = () => {
   
   const [isAddUnitOpen, setIsAddUnitOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isPatronOpen, setIsPatronOpen] = useState(false);
   const [isStashOpen, setIsStashOpen] = useState(false);
   const [isChronicleOpen, setIsChronicleOpen] = useState(false);
   const [codeCopied, setCodeCopied] = useState(false);
@@ -235,12 +244,28 @@ export const WarbandBuilder: React.FC = () => {
               style={{ backgroundColor: faction?.color || '#D4AF37' }}
             />
             <span className="eyebrow accent font-bold">{faction?.name}</span>
-            {warband.patron && (
-              <>
-                <span className="text-theme-muted text-xs" aria-hidden="true">/</span>
-                <span className="eyebrow truncate max-w-[14rem] sm:max-w-sm">{warband.patron}</span>
-              </>
-            )}
+            {/*
+              The Patron (FD-15).
+
+              It was display-only text that only appeared once somebody had
+              typed one. The book does not leave it optional — "Once they have
+              recruited their Warband, they must pick a Patron for it"
+              (L4753-4755) — and a Patron Skill result is unanswerable without
+              one, so an unset Patron on a campaign Warband is a gap that says
+              so and opens the picker.
+            */}
+            <span className="text-theme-muted text-xs" aria-hidden="true">/</span>
+            <button
+              onClick={() => setIsPatronOpen(true)}
+              className="tap eyebrow truncate max-w-[14rem] sm:max-w-sm hover:text-theme-primary"
+              title="Which Patron this Warband picked"
+            >
+              {warband.patron
+                ? warband.patron
+                : patronMissing(warband)
+                  ? <span className="text-status-warning">Patron not set</span>
+                  : 'Pick a Patron'}
+            </button>
           </div>
 
           <h1 className="font-gothic text-[1.75rem] leading-[1.05] sm:text-4xl lg:text-5xl text-theme-text tracking-tight break-words">
@@ -409,6 +434,30 @@ export const WarbandBuilder: React.FC = () => {
               >
                 <Archive className="w-4 h-4" />
                 <span>Stash ({totalStashItems})</span>
+              </button>
+
+              {/*
+                The official Warband Roster Sheet (FD-12). A route rather than a
+                modal: it is a page you read at the table and print from, and it
+                is the surface the public share link renders.
+              */}
+              <Link
+                href={`/roster/${encodeURIComponent(warband.id)}/sheet`}
+                className="flex items-center space-x-1.5 px-3 py-2 min-h-[44px] lg:min-h-0 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="The official Warband Roster Sheet, and Print / PDF"
+              >
+                <ClipboardList className="w-4 h-4 text-theme-primary" />
+                <span>Sheet</span>
+              </Link>
+
+              {/* SH-1: the link you paste into the group chat. */}
+              <button
+                onClick={() => setIsShareOpen(true)}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-theme-base hover:bg-theme-elevated text-theme-text border border-theme-border hover:border-theme-primary font-mono text-xs font-bold uppercase transition-colors"
+                title="Put this roster's sheet at a public read-only link"
+              >
+                <Link2 className="w-4 h-4 text-theme-primary" />
+                <span>Share</span>
               </button>
 
               <button
@@ -747,6 +796,31 @@ export const WarbandBuilder: React.FC = () => {
           onClose={() => setIsStashOpen(false)}
         />
       )}
+
+      {/* SH-1: the share link. The token lives on the server; this asks it. */}
+      <ShareWarbandModal
+        open={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        warbandId={warband.id}
+        warbandName={warband.name}
+      />
+
+      {/* FD-15: the Patron, from the book's list for this faction. */}
+      <PatronPicker
+        open={isPatronOpen}
+        onClose={() => setIsPatronOpen(false)}
+        dataset={dataset}
+        factionId={warband.factionId}
+        factionName={faction?.name}
+        current={warband.patron}
+        onPick={(name) => {
+          /* Through the lore action, which is the one writer of this field —
+             the Chronicle dossier edits it too, and two writers would be two
+             places for it to be normalised differently. */
+          updateWarbandLore(warband.id, warband.lore ?? '', warband.motto ?? '', name);
+          setIsPatronOpen(false);
+        }}
+      />
 
       {/* HOUSE CHRONICLE & LORE DOSSIER MODAL */}
       {isChronicleOpen && (

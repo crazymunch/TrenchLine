@@ -1,0 +1,142 @@
+/**
+ * The Experience track against the printed sheet and against the dataset
+ * (FD-12 item 1).
+ *
+ * The point of these tests is that the two AGREE. The official Warband Roster
+ * Sheet prints eighteen Experience boxes with circles at six of them and two
+ * SCARS boxes; `dataset.campaign.experience` and `dataset.campaign.trauma`
+ * publish the same three facts. If the track were typed from the picture the
+ * tests would pass and mean nothing, so every assertion here reads the DATASET
+ * and then checks it against the numbers the extract of the sheet prints — which
+ * is the only way the agreement is a fact rather than a coincidence.
+ *
+ * `data-sources/rulebook/extracted/warband-roster-sheet.txt` is the extract.
+ */
+import { describe, it, expect } from 'vitest';
+import { DATASET } from '@/data/generated/trenchline.generated';
+import { experienceTrackFor } from '../experienceTrack';
+import { traumaProcedure } from '../trauma';
+import type { ActiveUnit } from '@/types/warband';
+
+/**
+ * The sheet's own numbers, from the printed page.
+ *
+ * These are facts about the PAPER, not game data — the count of boxes drawn in a
+ * row and which of them are circles. They are here so the dataset can be checked
+ * against them; nothing in `src/` reads them.
+ */
+const PRINTED = {
+  experienceBoxes: 18,
+  circlesAt: [2, 4, 7, 10, 14, 18],
+  scarBoxes: 2,
+};
+
+const unit = (over: Partial<ActiveUnit> = {}): ActiveUnit => ({
+  id: 'u1',
+  customName: 'Kasim',
+  /* A Sultanate Azeb: no LIMITED POTENTIAL, so no cap. */
+  baseProfileId: DATASET.units.find(
+    (u) => u.name === 'Azeb' && !(u.keywords ?? []).includes('LIMITED POTENTIAL'),
+  )?.id ?? 'unknown',
+  profileSnapshot: { name: 'Azeb' } as never,
+  equippedWeapons: [], equippedArmour: [], equippedEquipment: [],
+  xp: 0, advancements: [], injuries: [], isDead: false, totalCost: 0,
+  currentWounds: 1, maxWounds: 1, bloodMarkers: 0,
+  status: 'Active', hasActedThisTurn: false,
+  ...over,
+});
+
+describe('FD-12: the track is the dataset, and the dataset is the printed sheet', () => {
+  it('has as many boxes as the sheet prints, from the dataset', () => {
+    const track = experienceTrackFor(DATASET, unit())!;
+    expect(track).not.toBeNull();
+    expect(DATASET.campaign.experience!.max).toBe(PRINTED.experienceBoxes);
+    expect(track.boxes).toHaveLength(PRINTED.experienceBoxes);
+  });
+
+  it('circles the boxes the sheet circles, and those are advancementAt', () => {
+    const track = experienceTrackFor(DATASET, unit())!;
+    const circled = track.boxes.filter((b) => b.advancement).map((b) => b.index);
+
+    // The dataset first — this is the operative rule.
+    expect(circled).toEqual([...DATASET.campaign.experience!.advancementAt]);
+    // And the paper agrees with it.
+    expect(circled).toEqual(PRINTED.circlesAt);
+  });
+
+  it('fills to the model’s Experience, left to right, and no further', () => {
+    const track = experienceTrackFor(DATASET, unit({ xp: 6 }))!;
+    expect(track.boxes.filter((b) => b.filled).map((b) => b.index))
+      .toEqual([1, 2, 3, 4, 5, 6]);
+    expect(track.xp).toBe(6);
+  });
+
+  it('prints as many SCARS boxes as the sheet, which is one short of retirement', () => {
+    const track = experienceTrackFor(DATASET, unit())!;
+    /* Through `traumaProcedure`, which is what resolves the rule — not by
+       reaching into the dataset's shape, which would test a different thing. */
+    const unfitAt = traumaProcedure(DATASET)!.battleScars.unfitAt;
+
+    expect(track.unfitAt).toBe(unfitAt);
+    /* The third scar retires the model ("they are sent back home. Remove the
+       model from your Warband Roster"), so two is what it may carry and serve —
+       and two is what the paper prints. */
+    expect(unfitAt - 1).toBe(PRINTED.scarBoxes);
+    expect(track.scars).toHaveLength(PRINTED.scarBoxes);
+  });
+
+  it('fills a scar box per scar the model carries', () => {
+    const track = experienceTrackFor(DATASET, unit({
+      scars: [{ name: 'Leg Wound', roll: '31' }],
+    }))!;
+    expect(track.scars.map((s) => s.filled)).toEqual([true, false]);
+  });
+});
+
+describe('FD-12: a LIMITED POTENTIAL model greys the boxes past its cap', () => {
+  /*
+    The Brazen Bull is the entry the keyword is on, and it is read from the
+    DATASET entry rather than from the model's snapshot — a layer can change a
+    model's keywords after it was recruited, which is exactly what `experienceCap`
+    exists to handle.
+  */
+  const limited = DATASET.units.find(
+    (u) => (u.keywords ?? []).some((k) => String(k).toUpperCase() === 'LIMITED POTENTIAL'),
+  );
+
+  it('the dataset ships at least one such entry, or this test proves nothing', () => {
+    expect(limited, 'no LIMITED POTENTIAL entry in the dataset').toBeTruthy();
+  });
+
+  it('greys past the cap and leaves the row eighteen boxes long', () => {
+    const track = experienceTrackFor(DATASET, unit({
+      baseProfileId: limited!.id, xp: 1,
+    }))!;
+    const cap = DATASET.campaign.promotions!.limitedPotential!.maxXp;
+
+    expect(track.cap).toBe(cap);
+    expect(track.boxes).toHaveLength(PRINTED.experienceBoxes);
+    expect(track.boxes.filter((b) => b.beyondCap).map((b) => b.index))
+      .toEqual(track.boxes.filter((b) => b.index > cap).map((b) => b.index));
+    /* The cap is visible rather than stated: the boxes it forbids are still
+       drawn. A shorter row would say the model is on a different track. */
+    expect(track.boxes.some((b) => b.beyondCap)).toBe(true);
+  });
+
+  it('a model somehow past its cap keeps what it holds, and the row grows', () => {
+    const cap = DATASET.campaign.promotions!.limitedPotential!.maxXp;
+    const over = experienceTrackFor(DATASET, unit({
+      baseProfileId: limited!.id, xp: PRINTED.experienceBoxes + 2,
+    }))!;
+    expect(over.cap).toBe(cap);
+    expect(over.boxes).toHaveLength(PRINTED.experienceBoxes + 2);
+    expect(over.boxes.every((b) => b.filled)).toBe(true);
+  });
+});
+
+describe('a ruleset with no Experience track reports one rather than assuming eighteen', () => {
+  it('returns null', () => {
+    expect(experienceTrackFor(null, unit())).toBeNull();
+    expect(experienceTrackFor({ campaign: {} } as never, unit())).toBeNull();
+  });
+});

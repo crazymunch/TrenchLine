@@ -1,8 +1,10 @@
 import { XMLParser } from 'fast-xml-parser';
-import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem } from '../types/warband';
+import { Warband, ActiveUnit, EquippedWeapon, EquippedArmour, EquippedEquipment, StashedItem, WarbandReward, InjuryRecord } from '../types/warband';
 import { UnitProfile } from '../types/rules';
 import type { Dataset } from '../types/catalogue';
 import { golemOnImport, GOLEM_GRANTED_BY } from '../rules/golem';
+import { patronNamed } from '../rules/patrons';
+import { splitRecordedRoll } from '../rules/provenance';
 
 /**
  * Import a NewRecruit / BattleScribe roster.
@@ -112,6 +114,131 @@ export function readCampaignRules(data: unknown): string[] {
 
   find(data);
   return [...new Set(out)];
+}
+
+/**
+ * The same subtree, with each entry's GROUP and its printed rules text
+ * (FD-12 item 2).
+ *
+ * `readCampaignRules` returns names, and names are all the rules modules need —
+ * `golemGrant` matches the Book of Golems by the sentence its Exploration row
+ * prints, never by a string. But the Roster Sheet has to show the player what
+ * each reward actually says and how the Warband came by it, and a name cannot
+ * carry either.
+ *
+ * The group is the load-bearing part. NewRecruit files these under
+ * `Exploration Rewards`, `Exploration Skills` and `Patron Selection`, and the
+ * group is how the Patron is told from the rewards **without this parser
+ * knowing any Patron's name** — which is what keeps the reading derived rather
+ * than matched against a list written here.
+ *
+ * `Unleveraged Glory` sits in the subtree with no group at all; it is
+ * NewRecruit's own Glory counter rather than something the Warband earned, so
+ * it comes back with no group and the caller decides.
+ *
+ * The text is the roster's own `Rules` characteristic, copied and not
+ * paraphrased. Absent where the export ships no profile with the selection.
+ */
+export function readCampaignGrants(data: unknown): WarbandReward[] {
+  const out: WarbandReward[] = [];
+  const named = (n: unknown): n is Record<string, unknown> =>
+    typeof n === 'object' && n !== null;
+
+  /** The `Rules` characteristic of the selection's own profile, if it has one. */
+  const rulesText = (node: Record<string, unknown>): string | undefined => {
+    const profiles = node.profiles;
+    const list = Array.isArray(profiles) ? profiles : [];
+    for (const prof of list) {
+      if (!named(prof)) continue;
+      const chars = Array.isArray(prof.characteristics) ? prof.characteristics : [];
+      for (const c of chars) {
+        if (!named(c)) continue;
+        const cn = (c.name ?? c['@_name']) as string | undefined;
+        const text = (c.$text ?? c['#text']) as string | undefined;
+        if (cn && /^rules$/i.test(String(cn).trim()) && text && text.trim() !== '-') {
+          return String(text).trim();
+        }
+      }
+    }
+    return undefined;
+  };
+
+  const collect = (node: unknown) => {
+    if (!named(node)) return;
+    const kids = node.selections ?? node.selection;
+    const list = Array.isArray(kids)
+      ? kids
+      : named(kids) ? Object.values(kids as object) : [];
+    for (const k of list) {
+      if (!named(k)) continue;
+      const label = String(k.name ?? k['@_name'] ?? '').trim();
+      if (!label) continue;
+      const group = String(k.group ?? k['@_group'] ?? '').trim();
+      out.push({
+        name: label,
+        ...(group ? { group } : {}),
+        ...(rulesText(k) ? { text: rulesText(k) } : {}),
+        /* It came in from a file. Not an Exploration result the app watched
+           happen, whatever group the roster filed it under. */
+        source: { kind: 'import' },
+      });
+    }
+  };
+
+  const find = (node: unknown) => {
+    if (!named(node)) return;
+    if (Array.isArray(node)) return (node as unknown[]).forEach(find);
+    const name = (node.name ?? node['@_name']) as string | undefined;
+    if (typeof name === 'string' && /^Enabled$/i.test(name.trim())) collect(node);
+    for (const v of Object.values(node)) {
+      if (typeof v === 'object' && v !== null) find(v);
+    }
+  };
+
+  find(data);
+  /* First spelling wins, as `readCampaignRules` does with its Set. */
+  const seen = new Set<string>();
+  return out.filter((r) => {
+    const k = r.name.trim().toLowerCase();
+    if (seen.has(k)) return false;
+    seen.add(k);
+    return true;
+  });
+}
+
+/**
+ * The group NewRecruit files a Patron under.
+ *
+ * Read from the roster's own structure, not from a Patron's name — see
+ * `readCampaignGrants`. Exported so the test can name what it depends on.
+ */
+export const PATRON_GROUP = 'Patron Selection';
+
+/**
+ * The Patron the roster states, if OUR dataset knows it (FD-15).
+ *
+ * Two conditions, and both matter. The roster has to file something under
+ * `Patron Selection`, and that something has to resolve to a Patron in the
+ * ruleset this app ships — `dataset.patrons`, the eleven derived from the
+ * rulebook and Carcass Front.
+ *
+ * Unresolved, nothing is written. A `patron` string the dataset cannot place is
+ * worse than none: `patronSkillsFor` matches on the name, so it would read as a
+ * Patron whose Skills are an empty list, and a Patron Skill result would report
+ * "no Patron recorded" for a Warband whose sheet said it had one.
+ *
+ * The ROSTER's spelling is kept where it resolves. The dataset prints the book's
+ * caps (`SUBLIME GATE`) and the export prints `Sublime Gate`; the lookup is
+ * case-insensitive, and the player's own sheet says the latter.
+ */
+export function patronFromGrants(
+  grants: readonly WarbandReward[],
+  dataset?: Dataset,
+): string | undefined {
+  const stated = grants.find(
+    (g) => (g.group ?? '').trim().toLowerCase() === PATRON_GROUP.toLowerCase());
+  if (!stated) return undefined;
+  return patronNamed(dataset, stated.name) ? stated.name : undefined;
 }
 
 export function importNewRecruitRoster(
@@ -339,6 +466,12 @@ function parseNewRecruitJson(
   data: NrDocument, allUnits: UnitProfile[], dataset?: Dataset,
 ): ImportResult {
   const campaignRules = readCampaignRules(data);
+  /*
+    The same subtree with each entry's group and printed text (FD-12), and the
+    Patron the roster states where our own dataset knows it (FD-15).
+  */
+  const grants = readCampaignGrants(data);
+  const patron = patronFromGrants(grants, dataset);
   const rosterData = data.roster || data;
   const force: NrForce = rosterData.forces?.[0] || rosterData;
   const warbandName = force.customName || rosterData.customName || rosterData.name || 'Imported Warband';
@@ -521,6 +654,19 @@ function parseNewRecruitJson(
     const specialUpgrades: { id: string; name: string; cost: number; category: string }[] = [];
     const advancements: string[] = [];
     const injuries: string[] = [];
+    /*
+      FD-12 item 2: a Skill imported from NewRecruit is a Skill with its roll,
+      not a bare name in the legacy free-text list.
+
+      The export prints `Point Blank [9]` and files it under
+      `Advancement::Skills::Ranged Skills`. Both halves are provenance the app
+      had been throwing away: the roll is the only record of the 2D6 total that
+      earned the Skill, and the group is the table it came off. `source` says
+      `import`, because that is what it is — the dice were rolled at somebody's
+      table, not here.
+    */
+    const skills: NonNullable<ActiveUnit['skills']> = [];
+    const injuryRecords: InjuryRecord[] = [];
     let xp = 0;
 
     function parseSubSelections(subList: NrSelection[] | undefined) {
@@ -538,11 +684,51 @@ function parseNewRecruitJson(
 
         // Skills / Advancements / Injuries
         if (subGroup.includes('Skills') || subGroup.includes('Advancement') || subName === 'Elite Promotion' || subGroup.includes('Upgrades')) {
+          /*
+            `Advancement::Injuries` — an injury, with the D66 that caused it.
+
+            Into BOTH arrays, as `addUnitInjury` does: `injuries` is what every
+            other reader uses and `injuryRecords` carries the roll. NOT into
+            `scars`, and the difference decides whether the model retires — a
+            scar counts towards Unfit for Duty and an injury does not (RC-05).
+          */
           if (subGroup.includes('Injuries')) {
+            const { name, roll } = splitRecordedRoll(subName);
             injuries.push(subName);
-          } else {
-            advancements.push(subName);
+            injuryRecords.push({
+              name: subName,
+              source: { kind: 'import', ...(roll ? { roll } : {}) },
+            });
+            /* `name` is the injury without its bracket. Unused here on purpose:
+               `injuries` keeps the roster's own spelling, which is what an
+               existing roster file and `alreadySuffered` already match on. */
+            void name;
+            return;
           }
+
+          /*
+            `Advancement::Skills::<table> Skills` — a Skill off a named table.
+
+            The group's last segment is the category, in the SOURCE's words. Not
+            mapped onto the app's four table ids: the roster said `Ranged
+            Skills`, the app calls that table `Marksmanship`, and inventing the
+            correspondence here would be this file deciding a rules question.
+          */
+          const skillGroup = /(?:^|::)Skills::(.+)$/.exec(subGroup);
+          if (skillGroup) {
+            const { name, roll } = splitRecordedRoll(subName);
+            if (!skills.some((sk) => sk.name.toLowerCase() === name.toLowerCase())) {
+              skills.push({
+                name,
+                category: skillGroup[1].trim(),
+                ...(roll ? { roll } : {}),
+                source: { kind: 'import', ...(roll ? { roll } : {}) },
+              });
+            }
+            return;
+          }
+
+          advancements.push(subName);
           return;
         }
 
@@ -755,6 +941,11 @@ function parseNewRecruitJson(
       xp,
       advancements,
       injuries,
+      /* Absent rather than empty where the roster carried none: an empty list
+         and no list are the same thing to every reader, and absent is what a
+         model with no Skills on its sheet actually has. */
+      ...(skills.length ? { skills } : {}),
+      ...(injuryRecords.length ? { injuryRecords } : {}),
       isDead: false,
       totalCost: totalUnitCost,
       currentWounds: maxHp,
@@ -791,6 +982,15 @@ function parseNewRecruitJson(
          action is offered on the strength of it, and until GOLEM-1 nothing
          persisted it at all. */
       campaignRules,
+      /* The same grants with their rules text and provenance, which is what the
+         Roster Sheet prints beside each one. `campaignRules` stays the names —
+         two records of one subtree, neither derived from the other, because a
+         name the app cannot place is still a name the roster stated. */
+      rewards: grants,
+      /* Only where it resolved against `dataset.patrons`. An unresolvable one is
+         left unset, which reads as the gap it is rather than as a Patron whose
+         Skills are empty. */
+      ...(patron ? { patron } : {}),
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     },

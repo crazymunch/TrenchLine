@@ -39,6 +39,18 @@ export default function robots(): MetadataRoute.Robots {
         '/campaign',
         '/directory',
         '/customizer',
+        /*
+          SH-1's share page. A capability URL — whoever holds the token reads the
+          roster — so an indexed one outlives the share, and "Stop sharing" cannot
+          take back a search result.
+
+          The third mechanism for the same rule, after the page's `noindex`
+          metadata and the `X-Robots-Tag` header in `next.config.mjs`. It is the
+          weakest of the three (a crawler has to ask for this file, and a link
+          shared in a chat may reach one that does not) and the cheapest, which is
+          why all three are here.
+        */
+        '/w/',
       ],
     },
     sitemap: `${siteUrl()}/sitemap.xml`,

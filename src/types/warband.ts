@@ -4,6 +4,92 @@ import type { Cost } from './catalogue';
 
 import { UnitProfile, WeaponProfile, ArmourProfile, EquipmentItem } from './rules';
 
+/**
+ * How a model or a Warband came to hold something (FD-12 item 2).
+ *
+ * Five kinds, and the distinction between them is the whole point: a Skill the
+ * dice gave is a different record from one a player typed in because their
+ * campaign started before this app existed, and a screen that counts
+ * Advancement Rolls has to be able to tell.
+ *
+ *   `advancement`    an Advancement Roll. Carries the game and the 2D6 total.
+ *   `trauma`         the Trauma Step. Carries the game and the D66 roll.
+ *   `exploration`    an Exploration result. Carries the game and the Location.
+ *   `import`         came in from a roster file or a NewRecruit export.
+ *   `manual-pre-app` the player's own record of something that happened before
+ *                    the app held the Warband, with their note.
+ *
+ * **Nothing is back-filled with a guess.** An entry written before this field
+ * existed has no `source`, and `provenanceOf` reads it as `import` — never as
+ * a roll that did not happen. See `src/rules/provenance.ts`.
+ */
+export type ProvenanceKind =
+  | 'advancement'
+  | 'trauma'
+  | 'exploration'
+  | 'import'
+  | 'manual-pre-app';
+
+export interface Provenance {
+  kind: ProvenanceKind;
+  /**
+   * The campaign game it happened in, where the record knows. Absent on an
+   * imported or pre-app entry, which is the honest answer rather than 1.
+   */
+  game?: number;
+  /**
+   * The roll that produced it, exactly as it was recorded: `9` for a 2D6
+   * Skill, `31` for a D66 injury. A STRING because NewRecruit prints it as
+   * one — `Point Blank [9]` — and because a ranged Trauma row (`41-63`) is
+   * reached by more than one total.
+   */
+  roll?: string;
+  /** The Exploration Location that granted it, as the book spells it. */
+  location?: string;
+  /** The player's own words. Only meaningful for `manual-pre-app`. */
+  note?: string;
+}
+
+/**
+ * An injury the model carries, with how it got it.
+ *
+ * A parallel record rather than a change to `injuries: string[]`, which is the
+ * shape `titles` and `titleRecords` already use on this type: every reader of
+ * `injuries` keeps working, and the provenance is available to the ones that
+ * ask for it. `injuriesHeld` in `src/rules/provenance.ts` joins the two.
+ */
+export interface InjuryRecord {
+  name: string;
+  source?: Provenance;
+}
+
+/**
+ * Something the WARBAND holds that a rule gave it: an Exploration reward, a
+ * Patron, a standing Skill.
+ *
+ * `Warband.campaignRules` already carries the NAMES the import read out of a
+ * roster's `Campaign Rules > Enabled` subtree (GOLEM-1). This carries what the
+ * sheet has to print beside each one — the rule's own text and how the Warband
+ * came by it — which a bare name cannot.
+ *
+ * The text is never written here by hand: it is the roster's own printed rules
+ * text on an import, or the Exploration Location's text from the dataset.
+ */
+export interface WarbandReward {
+  /** As the source spells it — `Book of Golems`, `Ransacked Alchemist Workshop`. */
+  name: string;
+  /**
+   * The group the source filed it under, where it stated one: NewRecruit's
+   * `Exploration Rewards`, `Exploration Skills`, `Patron Selection`. Kept
+   * because it is how the Patron is told from the rewards without matching
+   * names against a list written here.
+   */
+  group?: string;
+  /** The rule as printed. Absent where the source carried none. */
+  text?: string;
+  source?: Provenance;
+}
+
 export interface EquippedWeapon extends WeaponProfile {
   instanceId: string;
 }
@@ -48,7 +134,17 @@ export interface ActiveUnit {
    * they did. Clearing it would be a data change, not a fix.
    */
   advancements: string[];
-  skills?: { name: string; category: string; roll?: string; effect?: string }[];
+  /**
+   * Skills the model holds, and how each was earned.
+   *
+   * `source` is FD-12 item 2. A Skill with none reads as `import` — see
+   * `provenanceOf` — because that is what a Skill with no record actually is:
+   * a name that arrived from somewhere, not a roll anybody made.
+   */
+  skills?: {
+    name: string; category: string; roll?: string; effect?: string;
+    source?: Provenance;
+  }[];
   /**
    * The grant that put this model on the roster, where one did.
    *
@@ -69,7 +165,16 @@ export interface ActiveUnit {
    */
   advancementRolls?: number;
   injuries: string[];
-  scars?: { name: string; roll?: string; effect?: string }[];
+  /**
+   * The same injuries, with their provenance (FD-12 item 2).
+   *
+   * Parallel to `injuries` rather than replacing it, exactly as `titleRecords`
+   * is parallel to `titles`: `injuries` is read in a dozen places and by every
+   * roster file ever written, and a shape change there would be a migration
+   * for no gain. `injuriesHeld` joins them.
+   */
+  injuryRecords?: InjuryRecord[];
+  scars?: { name: string; roll?: string; effect?: string; source?: Provenance }[];
   /**
    * **Legacy.** Nothing sets this any more; a dead model is moved to
    * `Warband.fallen` instead.
@@ -385,6 +490,16 @@ export interface Warband {
    * Re-rolls. See `ExplorationEffect`.
    */
   explorationEffects?: ExplorationEffect[];
+  /**
+   * Exploration rewards, the Patron and any other standing grant the Warband
+   * holds, with the rule's text and how it came by each (FD-12 item 2).
+   *
+   * `campaignRules` is the names; this is the record. The two are written
+   * together by the importer and neither is derived from the other: a name
+   * with no matching reward is still a name the roster stated, and a reward
+   * whose name the app cannot place is still a rule the player holds.
+   */
+  rewards?: WarbandReward[];
   /**
    * Only meaningful for 'unrestricted'. A campaign warband's cap is derived, and
    * this is ignored — kept because existing saved warbands carry it.

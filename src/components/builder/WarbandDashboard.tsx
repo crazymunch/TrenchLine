@@ -6,6 +6,7 @@ import { useDataset } from '../../rules/useDataset';
 import { DEFAULT_RULESET_ID } from '../../rules/rulesets';
 import { variantsForFaction } from '../../rules/variants';
 import { musterBudget } from '../../rules/campaign';
+import { patronsFor } from '../../rules/patrons';
 import { WarbandBuilder } from './WarbandBuilder';
 import { ImportWarbandModal } from './ImportWarbandModal';
 import { WarbandComparatorModal } from './WarbandComparatorModal';
@@ -89,6 +90,8 @@ export const WarbandDashboard: React.FC = () => {
   // Off by default, which is the catalogues' default: third-party entries are
   // hidden until the roster takes the "Allow Third-Party Mercenaries?" option.
   const [newAllowThirdParty, setNewAllowThirdParty] = useState(false);
+  /* The Patron, a founding decision like the Variant (FD-15). */
+  const [newPatron, setNewPatron] = useState<string>('');
   // How the budget is governed. 'campaign' is the published economy and is the
   // default, because it is what the book describes and what a campaign needs.
   const [newForceMode, setNewForceMode] = useState<'campaign' | 'unrestricted'>('campaign');
@@ -116,6 +119,11 @@ export const WarbandDashboard: React.FC = () => {
 
   // Changing faction invalidates the variant: they belong to one faction each.
   useEffect(() => { setNewVariantId(undefined); }, [newFactionId]);
+  /* And the Patron, for the same reason: every one of the eleven is restricted
+     to a faction or an alignment, so a Patron chosen under the old faction is
+     one the new faction may not take. */
+  useEffect(() => { setNewPatron(''); }, [newFactionId]);
+  const patronOffers = patronsFor(dataset, newFactionId);
   // Turning the switch off must not leave a third-party Variant selected.
   useEffect(() => {
     if (!newAllowThirdParty) {
@@ -154,11 +162,16 @@ export const WarbandDashboard: React.FC = () => {
         gloryPoints: newGlory,
         startingGlory: muster?.glory ?? 0,
         allowThirdParty: newAllowThirdParty,
+        /* Only in campaign mode: the field is not shown for an unrestricted
+           list, and carrying a stale value from a mode switch would record a
+           decision the player did not make on this Warband. */
+        ...(newForceMode === 'campaign' && newPatron ? { patron: newPatron } : {}),
       },
     );
     setNewWarbandName('');
     setNewVariantId(undefined);
     setNewGlory(0);
+    setNewPatron('');
     setNewAllowThirdParty(false);
     setIsCreateModalOpen(false);
   };
@@ -477,6 +490,62 @@ export const WarbandDashboard: React.FC = () => {
                   Changeable from the roster until this Warband&rsquo;s first game.
                 </p>
               </div>
+
+              {/*
+                The Patron (FD-15).
+
+                > Once they have recruited their Warband, they must pick a Patron
+                > for it.                          — the rulebook, L4753 to L4755
+
+                A founding decision, asked here, and the list is the book's own
+                for this faction: `patronsFor` reads each Patron's printed
+                restriction rather than a table written in the app. Shown only
+                for a campaign Force, because an unrestricted list is a one-off
+                game with no Skill Table to roll a Patron Skill on.
+
+                Not an enforced field. The rule says a player must pick one and
+                the app's job is to say so and offer the list — refusing to
+                create a Warband over it would stop somebody recording a roster
+                whose Patron they have not decided yet, which is a real state.
+                `patronMissing` keeps naming the gap on the roster screen and the
+                sheet until it is filled.
+              */}
+              {newForceMode === 'campaign' && (
+                <div>
+                  <label htmlFor="muster-patron" className="block text-xs font-mono uppercase text-theme-muted mb-1">
+                    Patron
+                  </label>
+                  {!dataset ? (
+                    <p className="text-xs font-mono text-theme-muted py-2">
+                      Loading Patrons from the ruleset…
+                    </p>
+                  ) : patronOffers.length === 0 ? (
+                    <p className="text-xs font-mono text-status-error py-2">
+                      This ruleset carries no Patrons, so none can be offered.
+                    </p>
+                  ) : (
+                    <select
+                      id="muster-patron"
+                      value={newPatron}
+                      onChange={(e) => setNewPatron(e.target.value)}
+                      className="w-full min-h-[44px] bg-theme-base border border-theme-border rounded p-2 text-base sm:text-sm text-theme-text focus:outline-none focus:border-theme-primary"
+                    >
+                      <option value="" className="bg-theme-surface">Not decided yet</option>
+                      {patronOffers
+                        .filter((o) => o.eligible !== 'no')
+                        .map((o) => (
+                          <option key={o.patron.id} value={o.patron.name} className="bg-theme-surface">
+                            {o.patron.name} — {o.restriction}
+                          </option>
+                        ))}
+                    </select>
+                  )}
+                  <p className="text-xs font-mono text-theme-muted mt-1.5 leading-relaxed">
+                    The Patron decides which Skill you may take on a Patron Skill
+                    result. A Warband with none recorded cannot answer that roll.
+                  </p>
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-mono uppercase text-theme-muted mb-2">

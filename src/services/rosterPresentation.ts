@@ -47,7 +47,19 @@ export interface PresentedModel {
   /** A model a rule gave the Warband, and the rule that gave it. */
   grantedFree?: string;
   gear: string[];
-  stats?: { movement: string; ranged: string; melee: string; armour: string };
+  /**
+   * The five characteristics the official Warband Roster Sheet prints across a
+   * unit card: MOVEMENT, RANGED, MELEE, ARMOUR and BASE.
+   *
+   * `base` is here rather than in the sheet's own projection because the sheet
+   * prints it as a characteristic, and E1 is that two renderers must not each
+   * resolve the same field. Optional within the group: a warband saved before
+   * `baseSize` existed carries no base size, and an empty cell is the honest
+   * rendering of that.
+   */
+  stats?: {
+    movement: string; ranged: string; melee: string; armour: string; base: string;
+  };
   keywords: string[];
   abilities: { name: string; description: string }[];
   xp: number;
@@ -144,6 +156,7 @@ function presentModel(u: ActiveUnit, priv: boolean): PresentedModel {
       ranged: str(stats.ranged),
       melee: str(stats.melee),
       armour: str(stats.armour),
+      base: str(stats.baseSize),
     } } : {}),
     keywords: (stats?.keywords ?? []).map(String),
     abilities: (profile?.innateAbilities ?? [])
