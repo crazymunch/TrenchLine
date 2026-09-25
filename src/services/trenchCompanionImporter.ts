@@ -53,7 +53,7 @@ import { GOLEM_GRANTED_BY, golemGrant } from '../rules/golem';
 import { carriesAsBattlekit } from '../rules/battlekit';
 import { removeFromRoster } from '../rules/fallen';
 import { explorationChoices, explorationGrants } from '../rules/campaign';
-import EQUIVALENCE from '../../data-sources/trench-companion/id-name-equivalence.json';
+import { TRENCH_COMPANION_IDS } from '../data/generated/trench-companion-ids.generated';
 
 /* ------------------------------------------------------------ their shape */
 
@@ -248,13 +248,21 @@ const slugTail = (id: string): string => id.replace(/^[a-z]{2,3}_/, '');
 /**
  * Their ids where no rule of spelling reaches our name.
  *
- * Two entries today, each citing their bundle — see
- * `data-sources/trench-companion/id-name-equivalence.json` and the guard test
- * that fails when one stops being needed. Everything else resolves by the
- * slug rules below, because their ids ARE slugs of their names.
+ * Three entries today, each citing their bundle and ours. The source of truth
+ * is `data-sources/trench-companion/id-name-equivalence.json`, where the
+ * citations live and where `trenchCompanionEquivalence.test.ts` reads it to
+ * fail when an entry stops being needed. Everything else resolves by the slug
+ * rules below, because their ids ARE slugs of their names.
+ *
+ * Read here from the GENERATED copy, not from that file. `.vercelignore`
+ * excludes `data-sources/` from every deployment — the app is meant to read
+ * the generated output — so importing the source directly built in CI, which
+ * has the whole checkout, and failed the Vercel build, which does not.
+ * `rules-build.mjs` copies it into `src/data/generated/` verbatim and the
+ * guard asserts the two are identical.
  */
 const EQUIVALENT: Record<string, { ours: string | null; theirs: string; why: string }> =
-  (EQUIVALENCE as { ids: Record<string, { ours: string | null; theirs: string; why: string }> }).ids;
+  TRENCH_COMPANION_IDS.ids;
 
 
 /**

@@ -23,6 +23,7 @@ import { DATASET } from '@/data/generated/trenchline.generated';
 import type { Dataset } from '@/types/catalogue';
 import { recruitable } from '@/rules/recruitable';
 import { nameKey } from '@/rules/names';
+import { TRENCH_COMPANION_IDS } from '@/data/generated/trench-companion-ids.generated';
 import { upgradeSlugKeys } from '../trenchCompanionImporter';
 
 const D = DATASET as unknown as Dataset;
@@ -115,6 +116,22 @@ const domainOf = (id: string) => DOMAINS[`${id.slice(0, id.indexOf('_') + 1)}`];
 describe('the Trench Companion id equivalence table', () => {
   it('is not empty, or this test proves nothing', () => {
     expect(entries.length).toBeGreaterThan(0);
+  });
+
+  it('ships to the app exactly as the source file states it', () => {
+    /*
+      The app reads the GENERATED copy, because `.vercelignore` keeps
+      `data-sources/` out of every deployment: importing the source directly
+      built in CI, which has the whole checkout, and failed the Vercel build,
+      which does not. Every other test in this file reads the SOURCE, where the
+      citations live, so this is the one that makes those tests true of what
+      the app actually loads.
+
+      Deep-equal over the whole file, prose keys and all — `rules-build.mjs`
+      copies it verbatim, and anything less than exactness here would let the
+      two drift in a way no other test could see.
+    */
+    expect(TRENCH_COMPANION_IDS).toEqual(table);
   });
 
   it('cites their bundle and says why, on every entry', () => {

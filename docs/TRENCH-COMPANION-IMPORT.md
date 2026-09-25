@@ -168,7 +168,11 @@ bundle note in `scripts/lib/parse-battlescribe.mjs`).
 ### When no rule of spelling reaches
 
 `data-sources/trench-companion/id-name-equivalence.json` names the handful of
-their ids that no slug rule and no alias reaches. Three today:
+their ids that no slug rule and no alias reaches. The app reads the **generated
+copy** of it (`src/data/generated/trench-companion-ids.generated.ts`, written by
+`rules-build.mjs`), because no deployment carries `data-sources/` — see
+[`DEPLOYMENT.md`](DEPLOYMENT.md#what-the-deployment-does-not-carry); the guard
+asserts the two are identical. Three today:
 `md_takwincreation` (their `Takwin Homunculus`, our `Homunculus`),
 `up_meleemight` (their `Kavass`, our `Studied Blade`) and `el_snipersnest`
 (their `Sniper's Nest`, our `Sniper’s Lair`). Each entry cites **both sides**,
