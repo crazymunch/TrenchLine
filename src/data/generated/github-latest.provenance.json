@@ -9502,6 +9502,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:fe5c-8b4d-7a52-73d0": {
@@ -9619,6 +9623,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:54ac-2422-34c4-3bad": {
@@ -9675,6 +9683,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -9793,6 +9805,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:707f-beaa-1d76-4cd8": {
@@ -9849,6 +9865,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -9909,6 +9929,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:b8f0-aa97-3937-9647": {
@@ -9965,6 +9989,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10025,6 +10053,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:e886-7dfb-33ed-95f7": {
@@ -10081,6 +10113,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10141,6 +10177,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:7915-ab6a-b727-3c5c": {
@@ -10197,6 +10237,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10257,6 +10301,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:5945-b33c-aca6-8fb1": {
@@ -10313,6 +10361,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10373,6 +10425,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:0838-7d47-0d0b-4747": {
@@ -10429,6 +10485,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10489,6 +10549,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:d8f9-a2d9-d49f-e65d": {
@@ -10545,6 +10609,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10605,6 +10673,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:7901-7b55-fd13-1c06": {
@@ -10661,6 +10733,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10721,6 +10797,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:b911-6e05-ae16-b799": {
@@ -10777,6 +10857,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10837,6 +10921,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:b401-8a8b-c3fa-80dc": {
@@ -10893,6 +10981,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -10953,6 +11045,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:aca9-4bdb-5e73-ad58": {
@@ -11009,6 +11105,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -11069,6 +11169,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:717c-569e-8f9e-3985": {
@@ -11125,6 +11229,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -11185,6 +11293,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:36f9-cbf1-7f8b-474a": {
@@ -11241,6 +11353,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -11301,6 +11417,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:f855-3a79-f6c4-c14d": {
@@ -11357,6 +11477,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -11417,6 +11541,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:fab2-a4e3-5baf-e68b": {
@@ -11473,6 +11601,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -12403,6 +12535,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:e635-2d2a-2df7-bafe": {
@@ -12459,6 +12595,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -12519,6 +12659,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:8037-91e3-fc56-e8d8": {
@@ -12577,6 +12721,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:eaf6-e4c0-2039-b81a": {
@@ -12633,6 +12781,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -12751,6 +12903,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:9aa7-5a1a-cbf9-b1b5": {
@@ -12865,6 +13021,10 @@
       "source": "battlescribe:Black Grail.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
     }
@@ -12983,6 +13143,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Black Grail.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Black Grail.cat@1b463a8"
     }
   },
   "weapon:7494-e725-3e34-1028": {
@@ -13039,6 +13203,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -13099,6 +13267,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:8a3c-81e1-ddd4-dab7": {
@@ -13155,6 +13327,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -14433,6 +14609,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:807b-c340-06b1-2515": {
@@ -15361,6 +15541,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:7884-d070-ef44-b45b": {
@@ -15417,6 +15601,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -17275,6 +17463,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:9941-7638-dae6-899e": {
@@ -18725,6 +18917,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:36d4-9b55-fd0a-150f": {
@@ -19947,6 +20143,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:0172-5d62-14d9-7627": {
@@ -20061,6 +20261,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -20179,6 +20383,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
   },
   "weapon:a9a0-cd15-f240-4c56": {
@@ -20293,6 +20501,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -20525,6 +20737,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -20873,6 +21089,10 @@
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Campaign Rules.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Campaign Rules.cat@1b463a8"
     }
@@ -22909,6 +23129,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:1401-6c97-8f52-26e1": {
@@ -22965,6 +23189,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23025,6 +23253,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:7918-d1a1-8624-dd27": {
@@ -23081,6 +23313,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23141,6 +23377,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:8bd6-fd99-ac8e-5037": {
@@ -23197,6 +23437,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23257,6 +23501,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:c089-1bd1-cb13-a89c": {
@@ -23313,6 +23561,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23373,6 +23625,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:305b-6ef0-4b63-146c": {
@@ -23429,6 +23685,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23489,6 +23749,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:34a2-3a0d-5746-c24f": {
@@ -23545,6 +23809,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23605,6 +23873,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:793b-d5d8-1024-63c3": {
@@ -23661,6 +23933,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23721,6 +23997,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:95b4-ff42-9834-b1a5": {
@@ -23777,6 +24057,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23837,6 +24121,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:7d86-96fb-1462-14ba": {
@@ -23893,6 +24181,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -23953,6 +24245,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:af2e-d32b-d37b-8626": {
@@ -24009,6 +24305,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -24069,6 +24369,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:cfc6-9ebe-635d-2221": {
@@ -24125,6 +24429,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -24185,6 +24493,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:d7da-68e6-c806-79a0": {
@@ -24241,6 +24553,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -24301,6 +24617,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:4305-3002-cdd4-284a": {
@@ -24357,6 +24677,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -24417,6 +24741,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:ab84-6453-d13a-fe65": {
@@ -24473,6 +24801,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -24533,6 +24865,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:81e0-f988-e048-8547": {
@@ -24589,6 +24925,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -24649,6 +24989,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:bbab-a74c-e82c-e4e8": {
@@ -24705,6 +25049,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -26335,6 +26683,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:562f-9fca-8141-cf16": {
@@ -26391,6 +26743,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -26451,6 +26807,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:c65a-d1b7-59d9-9d95": {
@@ -26507,6 +26867,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -26567,6 +26931,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:96cc-bbc5-3019-cf3b": {
@@ -26623,6 +26991,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -26683,6 +27055,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:12d2-7961-1e16-963c": {
@@ -26739,6 +27115,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -26857,6 +27237,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
   },
   "weapon:1472-8a93-ec65-d12e": {
@@ -26913,6 +27297,10 @@
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Court of the Seven-Headed Serpent.cat@1b463a8"
     }
@@ -28087,6 +28475,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Equipment.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Equipment.cat@1b463a8"
     }
   },
   "weapon:a00a-6279-d459-1641": {
@@ -28437,6 +28829,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:212b-163e-3eb6-575d": {
@@ -28493,6 +28889,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -28553,6 +28953,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:6d5e-3299-c138-e478": {
@@ -28611,6 +29015,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:65dd-6f03-4ee5-f07f": {
@@ -28667,6 +29075,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -28785,6 +29197,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:cab4-0571-19c0-eaf2": {
@@ -28841,6 +29257,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -28901,6 +29321,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:a73b-6d6d-37aa-fd3f": {
@@ -28957,6 +29381,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29017,6 +29445,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:06bf-a67e-fba4-5214": {
@@ -29073,6 +29505,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29133,6 +29569,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:e8cf-8a0c-d0cc-756d": {
@@ -29189,6 +29629,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29249,6 +29693,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:290e-b9f3-e527-d0f5": {
@@ -29305,6 +29753,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29365,6 +29817,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:3362-0f7e-b412-ce4d": {
@@ -29421,6 +29877,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29481,6 +29941,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:9687-b24e-bf63-d228": {
@@ -29537,6 +30001,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29597,6 +30065,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:b8e7-a29c-9ca9-24b6": {
@@ -29653,6 +30125,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29713,6 +30189,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:1181-0635-aa21-d9bb": {
@@ -29769,6 +30249,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29829,6 +30313,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:7840-b59b-373f-9fc2": {
@@ -29885,6 +30373,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -29945,6 +30437,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:412d-d440-11fc-f415": {
@@ -30001,6 +30497,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -30061,6 +30561,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:4964-07b9-b8a1-f35b": {
@@ -30117,6 +30621,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -30177,6 +30685,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:9626-3796-60f5-9170": {
@@ -30233,6 +30745,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -30293,6 +30809,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:83f0-876a-3cc7-3564": {
@@ -30349,6 +30869,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -30409,6 +30933,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:3ee7-3e7e-d239-1c94": {
@@ -30465,6 +30993,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -30525,6 +31057,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:d65c-996d-9bd5-be6b": {
@@ -30583,6 +31119,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:7de6-ffe0-bad3-043e": {
@@ -30639,6 +31179,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -31280,6 +31824,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:d82e-4c7b-28ac-1413": {
@@ -31339,6 +31887,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
   },
   "weapon:f469-b712-2233-ac79": {
@@ -31395,6 +31947,10 @@
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Heretic Legion.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Heretic Legion.cat@1b463a8"
     }
@@ -31979,6 +32535,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:ec64-7a03-2155-796b": {
@@ -32093,6 +32653,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -33141,6 +33705,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:ac5c-14a9-8462-8ddd": {
@@ -33781,6 +34349,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:4e71-6ded-f58e-8ffe": {
@@ -33839,6 +34411,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:77a1-74cd-f781-efb5": {
@@ -33895,6 +34471,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -34011,6 +34591,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -34187,6 +34771,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:d8ef-4597-49bd-8c2f": {
@@ -34243,6 +34831,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -34303,6 +34895,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:e412-732c-30a6-9790": {
@@ -34359,6 +34955,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -34419,6 +35019,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:aa9b-a7a1-69a4-05f4": {
@@ -34476,6 +35080,10 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -34711,6 +35319,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:2342-ecab-9e48-b848": {
@@ -34825,6 +35437,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -35237,6 +35853,10 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -36007,6 +36627,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:e292-e8a8-eaa9-2d0d": {
@@ -36063,6 +36687,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -36123,6 +36751,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:0cf5-d84b-e1fe-ce92": {
@@ -36181,6 +36813,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
   },
   "weapon:2843-d7c2-29ba-03db": {
@@ -36237,6 +36873,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -36353,6 +36993,10 @@
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Iron Sultanate.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Iron Sultanate.cat@1b463a8"
     }
@@ -36997,6 +37641,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
   "weapon:52b5-6f6c-cdac-8288": {
@@ -37053,6 +37701,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
@@ -37113,6 +37765,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
   "weapon:ddce-0973-220d-51e0": {
@@ -37169,6 +37825,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
@@ -37287,6 +37947,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
   "weapon:afc3-8575-429c-3c17": {
@@ -37343,6 +38007,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
@@ -37459,6 +38127,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
@@ -37809,6 +38481,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
   "weapon:50eb-2990-0b48-1a8d": {
@@ -37866,6 +38542,10 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
@@ -37926,6 +38606,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
   "weapon:ae18-4990-fc3c-78ce": {
@@ -37984,6 +38668,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
   "weapon:2257-4155-dd7d-8641": {
@@ -38040,6 +38728,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
@@ -38158,6 +38850,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
   },
   "weapon:bd3d-9eff-a7d0-2805": {
@@ -38272,6 +38968,10 @@
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Mercenaries.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Mercenaries.cat@1b463a8"
     }
@@ -39260,6 +39960,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:2445-d55d-9de4-ac37": {
@@ -39316,6 +40020,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -39608,6 +40316,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:f10d-341e-5e15-05ec": {
@@ -39664,6 +40376,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -39906,6 +40622,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:309a-dd71-d814-5a48": {
@@ -39964,6 +40684,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:5164-4370-cef3-ea1e": {
@@ -40020,6 +40744,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -40370,6 +41098,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:1546-e8f0-cbfd-f2b1": {
@@ -40426,6 +41158,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -40486,6 +41222,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:53d0-3231-931f-d7a1": {
@@ -40542,6 +41282,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -40602,6 +41346,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:ba8a-6d25-4842-123c": {
@@ -40658,6 +41406,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -40718,6 +41470,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:aac6-410b-8a02-3bb9": {
@@ -40774,6 +41530,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -40833,6 +41593,10 @@
       "verified": "rulebook:warbands-of-trench-crusade"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -41009,6 +41773,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:34c8-dd0b-8701-b04f": {
@@ -41065,6 +41833,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -41125,6 +41897,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:d215-cf89-8b45-e79a": {
@@ -41181,6 +41957,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -41299,6 +42079,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:8e6c-2882-f827-e44c": {
@@ -41357,6 +42141,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:867a-dbfe-62da-2e28": {
@@ -41413,6 +42201,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -41531,6 +42323,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:a413-643f-2229-c0cc": {
@@ -41587,6 +42383,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -41647,6 +42447,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:5c53-c576-7840-b408": {
@@ -41703,6 +42507,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -41763,6 +42571,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:7156-30e7-2538-f23c": {
@@ -41821,6 +42633,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:7d15-6383-16ed-4313": {
@@ -41877,6 +42693,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -42169,6 +42989,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:277a-0208-cd17-f687": {
@@ -42225,6 +43049,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -42467,6 +43295,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
     }
   },
   "weapon:ba2c-f56a-e419-764f": {
@@ -42523,6 +43355,10 @@
       "source": "battlescribe:New Antioch.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:New Antioch.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:New Antioch.cat@1b463a8"
     }
@@ -44631,6 +45467,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
   "weapon:584f-141d-ce83-d55d": {
@@ -44687,6 +45527,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
@@ -45211,6 +46055,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
   "weapon:02e8-c715-06fe-e490": {
@@ -45327,6 +46175,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
   "weapon:15f9-b36f-a952-7abe": {
@@ -45385,6 +46237,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
   "weapon:8cbd-7395-617e-ef28": {
@@ -45441,6 +46297,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
@@ -45559,6 +46419,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
   "weapon:9e61-bd1d-33f1-f936": {
@@ -45615,6 +46479,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
@@ -45675,6 +46543,10 @@
     "factionId": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }
   },
   "weapon:99b6-6b5c-398a-f1c1": {
@@ -45731,6 +46603,10 @@
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     },
     "factionId": {
+      "layer": "base",
+      "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
+    },
+    "aliases": {
       "layer": "base",
       "source": "battlescribe:Trench Pilgrims.cat@1b463a8"
     }

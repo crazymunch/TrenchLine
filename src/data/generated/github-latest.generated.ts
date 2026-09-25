@@ -31154,7 +31154,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Second Grail Devotee"
+      ]
     },
     {
       "id": "fe5c-8b4d-7a52-73d0",
@@ -31271,7 +31274,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Melee"
+      ]
     },
     {
       "id": "54ac-2422-34c4-3bad",
@@ -31305,7 +31311,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Ranged"
+      ]
     },
     {
       "id": "ef69-c253-5f0f-b3ad",
@@ -31357,7 +31366,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Automatic Pistol"
+      ]
     },
     {
       "id": "707f-beaa-1d76-4cd8",
@@ -31383,7 +31395,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Semi-automatic Rifle"
+      ]
     },
     {
       "id": "dc09-d86d-ae34-41d2",
@@ -31409,7 +31424,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Automatic Shotgun"
+      ]
     },
     {
       "id": "b8f0-aa97-3937-9647",
@@ -31435,7 +31453,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Automatic Rifle"
+      ]
     },
     {
       "id": "736b-79f3-9bb1-bf1d",
@@ -31461,7 +31482,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Sniper Rifle"
+      ]
     },
     {
       "id": "e886-7dfb-33ed-95f7",
@@ -31487,7 +31511,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Grenade Launcher"
+      ]
     },
     {
       "id": "1637-5050-6752-0717",
@@ -31513,7 +31540,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Incendiary Grenades"
+      ]
     },
     {
       "id": "7915-ab6a-b727-3c5c",
@@ -31539,7 +31569,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Submachine Gun"
+      ]
     },
     {
       "id": "fe45-0d6a-cf4a-347f",
@@ -31565,7 +31598,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Machine Gun"
+      ]
     },
     {
       "id": "5945-b33c-aca6-8fb1",
@@ -31591,7 +31627,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Satchel Charge"
+      ]
     },
     {
       "id": "52a1-3eb7-ed92-8636",
@@ -31617,7 +31656,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Grenades"
+      ]
     },
     {
       "id": "0838-7d47-0d0b-4747",
@@ -31643,7 +31685,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Heavy Flamethrower"
+      ]
     },
     {
       "id": "481a-d408-3699-d802",
@@ -31669,7 +31714,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Heavy Shotgun"
+      ]
     },
     {
       "id": "d8f9-a2d9-d49f-e65d",
@@ -31695,7 +31743,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Flamethrower"
+      ]
     },
     {
       "id": "6883-6f33-5604-4f1f",
@@ -31713,7 +31764,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Automatic Shotgun"
+      ]
     },
     {
       "id": "7901-7b55-fd13-1c06",
@@ -31731,7 +31785,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Blasphemous Staff"
+      ]
     },
     {
       "id": "c50d-32c4-ff0e-12bf",
@@ -31749,7 +31806,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Automatic Rifle"
+      ]
     },
     {
       "id": "b911-6e05-ae16-b799",
@@ -31767,7 +31827,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Silenced Pistol"
+      ]
     },
     {
       "id": "6d21-dbbd-d6e6-c101",
@@ -31785,7 +31848,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Machine Gun"
+      ]
     },
     {
       "id": "b401-8a8b-c3fa-80dc",
@@ -31803,7 +31869,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Machine Gun"
+      ]
     },
     {
       "id": "6ced-b27b-7642-41e8",
@@ -31821,7 +31890,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Incendiary Grenades"
+      ]
     },
     {
       "id": "aca9-4bdb-5e73-ad58",
@@ -31839,7 +31911,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Submachine Gun"
+      ]
     },
     {
       "id": "26d3-c5f2-dfc5-6cc9",
@@ -31857,7 +31932,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Grenades"
+      ]
     },
     {
       "id": "717c-569e-8f9e-3985",
@@ -31875,7 +31953,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Grenade Launcher"
+      ]
     },
     {
       "id": "4e54-317d-3391-e00d",
@@ -31893,7 +31974,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Semi-Automatic Rifle"
+      ]
     },
     {
       "id": "36f9-cbf1-7f8b-474a",
@@ -31911,7 +31995,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Flamethrower"
+      ]
     },
     {
       "id": "f73e-b97e-1b7b-0d76",
@@ -31929,7 +32016,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Heavy Flamethrower"
+      ]
     },
     {
       "id": "f855-3a79-f6c4-c14d",
@@ -31947,7 +32037,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Anti-Materiel Rifle"
+      ]
     },
     {
       "id": "a591-57b1-8abb-3426",
@@ -31965,7 +32058,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Sacrificial Blade"
+      ]
     },
     {
       "id": "fab2-a4e3-5baf-e68b",
@@ -31983,7 +32079,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Hellblade"
+      ]
     },
     {
       "id": "1780-92d2-3e63-3c71",
@@ -32586,7 +32685,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Hound of the Black Grail"
+      ]
     },
     {
       "id": "e635-2d2a-2df7-bafe",
@@ -32613,7 +32715,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Infected"
+      ]
     },
     {
       "id": "f1f4-ad6d-1a6e-d822",
@@ -32648,7 +32753,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Fireteams"
+      ]
     },
     {
       "id": "8037-91e3-fc56-e8d8",
@@ -32835,7 +32943,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Grail Thrall"
+      ]
     },
     {
       "id": "eaf6-e4c0-2039-b81a",
@@ -32957,7 +33068,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Heralds of Beelzebub"
+      ]
     },
     {
       "id": "f726-9549-bfcb-51e6",
@@ -33016,7 +33130,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Noble Hierarchy"
+      ]
     },
     {
       "id": "9aa7-5a1a-cbf9-b1b5",
@@ -33112,7 +33229,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Gregori Gula"
+      ]
     },
     {
       "id": "5e94-0f13-1aef-0338",
@@ -33242,7 +33362,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Black Grail",
-      "sourceFile": "Black Grail.cat"
+      "sourceFile": "Black Grail.cat",
+      "aliases": [
+        "Cradle Thrall"
+      ]
     },
     {
       "id": "7494-e725-3e34-1028",
@@ -33260,7 +33383,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Disabled"
+      ]
     },
     {
       "id": "6250-9440-acde-584c",
@@ -33278,7 +33404,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Equipment Only"
+      ]
     },
     {
       "id": "8a3c-81e1-ddd4-dab7",
@@ -33441,7 +33570,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Enabled"
+      ]
     },
     {
       "id": "0443-8d91-dd96-34c6",
@@ -34385,7 +34517,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Sniper Nest: Scope"
+      ]
     },
     {
       "id": "807b-c340-06b1-2515",
@@ -34827,7 +34962,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Favoured Unit"
+      ]
     },
     {
       "id": "7884-d070-ef44-b45b",
@@ -34921,7 +35059,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Money can buy Anything"
+      ]
     },
     {
       "id": "7030-fa22-471a-d8f2",
@@ -36012,7 +36153,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Knowledge of the Incendiary Grenade"
+      ]
     },
     {
       "id": "9941-7638-dae6-899e",
@@ -37246,7 +37390,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Rocket-Propelled Grenade"
+      ]
     },
     {
       "id": "36d4-9b55-fd0a-150f",
@@ -38926,7 +39073,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Sultanate Grand Cannon"
+      ]
     },
     {
       "id": "0172-5d62-14d9-7627",
@@ -39086,7 +39236,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Beelzebub's Embrace"
+      ]
     },
     {
       "id": "5a63-5df8-de11-0039",
@@ -39251,7 +39404,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Consume the Fruit from the Tree of Knowledge of Good and Evil"
+      ]
     },
     {
       "id": "a9a0-cd15-f240-4c56",
@@ -39442,7 +39598,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Blasphemous Banner"
+      ]
     },
     {
       "id": "279b-559d-2b08-d3ae",
@@ -39794,7 +39953,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Saints Reliquary"
+      ]
     },
     {
       "id": "7735-5567-9b74-b8f2",
@@ -40369,7 +40531,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Campaign Rules",
-      "sourceFile": "Campaign Rules.cat"
+      "sourceFile": "Campaign Rules.cat",
+      "aliases": [
+        "Elite Promotion"
+      ]
     },
     {
       "id": "c755-7cc0-778c-8a88",
@@ -42429,7 +42594,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Bolt Action Rifle"
+      ]
     },
     {
       "id": "1401-6c97-8f52-26e1",
@@ -42455,7 +42623,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Submachine Gun"
+      ]
     },
     {
       "id": "0c38-cf0f-2425-4433",
@@ -42481,7 +42652,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Automatic Pistol"
+      ]
     },
     {
       "id": "7918-d1a1-8624-dd27",
@@ -42507,7 +42681,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Molotov Cocktail"
+      ]
     },
     {
       "id": "7fc9-3a86-a1dd-58dd",
@@ -42533,7 +42710,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Semi-automatic Rifle"
+      ]
     },
     {
       "id": "8bd6-fd99-ac8e-5037",
@@ -42559,7 +42739,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Sniper Rifle"
+      ]
     },
     {
       "id": "9388-a68c-58de-9b61",
@@ -42585,7 +42768,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Machine Gun"
+      ]
     },
     {
       "id": "c089-1bd1-cb13-a89c",
@@ -42611,7 +42797,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Musket"
+      ]
     },
     {
       "id": "ac3f-2fd2-9e13-30c0",
@@ -42637,7 +42826,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Warcross"
+      ]
     },
     {
       "id": "305b-6ef0-4b63-146c",
@@ -42663,7 +42855,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Anti-Tank Hammer"
+      ]
     },
     {
       "id": "f70e-1bff-a65a-66af",
@@ -42689,7 +42884,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Punt Gun"
+      ]
     },
     {
       "id": "34a2-3a0d-5746-c24f",
@@ -42715,7 +42913,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Flail/Scourge"
+      ]
     },
     {
       "id": "f991-7aaa-24b1-6937",
@@ -42741,7 +42942,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Misericordia"
+      ]
     },
     {
       "id": "793b-d5d8-1024-63c3",
@@ -42767,7 +42971,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Frag Grenade"
+      ]
     },
     {
       "id": "3ece-5b15-88af-1394",
@@ -42793,7 +43000,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Sniper Rifle"
+      ]
     },
     {
       "id": "95b4-ff42-9834-b1a5",
@@ -42819,7 +43029,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Alchemist Armour"
+      ]
     },
     {
       "id": "6f0f-5f09-f414-afd7",
@@ -42845,7 +43058,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Jezzail"
+      ]
     },
     {
       "id": "7d86-96fb-1462-14ba",
@@ -42871,7 +43087,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Siege Jezzail"
+      ]
     },
     {
       "id": "f4ba-5a86-9106-9497",
@@ -42897,7 +43116,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Musket"
+      ]
     },
     {
       "id": "af2e-d32b-d37b-8626",
@@ -42923,7 +43145,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Halberd-Gun"
+      ]
     },
     {
       "id": "85ee-683c-63c5-e708",
@@ -42949,7 +43174,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Machine Gun"
+      ]
     },
     {
       "id": "cfc6-9ebe-635d-2221",
@@ -42975,7 +43203,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Bolt Action Rifle"
+      ]
     },
     {
       "id": "e649-4071-34a6-8661",
@@ -43001,7 +43232,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Automatic Pistol"
+      ]
     },
     {
       "id": "d7da-68e6-c806-79a0",
@@ -43027,7 +43261,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Semi-automatic Rifle"
+      ]
     },
     {
       "id": "9845-8249-07e1-5c50",
@@ -43053,7 +43290,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Automatic Shotgun"
+      ]
     },
     {
       "id": "4305-3002-cdd4-284a",
@@ -43079,7 +43319,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Automatic Rifle"
+      ]
     },
     {
       "id": "deab-41ec-216f-5947",
@@ -43105,7 +43348,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Satchel Charge"
+      ]
     },
     {
       "id": "ab84-6453-d13a-fe65",
@@ -43131,7 +43377,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Machine Armour"
+      ]
     },
     {
       "id": "cb97-d342-2a89-e850",
@@ -43157,7 +43406,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Grenade Launcher"
+      ]
     },
     {
       "id": "81e0-f988-e048-8547",
@@ -43183,7 +43435,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Grenades"
+      ]
     },
     {
       "id": "19bd-8885-be91-907d",
@@ -43209,7 +43464,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Submachine Gun"
+      ]
     },
     {
       "id": "bbab-a74c-e82c-e4e8",
@@ -43235,7 +43493,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Heavy Shotgun"
+      ]
     },
     {
       "id": "8d72-52c6-08af-34b5",
@@ -44454,7 +44715,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Sorcerer"
+      ]
     },
     {
       "id": "562f-9fca-8141-cf16",
@@ -44634,7 +44898,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Hunter of the Left-hand Path"
+      ]
     },
     {
       "id": "8393-ece2-0750-7df7",
@@ -44814,7 +45081,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Hunter of the Left-hand Path"
+      ]
     },
     {
       "id": "c65a-d1b7-59d9-9d95",
@@ -44994,7 +45264,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Hunter of the Left-hand Path"
+      ]
     },
     {
       "id": "0dae-2ad7-bfec-82bb",
@@ -45176,7 +45449,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Hunter of the Left-hand Path"
+      ]
     },
     {
       "id": "96cc-bbc5-3019-cf3b",
@@ -45251,7 +45527,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Hell Knight"
+      ]
     },
     {
       "id": "c7c3-3548-f3e2-365a",
@@ -45593,7 +45872,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Yoke Fiend"
+      ]
     },
     {
       "id": "12d2-7961-1e16-963c",
@@ -45764,7 +46046,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Elite Promotion"
+      ]
     },
     {
       "id": "2873-9e7a-3ad9-a547",
@@ -45991,7 +46276,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Faceless"
+      ]
     },
     {
       "id": "1472-8a93-ec65-d12e",
@@ -46225,7 +46513,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Court of the Seven-Headed Serpent",
-      "sourceFile": "Court of the Seven-Headed Serpent.cat"
+      "sourceFile": "Court of the Seven-Headed Serpent.cat",
+      "aliases": [
+        "Stalker"
+      ]
     },
     {
       "id": "0691-b648-ac01-3dc7",
@@ -46772,7 +47063,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Equipment",
-      "sourceFile": "Equipment.cat"
+      "sourceFile": "Equipment.cat",
+      "aliases": [
+        "Include Weapon Profile?"
+      ]
     },
     {
       "id": "a00a-6279-d459-1641",
@@ -47138,7 +47432,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "War Wolf Assault Beast"
+      ]
     },
     {
       "id": "212b-163e-3eb6-575d",
@@ -47348,7 +47645,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "War Wolf Assault Beast"
+      ]
     },
     {
       "id": "8755-5cd3-d0a0-1caa",
@@ -47672,7 +47972,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Artillery Witch"
+      ]
     },
     {
       "id": "6d5e-3299-c138-e478",
@@ -47998,7 +48301,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Artillery Witch"
+      ]
     },
     {
       "id": "65dd-6f03-4ee5-f07f",
@@ -48322,7 +48628,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Artillery Witch"
+      ]
     },
     {
       "id": "9395-0d4e-5cdb-6377",
@@ -48396,7 +48705,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Automatic Rifle"
+      ]
     },
     {
       "id": "cab4-0571-19c0-eaf2",
@@ -48414,7 +48726,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Machine Gun"
+      ]
     },
     {
       "id": "314c-5a0b-cf87-d46d",
@@ -48432,7 +48747,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Grenade Launcher"
+      ]
     },
     {
       "id": "a73b-6d6d-37aa-fd3f",
@@ -48450,7 +48768,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Musical Instrument"
+      ]
     },
     {
       "id": "4ab1-ea85-f390-6fb0",
@@ -48468,7 +48789,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Flamethrower"
+      ]
     },
     {
       "id": "06bf-a67e-fba4-5214",
@@ -48486,7 +48810,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Heavy Flamethrower"
+      ]
     },
     {
       "id": "bca6-aeb8-da80-ca45",
@@ -48504,7 +48831,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Anti-Material Rifle"
+      ]
     },
     {
       "id": "e8cf-8a0c-d0cc-756d",
@@ -48522,7 +48852,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Mountaineer Kit"
+      ]
     },
     {
       "id": "4951-f794-ad38-ad03",
@@ -48540,7 +48873,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Incendiary Ammunition"
+      ]
     },
     {
       "id": "290e-b9f3-e527-d0f5",
@@ -48558,7 +48894,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Hellblade"
+      ]
     },
     {
       "id": "cc71-f6a8-5519-bcf3",
@@ -48576,7 +48915,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Troop Flag"
+      ]
     },
     {
       "id": "3362-0f7e-b412-ce4d",
@@ -48594,7 +48936,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Sacrificial Blade"
+      ]
     },
     {
       "id": "6df6-b367-67b3-0a82",
@@ -48620,7 +48965,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Jezzail"
+      ]
     },
     {
       "id": "9687-b24e-bf63-d228",
@@ -48646,7 +48994,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Siege Jezzail"
+      ]
     },
     {
       "id": "24a0-e75f-fda6-3a63",
@@ -48672,7 +49023,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Musket"
+      ]
     },
     {
       "id": "b8e7-a29c-9ca9-24b6",
@@ -48698,7 +49052,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Halberd-Gun"
+      ]
     },
     {
       "id": "2a14-9d00-49fb-86df",
@@ -48724,7 +49081,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Sniper Rifle"
+      ]
     },
     {
       "id": "1181-0635-aa21-d9bb",
@@ -48750,7 +49110,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Alchemist Armour"
+      ]
     },
     {
       "id": "8e79-67ff-8442-44b2",
@@ -48776,7 +49139,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Cloak of Alamut"
+      ]
     },
     {
       "id": "7840-b59b-373f-9fc2",
@@ -48802,7 +49168,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Wind Amulet"
+      ]
     },
     {
       "id": "6dcf-8eba-6204-b814",
@@ -48828,7 +49197,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Holy Relic"
+      ]
     },
     {
       "id": "412d-d440-11fc-f415",
@@ -48854,7 +49226,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Binoculars"
+      ]
     },
     {
       "id": "da4c-40b8-a166-dc7c",
@@ -48880,7 +49255,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Medi-Kit"
+      ]
     },
     {
       "id": "4964-07b9-b8a1-f35b",
@@ -48906,7 +49284,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Automatic Pistol"
+      ]
     },
     {
       "id": "8a1d-ae05-5597-07e2",
@@ -48932,7 +49313,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Heavy Shotgun"
+      ]
     },
     {
       "id": "9626-3796-60f5-9170",
@@ -48958,7 +49342,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Sniper Rifle"
+      ]
     },
     {
       "id": "6ce7-e339-f8ab-ac68",
@@ -48984,7 +49371,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Satchel Charge"
+      ]
     },
     {
       "id": "83f0-876a-3cc7-3564",
@@ -49010,7 +49400,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Machine Armour"
+      ]
     },
     {
       "id": "f4ce-75a0-6a5e-7f5f",
@@ -49036,7 +49429,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Medi-Kit"
+      ]
     },
     {
       "id": "3ee7-3e7e-d239-1c94",
@@ -49062,7 +49458,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Martyrdom Pills"
+      ]
     },
     {
       "id": "5b33-f856-132e-7c89",
@@ -49088,7 +49487,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Field Shrine"
+      ]
     },
     {
       "id": "d65c-996d-9bd5-be6b",
@@ -49114,7 +49516,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Binoculars"
+      ]
     },
     {
       "id": "7de6-ffe0-bad3-043e",
@@ -49140,7 +49545,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Grenade Launcher"
+      ]
     },
     {
       "id": "0999-4c6b-539f-d1b2",
@@ -49811,7 +50219,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Melee Chassis"
+      ]
     },
     {
       "id": "d82e-4c7b-28ac-1413",
@@ -49860,7 +50271,10 @@ export const DATASET: Dataset = {
         "Limit: 1"
       ],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Melee Chassis"
+      ]
     },
     {
       "id": "f469-b712-2233-ac79",
@@ -49908,7 +50322,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Heretic Legion",
-      "sourceFile": "Heretic Legion.cat"
+      "sourceFile": "Heretic Legion.cat",
+      "aliases": [
+        "Melee Chassis"
+      ]
     },
     {
       "id": "0da4-88a6-6cc3-bcd8",
@@ -50371,7 +50788,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Include Weapon Profile?"
+      ]
     },
     {
       "id": "ec64-7a03-2155-796b",
@@ -50523,7 +50943,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Elixer of Al-Khidr"
+      ]
     },
     {
       "id": "9902-c422-18ce-ab2b",
@@ -51796,7 +52219,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "MURAD Bombardment"
+      ]
     },
     {
       "id": "ac5c-14a9-8462-8ddd",
@@ -52491,7 +52917,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Medicine"
+      ]
     },
     {
       "id": "4e71-6ded-f58e-8ffe",
@@ -52517,7 +52946,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Cartography & Geometry"
+      ]
     },
     {
       "id": "77a1-74cd-f781-efb5",
@@ -52543,7 +52975,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Chemistry & Alchemy"
+      ]
     },
     {
       "id": "4285-e047-b265-bc62",
@@ -52597,7 +53032,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Philosophy, Poetry and Theology"
+      ]
     },
     {
       "id": "13ba-447f-38db-4b1a",
@@ -52683,7 +53121,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Fireteam"
+      ]
     },
     {
       "id": "d8ef-4597-49bd-8c2f",
@@ -52742,7 +53183,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Fireteam: Mamluk-Guarded"
+      ]
     },
     {
       "id": "21f1-4a29-ae87-7cf2",
@@ -52788,7 +53232,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Fireteam: Killing Squad"
+      ]
     },
     {
       "id": "e412-732c-30a6-9790",
@@ -52847,7 +53294,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Fireteam: Sipahi-Guarded"
+      ]
     },
     {
       "id": "7e5c-ba89-c669-191a",
@@ -52899,7 +53349,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Fireteam: Mind-Linked"
+      ]
     },
     {
       "id": "aa9b-a7a1-69a4-05f4",
@@ -52928,7 +53381,10 @@ export const DATASET: Dataset = {
         "Shield Combo"
       ],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Bayonet Lug"
+      ]
     },
     {
       "id": "c403-4b36-5fd6-5c95",
@@ -53018,7 +53474,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Assigned Sword"
+      ]
     },
     {
       "id": "2342-ecab-9e48-b848",
@@ -53091,7 +53550,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Elite Ally"
+      ]
     },
     {
       "id": "1d82-fcc9-aeda-b03a",
@@ -53258,7 +53720,10 @@ export const DATASET: Dataset = {
         "Bayonet Lug, Shield Combo, Limit: 1"
       ],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Sub-Machine Gun"
+      ]
     },
     {
       "id": "2540-a186-5024-be0a",
@@ -53639,7 +54104,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Archeologist"
+      ]
     },
     {
       "id": "e292-e8a8-eaa9-2d0d",
@@ -53824,7 +54292,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Shirdal"
+      ]
     },
     {
       "id": "6245-5f1b-848b-a5c1",
@@ -54009,7 +54480,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Shirdal"
+      ]
     },
     {
       "id": "0cf5-d84b-e1fe-ce92",
@@ -54180,7 +54654,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Pairika"
+      ]
     },
     {
       "id": "2843-d7c2-29ba-03db",
@@ -54206,7 +54683,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Assigned Sword"
+      ]
     },
     {
       "id": "8a1c-023a-d19f-0e9f",
@@ -54284,7 +54764,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Iron Sultanate",
-      "sourceFile": "Iron Sultanate.cat"
+      "sourceFile": "Iron Sultanate.cat",
+      "aliases": [
+        "Takwin Homunculus"
+      ]
     },
     {
       "id": "328e-9d8a-0a2c-47c6",
@@ -54555,7 +55038,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Observer"
+      ]
     },
     {
       "id": "52b5-6f6c-cdac-8288",
@@ -54613,7 +55099,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Witchburner"
+      ]
     },
     {
       "id": "04ac-4944-d9ff-e192",
@@ -54671,7 +55160,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Witchburner"
+      ]
     },
     {
       "id": "ddce-0973-220d-51e0",
@@ -54731,7 +55223,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Witchburner"
+      ]
     },
     {
       "id": "c63d-fe53-a980-4a2a",
@@ -54969,7 +55464,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Trench Dog"
+      ]
     },
     {
       "id": "afc3-8575-429c-3c17",
@@ -55066,7 +55564,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Hellhound"
+      ]
     },
     {
       "id": "ce55-e4a0-f88f-0df9",
@@ -55153,7 +55654,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Combat Biologist"
+      ]
     },
     {
       "id": "0a72-3d4c-48ea-dd92",
@@ -55422,7 +55926,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Mamluk Faris"
+      ]
     },
     {
       "id": "50eb-2990-0b48-1a8d",
@@ -55461,7 +55968,10 @@ export const DATASET: Dataset = {
         "Shield Combo"
       ],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Polearm and Shield"
+      ]
     },
     {
       "id": "e938-b0dc-418c-0924",
@@ -55480,7 +55990,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Sword and Pistol"
+      ]
     },
     {
       "id": "ae18-4990-fc3c-78ce",
@@ -55499,7 +56012,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Sword and Pistol"
+      ]
     },
     {
       "id": "2257-4155-dd7d-8641",
@@ -55537,7 +56053,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Greatsword"
+      ]
     },
     {
       "id": "4b3d-28cf-cb23-aeba",
@@ -55685,7 +56204,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Dog's Friend"
+      ]
     },
     {
       "id": "bd3d-9eff-a7d0-2805",
@@ -55747,7 +56269,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Mercenaries",
-      "sourceFile": "Mercenaries.cat"
+      "sourceFile": "Mercenaries.cat",
+      "aliases": [
+        "Iron-Clawed Hands"
+      ]
     },
     {
       "id": "999f-be77-8027-46c0",
@@ -56863,7 +57388,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteams"
+      ]
     },
     {
       "id": "2445-d55d-9de4-ac37",
@@ -56896,7 +57424,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteams"
+      ]
     },
     {
       "id": "a114-2461-5520-9cdb",
@@ -57099,7 +57630,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "First Friend of the Brigade's Dogs"
+      ]
     },
     {
       "id": "f10d-341e-5e15-05ec",
@@ -57145,7 +57679,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Second Friend of the Brigade's Dogs"
+      ]
     },
     {
       "id": "f592-a9ac-af5c-4a17",
@@ -57405,7 +57942,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Supreme Blessing"
+      ]
     },
     {
       "id": "309a-dd71-d814-5a48",
@@ -57438,7 +57978,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteams"
+      ]
     },
     {
       "id": "5164-4370-cef3-ea1e",
@@ -57471,7 +58014,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteams"
+      ]
     },
     {
       "id": "7b02-d2fa-45e0-7b86",
@@ -57728,7 +58274,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Swiss Guard"
+      ]
     },
     {
       "id": "1546-e8f0-cbfd-f2b1",
@@ -57754,7 +58303,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Menaulatoi Princeps"
+      ]
     },
     {
       "id": "c931-d8d8-497d-d497",
@@ -57780,7 +58332,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Menaulatoi Princeps"
+      ]
     },
     {
       "id": "53d0-3231-931f-d7a1",
@@ -57806,7 +58361,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Menaulatoi Princeps"
+      ]
     },
     {
       "id": "f11c-fa32-df03-b98a",
@@ -57839,7 +58397,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Varangian Warlord"
+      ]
     },
     {
       "id": "ba8a-6d25-4842-123c",
@@ -57872,7 +58433,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Varangian Warlord"
+      ]
     },
     {
       "id": "2f38-3778-4b83-a125",
@@ -57905,7 +58469,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Varangian Warlord"
+      ]
     },
     {
       "id": "aac6-410b-8a02-3bb9",
@@ -57938,7 +58505,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Varangian Warlord"
+      ]
     },
     {
       "id": "7c61-1bc1-44c7-6c9f",
@@ -58121,7 +58691,10 @@ export const DATASET: Dataset = {
         "Combat Engineer only"
       ],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Combat Engineer"
+      ]
     },
     {
       "id": "9738-ded5-a2b7-3247",
@@ -58266,7 +58839,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteam"
+      ]
     },
     {
       "id": "34c8-dd0b-8701-b04f",
@@ -58344,7 +58920,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteam"
+      ]
     },
     {
       "id": "0ce7-425f-ff86-166f",
@@ -58370,7 +58949,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Assigned Sword"
+      ]
     },
     {
       "id": "d215-cf89-8b45-e79a",
@@ -58396,7 +58978,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Assigned Sword"
+      ]
     },
     {
       "id": "7913-8551-cbd8-8dd4",
@@ -58469,7 +59054,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Elite Ally"
+      ]
     },
     {
       "id": "8e6c-2882-f827-e44c",
@@ -58516,7 +59104,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Elite Ally"
+      ]
     },
     {
       "id": "867a-dbfe-62da-2e28",
@@ -58542,7 +59133,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Papal States Intervention Force"
+      ]
     },
     {
       "id": "91a5-be1f-3604-05ee",
@@ -58593,7 +59187,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Third Party"
+      ]
     },
     {
       "id": "a413-643f-2229-c0cc",
@@ -58727,7 +59324,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Trench Dogs of the Red Brigade"
+      ]
     },
     {
       "id": "7a63-cb40-df95-b9e9",
@@ -58753,7 +59353,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Guard Dog"
+      ]
     },
     {
       "id": "5c53-c576-7840-b408",
@@ -58779,7 +59382,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Mercy Dog"
+      ]
     },
     {
       "id": "a73a-b0cf-21dd-a38a",
@@ -58805,7 +59411,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Mercy Dog"
+      ]
     },
     {
       "id": "7156-30e7-2538-f23c",
@@ -58838,7 +59447,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteams"
+      ]
     },
     {
       "id": "7d15-6383-16ed-4313",
@@ -58871,7 +59483,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Fireteams"
+      ]
     },
     {
       "id": "dd85-f021-dec5-7a53",
@@ -59074,7 +59689,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "First Friend of the Brigade's Dogs"
+      ]
     },
     {
       "id": "277a-0208-cd17-f687",
@@ -59120,7 +59738,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Second Friend of the Brigade's Dogs"
+      ]
     },
     {
       "id": "1d9f-bbe2-474b-b25f",
@@ -59366,7 +59987,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Grenade Carrier"
+      ]
     },
     {
       "id": "ba2c-f56a-e419-764f",
@@ -59398,7 +60022,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "New Antioch",
-      "sourceFile": "New Antioch.cat"
+      "sourceFile": "New Antioch.cat",
+      "aliases": [
+        "Molotov Carrier"
+      ]
     },
     {
       "id": "109e-695b-e73d-e9f5",
@@ -60574,7 +61201,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Autocannon"
+      ]
     },
     {
       "id": "584f-141d-ce83-d55d",
@@ -60626,7 +61256,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Autocannon"
+      ]
     },
     {
       "id": "69ba-974b-0e6f-7391",
@@ -60950,7 +61583,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Wrath of God"
+      ]
     },
     {
       "id": "02e8-c715-06fe-e490",
@@ -61023,7 +61659,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Martyred"
+      ]
     },
     {
       "id": "15f9-b36f-a952-7abe",
@@ -61069,7 +61708,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Ecclesiastic Prisoner"
+      ]
     },
     {
       "id": "8cbd-7395-617e-ef28",
@@ -61111,7 +61753,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Martyrdom Device"
+      ]
     },
     {
       "id": "4283-0424-9334-02b2",
@@ -61298,7 +61943,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Anchorite Shrine"
+      ]
     },
     {
       "id": "9e61-bd1d-33f1-f936",
@@ -61316,7 +61964,10 @@ export const DATASET: Dataset = {
       "modifiers": [],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Third Party"
+      ]
     },
     {
       "id": "7e36-5ca4-b01e-f349",
@@ -61364,7 +62015,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Huscarl"
+      ]
     },
     {
       "id": "99b6-6b5c-398a-f1c1",
@@ -61415,7 +62069,10 @@ export const DATASET: Dataset = {
       ],
       "restrictions": [],
       "factionId": "Trench Pilgrims",
-      "sourceFile": "Trench Pilgrims.cat"
+      "sourceFile": "Trench Pilgrims.cat",
+      "aliases": [
+        "Captive Giant"
+      ]
     }
   ],
   "factions": [

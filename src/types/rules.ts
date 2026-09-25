@@ -39,6 +39,13 @@ export interface WeaponProfile {
   id: string;
   name: string;
   /**
+   * Other names the catalogue prints this item under — see
+   * `WeaponProfile.aliases` in `types/catalogue.ts`. Carried onto the shelf so
+   * an import can resolve a file that uses the entry's spelling rather than
+   * the profile's, after every name has failed.
+   */
+  aliases?: string[];
+  /**
    * The offer came from a faction's **Glory Item Table**, not its Armoury Table
    * (p.125, RR-14).
    *
@@ -86,6 +93,13 @@ export interface ArmourProfile {
   id: string;
   name: string;
   /**
+   * Other names the catalogue prints this item under — see
+   * `WeaponProfile.aliases` in `types/catalogue.ts`. Carried onto the shelf so
+   * an import can resolve a file that uses the entry's spelling rather than
+   * the profile's, after every name has failed.
+   */
+  aliases?: string[];
+  /**
    * The offer came from a faction's **Glory Item Table**, not its Armoury Table
    * (p.125, RR-14).
    *
@@ -129,6 +143,13 @@ export interface ArmourProfile {
 export interface EquipmentItem {
   id: string;
   name: string;
+  /**
+   * Other names the catalogue prints this item under — see
+   * `WeaponProfile.aliases` in `types/catalogue.ts`. Carried onto the shelf so
+   * an import can resolve a file that uses the entry's spelling rather than
+   * the profile's, after every name has failed.
+   */
+  aliases?: string[];
   /**
    * The offer came from a faction's **Glory Item Table**, not its Armoury Table
    * (p.125, RR-14).

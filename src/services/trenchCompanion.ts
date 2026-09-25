@@ -41,9 +41,9 @@ const ID = /^[A-Za-z0-9_-]{1,64}$/;
  *
  * Accepted, because all of them are what a player has to hand:
  *
- *   https://trench-companion.com/warband/detail/225201
- *   trench-companion.com/warband/detail/225201?whatever
- *   225201
+ *   https://trench-companion.com/warband/detail/505410
+ *   trench-companion.com/warband/detail/505410?whatever
+ *   505410
  *
  * Anything else is refused with a sentence that says what was expected, rather
  * than guessed at — including another page on their own host. A link we
@@ -73,7 +73,7 @@ export function parseTrenchCompanionRef(
     return {
       ok: false,
       reason: `'${raw}' is neither a warband id nor a link. A share link looks like `
-        + `${TRENCH_COMPANION_SHARE_PREFIX}225201`,
+        + `${TRENCH_COMPANION_SHARE_PREFIX}505410`,
     };
   }
 
@@ -100,7 +100,7 @@ export function parseTrenchCompanionRef(
     return {
       ok: false,
       reason: `That is not a warband share link. One looks like `
-        + `${TRENCH_COMPANION_SHARE_PREFIX}225201`,
+        + `${TRENCH_COMPANION_SHARE_PREFIX}505410`,
     };
   }
   return { ok: true, id };

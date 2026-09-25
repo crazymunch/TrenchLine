@@ -501,14 +501,35 @@ for (const ruleset of RULESETS) {
     }
   }
   /*
-    `entryName` is scaffolding for the pass above and nothing in the app reads
-    it, so it does not ship: the dataset is fetched over the wire, and 226 of
-    these is weight every phone pays for on a field only this file used.
+    The entry's own name ships as `aliases`, where it differs from the
+    profile's.
+
+    It used to be deleted as scaffolding for the pass above. What that lost is
+    a name OUR OWN catalogue carries: the Iron Sultanate's `selectionEntry
+    name="Elixer of Al-Khidr"` (`Iron Sultanate.cat:77`) wraps a profile named
+    `Elixir of Al-Khidr` (`:90`) — their misspelling and ours, in one entry —
+    and a Trench Companion warband that carries `eq_exlixerofalkhidr` has no
+    other route to it. Without this the only way to resolve that item was a
+    hand-written equivalence, which is a mapping the project has a rule about;
+    with it the answer is derived from the catalogue, like every other name.
+
+    Only where it differs, so the field is on the few hundred entries that have
+    something to say rather than on every one; and only as an ALIAS, consulted
+    after every name has failed. That ordering is what makes it safe. An
+    earlier attempt made the entry name the entry's NAME and produced
+    `Automatic Pistol -> Stolen: Automatic Pistol` and
+    `Melee -> Knight Companion of the Bladed Fly` (see `parse-battlescribe.mjs`,
+    the bundle note) — redirections that a lookup consulting names first can no
+    longer make, because the ordinary name answers first.
+
     `profileName` stays on the three that were renamed — that one is provenance,
     and it is what tells a reader why the app's name differs from the
     catalogue's.
   */
-  for (const w of base.weapons ?? []) delete w.entryName;
+  for (const w of base.weapons ?? []) {
+    if (w.entryName && w.entryName !== w.name) w.aliases = [w.entryName];
+    delete w.entryName;
+  }
 
   const kitByName = new Map(battlekit.entries.map((b) => [nameKey(b.name), b]));
   for (const e of warbandsKit.entries) {

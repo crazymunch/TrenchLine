@@ -92,6 +92,7 @@ const envelope = (over: Record<string, unknown> = {}) => ({
           model: 'md_grailthrall_flybereaved',
           elite: false,
           experience: 0,
+          active: 'active',
           equipment: [],
         },
       },
@@ -139,11 +140,14 @@ describe('what the import reads', () => {
     expect(r.warband.units[0].equippedEquipment[0].cost).toBe(MASK.cost);
   });
 
-  it('reports every price that differs, and only those', () => {
+  it('reports every price that differs, and only those, naming where each is', () => {
+    /* One line per item, and the line says which models carry it — see
+       `PriceDifference.where`. */
     expect(r.priceDifferences.map(priceDifferenceLine).sort()).toEqual([
-      `Gas Mask: ${THEIR_MASK} Ducats in Trench Companion, ${MASK.cost} Ducats here.`,
+      `Gas Mask: ${THEIR_MASK} Ducats in Trench Companion, ${MASK.cost} Ducats here. `
+        + 'On Heretic Trooper.',
       `Heretic Trooper: ${THEIR_TROOPER} Ducats in Trench Companion, `
-        + `${TROOPER.baseCost} Ducats here.`,
+        + `${TROOPER.baseCost} Ducats here. On Heretic Trooper.`,
     ].sort());
   });
 });
@@ -342,7 +346,7 @@ describe('the report', () => {
       models: [{
         purchase: {},
         model: {
-          name: 'Heretic Trooper', model: 'md_heretictrooper', equipment: [],
+          name: 'Heretic Trooper', model: 'md_heretictrooper', active: 'active', equipment: [],
         },
       }],
     });
@@ -357,7 +361,7 @@ describe('the report', () => {
       models: [{
         purchase: purchase(TROOPER.baseCost),
         model: {
-          name: 'Heretic Trooper', model: 'md_heretictrooper',
+          name: 'Heretic Trooper', model: 'md_heretictrooper', active: 'active',
           list_skills: [{ object_id: 'sk_nosuchskill' }], equipment: [],
         },
       }],
@@ -371,7 +375,7 @@ describe('the report', () => {
       models: [{
         purchase: purchase(TROOPER.baseCost),
         model: {
-          name: 'Heretic Trooper', model: 'md_heretictrooper',
+          name: 'Heretic Trooper', model: 'md_heretictrooper', active: 'active',
           equipment: [{
             purchase: purchase(9),
             equipment: { id: 'eq_nosuchthing', name: 'Tide-Caller Horn' },

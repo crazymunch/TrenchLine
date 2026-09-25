@@ -12,10 +12,16 @@
       "cites": "Trench Companion bundle, model md_takwincreation, name \"Takwin Homunculus\". Ours: Iron Sultanate.cat entry 2f82-e47f-c162-9152, profile name \"Homunculus\", entry name \"Takwin Homunculus\"."
     },
     "up_meleemight": {
-      "ours": null,
+      "ours": "Studied Blade",
       "theirs": "Kavass",
-      "why": "Their bundle names this upgrade 'Kavass'. It is the House of Wisdom Variant's rename of the Azeb, expressed on their side as a purchasable upgrade on the model. Our Variant applies the rename to the ENTRY — `recruitable` returns 'Kavass' where the base list says 'Azeb' — so the rename is already in the model this import resolved, and there is nothing left for the upgrade to resolve to. Reported as expressed by the Variant rather than as an upgrade we could not find.",
-      "cites": "Trench Companion bundle, upgrade up_meleemight, name \"Kavass\", held by every md_azeb_mv_kavass on warband 505410. Ours: the House of Wisdom Variant's ops over Iron Sultanate.cat entry 0e7e-9167-f044-9493 (Azeb)."
+      "why": "Their upgrade carries `upgrade_stat: melee +1` and the text 'The model increases their Melee characteristic by +1 DICE'. That is the PURCHASE the catalogue's Kavass rule describes, not the rename: 'You can change the Melee Characteristic of up to 3 Azebs in a House of Wisdom Warband from -1 DICE to +0 DICE at a cost of +5 ducats each.' Our dataset carries that purchase as the Azeb/Kavass entry's hidden option `Upgrades :: Studied Blade`, 5 Ducats. Their id is a slug of the melee effect and ours is a slug of the ability's name, so no slug rule reaches from one to the other.",
+      "cites": "Trench Companion bundle, upgrade up_meleemight, name \"Kavass\", upgrade_stat melee +1. Ours: Iron Sultanate.cat:5847 (the Kavass ability text) and :5497 (selectionEntry name=\"Studied Blade\" hidden=\"true\", 5 Ducats), emitted as the entry option Upgrades/Studied Blade."
+    },
+    "el_snipersnest": {
+      "ours": "Sniper’s Lair",
+      "theirs": "Sniper's Nest",
+      "why": "Their id is a slug of 'Sniper's Nest' and our Common Locations table prints 'Sniper’s Lair' — the same Location, roll 16, and their bundle carries that Location's own text. It cannot be resolved by a wider name search either: the book DOES print a 'Sniper's Nest', at extract line 6259, but as a Ranged Skill. A Location resolves only against the Location table, so a name that reaches the Skill would be the wrong kind of thing entirely.",
+      "cites": "Trench Companion bundle, location el_snipersnest, carrying the text of the Common Locations roll-16 result. Ours: rulebook extract line 6821, Common Locations, 'Sniper’s Lair'. The unrelated Ranged Skill 'Sniper's Nest' is extract line 6259."
     }
   }
 }

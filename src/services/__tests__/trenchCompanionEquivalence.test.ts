@@ -23,6 +23,7 @@ import { DATASET } from '@/data/generated/trenchline.generated';
 import type { Dataset } from '@/types/catalogue';
 import { recruitable } from '@/rules/recruitable';
 import { nameKey } from '@/rules/names';
+import { upgradeSlugKeys } from '../trenchCompanionImporter';
 
 const D = DATASET as unknown as Dataset;
 const APP = (D.factions ?? []).map((f) => f.id ?? f.name);
@@ -48,6 +49,69 @@ const everyUnitName = (): Set<string> => {
   return names;
 };
 
+/** Every option name on every entry — what an `up_` id resolves against. */
+const everyOptionName = (): Set<string> => new Set(
+  (D.units ?? []).flatMap((u) => (u.options ?? []).map((o) => nameKey(o.name))));
+
+/** Every Exploration Location — what an `el_` id resolves against. */
+const everyLocationName = (): Set<string> => new Set(
+  Object.values(D.campaign?.exploration?.locations ?? {}).flat().map((r) => nameKey(r.name)));
+
+/** The fixture, for the model slug an `up_` id is namespaced by. */
+const fixture = fs.readFileSync(path.join(process.cwd(),
+  'data-sources/fixtures/trench-companion/al-qarn-rihla-505410.json'), 'utf8');
+const theirModels = (JSON.parse(
+  (JSON.parse(fixture) as { warband_data: string }).warband_data,
+) as { models: { model: { model?: string; list_upgrades?: { upgrade?: { object_id?: string } }[] } }[] })
+  .models.map((l) => l.model);
+
+/**
+ * One domain per prefix: the names an id of that kind resolves against, and
+ * the keys the importer tries it under.
+ *
+ * Every prefix in the table must have one. That is the point of doing it this
+ * way: the guard used to run on `md_` alone and skip everything else, so
+ * `up_meleemight` and `el_snipersnest` sat in the file unguarded — which is
+ * precisely the state this file exists to prevent.
+ *
+ * The keys mirror the importer rather than being re-derived: `up_` asks
+ * `upgradeSlugKeys` itself, so a guard cannot drift from the rules it guards.
+ */
+const DOMAINS: Record<string, { what: string; names: () => Set<string>; keys: (id: string) => string[] }> = {
+  md_: {
+    what: 'a model this ruleset can field',
+    names: everyUnitName,
+    /* `resolveModel`: the whole slug, the part after `_mv_`, the part before. */
+    keys: (id) => {
+      const tail = id.replace(/^md_/, '').replace(/_golem$/, '');
+      const [before, after] = tail.includes('_mv_') ? tail.split('_mv_') : [tail, ''];
+      return [nameKey(tail), nameKey(after), nameKey(before)].filter(Boolean);
+    },
+  },
+  up_: {
+    what: "an option on some entry's own list",
+    names: everyOptionName,
+    /* `readUpgrades`, through the importer's own `upgradeSlugKeys` — under
+       every model in the fixture that carries the id, because their upgrade
+       ids are namespaced by the model as well as by the group. */
+    keys: (id) => {
+      const carriers = theirModels
+        .filter((m) => (m.list_upgrades ?? []).some((u) => u.upgrade?.object_id === id))
+        .map((m) => m.model);
+      return [...new Set([undefined, ...carriers]
+        .flatMap((slug) => upgradeSlugKeys(id, slug)))];
+    },
+  },
+  el_: {
+    what: 'an Exploration Location',
+    names: everyLocationName,
+    /* `readExploration`: the tail, with the book suffix taken off. */
+    keys: (id) => [nameKey(id.replace(/^el_/, '').replace(/_cf$/, ''))].filter(Boolean),
+  },
+};
+
+const domainOf = (id: string) => DOMAINS[`${id.slice(0, id.indexOf('_') + 1)}`];
+
 describe('the Trench Companion id equivalence table', () => {
   it('is not empty, or this test proves nothing', () => {
     expect(entries.length).toBeGreaterThan(0);
@@ -70,12 +134,25 @@ describe('the Trench Companion id equivalence table', () => {
     }
   });
 
-  it('names only models this ruleset actually has', () => {
-    const names = everyUnitName();
+  it('guards every prefix it carries, not just the models', () => {
+    /*
+      Item 7. The two guards below ran on `md_` and skipped everything else,
+      so an `up_` or an `el_` entry could go stale and no test would say so.
+      A prefix with no domain is now a failure here rather than a silent skip.
+    */
+    for (const [id] of entries) {
+      expect(domainOf(id), `${id} has a prefix no domain in this test covers, so nothing `
+        + 'guards it — add one').toBeDefined();
+    }
+  });
+
+  it('names only things this ruleset actually has', () => {
     for (const [id, e] of entries) {
-      if (!e.ours || !id.startsWith('md_')) continue;
-      expect(names.has(nameKey(e.ours)), `${id} maps to '${e.ours}', which this ruleset has no `
-        + 'entry for — the mapping has gone stale').toBe(true);
+      if (!e.ours) continue;
+      const domain = domainOf(id)!;
+      expect(domain.names().has(nameKey(e.ours)),
+        `${id} maps to '${e.ours}', which is not ${domain.what} in this ruleset — the mapping `
+        + 'has gone stale').toBe(true);
     }
   });
 
@@ -86,15 +163,11 @@ describe('the Trench Companion id equivalence table', () => {
       such that the slug DOES reach it, this entry has stopped being needed
       and must go rather than sit here being believed.
     */
-    const names = everyUnitName();
     const stale: string[] = [];
     for (const [id, e] of entries) {
-      if (!id.startsWith('md_')) continue;
-      const tail = id.replace(/^md_/, '').replace(/_golem$/, '');
-      const [before, after] = tail.includes('_mv_') ? tail.split('_mv_') : [tail, ''];
-      const reachable = [nameKey(tail), nameKey(after), nameKey(before)]
-        .filter(Boolean).some((k) => names.has(k));
-      if (reachable) stale.push(`${id} ('${e.theirs}')`);
+      const domain = domainOf(id)!;
+      const names = domain.names();
+      if (domain.keys(id).some((k) => names.has(k))) stale.push(`${id} ('${e.theirs}')`);
     }
     expect(stale, 'entries the slug rules now reach without help — delete them').toEqual([]);
   });
@@ -102,8 +175,6 @@ describe('the Trench Companion id equivalence table', () => {
   it('holds no entry for an id the importer never sees', () => {
     /* Every key must appear in the committed fixture, or it is a mapping for
        something nobody has ever imported. */
-    const fixture = fs.readFileSync(path.join(process.cwd(),
-      'data-sources/fixtures/trench-companion/al-qarn-rihla-505410.json'), 'utf8');
     for (const [id] of entries) {
       expect(fixture.includes(id), `${id} appears in no committed fixture`).toBe(true);
     }

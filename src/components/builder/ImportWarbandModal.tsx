@@ -335,7 +335,7 @@ export const ImportWarbandModal: React.FC<ImportWarbandModalProps> = ({ onClose 
               inputMode="url"
               value={tcRef}
               onChange={(e) => setTcRef(e.target.value)}
-              placeholder="trench-companion.com/warband/detail/225201"
+              placeholder="trench-companion.com/warband/detail/505410"
               className="flex-1 min-h-[44px] bg-theme-base border border-theme-border rounded px-3 text-base sm:text-xs font-mono text-theme-text placeholder-theme-muted focus:outline-none focus:border-theme-primary"
             />
             <button
