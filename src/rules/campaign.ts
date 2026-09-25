@@ -678,6 +678,49 @@ export interface ExplorationEffect {
    * second list would be a second place to forget.
    */
   lootBonus?: number;
+  /**
+   * A standing permission to buy Glory Items, up to this price in Glory.
+   *
+   * Page 125: *"Glory Items can only be purchased during a campaign and if the
+   * Warband has made a discovery from an Exploration Table that allows them to
+   * take a Glory Item for free or purchase it in the Quartermaster Step."*
+   * Three Locations grant one, each with its own ceiling — the Trench Merchant
+   * 5, the Black Market 8, the Black Network Contact 12 — and each states the
+   * ceiling in its own sentence, which is where this number comes from.
+   *
+   * On this record for the same reason as `lootBonus`: it is a permanent change
+   * to what the Quartermaster Step may do, granted by a Location, and a second
+   * list would be a second place to forget.
+   *
+   * It is NOT recorded from the discovery alone. The Trench Merchant offers a
+   * choice — *"Report: your Warband gains 2 ☼"* or *"Trade: from now on…"* —
+   * and a Warband that took the Glory has not opened the shop.
+   */
+  gloryItemsUpTo?: number;
+  /**
+   * A single Glory Item the Location hands over, up to this price in Glory.
+   *
+   * Four Locations grant one — *"Relic: Choose one Glory Item worth up to 7 ☼
+   * and add it to your Arsenal"* — and it is not the standing permission
+   * `gloryItemsUpTo` records: the shop does not open, one item comes home.
+   *
+   * Without it the two rules cancelled and the player got neither. The gate
+   * hides every Glory Item row from a Warband with no standing permission
+   * (p.125), so a Warband that had just been handed a free one could not see it
+   * to take it. `gloryItemGrants` in `rules/gloryItems.ts` is what offers it,
+   * and `takenAtGame` is what spends it.
+   */
+  gloryItemOnce?: number;
+  /**
+   * The campaign game a one-off grant was spent in, where it has been.
+   *
+   * On the effect rather than in a list of its own, because the grant and its
+   * spending are one fact and two lists would be two places to forget. Absent
+   * while the grant is still owed.
+   */
+  takenAtGame?: number;
+  /** What was taken with it, for the Roster to show. */
+  takenItem?: string;
 }
 
 /**
@@ -818,6 +861,55 @@ export function explorationFromModels(
   return out;
 }
 
+/** One labelled option a Location offers: `* Trade: From now on…`. */
+export interface ExplorationChoice {
+  /** The option's own label — `Report`, `Trade`, `Sell`, `Keep`. */
+  label: string;
+  /** Just this option's sentence, which is what its grant is read from. */
+  text: string;
+}
+
+/**
+ * The options a Location offers, where it offers a choice at all.
+ *
+ * Thirteen of the thirty-four shipped Locations open *"Choose one of the
+ * following options:"* and then list them, each on a `*` bullet behind its own
+ * label. The Trench Merchant's two are the case that matters most:
+ *
+ * > **Report:** Your Warband gains 2 ☼.
+ * > **Trade:** From now on, in the Quartermaster Step, you can purchase Glory
+ * > Items costing 5 ☼ or less.
+ *
+ * `explorationGrants` used to run its patterns over the whole description, so
+ * a Warband that took the 2 Glory had its Glory Item Table opened anyway —
+ * every Trench Merchant recorded the permission, whichever option was chosen.
+ *
+ * Empty for a Location that offers no choice, which is the other twenty-one and
+ * includes the Black Market: it states its permission outright and there is
+ * nothing to pick.
+ */
+export function explorationChoices(
+  location: { description?: string } | null | undefined,
+): ExplorationChoice[] {
+  const text = location?.description ?? '';
+  if (!/Choose one of the following options/i.test(text)) return [];
+
+  /* Everything after the prompt, split on the bullets the book prints. */
+  const after = text.slice(text.search(/Choose one of the following options:?/i));
+  const parts = after.split(/\s\*\s+/).slice(1);
+
+  return parts
+    .map((part) => {
+      /* `Trade: …`, and `Destroy ( New Antioch, … only): …` — the label runs to
+         the first colon that is not inside the bracket the book uses to name
+         who may take the option. */
+      const m = /^([^:]{1,80}?)\s*:\s*([\s\S]*)$/.exec(part.trim());
+      if (!m) return null;
+      return { label: m[1].trim(), text: m[2].trim() };
+    })
+    .filter((c): c is ExplorationChoice => !!c && !!c.label && !!c.text);
+}
+
 /**
  * What a Location's own text hands out, permanently.
  *
@@ -825,14 +917,27 @@ export function explorationFromModels(
  * of the shipped Locations grant an Exploration Skill and one grants loot on
  * every future Step, and a hand-kept list of which is exactly the thing that
  * goes stale the first time the Dispatch adds a fifth.
+ *
+ * `chosen` is the label of the option the player took, where the Location
+ * offers a choice. A Location that offers one and has not been answered grants
+ * NOTHING: the options are alternatives and reading them all would hand a
+ * player both the Trench Merchant's 2 Glory and its standing permission to buy
+ * Glory Items, which is precisely what the book makes them choose between.
  */
 export function explorationGrants(
   dataset: Dataset | null | undefined,
   location: { name: string; description?: string } | null | undefined,
   sinceGame: number,
+  chosen?: string,
 ): ExplorationEffect[] {
   if (!location) return [];
-  const text = location.description ?? '';
+  const choices = explorationChoices(location);
+  let text = location.description ?? '';
+  if (choices.length) {
+    const took = choices.find((c) => c.label.toLowerCase() === (chosen ?? '').toLowerCase());
+    if (!took) return [];
+    text = took.text;
+  }
   const out: ExplorationEffect[] = [];
 
   const granted = /gains? the ([A-Za-z][A-Za-z -]*?) Exploration Skill/i.exec(text);
@@ -850,6 +955,52 @@ export function explorationGrants(
     .exec(text);
   if (loot) {
     out.push({ name: location.name, source: location.name, sinceGame, lootBonus: Number(loot[1]) });
+  }
+
+  /*
+    "From now on, in the Quartermaster Step, you can purchase Glory Items
+    costing 5 ☼ or less" — the gate p.125 says a Glory Item needs, and the
+    ceiling that discovery sets.
+
+    Read from the sentence rather than from a list of the three Locations that
+    print it, for the reason this whole function exists: the Dispatch will print
+    a fourth merchant, and a hand-kept list would not know about it. The
+    Locations that hand out a Glory Item once — "Choose one Glory Item worth up
+    to 7 ☼ and add it to your Arsenal" — deliberately do NOT match: that is a
+    single item taken now, not a standing permission to shop, and treating it as
+    one would open the tables permanently on a one-off find.
+  */
+  const shop = /From now on,?\s+in (?:the|your) Quartermaster Step,?\s+you can purchase Glory Items costing\s+(\d+)\s*(?:☼|Glory)?\s+or less/i
+    .exec(text);
+  if (shop) {
+    out.push({
+      name: location.name,
+      source: location.name,
+      sinceGame,
+      gloryItemsUpTo: Number(shop[1]),
+    });
+  }
+
+  /*
+    "Choose one Glory Item worth up to 7 ☼ and add it to your Arsenal" — a
+    single item handed over, not a shop opened (finding F).
+
+    Four Locations grant one and the distinction is the whole point: the
+    standing permission above lets a Warband buy from the table for the rest of
+    the campaign, this gives it one item now. Reading either as the other would
+    open the tables permanently on a one-off find, or hide the find behind a
+    gate it was supposed to bypass — which is what happened, so the player could
+    not take the item at all.
+  */
+  const once = /Choose (?:one|1)(?: or more)? Glory Items?\s+(?:with a Cost of\s+)?(?:worth\s+)?up to\s+(\d+)\s*(?:☼|Glory)?/i
+    .exec(text);
+  if (once) {
+    out.push({
+      name: location.name,
+      source: location.name,
+      sinceGame,
+      gloryItemOnce: Number(once[1]),
+    });
   }
 
   return out;
@@ -963,10 +1114,34 @@ export interface CarcassFrontExplorationOutcome {
   previouslyDiscovered: boolean;
 }
 
-/** Ducats per point of the Exploration Roll in a Carcass Front campaign. */
-export const CARCASS_FRONT_LOOT_PER_POINT = 5;
+/**
+ * Ducats per point of the Exploration Roll in a Carcass Front campaign, and the
+ * Dice Pool it starts on.
+ *
+ * **Derived, not typed** (finding I). Both numbers are stated outright in the
+ * supplement — *"you start with an Exploration Dice Pool of 3D6"* and *"collects
+ * loot equal to their Exploration Roll × 5 in 👑"* — and the pipeline reads them
+ * (`parseCarcassFrontExplorationStep`). These read the dataset.
+ *
+ * The fallbacks are the rulebook-free answer for a ruleset that carries no
+ * supplement, where nothing should be rolling on these tables at all: the panel
+ * refuses before it reaches them. They are NOT a guess at the supplement's
+ * numbers for a ruleset that has it — a ruleset with the layer always carries
+ * `carcassFrontExplorationStep`.
+ */
+export const carcassFrontLootPerPoint = (dataset: Dataset | null | undefined): number =>
+  dataset?.campaign?.carcassFrontExplorationStep?.lootPerPoint ?? CARCASS_FRONT_LOOT_PER_POINT;
 
-/** The Exploration Dice Pool a Carcass Front warband starts on. It does not grow with games. */
+export const carcassFrontStartingDice = (dataset: Dataset | null | undefined): number =>
+  dataset?.campaign?.carcassFrontExplorationStep?.startingDice ?? CARCASS_FRONT_STARTING_DICE;
+
+/**
+ * The values a ruleset built before the numbers were derived carries nowhere.
+ *
+ * Kept as the last resort for exactly that case, and for the one caller that
+ * has no dataset in hand. Every live path goes through the two readers above.
+ */
+export const CARCASS_FRONT_LOOT_PER_POINT = 5;
 export const CARCASS_FRONT_STARTING_DICE = 3;
 
 const carcassFrontTablesOf = (dataset: Dataset) =>
@@ -1012,7 +1187,7 @@ export function resolveCarcassFrontExploration(
   if (!tables) return null;
 
   const n = Math.max(0, Math.floor(roll) || 0);
-  const loot = n * CARCASS_FRONT_LOOT_PER_POINT;
+  const loot = n * carcassFrontLootPerPoint(dataset);
   const rudolfsFolly = dice && dice.length ? hasThreeOfAKind(dice) : null;
 
   if (!resource) {

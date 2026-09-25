@@ -345,7 +345,37 @@ describe('FD-12: ARSENAL, BIO and the fallen', () => {
       fallen: [unit({ id: 'u9', customName: 'Zayd' })],
     });
     expect(rosterSheet(bereaved, { dataset: DATASET }).fallen)
-      .toEqual([{ name: 'Zayd', profileName: 'Azeb' }]);
+      .toEqual([{ name: 'Zayd', profileName: 'Azeb', retired: false }]);
+  });
+
+  it('says a model sent home apart from one that was killed', () => {
+    /*
+      #114's Quartermaster Step retires a model by setting `retired` on the way
+      to `fallen`, and `removeFromRoster` writes `isDead` for both — so the flag
+      is the only thing that tells them apart. A Warband that lost six models
+      and retired two has lost six, and a list that merges them says eight.
+    */
+    const both = warband({
+      fallen: [
+        unit({ id: 'u9', customName: 'Zayd' }),
+        unit({
+          id: 'u10', customName: 'Hafsa', retired: true, retiredAtGame: 4,
+        }),
+      ],
+    });
+    expect(rosterSheet(both, { dataset: DATASET }).fallen).toEqual([
+      { name: 'Zayd', profileName: 'Azeb', retired: false },
+      { name: 'Hafsa', profileName: 'Azeb', retired: true, retiredAtGame: 4 },
+    ]);
+  });
+
+  it('a retirement with no game recorded claims no game', () => {
+    const quiet = warband({
+      fallen: [unit({ id: 'u11', customName: 'Nadir', retired: true })],
+    });
+    const [only] = rosterSheet(quiet, { dataset: DATASET }).fallen;
+    expect(only.retired).toBe(true);
+    expect(only).not.toHaveProperty('retiredAtGame');
   });
 });
 

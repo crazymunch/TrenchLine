@@ -158,8 +158,18 @@ export interface RosterSheetModel {
    * The models removed by the Trauma Step. Not on the printed sheet, which has
    * no room for them — and the whole point of this being the app's sheet
    * rather than a photocopy is that a campaign's dead are half its history.
+   *
+   * `retired` separates the two ways a model leaves: the Quartermaster Step's
+   * Retire Injured Models sends one home (#114), and `removeFromRoster` writes
+   * `isDead` for both, so a list that cannot tell them apart tells a Warband
+   * that retired two of its eight losses that it buried all eight.
    */
-  fallen: { name: string; profileName: string }[];
+  fallen: {
+    name: string;
+    profileName: string;
+    retired: boolean;
+    retiredAtGame?: number;
+  }[];
 }
 
 export interface RosterSheetContext {
@@ -375,6 +385,8 @@ export function rosterSheet(
     fallen: (warband.fallen ?? []).map((u) => ({
       name: u.customName || u.profileSnapshot?.name || 'Unnamed',
       profileName: u.profileSnapshot?.name ?? '',
+      retired: u.retired === true,
+      ...(u.retiredAtGame !== undefined ? { retiredAtGame: u.retiredAtGame } : {}),
     })),
   };
 }

@@ -47,7 +47,8 @@ export const DATASET: Dataset = {
         {
           "id": "a1da-b3f8-777e-38b9",
           "name": "Ravenous Infection",
-          "description": "Take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or a Critical Success, you can place 1 INFECTION MARKER next to any other model within 1” of the model taking the Ravenous Infection ACTION. Then, the model taking the Ravenous Infection ACTION’s Activation ends immediately."
+          "description": "Take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or a Critical Success, you can place 1 INFECTION MARKER next to any other model within 1” of the model taking the Ravenous Infection ACTION. Then, the model taking the Ravenous Infection ACTION’s Activation ends immediately.",
+          "hidden": true
         }
       ],
       "options": [
@@ -274,7 +275,8 @@ export const DATASET: Dataset = {
             "childId": "b044-cbf6-a7c5-e2b3",
             "childName": "The Executor",
             "includeChildSelections": true
-          }
+          },
+          "originId": "5fad-8b9c-8d6a-a2f0"
         },
         {
           "op": "increment",
@@ -289,7 +291,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "5fad-8b9c-8d6a-a2f0"
         },
         {
           "op": "increment",
@@ -304,7 +307,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "5fad-8b9c-8d6a-a2f0"
         },
         {
           "op": "decrement",
@@ -320,7 +324,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "5fad-8b9c-8d6a-a2f0"
         },
         {
           "op": "set",
@@ -336,7 +341,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "5fad-8b9c-8d6a-a2f0"
         },
         {
           "op": "set",
@@ -365,7 +371,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "5fad-8b9c-8d6a-a2f0"
         },
         {
           "op": "set",
@@ -380,7 +387,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a1da-b3f8-777e-38b9"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -499,7 +507,8 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "670f-9bed-3b5c-2b36",
             "childName": "Infected"
-          }
+          },
+          "originId": "aa15-64a9-87eb-87c8"
         },
         {
           "op": "set",
@@ -514,7 +523,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8fc4-805a-2894-01ad"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -543,7 +553,28 @@ export const DATASET: Dataset = {
       "min": null,
       "max": null,
       "abilities": [],
-      "options": [],
+      "options": [
+        {
+          "id": "4173-8d52-ff32-03d8",
+          "name": "Winged",
+          "group": "Thrall Type",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "unitProfileId": "2055-017b-f08e-aff4",
+          "description": "",
+          "constraints": [
+            {
+              "id": "e184-8bff-3cab-0f3b",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ]
+        }
+      ],
       "battlekit": [],
       "constraints": [
         {
@@ -568,7 +599,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "93f3-a076-a503-e864"
         },
         {
           "op": "set",
@@ -583,7 +615,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "93f3-a076-a503-e864"
         },
         {
           "op": "set",
@@ -598,7 +631,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "93f3-a076-a503-e864"
         },
         {
           "op": "set",
@@ -613,7 +647,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "93f3-a076-a503-e864"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -621,11 +656,19 @@ export const DATASET: Dataset = {
     {
       "id": "2055-017b-f08e-aff4",
       "entryId": "4173-8d52-ff32-03d8",
+      "secondaryProfile": true,
+      "parentEntryId": "ec39-f328-bad6-a586",
       "name": "Winged Thrall",
       "entryName": "Winged",
       "factionId": "Black Grail",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "BLACK GRAIL",
+        "FEAR",
+        "NEGATE GAS"
+      ],
       "stats": {
         "movement": "6\"/Flying",
         "movementInches": 6,
@@ -636,12 +679,35 @@ export const DATASET: Dataset = {
         "base": "25mm"
       },
       "cost": {
-        "ducats": 0,
+        "ducats": 25,
         "glory": 0
       },
       "min": null,
       "max": null,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "b4a6-25a1-64e7-5dae",
+          "name": "Overwhelming Horde",
+          "description": "A Grail Thrall or Fly Thrall can make a Melee Attack even though it does not have a Melee Weapon. In addition, add +1 DICE to the Success Roll for a Melee Attack made by a Grail Thrall or Fly Thrall for each other friendly model within 3\" of the attacking model (not including the attacking model itself)."
+        },
+        {
+          "id": "77bc-921d-3de0-55b4",
+          "name": "Ravenous Infection",
+          "description": "Ravenous Infection ACTION: A Ravenous can take a Ravenous Infection ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure, the model’s Activation ends immediately. If the roll is a Success or a Critical Success, you can place 1 INFECTION MARKER next to any other model within 1” of the model taking the Ravenous Infection ACTION. Then, the model taking the Ravenous Infection ACTION’s Activation ends immediately.",
+          "hidden": true
+        },
+        {
+          "id": "8cce-0a3c-fe8a-6cfa",
+          "name": "Undead Fortitude",
+          "description": "Add -1 INJURY DICE to Injury Rolls for a Grail Thrall unless the attack has the FIRE Keyword."
+        },
+        {
+          "id": "3d88-4234-e03c-5cb6",
+          "name": "Gluttonous Horde",
+          "description": "A Ravenous can make a Melee Attack with the CRITICAL Keyword even though it does not have a Melee Weapon. In addition, add +1 DICE to the Success Roll for a Melee Attack made by a Ravenous for each other friendly model within 3\" of the attacking model (not including the attacking model itself).",
+          "hidden": true
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -667,7 +733,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2055-017b-f08e-aff4"
         },
         {
           "op": "decrement",
@@ -681,7 +748,8 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "7fb6-d318-1757-96a6",
             "childName": "Trench Shield"
-          }
+          },
+          "originId": "2055-017b-f08e-aff4"
         },
         {
           "op": "set",
@@ -696,7 +764,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2055-017b-f08e-aff4"
         },
         {
           "op": "set",
@@ -711,7 +780,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2055-017b-f08e-aff4"
         },
         {
           "op": "set",
@@ -726,6 +796,75 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
+          },
+          "originId": "2055-017b-f08e-aff4"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Overwhelming Horde",
+          "originId": "b4a6-25a1-64e7-5dae",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Ravenous Infection",
+          "originId": "77bc-921d-3de0-55b4",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Undead Fortitude",
+          "originId": "8cce-0a3c-fe8a-6cfa"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "true",
+          "origin": "profile:Undead Fortitude",
+          "originId": "8cce-0a3c-fe8a-6cfa",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "model",
+            "childId": "cb53-aa4b-07e7-ce87",
+            "childName": "Hellfly Host"
+          }
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Gluttonous Horde",
+          "originId": "3d88-4234-e03c-5cb6",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "parent",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger"
           }
         }
       ],
@@ -831,7 +970,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "b0d3-1c47-ce33-922d"
         },
         {
           "op": "increment",
@@ -846,7 +986,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "b0d3-1c47-ce33-922d"
         },
         {
           "op": "increment",
@@ -861,7 +1002,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "b0d3-1c47-ce33-922d"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -975,7 +1117,8 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "7fb6-d318-1757-96a6",
             "childName": "Trench Shield"
-          }
+          },
+          "originId": "e5d5-c4bb-4b99-020d"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -1202,7 +1345,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aca1-8c2f-0a00-ee49"
         },
         {
           "op": "increment",
@@ -1217,7 +1361,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aca1-8c2f-0a00-ee49"
         },
         {
           "op": "decrement",
@@ -1233,7 +1378,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aca1-8c2f-0a00-ee49"
         },
         {
           "op": "set",
@@ -1249,7 +1395,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aca1-8c2f-0a00-ee49"
         },
         {
           "op": "set",
@@ -1278,7 +1425,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aca1-8c2f-0a00-ee49"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -1330,12 +1478,14 @@ export const DATASET: Dataset = {
         {
           "id": "9efd-0157-4c7e-8f26",
           "name": "Shredding",
-          "description": "Melee Attacks gain the CRITICAL Keyword."
+          "description": "Melee Attacks gain the CRITICAL Keyword.",
+          "hidden": true
         },
         {
           "id": "ef85-5b2b-f1d9-aad3",
           "name": "More Worm than Man",
-          "description": "Your opponent cannot spend a Desiccated Husk’s INFECTION MARKERS, unless they are converting an Injury Roll into a Bloodbath Roll."
+          "description": "Your opponent cannot spend a Desiccated Husk’s INFECTION MARKERS, unless they are converting an Injury Roll into a Bloodbath Roll.",
+          "hidden": true
         }
       ],
       "options": [
@@ -1478,7 +1628,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6435-cea8-b098-e528"
         },
         {
           "op": "increment",
@@ -1493,7 +1644,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6435-cea8-b098-e528"
         },
         {
           "op": "set",
@@ -1508,7 +1660,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6435-cea8-b098-e528"
         },
         {
           "op": "decrement",
@@ -1524,7 +1677,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6435-cea8-b098-e528"
         },
         {
           "op": "set",
@@ -1540,7 +1694,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6435-cea8-b098-e528"
         },
         {
           "op": "set",
@@ -1569,7 +1724,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6435-cea8-b098-e528"
         },
         {
           "op": "set",
@@ -1584,7 +1740,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "77fd-38d3-3b6c-4a77"
         },
         {
           "op": "set",
@@ -1599,7 +1756,24 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9efd-0157-4c7e-8f26"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:More Worm than Man",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          },
+          "originId": "ef85-5b2b-f1d9-aad3"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -1952,7 +2126,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9f3b-37db-7c86-c7ff"
         },
         {
           "op": "increment",
@@ -1967,7 +2142,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9f3b-37db-7c86-c7ff"
         },
         {
           "op": "decrement",
@@ -1983,7 +2159,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9f3b-37db-7c86-c7ff"
         },
         {
           "op": "set",
@@ -2012,7 +2189,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9f3b-37db-7c86-c7ff"
         },
         {
           "op": "set",
@@ -2041,7 +2219,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9f3b-37db-7c86-c7ff"
         }
       ],
       "sourceFile": "Black Grail.cat"
@@ -2929,7 +3108,8 @@ export const DATASET: Dataset = {
             "childId": "222e-037b-dbbc-151e",
             "childName": "Wings",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2900-bb42-dc77-e352"
         },
         {
           "op": "set",
@@ -2944,7 +3124,8 @@ export const DATASET: Dataset = {
             "childId": "52dd-8148-fabf-d590",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2900-bb42-dc77-e352"
         },
         {
           "op": "set",
@@ -2959,7 +3140,8 @@ export const DATASET: Dataset = {
             "childId": "2062-5f34-83d0-3e52",
             "childName": "Massive Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2900-bb42-dc77-e352"
         },
         {
           "op": "set",
@@ -2974,7 +3156,8 @@ export const DATASET: Dataset = {
             "childId": "52dd-8148-fabf-d590",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2900-bb42-dc77-e352"
         },
         {
           "op": "set",
@@ -2989,7 +3172,8 @@ export const DATASET: Dataset = {
             "childId": "4074-5e11-5f6c-1982",
             "childName": "Hawk Eyes",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2900-bb42-dc77-e352"
         },
         {
           "op": "set",
@@ -3004,7 +3188,8 @@ export const DATASET: Dataset = {
             "childId": "6de1-e878-02f0-d31c",
             "childName": "Gargantuan Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2900-bb42-dc77-e352"
         },
         {
           "op": "decrement",
@@ -3020,7 +3205,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2900-bb42-dc77-e352"
         },
         {
           "op": "set",
@@ -3805,7 +3991,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a2b2-89a6-6e9b-6070"
         },
         {
           "op": "increment",
@@ -3820,7 +4007,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a2b2-89a6-6e9b-6070"
         },
         {
           "op": "decrement",
@@ -3836,7 +4024,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "a2b2-89a6-6e9b-6070"
         },
         {
           "op": "set",
@@ -3852,7 +4041,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "a2b2-89a6-6e9b-6070"
         },
         {
           "op": "set",
@@ -3890,7 +4080,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "a2b2-89a6-6e9b-6070"
         },
         {
           "op": "set",
@@ -3906,7 +4097,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "a2b2-89a6-6e9b-6070"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -4658,7 +4850,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "increment",
@@ -4673,7 +4866,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "decrement",
@@ -4689,7 +4883,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "set",
@@ -4705,7 +4900,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "set",
@@ -4743,7 +4939,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "set",
@@ -4759,7 +4956,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -5064,7 +5262,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "increment",
@@ -5079,7 +5278,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "decrement",
@@ -5095,7 +5295,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -5111,7 +5312,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -5149,7 +5351,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -5165,7 +5368,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -5180,7 +5384,8 @@ export const DATASET: Dataset = {
             "childId": "58a3-64fb-8c2d-5105",
             "childName": "Bestial Skin Cloak",
             "includeChildSelections": true
-          }
+          },
+          "originId": "562f-9fca-8141-cf16"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -5806,7 +6011,8 @@ export const DATASET: Dataset = {
             "childId": "64ea-216e-161f-7584",
             "childName": "Shields",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e508-c5a4-d746-1eb6"
         },
         {
           "op": "increment",
@@ -5821,7 +6027,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e508-c5a4-d746-1eb6"
         },
         {
           "op": "increment",
@@ -5836,7 +6043,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e508-c5a4-d746-1eb6"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -5883,17 +6091,20 @@ export const DATASET: Dataset = {
         {
           "id": "e548-955a-6a84-d5bd",
           "name": "Infinite Duress",
-          "description": "If a Cultist inflicts any Injury on an Enemy Model in Melee, it removes one Blood Marker from itself, if it had any."
+          "description": "If a Cultist inflicts any Injury on an Enemy Model in Melee, it removes one Blood Marker from itself, if it had any.",
+          "hidden": true
         },
         {
           "id": "5ebc-2280-dd09-b031",
           "name": "Unstable",
-          "description": "If a Cultist ever has 6 Blood Markers, it instantly is taken Out of Action, before anything else resolves."
+          "description": "If a Cultist ever has 6 Blood Markers, it instantly is taken Out of Action, before anything else resolves.",
+          "hidden": true
         },
         {
           "id": "c104-c912-a766-408f",
           "name": "Willing Sacrifice",
-          "description": "If a Cultist is taken Out of Action as a result of a friendly Goetic Spell (either through paying the spell’s cost and triggering Unstable, or being killed due to the effect of the Spell), then dies after the Battle, its equipment is returned to your warchest. Another willing soul for the Seething Black’s infinite contempt."
+          "description": "If a Cultist is taken Out of Action as a result of a friendly Goetic Spell (either through paying the spell’s cost and triggering Unstable, or being killed due to the effect of the Spell), then dies after the Battle, its equipment is returned to your warchest. Another willing soul for the Seething Black’s infinite contempt.",
+          "hidden": true
         },
         {
           "id": "70d1-6a66-9a7a-e23d",
@@ -5903,7 +6114,8 @@ export const DATASET: Dataset = {
         {
           "id": "b852-3309-a987-5ad5",
           "name": "Low on the Blood Chain",
-          "description": "Cultists are treated as Yoke Fiends for the purposes of Equipment and the spell Slavemaster. Unlike Yoke Fiends, Cultists can be promoted to ELITE."
+          "description": "Cultists are treated as Yoke Fiends for the purposes of Equipment and the spell Slavemaster. Unlike Yoke Fiends, Cultists can be promoted to ELITE.",
+          "hidden": true
         }
       ],
       "options": [
@@ -6727,7 +6939,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -6743,7 +6956,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -6781,7 +6995,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -6797,7 +7012,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -6834,7 +7050,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "6196-e5a4-1978-7827"
         },
         {
           "op": "set",
@@ -6849,7 +7066,8 @@ export const DATASET: Dataset = {
             "childId": "1fda-e6a9-7628-9c49",
             "childName": "Fang of the Seething Black",
             "includeChildSelections": true
-          }
+          },
+          "originId": "055b-99d9-d536-ce9d"
         },
         {
           "op": "set",
@@ -6864,7 +7082,40 @@ export const DATASET: Dataset = {
             "childId": "1fda-e6a9-7628-9c49",
             "childName": "Fang of the Seething Black",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e548-955a-6a84-d5bd"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Unstable",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "5ebc-2280-dd09-b031"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Willing Sacrifice",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "c104-c912-a766-408f"
         },
         {
           "op": "set",
@@ -6901,7 +7152,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "70d1-6a66-9a7a-e23d"
         },
         {
           "op": "set",
@@ -6916,7 +7168,24 @@ export const DATASET: Dataset = {
             "childId": "8ba8-5e95-71aa-24e8",
             "childName": "Embraced by the Void",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c7c3-3548-f3e2-365a"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Low on the Blood Chain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "b852-3309-a987-5ad5"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -7278,7 +7547,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6987-6ba4-6c22-54b8"
         },
         {
           "op": "increment",
@@ -7293,7 +7563,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6987-6ba4-6c22-54b8"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -7340,42 +7611,50 @@ export const DATASET: Dataset = {
         {
           "id": "af57-dce7-c354-cfe8",
           "name": "Aura of Envy",
-          "description": "Enemy models within 12\" of this Desecrated Saint cannot Charge models that are with 1\" of a model from the Desecrated Saint’s Warband."
+          "description": "Enemy models within 12\" of this Desecrated Saint cannot Charge models that are with 1\" of a model from the Desecrated Saint’s Warband.",
+          "hidden": true
         },
         {
           "id": "91e6-c60d-e6f1-4932",
           "name": "Aura of Gluttony",
-          "description": "Add -1 DICE to rolls for enemy models within 8\" of this Desecrated Saint unless the enemy model has the BLACK GRAIL or ARTIFICIAL Keyword"
+          "description": "Add -1 DICE to rolls for enemy models within 8\" of this Desecrated Saint unless the enemy model has the BLACK GRAIL or ARTIFICIAL Keyword",
+          "hidden": true
         },
         {
           "id": "b97b-ed62-c510-0ef8",
           "name": "Aura of Greed",
-          "description": "Enemy models within 12\" of this Desecrated Saint that take a Charge ACTION must charge this Desecrated Saint if it is within 12\", in the Line of Sight of the charging model, and can be reached without having to cross Dangerous terrain or Climb, Jump, Jump Down or make a Diving Charge."
+          "description": "Enemy models within 12\" of this Desecrated Saint that take a Charge ACTION must charge this Desecrated Saint if it is within 12\", in the Line of Sight of the charging model, and can be reached without having to cross Dangerous terrain or Climb, Jump, Jump Down or make a Diving Charge.",
+          "hidden": true
         },
         {
           "id": "e8a3-79ca-652d-5277",
           "name": "Aura of Lust",
-          "description": "If an enemy model within 4\" of this Desecrated Saint is wearing Armour that does not have the IMPERVIOUS Keyword, you can negate any of the Armour’s Keywords or special rules, if you wish to do so, for as long as the model is within 4\" of the Desecrated Saint. The only rules or Keywords you cannot negate are those that affect the size of the base the model is mounted on. For example, if a model has Machine Armour, you could say that you will negate its -3 INJURY MODIFIER Keyword and Steadfast special rule while it is within 4\" of the Desecrated Saint, but that you choose not to negate the Machine Armour’s Bulky special rule."
+          "description": "If an enemy model within 4\" of this Desecrated Saint is wearing Armour that does not have the IMPERVIOUS Keyword, you can negate any of the Armour’s Keywords or special rules, if you wish to do so, for as long as the model is within 4\" of the Desecrated Saint. The only rules or Keywords you cannot negate are those that affect the size of the base the model is mounted on. For example, if a model has Machine Armour, you could say that you will negate its -3 INJURY MODIFIER Keyword and Steadfast special rule while it is within 4\" of the Desecrated Saint, but that you choose not to negate the Machine Armour’s Bulky special rule.",
+          "hidden": true
         },
         {
           "id": "51b7-8b1c-2d96-1287",
           "name": "Aura of Pride",
-          "description": "Place 1 BLOOD MARKER next to each enemy model that is within 8\" of this Desecrated Saint when the Desecrated Saint’s Activation ends."
+          "description": "Place 1 BLOOD MARKER next to each enemy model that is within 8\" of this Desecrated Saint when the Desecrated Saint’s Activation ends.",
+          "hidden": true
         },
         {
           "id": "f4c3-3158-9771-3159",
           "name": "Aura of Sloth",
-          "description": "Enemy models within 8\" of this Desecrated Saint treat Minor Hit results as Down results. The aura affects enemy models that normally treat Down results as a Minor Hit result (such as models wearing Machine Armour)."
+          "description": "Enemy models within 8\" of this Desecrated Saint treat Minor Hit results as Down results. The aura affects enemy models that normally treat Down results as a Minor Hit result (such as models wearing Machine Armour).",
+          "hidden": true
         },
         {
           "id": "01d9-f19c-3bb3-b0c3",
           "name": "Aura of the Void",
-          "description": "Every time any other model (friend or foe) within 8” would gain Blood Marker(s), it gains twice as many. Additionally, the Desecrated Saint gains -1D for any Injury rolls made against it for every 2 Blood Markers on any other model within 8”, to a maximum of -2D from this effect."
+          "description": "Every time any other model (friend or foe) within 8” would gain Blood Marker(s), it gains twice as many. Additionally, the Desecrated Saint gains -1D for any Injury rolls made against it for every 2 Blood Markers on any other model within 8”, to a maximum of -2D from this effect.",
+          "hidden": true
         },
         {
           "id": "8375-fafb-016b-d16b",
           "name": "Aura of Wrath",
-          "description": "Add +1 DICE to Melee Attacks and the Risky Success Roll for taking a Dash ACTION for friendly models that are within 8\" of this Desecrated Saint (including the Desecrated Saint themselves)."
+          "description": "Add +1 DICE to Melee Attacks and the Risky Success Roll for taking a Dash ACTION for friendly models that are within 8\" of this Desecrated Saint (including the Desecrated Saint themselves).",
+          "hidden": true
         },
         {
           "id": "dcd0-4aa5-5f3d-eefc",
@@ -7464,7 +7743,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8402-cb2e-c367-efe5"
         },
         {
           "op": "increment",
@@ -7479,7 +7759,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8402-cb2e-c367-efe5"
         },
         {
           "op": "set",
@@ -7494,7 +7775,8 @@ export const DATASET: Dataset = {
             "childId": "3a57-9286-5c7e-de27",
             "childName": "Envy",
             "includeChildSelections": true
-          }
+          },
+          "originId": "af57-dce7-c354-cfe8"
         },
         {
           "op": "set",
@@ -7509,7 +7791,8 @@ export const DATASET: Dataset = {
             "childId": "f1b5-ce92-42bc-2469",
             "childName": "Gluttony",
             "includeChildSelections": true
-          }
+          },
+          "originId": "91e6-c60d-e6f1-4932"
         },
         {
           "op": "set",
@@ -7524,7 +7807,8 @@ export const DATASET: Dataset = {
             "childId": "3a0b-d655-c557-84c1",
             "childName": "Greed",
             "includeChildSelections": true
-          }
+          },
+          "originId": "b97b-ed62-c510-0ef8"
         },
         {
           "op": "set",
@@ -7539,7 +7823,8 @@ export const DATASET: Dataset = {
             "childId": "3fc4-33b0-264c-8510",
             "childName": "Lust",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e8a3-79ca-652d-5277"
         },
         {
           "op": "set",
@@ -7554,7 +7839,8 @@ export const DATASET: Dataset = {
             "childId": "715d-d6a9-0948-8e79",
             "childName": "Pride",
             "includeChildSelections": true
-          }
+          },
+          "originId": "51b7-8b1c-2d96-1287"
         },
         {
           "op": "set",
@@ -7569,7 +7855,8 @@ export const DATASET: Dataset = {
             "childId": "be23-ed3c-e3a7-5140",
             "childName": "Sloth",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f4c3-3158-9771-3159"
         },
         {
           "op": "set",
@@ -7584,7 +7871,8 @@ export const DATASET: Dataset = {
             "childId": "1fda-e6a9-7628-9c49",
             "childName": "Fang of the Seething Black",
             "includeChildSelections": true
-          }
+          },
+          "originId": "01d9-f19c-3bb3-b0c3"
         },
         {
           "op": "set",
@@ -7599,7 +7887,8 @@ export const DATASET: Dataset = {
             "childId": "2fbd-2ebe-b0e5-8708",
             "childName": "Wrath",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8375-fafb-016b-d16b"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -8379,7 +8668,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "increment",
@@ -8394,7 +8684,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "decrement",
@@ -8410,7 +8701,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "set",
@@ -8426,7 +8718,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "set",
@@ -8464,7 +8757,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "set",
@@ -8480,7 +8774,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -8517,17 +8812,20 @@ export const DATASET: Dataset = {
         {
           "id": "231f-bbc9-438c-588e",
           "name": "Living Shadow",
-          "description": "Enemy models cannot target the Stalker with ranged attacks unless they are within 18” of it, decreased to 12” if the Stalker is in Cover from the perspective of the attacking Model."
+          "description": "Enemy models cannot target the Stalker with ranged attacks unless they are within 18” of it, decreased to 12” if the Stalker is in Cover from the perspective of the attacking Model.",
+          "hidden": true
         },
         {
           "id": "5ba1-407f-7eea-8883",
           "name": "Gruesome Cover",
-          "description": "A Stalker can take a Gruesome Cover ACTION when it takes an enemy model Out of Action in Melee. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or a Critical Success, it buries itself into the still-warm corpse, body bending at unnatural angles and ends its Activation. Until the beginning of its next Activation, it is considered to be in Cover from any angle."
+          "description": "A Stalker can take a Gruesome Cover ACTION when it takes an enemy model Out of Action in Melee. If they do so, take a Success Roll for the model. If the roll is a Failure, nothing happens. If the roll is a Success or a Critical Success, it buries itself into the still-warm corpse, body bending at unnatural angles and ends its Activation. Until the beginning of its next Activation, it is considered to be in Cover from any angle.",
+          "hidden": true
         },
         {
           "id": "57eb-c604-6faa-c6b9",
           "name": "Undying Vassal",
-          "description": "Once per turn, whenever a model (friend or foe) is taken Out of Action, the Stalker may choose to instantly appear out of the Model’s corpse. Redeploy it and immediately place it so that the center of its base is at the location that was previously occupied by the center of the base of the removed model. If this is impossible for any reason, the Stalker remains at its original location. This ability can be used at any point during the Battle, even if it is outside of the Stalker’s Activation. Note that if the Stalker starts within 1\" of an enemy model, this is not treated as a Retreat, so the enemy model cannot make a Melee Attack before the Stalker uses that ability."
+          "description": "Once per turn, whenever a model (friend or foe) is taken Out of Action, the Stalker may choose to instantly appear out of the Model’s corpse. Redeploy it and immediately place it so that the center of its base is at the location that was previously occupied by the center of the base of the removed model. If this is impossible for any reason, the Stalker remains at its original location. This ability can be used at any point during the Battle, even if it is outside of the Stalker’s Activation. Note that if the Stalker starts within 1\" of an enemy model, this is not treated as a Retreat, so the enemy model cannot make a Melee Attack before the Stalker uses that ability.",
+          "hidden": true
         }
       ],
       "options": [
@@ -8788,6 +9086,70 @@ export const DATASET: Dataset = {
           }
         },
         {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Void Blade",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "1472-8a93-ec65-d12e"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Living Shadow",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "231f-bbc9-438c-588e"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Gruesome Cover",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "5ba1-407f-7eea-8883"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Undying Vassal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "57eb-c604-6faa-c6b9"
+        },
+        {
           "op": "increment",
           "field": "stats.melee",
           "value": "1",
@@ -8800,7 +9162,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "increment",
@@ -8815,7 +9178,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "decrement",
@@ -8831,7 +9195,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "set",
@@ -8847,7 +9212,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "set",
@@ -8885,7 +9251,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "set",
@@ -8901,7 +9268,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         }
       ],
       "sourceFile": "Court of the Seven-Headed Serpent.cat"
@@ -8937,7 +9305,8 @@ export const DATASET: Dataset = {
         {
           "id": "197e-2053-38ac-cce8",
           "name": "Incandescent",
-          "description": "Weapons with the FIRE keyword that this model has equipped gain +1 INJURY DICE."
+          "description": "Weapons with the FIRE keyword that this model has equipped gain +1 INJURY DICE.",
+          "hidden": true
         }
       ],
       "options": [
@@ -9202,7 +9571,8 @@ export const DATASET: Dataset = {
             "childId": "4a0e-6f55-3bac-71b1",
             "childName": "Shields",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c4f9-0bca-fb4a-1a51"
         },
         {
           "op": "increment",
@@ -9217,7 +9587,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c4f9-0bca-fb4a-1a51"
         },
         {
           "op": "increment",
@@ -9232,7 +9603,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c4f9-0bca-fb4a-1a51"
         },
         {
           "op": "set",
@@ -9247,7 +9619,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "197e-2053-38ac-cce8"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -9534,7 +9907,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1c77-e32a-aec8-53a7"
         },
         {
           "op": "increment",
@@ -9549,7 +9923,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1c77-e32a-aec8-53a7"
         },
         {
           "op": "decrement",
@@ -9565,7 +9940,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1c77-e32a-aec8-53a7"
         },
         {
           "op": "set",
@@ -9581,7 +9957,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1c77-e32a-aec8-53a7"
         },
         {
           "op": "set",
@@ -9619,7 +9996,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1c77-e32a-aec8-53a7"
         },
         {
           "op": "set",
@@ -9657,7 +10035,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1c77-e32a-aec8-53a7"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -9841,7 +10220,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "459b-6e4b-c658-2d35"
         },
         {
           "op": "increment",
@@ -9856,7 +10236,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "459b-6e4b-c658-2d35"
         },
         {
           "op": "decrement",
@@ -9872,7 +10253,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "459b-6e4b-c658-2d35"
         },
         {
           "op": "set",
@@ -9888,7 +10270,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "459b-6e4b-c658-2d35"
         },
         {
           "op": "set",
@@ -9926,7 +10309,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "459b-6e4b-c658-2d35"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -10148,7 +10532,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8dab-235b-d0d8-967f"
         },
         {
           "op": "set",
@@ -10164,7 +10549,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8dab-235b-d0d8-967f"
         },
         {
           "op": "set",
@@ -10202,7 +10588,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8dab-235b-d0d8-967f"
         },
         {
           "op": "set",
@@ -10231,7 +10618,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8dab-235b-d0d8-967f"
         },
         {
           "op": "increment",
@@ -10247,7 +10635,8 @@ export const DATASET: Dataset = {
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8dab-235b-d0d8-967f"
         },
         {
           "op": "increment",
@@ -10263,7 +10652,8 @@ export const DATASET: Dataset = {
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8dab-235b-d0d8-967f"
         },
         {
           "op": "set",
@@ -10278,7 +10668,8 @@ export const DATASET: Dataset = {
             "childId": "2947-3143-19a4-59a0",
             "childName": "Banshee",
             "includeChildSelections": true
-          }
+          },
+          "originId": "dcb0-e7e0-84df-2871"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -10323,7 +10714,8 @@ export const DATASET: Dataset = {
         {
           "id": "11cb-1c31-0802-652a",
           "name": "Appetisers",
-          "description": "The War Hyena ignores the effects of barbed wire (both difficult and dangerous)."
+          "description": "The War Hyena ignores the effects of barbed wire (both difficult and dangerous).",
+          "hidden": true
         }
       ],
       "options": [
@@ -10555,7 +10947,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "57ad-9a46-41b3-5414"
         },
         {
           "op": "set",
@@ -10570,7 +10963,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "11cb-1c31-0802-652a"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -10843,7 +11237,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "increment",
@@ -10858,7 +11253,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "decrement",
@@ -10874,7 +11270,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -10890,7 +11287,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -10928,7 +11326,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -10944,7 +11343,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -10972,7 +11372,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "8755-5cd3-d0a0-1caa"
         },
         {
           "op": "set",
@@ -10987,7 +11388,8 @@ export const DATASET: Dataset = {
             "childId": "c323-0c33-e628-56f0",
             "childName": "Knights of Avarice",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6d5e-3299-c138-e478"
         },
         {
           "op": "set",
@@ -11002,7 +11404,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9b77-f940-9067-44b6"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -11131,7 +11534,8 @@ export const DATASET: Dataset = {
             "childId": "4a0e-6f55-3bac-71b1",
             "childName": "Shields",
             "includeChildSelections": true
-          }
+          },
+          "originId": "5c28-fb72-df49-7ffd"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -11335,7 +11739,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "9654-b8d7-9c76-f5db"
         },
         {
           "op": "set",
@@ -11363,7 +11768,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "9654-b8d7-9c76-f5db"
         },
         {
           "op": "increment",
@@ -11378,7 +11784,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9654-b8d7-9c76-f5db"
         },
         {
           "op": "increment",
@@ -11393,7 +11800,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9654-b8d7-9c76-f5db"
         },
         {
           "op": "decrement",
@@ -11409,7 +11817,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9654-b8d7-9c76-f5db"
         },
         {
           "op": "set",
@@ -11425,7 +11834,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9654-b8d7-9c76-f5db"
         },
         {
           "op": "set",
@@ -11463,7 +11873,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9654-b8d7-9c76-f5db"
         },
         {
           "op": "set",
@@ -11501,7 +11912,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9654-b8d7-9c76-f5db"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -11708,7 +12120,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7d0c-f87e-d843-b52e"
         },
         {
           "op": "increment",
@@ -11723,7 +12136,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7d0c-f87e-d843-b52e"
         },
         {
           "op": "decrement",
@@ -11739,7 +12153,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7d0c-f87e-d843-b52e"
         },
         {
           "op": "set",
@@ -11755,7 +12170,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7d0c-f87e-d843-b52e"
         },
         {
           "op": "set",
@@ -11793,7 +12209,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7d0c-f87e-d843-b52e"
         },
         {
           "op": "set",
@@ -11831,7 +12248,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7d0c-f87e-d843-b52e"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -11954,7 +12372,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f985-029a-9867-33a0"
         },
         {
           "op": "increment",
@@ -11969,7 +12388,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f985-029a-9867-33a0"
         },
         {
           "op": "decrement",
@@ -11985,7 +12405,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f985-029a-9867-33a0"
         },
         {
           "op": "set",
@@ -12001,7 +12422,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f985-029a-9867-33a0"
         },
         {
           "op": "set",
@@ -12039,7 +12461,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f985-029a-9867-33a0"
         },
         {
           "op": "set",
@@ -12077,7 +12500,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f985-029a-9867-33a0"
         }
       ],
       "sourceFile": "Heretic Legion.cat"
@@ -12636,7 +13060,8 @@ export const DATASET: Dataset = {
             "childId": "fb6e-4676-0313-a505",
             "childName": "Wings",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2f34-d5f0-2acc-17eb"
         },
         {
           "op": "set",
@@ -12651,7 +13076,8 @@ export const DATASET: Dataset = {
             "childId": "e637-e915-600f-0ed5",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2f34-d5f0-2acc-17eb"
         },
         {
           "op": "set",
@@ -12666,7 +13092,8 @@ export const DATASET: Dataset = {
             "childId": "3fb4-b607-7277-c486",
             "childName": "Massive Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2f34-d5f0-2acc-17eb"
         },
         {
           "op": "set",
@@ -12681,7 +13108,8 @@ export const DATASET: Dataset = {
             "childId": "e637-e915-600f-0ed5",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2f34-d5f0-2acc-17eb"
         },
         {
           "op": "set",
@@ -12696,7 +13124,8 @@ export const DATASET: Dataset = {
             "childId": "7db6-6b99-81a9-064e",
             "childName": "Hawk Eyes",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2f34-d5f0-2acc-17eb"
         },
         {
           "op": "set",
@@ -12711,7 +13140,8 @@ export const DATASET: Dataset = {
             "childId": "29e1-35be-2c50-269a",
             "childName": "Gargantuan Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2f34-d5f0-2acc-17eb"
         },
         {
           "op": "decrement",
@@ -12727,7 +13157,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2f34-d5f0-2acc-17eb"
         },
         {
           "op": "set",
@@ -13398,7 +13829,8 @@ export const DATASET: Dataset = {
             "childId": "f5d7-6c47-430c-2666",
             "childName": "Wings",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13413,7 +13845,8 @@ export const DATASET: Dataset = {
             "childId": "6c4b-c577-6aca-f270",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13428,7 +13861,8 @@ export const DATASET: Dataset = {
             "childId": "246c-e662-2f58-db1b",
             "childName": "Massive Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13443,7 +13877,8 @@ export const DATASET: Dataset = {
             "childId": "6c4b-c577-6aca-f270",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13458,7 +13893,8 @@ export const DATASET: Dataset = {
             "childId": "387f-21f7-517f-003e",
             "childName": "Hawk Eyes",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13473,7 +13909,8 @@ export const DATASET: Dataset = {
             "childId": "6603-2315-97b5-d845",
             "childName": "Gargantuan Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "increment",
@@ -13488,7 +13925,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "increment",
@@ -13503,7 +13941,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "decrement",
@@ -13519,7 +13958,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13535,7 +13975,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13564,7 +14005,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "02c4-88da-ec78-8a33"
         },
         {
           "op": "set",
@@ -13666,7 +14108,8 @@ export const DATASET: Dataset = {
         {
           "id": "f851-26c0-c31f-c85d",
           "name": "Improvised Trap",
-          "description": "A Sapper can take an Improvised Trap ACTION. If they do so, take a Success Roll with +2 DICE for the model. If the roll is a failure, nothing happens. If the roll is a Success or a Critical Success, the Sapper may place a single 2” trap marker within base contact of itself. When a unit comes within 1” of the marker they must immediately roll on the Injury chart. If the result of this roll is a Down, then the enemy unit is considered pinned, and cannot Stand or Move unless it succeeds on a Risky Success Roll at the start of its next Activation. Units with the keyword STRONG or on a 50mm or larger base make this roll with +1 DICE. A Sapper ignores the effects of its own set traps."
+          "description": "A Sapper can take an Improvised Trap ACTION. If they do so, take a Success Roll with +2 DICE for the model. If the roll is a failure, nothing happens. If the roll is a Success or a Critical Success, the Sapper may place a single 2” trap marker within base contact of itself. When a unit comes within 1” of the marker they must immediately roll on the Injury chart. If the result of this roll is a Down, then the enemy unit is considered pinned, and cannot Stand or Move unless it succeeds on a Risky Success Roll at the start of its next Activation. Units with the keyword STRONG or on a 50mm or larger base make this roll with +1 DICE. A Sapper ignores the effects of its own set traps.",
+          "hidden": true
         }
       ],
       "options": [
@@ -13927,7 +14370,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6938-a6bd-aec7-18d9"
         },
         {
           "op": "increment",
@@ -13942,7 +14386,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6938-a6bd-aec7-18d9"
         },
         {
           "op": "decrement",
@@ -13958,7 +14403,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6938-a6bd-aec7-18d9"
         },
         {
           "op": "set",
@@ -13974,7 +14420,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6938-a6bd-aec7-18d9"
         },
         {
           "op": "set",
@@ -14012,7 +14459,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6938-a6bd-aec7-18d9"
         },
         {
           "op": "set",
@@ -14028,7 +14476,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6938-a6bd-aec7-18d9"
         },
         {
           "op": "set",
@@ -14043,7 +14492,8 @@ export const DATASET: Dataset = {
             "childId": "5df2-4c17-7c8c-4f1e",
             "childName": "Ghazi of the Golden Path",
             "includeChildSelections": true
-          }
+          },
+          "originId": "5920-36e6-b95e-f0b4"
         },
         {
           "op": "set",
@@ -14058,7 +14508,8 @@ export const DATASET: Dataset = {
             "childId": "5df2-4c17-7c8c-4f1e",
             "childName": "Ghazi of the Golden Path",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f851-26c0-c31f-c85d"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -14333,7 +14784,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8aa4-2bfe-6a85-595c"
         },
         {
           "op": "increment",
@@ -14348,7 +14800,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8aa4-2bfe-6a85-595c"
         },
         {
           "op": "decrement",
@@ -14364,7 +14817,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8aa4-2bfe-6a85-595c"
         },
         {
           "op": "set",
@@ -14380,7 +14834,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8aa4-2bfe-6a85-595c"
         },
         {
           "op": "set",
@@ -14418,7 +14873,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8aa4-2bfe-6a85-595c"
         },
         {
           "op": "set",
@@ -14434,7 +14890,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8aa4-2bfe-6a85-595c"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -14470,7 +14927,8 @@ export const DATASET: Dataset = {
         {
           "id": "aba6-8b49-af2b-e4fd",
           "name": "Whirling Dervishes",
-          "description": "The ritual Dance of the Dervishes is hypnotic to witness, and it is as graceful as it is deadly. All Ranged attacks against Dervishes suffer -1 DICE penalty. Dervishes do not suffer the normal -1 DICE to hit for fighting with an Off-Hand weapon."
+          "description": "The ritual Dance of the Dervishes is hypnotic to witness, and it is as graceful as it is deadly. All Ranged attacks against Dervishes suffer -1 DICE penalty. Dervishes do not suffer the normal -1 DICE to hit for fighting with an Off-Hand weapon.",
+          "hidden": true
         },
         {
           "id": "1061-0baf-c232-c9a3",
@@ -15032,7 +15490,8 @@ export const DATASET: Dataset = {
             "childId": "cd91-f171-98d6-423e",
             "childName": "Fida’i of Alamut – The Cabal of Assassins",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aba6-8b49-af2b-e4fd"
         },
         {
           "op": "set",
@@ -15047,7 +15506,8 @@ export const DATASET: Dataset = {
             "childId": "cd91-f171-98d6-423e",
             "childName": "Fida’i of Alamut – The Cabal of Assassins",
             "includeChildSelections": true
-          }
+          },
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "set",
@@ -15062,7 +15522,8 @@ export const DATASET: Dataset = {
             "childId": "c2b1-d49e-937b-2f87",
             "childName": "The House of Wisdom",
             "includeChildSelections": true
-          }
+          },
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "increment",
@@ -15077,7 +15538,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "increment",
@@ -15092,7 +15554,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "decrement",
@@ -15108,7 +15571,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "set",
@@ -15124,7 +15588,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "set",
@@ -15162,7 +15627,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "set",
@@ -15178,7 +15644,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16b9-d9fd-6c2d-68f9"
         },
         {
           "op": "set",
@@ -15206,7 +15673,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "1061-0baf-c232-c9a3"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -15469,7 +15937,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "0a4b-397f-ded9-8e79"
         },
         {
           "op": "increment",
@@ -15484,7 +15953,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "0a4b-397f-ded9-8e79"
         },
         {
           "op": "decrement",
@@ -15526,7 +15996,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0a4b-397f-ded9-8e79"
         },
         {
           "op": "set",
@@ -15542,7 +16013,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0a4b-397f-ded9-8e79"
         },
         {
           "op": "set",
@@ -15580,7 +16052,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0a4b-397f-ded9-8e79"
         },
         {
           "op": "set",
@@ -15596,7 +16069,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0a4b-397f-ded9-8e79"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -15964,7 +16438,8 @@ export const DATASET: Dataset = {
             "childId": "f066-7776-2591-48e3",
             "childName": "Thunderbolt of Alamut",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2e2a-409a-cf05-c437"
         },
         {
           "op": "increment",
@@ -15979,7 +16454,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2e2a-409a-cf05-c437"
         },
         {
           "op": "increment",
@@ -15994,7 +16470,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2e2a-409a-cf05-c437"
         },
         {
           "op": "decrement",
@@ -16010,7 +16487,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2e2a-409a-cf05-c437"
         },
         {
           "op": "set",
@@ -16026,7 +16504,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2e2a-409a-cf05-c437"
         },
         {
           "op": "set",
@@ -16064,7 +16543,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2e2a-409a-cf05-c437"
         },
         {
           "op": "set",
@@ -16080,7 +16560,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2e2a-409a-cf05-c437"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -16464,7 +16945,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7280-5029-065d-2822"
         },
         {
           "op": "increment",
@@ -16479,7 +16961,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7280-5029-065d-2822"
         },
         {
           "op": "decrement",
@@ -16495,7 +16978,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7280-5029-065d-2822"
         },
         {
           "op": "set",
@@ -16511,7 +16995,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7280-5029-065d-2822"
         },
         {
           "op": "set",
@@ -16549,7 +17034,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7280-5029-065d-2822"
         },
         {
           "op": "set",
@@ -16565,7 +17051,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7280-5029-065d-2822"
         },
         {
           "op": "set",
@@ -16601,7 +17088,8 @@ export const DATASET: Dataset = {
                 "childName": "Akinji-Bey"
               }
             ]
-          }
+          },
+          "originId": "8231-771f-29d7-e9cf"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -16938,7 +17426,8 @@ export const DATASET: Dataset = {
                 "childName": "Studied Blade"
               }
             ]
-          }
+          },
+          "originId": "16d8-5d2d-abc1-4bfc"
         },
         {
           "op": "increment",
@@ -16953,7 +17442,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "16d8-5d2d-abc1-4bfc"
         },
         {
           "op": "increment",
@@ -16980,7 +17470,8 @@ export const DATASET: Dataset = {
                 "childName": "Studied Blade"
               }
             ]
-          }
+          },
+          "originId": "16d8-5d2d-abc1-4bfc"
         },
         {
           "op": "decrement",
@@ -16996,7 +17487,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16d8-5d2d-abc1-4bfc"
         },
         {
           "op": "set",
@@ -17012,7 +17504,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16d8-5d2d-abc1-4bfc"
         },
         {
           "op": "set",
@@ -17050,7 +17543,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16d8-5d2d-abc1-4bfc"
         },
         {
           "op": "set",
@@ -17066,7 +17560,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "16d8-5d2d-abc1-4bfc"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -17228,7 +17723,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2ce6-a5e6-fd5e-9b11"
         },
         {
           "op": "decrement",
@@ -17244,7 +17740,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2ce6-a5e6-fd5e-9b11"
         },
         {
           "op": "set",
@@ -17260,7 +17757,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2ce6-a5e6-fd5e-9b11"
         },
         {
           "op": "set",
@@ -17298,7 +17796,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2ce6-a5e6-fd5e-9b11"
         },
         {
           "op": "set",
@@ -17314,7 +17813,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2ce6-a5e6-fd5e-9b11"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -18005,7 +18505,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "c091-f6cc-758d-adeb"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -18289,7 +18790,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3fce-74d0-c0b4-1ebd"
         },
         {
           "op": "increment",
@@ -18304,7 +18806,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3fce-74d0-c0b4-1ebd"
         },
         {
           "op": "decrement",
@@ -18320,7 +18823,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "3fce-74d0-c0b4-1ebd"
         },
         {
           "op": "set",
@@ -18336,7 +18840,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "3fce-74d0-c0b4-1ebd"
         },
         {
           "op": "set",
@@ -18374,7 +18879,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "3fce-74d0-c0b4-1ebd"
         },
         {
           "op": "set",
@@ -18390,7 +18896,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "3fce-74d0-c0b4-1ebd"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -18528,7 +19035,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "increment",
@@ -18543,7 +19051,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "decrement",
@@ -18559,7 +19068,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -18575,7 +19085,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -18613,7 +19124,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -18629,7 +19141,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -18720,7 +19233,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "increment",
@@ -18735,7 +19249,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "decrement",
@@ -18751,7 +19266,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "set",
@@ -18767,7 +19283,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "set",
@@ -18805,7 +19322,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "set",
@@ -18821,7 +19339,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         }
       ],
       "sourceFile": "Iron Sultanate.cat"
@@ -19636,7 +20155,88 @@ export const DATASET: Dataset = {
           "description": "A Trench Dog has the same Faction Keyword as the model that has it. For example, the owner of a Trench Dog had the NEW ANTIOCH Faction Keyword, then the Trench Dog will have the NEW ANTIOCH Faction Keyword too."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "4d84-784e-a2c6-53c0",
+          "name": "Guard Dog",
+          "group": "Specialization",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "unitProfileId": "381b-1e9b-e962-cb6b",
+          "description": "",
+          "constraints": [
+            {
+              "id": "3932-e824-7713-45b8",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ]
+        },
+        {
+          "id": "d196-34d1-a003-da6f",
+          "name": "Martyrdom Dog",
+          "group": "Specialization",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "unitProfileId": "a7bd-81f7-6908-8080",
+          "description": "",
+          "constraints": [
+            {
+              "id": "7123-6d69-2b7a-aefa",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ]
+        },
+        {
+          "id": "6871-d12d-d7fc-bb03",
+          "name": "Mercy Dog",
+          "group": "Specialization",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "unitProfileId": "1331-ddb8-fad3-81a3",
+          "description": "",
+          "constraints": [
+            {
+              "id": "e5e6-d539-4d10-1cb4",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ]
+        },
+        {
+          "id": "b990-d914-9dce-66af",
+          "name": "Hellhound",
+          "group": "Specialization",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "unitProfileId": "35df-a599-1589-8c23",
+          "description": "",
+          "constraints": [
+            {
+              "id": "ee60-7b0a-3bed-63a3",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ]
+        }
+      ],
       "battlekit": [],
       "constraints": [
         {
@@ -19802,7 +20402,8 @@ export const DATASET: Dataset = {
                 "childName": "Hellhound"
               }
             ]
-          }
+          },
+          "originId": "ce78-bd08-5b44-8e38"
         },
         {
           "op": "set",
@@ -19816,7 +20417,8 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "b990-d914-9dce-66af",
             "childName": "Hellhound"
-          }
+          },
+          "originId": "46b7-fdc4-77cd-5271"
         }
       ],
       "sourceFile": "Mercenaries.cat"
@@ -19824,9 +20426,13 @@ export const DATASET: Dataset = {
     {
       "id": "381b-1e9b-e962-cb6b",
       "entryId": "4d84-784e-a2c6-53c0",
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Guard Dog",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -19895,9 +20501,13 @@ export const DATASET: Dataset = {
       "id": "a7bd-81f7-6908-8080",
       "entryId": "d196-34d1-a003-da6f",
       "hiddenByDefault": true,
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Martyrdom Dog",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -19959,9 +20569,13 @@ export const DATASET: Dataset = {
       "id": "1331-ddb8-fad3-81a3",
       "entryId": "6871-d12d-d7fc-bb03",
       "hiddenByDefault": true,
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Mercy Dog",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -20022,9 +20636,13 @@ export const DATASET: Dataset = {
       "id": "35df-a599-1589-8c23",
       "entryId": "b990-d914-9dce-66af",
       "hiddenByDefault": true,
+      "secondaryProfile": true,
+      "parentEntryId": "52e5-2006-85e1-a7c7",
       "name": "Hellhound",
       "factionId": "Mercenaries",
-      "roles": [],
+      "roles": [
+        "Mercenary"
+      ],
       "keywords": [],
       "stats": {
         "movement": "8\"/Infantry",
@@ -20041,7 +20659,18 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 1,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "eb55-7f18-ebac-da25",
+          "name": "Four Paws",
+          "description": "Add +1 DICE to rolls for a Trench Dog when they Climb, Jump, Fall or take a Dash ACTION."
+        },
+        {
+          "id": "c45a-e0c1-402d-9d28",
+          "name": "Pack Loyalty",
+          "description": "A Trench Dog has the same Faction Keyword as the model that has it. For example, the owner of a Trench Dog had the NEW ANTIOCH Faction Keyword, then the Trench Dog will have the NEW ANTIOCH Faction Keyword too."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -20113,7 +20742,8 @@ export const DATASET: Dataset = {
                 "childName": "Black Grail"
               }
             ]
-          }
+          },
+          "originId": "afc3-8575-429c-3c17"
         }
       ],
       "sourceFile": "Mercenaries.cat"
@@ -20489,7 +21119,8 @@ export const DATASET: Dataset = {
             "childId": "68d9-a653-9765-d3e7",
             "childName": "Polearm and Shield",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a674-6866-aab4-a938"
         },
         {
           "op": "increment",
@@ -20504,7 +21135,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a674-6866-aab4-a938"
         },
         {
           "op": "increment",
@@ -20519,7 +21151,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a674-6866-aab4-a938"
         },
         {
           "op": "increment",
@@ -20534,7 +21167,8 @@ export const DATASET: Dataset = {
             "childId": "4467-39c5-0252-1b2d",
             "childName": "Far Shot [5]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9353-c8d6-219d-55ef"
         },
         {
           "op": "set",
@@ -20549,7 +21183,8 @@ export const DATASET: Dataset = {
             "childId": "6ffb-5ac2-a05a-8c44",
             "childName": "Lost Arm [26]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9353-c8d6-219d-55ef"
         },
         {
           "op": "set",
@@ -20860,7 +21495,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1a28-719d-fbd0-5bf0"
         },
         {
           "op": "increment",
@@ -20875,7 +21511,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1a28-719d-fbd0-5bf0"
         }
       ],
       "sourceFile": "Mercenaries.cat"
@@ -21390,7 +22027,8 @@ export const DATASET: Dataset = {
             "childId": "3e05-5fa6-8b0c-e416",
             "childName": "Wings",
             "includeChildSelections": true
-          }
+          },
+          "originId": "bc90-d206-2b0d-b743"
         },
         {
           "op": "set",
@@ -21405,7 +22043,8 @@ export const DATASET: Dataset = {
             "childId": "2786-d139-8c2d-7a84",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "bc90-d206-2b0d-b743"
         },
         {
           "op": "set",
@@ -21420,7 +22059,8 @@ export const DATASET: Dataset = {
             "childId": "8448-bccf-aac9-52a5",
             "childName": "Massive Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "bc90-d206-2b0d-b743"
         },
         {
           "op": "set",
@@ -21435,7 +22075,8 @@ export const DATASET: Dataset = {
             "childId": "2786-d139-8c2d-7a84",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "bc90-d206-2b0d-b743"
         },
         {
           "op": "set",
@@ -21450,7 +22091,8 @@ export const DATASET: Dataset = {
             "childId": "5e49-cff8-3d14-cff5",
             "childName": "Hawk Eyes",
             "includeChildSelections": true
-          }
+          },
+          "originId": "bc90-d206-2b0d-b743"
         },
         {
           "op": "set",
@@ -21465,7 +22107,8 @@ export const DATASET: Dataset = {
             "childId": "f831-3c35-aebe-7d52",
             "childName": "Gargantuan Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "bc90-d206-2b0d-b743"
         },
         {
           "op": "decrement",
@@ -21494,7 +22137,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "bc90-d206-2b0d-b743"
         },
         {
           "op": "set",
@@ -21678,7 +22322,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "8e11-d71b-f31f-4a42"
         },
         {
           "op": "increment",
@@ -21693,7 +22338,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "increment",
@@ -21708,7 +22354,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "decrement",
@@ -21723,7 +22370,8 @@ export const DATASET: Dataset = {
             "childId": "d27d-b034-cb18-f3ae",
             "childName": "Menaulatoi Princeps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "decrement",
@@ -21738,7 +22386,8 @@ export const DATASET: Dataset = {
             "childId": "7e92-a9c9-240d-6179",
             "childName": "Varangian Warlord",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "increment",
@@ -21753,7 +22402,8 @@ export const DATASET: Dataset = {
             "childId": "7e92-a9c9-240d-6179",
             "childName": "Varangian Warlord",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "set",
@@ -21768,7 +22418,8 @@ export const DATASET: Dataset = {
             "childId": "7e92-a9c9-240d-6179",
             "childName": "Varangian Warlord",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "set",
@@ -21783,7 +22434,8 @@ export const DATASET: Dataset = {
             "childId": "d27d-b034-cb18-f3ae",
             "childName": "Menaulatoi Princeps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "set",
@@ -21798,7 +22450,8 @@ export const DATASET: Dataset = {
             "childId": "7e92-a9c9-240d-6179",
             "childName": "Varangian Warlord",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "decrement",
@@ -21827,7 +22480,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "set",
@@ -21843,7 +22497,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "set",
@@ -21863,7 +22518,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9e87-e971-61ba-870c"
         },
         {
           "op": "set",
@@ -21892,7 +22548,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "9e87-e971-61ba-870c"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -21928,7 +22585,8 @@ export const DATASET: Dataset = {
         {
           "id": "0eb3-b47c-4f32-e978",
           "name": "Away, Serpents!",
-          "description": "Select any enemy within 12” of the Priest and take a RISKY ACTION (targeting models on 40mm or larger bases incur -1 DICE penalty to this roll). If successful, the enemy model goes Down immediately, slithering on its belly like a snake."
+          "description": "Select any enemy within 12” of the Priest and take a RISKY ACTION (targeting models on 40mm or larger bases incur -1 DICE penalty to this roll). If successful, the enemy model goes Down immediately, slithering on its belly like a snake.",
+          "hidden": true
         },
         {
           "id": "3072-0ff0-3ea9-e748",
@@ -22114,7 +22772,8 @@ export const DATASET: Dataset = {
             "childId": "9b8f-4361-5f23-2e20",
             "childName": "Expeditionary Forces of Abyssinia",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2341-5d66-9395-bcf5"
         },
         {
           "op": "increment",
@@ -22129,7 +22788,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2341-5d66-9395-bcf5"
         },
         {
           "op": "increment",
@@ -22144,7 +22804,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "2341-5d66-9395-bcf5"
         },
         {
           "op": "decrement",
@@ -22173,7 +22834,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2341-5d66-9395-bcf5"
         },
         {
           "op": "set",
@@ -22189,7 +22851,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2341-5d66-9395-bcf5"
         },
         {
           "op": "set",
@@ -22209,7 +22872,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2341-5d66-9395-bcf5"
         },
         {
           "op": "set",
@@ -22238,7 +22902,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "2341-5d66-9395-bcf5"
         },
         {
           "op": "set",
@@ -22253,7 +22918,8 @@ export const DATASET: Dataset = {
             "childId": "6aa4-b38b-5146-4106",
             "childName": "Eire Rangers",
             "includeChildSelections": true
-          }
+          },
+          "originId": "0eb3-b47c-4f32-e978"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -22330,7 +22996,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "25dc-fcf4-2e75-a4b9"
         },
         {
           "op": "increment",
@@ -22345,7 +23012,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "25dc-fcf4-2e75-a4b9"
         },
         {
           "op": "decrement",
@@ -22374,7 +23042,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "25dc-fcf4-2e75-a4b9"
         },
         {
           "op": "set",
@@ -22390,7 +23059,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "25dc-fcf4-2e75-a4b9"
         },
         {
           "op": "set",
@@ -22410,7 +23080,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "25dc-fcf4-2e75-a4b9"
         },
         {
           "op": "set",
@@ -22439,7 +23110,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "25dc-fcf4-2e75-a4b9"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -22571,7 +23243,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1edc-6a6e-cd50-f841"
         },
         {
           "op": "increment",
@@ -22586,7 +23259,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1edc-6a6e-cd50-f841"
         },
         {
           "op": "decrement",
@@ -22615,7 +23289,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1edc-6a6e-cd50-f841"
         },
         {
           "op": "set",
@@ -22631,7 +23306,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1edc-6a6e-cd50-f841"
         },
         {
           "op": "set",
@@ -22651,7 +23327,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1edc-6a6e-cd50-f841"
         },
         {
           "op": "set",
@@ -22680,7 +23357,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "1edc-6a6e-cd50-f841"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -22725,22 +23403,26 @@ export const DATASET: Dataset = {
         {
           "id": "1d6a-335b-09ab-0d3a",
           "name": "Axe Mastery",
-          "description": "These fierce warriors often lead their charges with a wild swing, before smashing into their opponents for a bloody brawl. On a successful charge, they may immediately make a melee attack with one equipped axe. This is in addition to any other attacks."
+          "description": "These fierce warriors often lead their charges with a wild swing, before smashing into their opponents for a bloody brawl. On a successful charge, they may immediately make a melee attack with one equipped axe. This is in addition to any other attacks.",
+          "hidden": true
         },
         {
           "id": "c2f7-dd44-cc90-5d72",
           "name": "Shield Bash",
-          "description": "Varangian Guards may use any Shield as an off-hand weapon with -1 INJURY DICE. It functions otherwise like a Trench Club."
+          "description": "Varangian Guards may use any Shield as an off-hand weapon with -1 INJURY DICE. It functions otherwise like a Trench Club.",
+          "hidden": true
         },
         {
           "id": "2513-db50-fb6b-e213",
           "name": "Indomitable",
-          "description": "These warriors are immune to FEAR."
+          "description": "These warriors are immune to FEAR.",
+          "hidden": true
         },
         {
           "id": "fd74-ad2b-c80b-3e0b",
           "name": "Weapon Familiarity",
-          "description": "Varangian Guards ignore the keyword HEAVY on all axes, and treat two-handed axes as having the Shield Combo indicator. They lose Shock Charge if they equip a shield together with a two-handed axe. They can still carry only one HEAVY item, unless they are STRONG."
+          "description": "Varangian Guards ignore the keyword HEAVY on all axes, and treat two-handed axes as having the Shield Combo indicator. They lose Shock Charge if they equip a shield together with a two-handed axe. They can still carry only one HEAVY item, unless they are STRONG.",
+          "hidden": true
         }
       ],
       "options": [
@@ -22912,7 +23594,8 @@ export const DATASET: Dataset = {
             "childId": "a911-0ba3-a9f7-17b7",
             "childName": "Remnants of Byzantium",
             "includeChildSelections": true
-          }
+          },
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "increment",
@@ -22927,7 +23610,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "increment",
@@ -22942,7 +23626,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "set",
@@ -22957,7 +23642,8 @@ export const DATASET: Dataset = {
             "childId": "a911-0ba3-a9f7-17b7",
             "childName": "Remnants of Byzantium",
             "includeChildSelections": true
-          }
+          },
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "decrement",
@@ -22986,7 +23672,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "set",
@@ -23002,7 +23689,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "set",
@@ -23022,7 +23710,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "set",
@@ -23051,7 +23740,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "0aa8-8798-1d64-7cc4"
         },
         {
           "op": "append",
@@ -23066,7 +23756,8 @@ export const DATASET: Dataset = {
             "childId": "a911-0ba3-a9f7-17b7",
             "childName": "Remnants of Byzantium",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c258-3050-2e8f-c05a"
         },
         {
           "op": "set",
@@ -23117,7 +23808,8 @@ export const DATASET: Dataset = {
                 ]
               }
             ]
-          }
+          },
+          "originId": "c258-3050-2e8f-c05a"
         },
         {
           "op": "set",
@@ -23145,7 +23837,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "767a-8a41-50ae-1621"
         },
         {
           "op": "set",
@@ -23160,7 +23853,56 @@ export const DATASET: Dataset = {
             "childId": "a911-0ba3-a9f7-17b7",
             "childName": "Remnants of Byzantium",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1d6a-335b-09ab-0d3a"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Shield Bash",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          },
+          "originId": "c2f7-dd44-cc90-5d72"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Indomitable",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          },
+          "originId": "2513-db50-fb6b-e213"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Weapon Familiarity",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "a911-0ba3-a9f7-17b7",
+            "childName": "Remnants of Byzantium",
+            "includeChildSelections": true
+          },
+          "originId": "fd74-ad2b-c80b-3e0b"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -23282,7 +24024,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "increment",
@@ -23297,7 +24040,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "decrement",
@@ -23326,7 +24070,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "set",
@@ -23342,7 +24087,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "set",
@@ -23362,7 +24108,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "set",
@@ -23391,7 +24138,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -23535,7 +24283,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "be61-1a63-4154-9a20"
         },
         {
           "op": "increment",
@@ -23550,7 +24299,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "be61-1a63-4154-9a20"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -23769,7 +24519,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aeaa-7023-3585-4664"
         },
         {
           "op": "increment",
@@ -23784,7 +24535,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aeaa-7023-3585-4664"
         },
         {
           "op": "set",
@@ -23800,7 +24552,8 @@ export const DATASET: Dataset = {
             "childId": "c92f-74bc-9acb-69b4",
             "childName": "Kingdom of Alba Assault Detachment",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aeaa-7023-3585-4664"
         },
         {
           "op": "set",
@@ -23816,7 +24569,8 @@ export const DATASET: Dataset = {
             "childId": "c92f-74bc-9acb-69b4",
             "childName": "Kingdom of Alba Assault Detachment",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aeaa-7023-3585-4664"
         },
         {
           "op": "decrement",
@@ -23845,7 +24599,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aeaa-7023-3585-4664"
         },
         {
           "op": "set",
@@ -23861,7 +24616,8 @@ export const DATASET: Dataset = {
             "childName": "Remnants of Byzantium",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aeaa-7023-3585-4664"
         },
         {
           "op": "set",
@@ -23877,7 +24633,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aeaa-7023-3585-4664"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -23917,7 +24674,60 @@ export const DATASET: Dataset = {
           "description": "Dogs may take any Dash ACTION or jump/Diving Charge ACTION with bonus +1 DICE. They cannot climb sheer surfaces."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "4f32-2acd-646e-b2c5",
+          "name": "Guard Dog",
+          "group": "Specialization",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "unitProfileId": "d52f-86b4-bf67-37b5",
+          "description": "",
+          "constraints": [
+            {
+              "id": "7244-54b5-9984-9f85",
+              "type": "max",
+              "value": 1,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ]
+        },
+        {
+          "id": "3fc9-edd8-0283-187b",
+          "name": "Mercy Dog",
+          "group": "Specialization",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "unitProfileId": "028d-42bd-5416-a4df",
+          "description": "",
+          "constraints": [
+            {
+              "id": "b098-d485-a286-ba4e",
+              "type": "max",
+              "value": 2,
+              "scope": "roster",
+              "includeChildSelections": true
+            }
+          ]
+        },
+        {
+          "id": "ad89-2d46-a3ae-2cd6",
+          "name": "Attack Dog",
+          "group": "Specialization",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "unitProfileId": "e193-81ee-658c-bbc8",
+          "description": "",
+          "constraints": []
+        }
+      ],
       "battlekit": [],
       "constraints": [
         {
@@ -24030,7 +24840,8 @@ export const DATASET: Dataset = {
                 "childName": "Attack Dog"
               }
             ]
-          }
+          },
+          "originId": "e023-b74f-24ed-98b8"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -24038,10 +24849,16 @@ export const DATASET: Dataset = {
     {
       "id": "d52f-86b4-bf67-37b5",
       "entryId": "4f32-2acd-646e-b2c5",
+      "secondaryProfile": true,
+      "parentEntryId": "e558-982e-ccda-bbe7",
       "name": "Guard Dog",
       "factionId": "New Antioch",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "NEW ANTIOCH"
+      ],
       "stats": {
         "movement": "8\"/Infantry",
         "movementInches": 8,
@@ -24057,7 +24874,13 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 1,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "81b5-2b0d-8857-0631",
+          "name": "Four Paws",
+          "description": "Dogs may take any Dash ACTION or jump/Diving Charge ACTION with bonus +1 DICE. They cannot climb sheer surfaces."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -24075,10 +24898,16 @@ export const DATASET: Dataset = {
     {
       "id": "028d-42bd-5416-a4df",
       "entryId": "3fc9-edd8-0283-187b",
+      "secondaryProfile": true,
+      "parentEntryId": "e558-982e-ccda-bbe7",
       "name": "Mercy Dog",
       "factionId": "New Antioch",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "NEW ANTIOCH"
+      ],
       "stats": {
         "movement": "8\"/Infantry",
         "movementInches": 8,
@@ -24094,7 +24923,13 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": 2,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "81b5-2b0d-8857-0631",
+          "name": "Four Paws",
+          "description": "Dogs may take any Dash ACTION or jump/Diving Charge ACTION with bonus +1 DICE. They cannot climb sheer surfaces."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [
@@ -24112,10 +24947,16 @@ export const DATASET: Dataset = {
     {
       "id": "e193-81ee-658c-bbc8",
       "entryId": "ad89-2d46-a3ae-2cd6",
+      "secondaryProfile": true,
+      "parentEntryId": "e558-982e-ccda-bbe7",
       "name": "Attack Dog",
       "factionId": "New Antioch",
-      "roles": [],
-      "keywords": [],
+      "roles": [
+        "Troop"
+      ],
+      "keywords": [
+        "NEW ANTIOCH"
+      ],
       "stats": {
         "movement": "8\"/Infantry",
         "movementInches": 8,
@@ -24131,7 +24972,13 @@ export const DATASET: Dataset = {
       },
       "min": null,
       "max": null,
-      "abilities": [],
+      "abilities": [
+        {
+          "id": "81b5-2b0d-8857-0631",
+          "name": "Four Paws",
+          "description": "Dogs may take any Dash ACTION or jump/Diving Charge ACTION with bonus +1 DICE. They cannot climb sheer surfaces."
+        }
+      ],
       "options": [],
       "battlekit": [],
       "constraints": [],
@@ -24230,7 +25077,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "4fca-7401-fc43-e298"
         },
         {
           "op": "increment",
@@ -24245,7 +25093,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "4fca-7401-fc43-e298"
         },
         {
           "op": "decrement",
@@ -24274,7 +25123,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "4fca-7401-fc43-e298"
         },
         {
           "op": "set",
@@ -24290,7 +25140,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "4fca-7401-fc43-e298"
         },
         {
           "op": "set",
@@ -24310,7 +25161,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "4fca-7401-fc43-e298"
         },
         {
           "op": "set",
@@ -24339,7 +25191,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "4fca-7401-fc43-e298"
         }
       ],
       "sourceFile": "New Antioch.cat"
@@ -24811,7 +25664,8 @@ export const DATASET: Dataset = {
             "childId": "6fe0-553d-a4b4-ecd6",
             "childName": "Wings",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8df3-9e37-23c4-8cff"
         },
         {
           "op": "set",
@@ -24826,7 +25680,8 @@ export const DATASET: Dataset = {
             "childId": "26fd-9847-fe97-9aff",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8df3-9e37-23c4-8cff"
         },
         {
           "op": "set",
@@ -24841,7 +25696,8 @@ export const DATASET: Dataset = {
             "childId": "f9f7-089c-a38d-717f",
             "childName": "Massive Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8df3-9e37-23c4-8cff"
         },
         {
           "op": "set",
@@ -24856,7 +25712,8 @@ export const DATASET: Dataset = {
             "childId": "26fd-9847-fe97-9aff",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8df3-9e37-23c4-8cff"
         },
         {
           "op": "set",
@@ -24871,7 +25728,8 @@ export const DATASET: Dataset = {
             "childId": "804f-e412-ea03-aa6d",
             "childName": "Hawk Eyes",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8df3-9e37-23c4-8cff"
         },
         {
           "op": "set",
@@ -24886,7 +25744,8 @@ export const DATASET: Dataset = {
             "childId": "7006-0a35-7bbc-90c6",
             "childName": "Gargantuan Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8df3-9e37-23c4-8cff"
         },
         {
           "op": "decrement",
@@ -24902,7 +25761,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8df3-9e37-23c4-8cff"
         },
         {
           "op": "set",
@@ -25432,7 +26292,8 @@ export const DATASET: Dataset = {
             "childId": "63e1-fd9c-3c8e-37bf",
             "childName": "Wings",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8e45-5a5a-379e-22ce"
         },
         {
           "op": "set",
@@ -25447,7 +26308,8 @@ export const DATASET: Dataset = {
             "childId": "01e9-4879-e909-a64b",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8e45-5a5a-379e-22ce"
         },
         {
           "op": "set",
@@ -25462,7 +26324,8 @@ export const DATASET: Dataset = {
             "childId": "5179-2836-214e-2286",
             "childName": "Massive Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8e45-5a5a-379e-22ce"
         },
         {
           "op": "set",
@@ -25477,7 +26340,8 @@ export const DATASET: Dataset = {
             "childId": "01e9-4879-e909-a64b",
             "childName": "Inhuman Strength",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8e45-5a5a-379e-22ce"
         },
         {
           "op": "set",
@@ -25492,7 +26356,8 @@ export const DATASET: Dataset = {
             "childId": "2546-a2d9-1305-5ce9",
             "childName": "Hawk Eyes",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8e45-5a5a-379e-22ce"
         },
         {
           "op": "set",
@@ -25507,7 +26372,8 @@ export const DATASET: Dataset = {
             "childId": "b2d3-2cbc-d328-4fe2",
             "childName": "Gargantuan Size",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8e45-5a5a-379e-22ce"
         },
         {
           "op": "decrement",
@@ -25523,7 +26389,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "8e45-5a5a-379e-22ce"
         },
         {
           "op": "set",
@@ -25981,7 +26848,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c7b8-f35d-edca-e0c4"
         },
         {
           "op": "increment",
@@ -25996,7 +26864,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c7b8-f35d-edca-e0c4"
         },
         {
           "op": "decrement",
@@ -26012,7 +26881,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "c7b8-f35d-edca-e0c4"
         },
         {
           "op": "set",
@@ -26041,7 +26911,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "c7b8-f35d-edca-e0c4"
         },
         {
           "op": "set",
@@ -26061,7 +26932,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "c7b8-f35d-edca-e0c4"
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -26504,7 +27376,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a1dc-6afc-2a7c-d293"
         },
         {
           "op": "increment",
@@ -26519,7 +27392,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a1dc-6afc-2a7c-d293"
         },
         {
           "op": "increment",
@@ -26533,7 +27407,8 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "b32b-6d55-9163-8486",
             "childName": "Martyred"
-          }
+          },
+          "originId": "a1dc-6afc-2a7c-d293"
         },
         {
           "op": "set",
@@ -26559,7 +27434,8 @@ export const DATASET: Dataset = {
                 "childName": "Wrath of God"
               }
             ]
-          }
+          },
+          "originId": "a1dc-6afc-2a7c-d293"
         },
         {
           "op": "decrement",
@@ -26575,7 +27451,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "a1dc-6afc-2a7c-d293"
         },
         {
           "op": "set",
@@ -26604,7 +27481,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "a1dc-6afc-2a7c-d293"
         },
         {
           "op": "set",
@@ -26624,7 +27502,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "a1dc-6afc-2a7c-d293"
         },
         {
           "op": "set",
@@ -26651,7 +27530,8 @@ export const DATASET: Dataset = {
                 "childName": "Martyred"
               }
             ]
-          }
+          },
+          "originId": "87c7-8ddb-b2bb-5b27"
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -26834,7 +27714,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "53e3-a873-a192-6a91"
         },
         {
           "op": "increment",
@@ -26849,7 +27730,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "53e3-a873-a192-6a91"
         },
         {
           "op": "decrement",
@@ -26865,7 +27747,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "53e3-a873-a192-6a91"
         },
         {
           "op": "set",
@@ -26894,7 +27777,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "53e3-a873-a192-6a91"
         },
         {
           "op": "set",
@@ -26914,7 +27798,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "53e3-a873-a192-6a91"
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -26950,7 +27835,8 @@ export const DATASET: Dataset = {
         {
           "id": "8160-6b76-eb5c-dd34",
           "name": "Day of His Wrath",
-          "description": "A Cavalcade of the Tenth Plague War Prophet can take a Day of his Wrath ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure the War Prophet’s Activation ends immediately. If the roll is a Success, make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet. If the roll is a Critical Success, make an Injury Roll with +1 INJURY DICE and the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet."
+          "description": "A Cavalcade of the Tenth Plague War Prophet can take a Day of his Wrath ACTION. If they do so, take a Risky Success Roll for the model. If the roll is a Failure the War Prophet’s Activation ends immediately. If the roll is a Success, make an Injury Roll with the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet. If the roll is a Critical Success, make an Injury Roll with +1 INJURY DICE and the IGNORE ARMOUR Keyword for 1 enemy model within 3\" of the War Prophet.",
+          "hidden": true
         },
         {
           "id": "9ec3-b93c-1646-ccec",
@@ -27065,7 +27951,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "d3bd-024c-681c-eb6c"
         },
         {
           "op": "increment",
@@ -27080,7 +27967,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "d3bd-024c-681c-eb6c"
         },
         {
           "op": "decrement",
@@ -27096,7 +27984,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "d3bd-024c-681c-eb6c"
         },
         {
           "op": "set",
@@ -27125,7 +28014,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "d3bd-024c-681c-eb6c"
         },
         {
           "op": "set",
@@ -27145,7 +28035,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "d3bd-024c-681c-eb6c"
         },
         {
           "op": "set",
@@ -27160,7 +28051,8 @@ export const DATASET: Dataset = {
             "childId": "8b6b-5bd4-c742-bb12",
             "childName": "Cavalcade of the Tenth Plague",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8160-6b76-eb5c-dd34"
         },
         {
           "op": "set",
@@ -27175,7 +28067,8 @@ export const DATASET: Dataset = {
             "childId": "8b6b-5bd4-c742-bb12",
             "childName": "Cavalcade of the Tenth Plague",
             "includeChildSelections": true
-          }
+          },
+          "originId": "4458-54c7-2ee5-90df"
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -27976,7 +28869,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "951c-0a8e-c90d-6c3c"
         },
         {
           "op": "increment",
@@ -27991,7 +28885,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "951c-0a8e-c90d-6c3c"
         },
         {
           "op": "decrement",
@@ -28007,7 +28902,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "951c-0a8e-c90d-6c3c"
         },
         {
           "op": "set",
@@ -28036,7 +28932,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "951c-0a8e-c90d-6c3c"
         },
         {
           "op": "set",
@@ -28056,7 +28953,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "951c-0a8e-c90d-6c3c"
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -28179,7 +29077,8 @@ export const DATASET: Dataset = {
             "childId": "52bc-6b21-136a-608d",
             "childName": "War Pilgrimage of Saint Methodius",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "increment",
@@ -28194,7 +29093,8 @@ export const DATASET: Dataset = {
             "childId": "4863-d3e6-bda5-f230",
             "childName": "Sacred Geometry",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "increment",
@@ -28209,7 +29109,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "increment",
@@ -28224,7 +29125,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "set",
@@ -28239,7 +29141,8 @@ export const DATASET: Dataset = {
             "childId": "52bc-6b21-136a-608d",
             "childName": "War Pilgrimage of Saint Methodius",
             "includeChildSelections": true
-          }
+          },
+          "originId": "ca00-3c87-ba97-103d"
         }
       ],
       "sourceFile": "Trench Pilgrims.cat"
@@ -31661,7 +32564,8 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "670f-9bed-3b5c-2b36",
             "childName": "Infected"
-          }
+          },
+          "originId": "aa15-64a9-87eb-87c8"
         },
         {
           "op": "set",
@@ -31676,7 +32580,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8fc4-805a-2894-01ad"
         }
       ],
       "restrictions": [],
@@ -31737,7 +32642,8 @@ export const DATASET: Dataset = {
             "childId": "89ff-6802-1ec4-c89b",
             "childName": "Dog's Friend",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f1f4-ad6d-1a6e-d822"
         }
       ],
       "restrictions": [],
@@ -31830,7 +32736,8 @@ export const DATASET: Dataset = {
             "childId": "3a3c-7f8b-4ee4-d9d7",
             "childName": "Grounded",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8037-91e3-fc56-e8d8"
         },
         {
           "op": "set",
@@ -31845,7 +32752,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8037-91e3-fc56-e8d8"
         },
         {
           "op": "set",
@@ -31859,7 +32767,8 @@ export const DATASET: Dataset = {
             "scope": "parent",
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger"
-          }
+          },
+          "originId": "b4a6-25a1-64e7-5dae"
         },
         {
           "op": "set",
@@ -31874,7 +32783,8 @@ export const DATASET: Dataset = {
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger",
             "includeChildSelections": true
-          }
+          },
+          "originId": "77bc-921d-3de0-55b4"
         },
         {
           "op": "set",
@@ -31889,7 +32799,8 @@ export const DATASET: Dataset = {
             "childId": "4173-8d52-ff32-03d8",
             "childName": "Winged",
             "includeChildSelections": true
-          }
+          },
+          "originId": "8cce-0a3c-fe8a-6cfa"
         },
         {
           "op": "set",
@@ -31903,7 +32814,8 @@ export const DATASET: Dataset = {
             "scope": "model",
             "childId": "cb53-aa4b-07e7-ce87",
             "childName": "Hellfly Host"
-          }
+          },
+          "originId": "8cce-0a3c-fe8a-6cfa"
         },
         {
           "op": "set",
@@ -31917,7 +32829,8 @@ export const DATASET: Dataset = {
             "scope": "parent",
             "childId": "4ae9-6e62-b943-faeb",
             "childName": "The Great Hunger"
-          }
+          },
+          "originId": "3d88-4234-e03c-5cb6"
         }
       ],
       "restrictions": [],
@@ -32006,7 +32919,8 @@ export const DATASET: Dataset = {
             "childId": "0f19-7c79-420e-13bf",
             "childName": "Dirge of the Great Hegemon",
             "includeChildSelections": true
-          }
+          },
+          "originId": "b0d3-1c47-ce33-922d"
         },
         {
           "op": "increment",
@@ -32021,7 +32935,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "b0d3-1c47-ce33-922d"
         },
         {
           "op": "increment",
@@ -32036,7 +32951,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "b0d3-1c47-ce33-922d"
         }
       ],
       "restrictions": [],
@@ -32263,6 +33179,38 @@ export const DATASET: Dataset = {
         {
           "op": "set",
           "field": "hidden",
+          "value": "false",
+          "origin": "profile:Ravenous Infection",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          },
+          "originId": "96b0-5ddb-3f9b-8fee"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Cradle of Filth",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "4ae9-6e62-b943-faeb",
+            "childName": "The Great Hunger",
+            "includeChildSelections": true
+          },
+          "originId": "069e-f211-4914-9760"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
           "value": "true",
           "origin": "profile:Undead Fortitude",
           "when": {
@@ -32273,7 +33221,8 @@ export const DATASET: Dataset = {
             "childId": "4173-8d52-ff32-03d8",
             "childName": "Winged",
             "includeChildSelections": true
-          }
+          },
+          "originId": "1906-73ca-6483-a8f2"
         },
         {
           "op": "set",
@@ -32287,7 +33236,8 @@ export const DATASET: Dataset = {
             "scope": "model",
             "childId": "cb53-aa4b-07e7-ce87",
             "childName": "Hellfly Host"
-          }
+          },
+          "originId": "1906-73ca-6483-a8f2"
         }
       ],
       "restrictions": [],
@@ -33173,7 +34123,8 @@ export const DATASET: Dataset = {
             "scope": "primary-catalogue",
             "childId": "0b26-15c1-cebd-0077",
             "childName": "Black Grail"
-          }
+          },
+          "originId": "411a-7df7-019a-387f"
         }
       ],
       "restrictions": [],
@@ -33260,7 +34211,8 @@ export const DATASET: Dataset = {
                 "childName": "Iron Sultanate"
               }
             ]
-          }
+          },
+          "originId": "efa1-13ba-e5ff-b1ae"
         }
       ],
       "restrictions": [],
@@ -33427,7 +34379,8 @@ export const DATASET: Dataset = {
             "scope": "primary-catalogue",
             "childId": "0b26-15c1-cebd-0077",
             "childName": "Black Grail"
-          }
+          },
+          "originId": "8c06-3e5e-14ee-2494"
         }
       ],
       "restrictions": [],
@@ -36685,7 +37638,8 @@ export const DATASET: Dataset = {
             "childId": "4467-39c5-0252-1b2d",
             "childName": "Far Shot [5]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "599f-5738-a80b-64ab"
         },
         {
           "op": "set",
@@ -36699,7 +37653,8 @@ export const DATASET: Dataset = {
             "scope": "parent",
             "childId": "954d-3d50-257d-a78a",
             "includeChildSelections": true
-          }
+          },
+          "originId": "599f-5738-a80b-64ab"
         }
       ],
       "restrictions": [],
@@ -38213,7 +39168,8 @@ export const DATASET: Dataset = {
             "childId": "c92f-74bc-9acb-69b4",
             "childName": "Kingdom of Alba Assault Detachment",
             "includeChildSelections": true
-          }
+          },
+          "originId": "5a63-5df8-de11-0039"
         },
         {
           "op": "append",
@@ -38229,7 +39185,8 @@ export const DATASET: Dataset = {
             "childId": "6aa4-b38b-5146-4106",
             "childName": "Eire Rangers",
             "includeChildSelections": true
-          }
+          },
+          "originId": "5a63-5df8-de11-0039"
         }
       ],
       "restrictions": [],
@@ -38444,7 +39401,8 @@ export const DATASET: Dataset = {
                 "childName": "New Antioch"
               }
             ]
-          }
+          },
+          "originId": "48e6-5bba-1352-f9bc"
         },
         {
           "op": "set",
@@ -38478,7 +39436,8 @@ export const DATASET: Dataset = {
                 "childName": "New Antioch"
               }
             ]
-          }
+          },
+          "originId": "279b-559d-2b08-d3ae"
         }
       ],
       "restrictions": [],
@@ -38599,7 +39558,8 @@ export const DATASET: Dataset = {
                 "childName": "New Antioch"
               }
             ]
-          }
+          },
+          "originId": "48e6-5bba-1352-f9bc"
         },
         {
           "op": "set",
@@ -38633,7 +39593,8 @@ export const DATASET: Dataset = {
                 "childName": "New Antioch"
               }
             ]
-          }
+          },
+          "originId": "279b-559d-2b08-d3ae"
         }
       ],
       "restrictions": [],
@@ -43381,7 +44342,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "increment",
@@ -43396,7 +44358,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "decrement",
@@ -43412,7 +44375,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "set",
@@ -43428,7 +44392,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "set",
@@ -43466,7 +44431,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         },
         {
           "op": "set",
@@ -43482,7 +44448,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "67ea-6a29-5c38-05b8"
         }
       ],
       "restrictions": [],
@@ -43539,7 +44506,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "increment",
@@ -43554,7 +44522,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "decrement",
@@ -43570,7 +44539,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43586,7 +44556,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43624,7 +44595,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43640,7 +44612,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43655,7 +44628,8 @@ export const DATASET: Dataset = {
             "childId": "58a3-64fb-8c2d-5105",
             "childName": "Bestial Skin Cloak",
             "includeChildSelections": true
-          }
+          },
+          "originId": "562f-9fca-8141-cf16"
         }
       ],
       "restrictions": [],
@@ -43712,7 +44686,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "increment",
@@ -43727,7 +44702,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "decrement",
@@ -43743,7 +44719,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43759,7 +44736,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43797,7 +44775,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43813,7 +44792,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43828,7 +44808,8 @@ export const DATASET: Dataset = {
             "childId": "58a3-64fb-8c2d-5105",
             "childName": "Bestial Skin Cloak",
             "includeChildSelections": true
-          }
+          },
+          "originId": "562f-9fca-8141-cf16"
         }
       ],
       "restrictions": [],
@@ -43885,7 +44866,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "increment",
@@ -43900,7 +44882,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "decrement",
@@ -43916,7 +44899,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43932,7 +44916,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43970,7 +44955,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -43986,7 +44972,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -44001,7 +44988,8 @@ export const DATASET: Dataset = {
             "childId": "58a3-64fb-8c2d-5105",
             "childName": "Bestial Skin Cloak",
             "includeChildSelections": true
-          }
+          },
+          "originId": "562f-9fca-8141-cf16"
         }
       ],
       "restrictions": [],
@@ -44060,7 +45048,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "increment",
@@ -44075,7 +45064,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "decrement",
@@ -44091,7 +45081,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -44107,7 +45098,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -44145,7 +45137,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -44161,7 +45154,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f126-6f86-fb26-0f97"
         },
         {
           "op": "set",
@@ -44176,7 +45170,8 @@ export const DATASET: Dataset = {
             "childId": "58a3-64fb-8c2d-5105",
             "childName": "Bestial Skin Cloak",
             "includeChildSelections": true
-          }
+          },
+          "originId": "562f-9fca-8141-cf16"
         }
       ],
       "restrictions": [],
@@ -44218,7 +45213,8 @@ export const DATASET: Dataset = {
             "childId": "64ea-216e-161f-7584",
             "childName": "Shields",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e508-c5a4-d746-1eb6"
         },
         {
           "op": "increment",
@@ -44233,7 +45229,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e508-c5a4-d746-1eb6"
         },
         {
           "op": "increment",
@@ -44248,7 +45245,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e508-c5a4-d746-1eb6"
         }
       ],
       "restrictions": [],
@@ -44344,7 +45342,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -44360,7 +45359,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -44398,7 +45398,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -44414,7 +45415,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "f16c-02fc-f6ad-4562"
         },
         {
           "op": "set",
@@ -44451,7 +45453,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "6196-e5a4-1978-7827"
         },
         {
           "op": "set",
@@ -44466,7 +45469,8 @@ export const DATASET: Dataset = {
             "childId": "1fda-e6a9-7628-9c49",
             "childName": "Fang of the Seething Black",
             "includeChildSelections": true
-          }
+          },
+          "originId": "055b-99d9-d536-ce9d"
         },
         {
           "op": "set",
@@ -44481,7 +45485,40 @@ export const DATASET: Dataset = {
             "childId": "1fda-e6a9-7628-9c49",
             "childName": "Fang of the Seething Black",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e548-955a-6a84-d5bd"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Unstable",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "5ebc-2280-dd09-b031"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Willing Sacrifice",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "c104-c912-a766-408f"
         },
         {
           "op": "set",
@@ -44518,7 +45555,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "70d1-6a66-9a7a-e23d"
         },
         {
           "op": "set",
@@ -44533,7 +45571,24 @@ export const DATASET: Dataset = {
             "childId": "8ba8-5e95-71aa-24e8",
             "childName": "Embraced by the Void",
             "includeChildSelections": true
-          }
+          },
+          "originId": "c7c3-3548-f3e2-365a"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Low on the Blood Chain",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "b852-3309-a987-5ad5"
         }
       ],
       "restrictions": [],
@@ -44824,7 +45879,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "increment",
@@ -44839,7 +45895,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "decrement",
@@ -44855,7 +45912,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "set",
@@ -44871,7 +45929,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "set",
@@ -44909,7 +45968,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         },
         {
           "op": "set",
@@ -44925,7 +45985,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "6583-d273-0c59-fdf6"
         }
       ],
       "restrictions": [],
@@ -44976,6 +46037,70 @@ export const DATASET: Dataset = {
           }
         },
         {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Void Blade",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "1472-8a93-ec65-d12e"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Living Shadow",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "231f-bbc9-438c-588e"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Gruesome Cover",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "5ba1-407f-7eea-8883"
+        },
+        {
+          "op": "set",
+          "field": "hidden",
+          "value": "false",
+          "origin": "profile:Undying Vassal",
+          "when": {
+            "type": "atLeast",
+            "value": "1",
+            "field": "selections",
+            "scope": "roster",
+            "childId": "1fda-e6a9-7628-9c49",
+            "childName": "Fang of the Seething Black",
+            "includeChildSelections": true
+          },
+          "originId": "57eb-c604-6faa-c6b9"
+        },
+        {
           "op": "increment",
           "field": "stats.melee",
           "value": "1",
@@ -44988,7 +46113,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "increment",
@@ -45003,7 +46129,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "decrement",
@@ -45019,7 +46146,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "set",
@@ -45035,7 +46163,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "set",
@@ -45073,7 +46202,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         },
         {
           "op": "set",
@@ -45089,7 +46219,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "e147-1fc4-7be4-1f66"
         }
       ],
       "restrictions": [],
@@ -45985,7 +47116,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "57ad-9a46-41b3-5414"
         },
         {
           "op": "set",
@@ -46000,7 +47132,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "11cb-1c31-0802-652a"
         }
       ],
       "restrictions": [],
@@ -46193,7 +47326,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "57ad-9a46-41b3-5414"
         },
         {
           "op": "set",
@@ -46208,7 +47342,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "11cb-1c31-0802-652a"
         }
       ],
       "restrictions": [],
@@ -46364,7 +47499,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "increment",
@@ -46379,7 +47515,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "decrement",
@@ -46395,7 +47532,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46411,7 +47549,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46449,7 +47588,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46465,7 +47605,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46493,7 +47634,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "8755-5cd3-d0a0-1caa"
         },
         {
           "op": "set",
@@ -46508,7 +47650,8 @@ export const DATASET: Dataset = {
             "childId": "c323-0c33-e628-56f0",
             "childName": "Knights of Avarice",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6d5e-3299-c138-e478"
         },
         {
           "op": "set",
@@ -46523,7 +47666,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9b77-f940-9067-44b6"
         }
       ],
       "restrictions": [],
@@ -46681,7 +47825,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "increment",
@@ -46696,7 +47841,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "decrement",
@@ -46712,7 +47858,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46728,7 +47875,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46766,7 +47914,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46782,7 +47931,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -46810,7 +47960,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "8755-5cd3-d0a0-1caa"
         },
         {
           "op": "set",
@@ -46825,7 +47976,8 @@ export const DATASET: Dataset = {
             "childId": "c323-0c33-e628-56f0",
             "childName": "Knights of Avarice",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6d5e-3299-c138-e478"
         },
         {
           "op": "set",
@@ -46840,7 +47992,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9b77-f940-9067-44b6"
         }
       ],
       "restrictions": [],
@@ -46996,7 +48149,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "increment",
@@ -47011,7 +48165,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "decrement",
@@ -47027,7 +48182,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -47043,7 +48199,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -47081,7 +48238,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -47097,7 +48255,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "73fc-5557-f02b-f423"
         },
         {
           "op": "set",
@@ -47125,7 +48284,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "8755-5cd3-d0a0-1caa"
         },
         {
           "op": "set",
@@ -47140,7 +48300,8 @@ export const DATASET: Dataset = {
             "childId": "c323-0c33-e628-56f0",
             "childName": "Knights of Avarice",
             "includeChildSelections": true
-          }
+          },
+          "originId": "6d5e-3299-c138-e478"
         },
         {
           "op": "set",
@@ -47155,7 +48316,8 @@ export const DATASET: Dataset = {
             "childId": "b0b0-1549-d4ec-7b5f",
             "childName": "Cadaver Corps",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9b77-f940-9067-44b6"
         }
       ],
       "restrictions": [],
@@ -52471,7 +53633,8 @@ export const DATASET: Dataset = {
                 "includeChildSelections": true
               }
             ]
-          }
+          },
+          "originId": "c091-f6cc-758d-adeb"
         }
       ],
       "restrictions": [],
@@ -52549,7 +53712,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "increment",
@@ -52564,7 +53728,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "decrement",
@@ -52580,7 +53745,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -52596,7 +53762,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -52634,7 +53801,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -52650,7 +53818,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         }
       ],
       "restrictions": [],
@@ -52728,7 +53897,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "increment",
@@ -52743,7 +53913,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "decrement",
@@ -52759,7 +53930,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -52775,7 +53947,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -52813,7 +53986,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         },
         {
           "op": "set",
@@ -52829,7 +54003,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "aed0-3d61-c331-fd51"
         }
       ],
       "restrictions": [],
@@ -52893,7 +54068,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "increment",
@@ -52908,7 +54084,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "decrement",
@@ -52924,7 +54101,8 @@ export const DATASET: Dataset = {
             "childName": "Shields",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "set",
@@ -52940,7 +54118,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "set",
@@ -52978,7 +54157,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         },
         {
           "op": "set",
@@ -52994,7 +54174,8 @@ export const DATASET: Dataset = {
             "childName": "Machine Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "ee61-1ca1-89ee-f657"
         }
       ],
       "restrictions": [],
@@ -53767,7 +54948,8 @@ export const DATASET: Dataset = {
                 "childName": "Hellhound"
               }
             ]
-          }
+          },
+          "originId": "ce78-bd08-5b44-8e38"
         },
         {
           "op": "set",
@@ -53781,7 +54963,8 @@ export const DATASET: Dataset = {
             "scope": "self",
             "childId": "b990-d914-9dce-66af",
             "childName": "Hellhound"
-          }
+          },
+          "originId": "46b7-fdc4-77cd-5271"
         }
       ],
       "restrictions": [],
@@ -53877,7 +55060,8 @@ export const DATASET: Dataset = {
                 "childName": "Black Grail"
               }
             ]
-          }
+          },
+          "originId": "afc3-8575-429c-3c17"
         }
       ],
       "restrictions": [],
@@ -54168,7 +55352,8 @@ export const DATASET: Dataset = {
             "childId": "68d9-a653-9765-d3e7",
             "childName": "Polearm and Shield",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a674-6866-aab4-a938"
         },
         {
           "op": "increment",
@@ -54183,7 +55368,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a674-6866-aab4-a938"
         },
         {
           "op": "increment",
@@ -54198,7 +55384,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "a674-6866-aab4-a938"
         },
         {
           "op": "increment",
@@ -54213,7 +55400,8 @@ export const DATASET: Dataset = {
             "childId": "4467-39c5-0252-1b2d",
             "childName": "Far Shot [5]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9353-c8d6-219d-55ef"
         },
         {
           "op": "set",
@@ -54228,7 +55416,8 @@ export const DATASET: Dataset = {
             "childId": "6ffb-5ac2-a05a-8c44",
             "childName": "Lost Arm [26]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "9353-c8d6-219d-55ef"
         }
       ],
       "restrictions": [],
@@ -54416,7 +55605,8 @@ export const DATASET: Dataset = {
             "scope": "primary-catalogue",
             "childId": "707d-5bdf-586e-f704",
             "childName": "New Antioch"
-          }
+          },
+          "originId": "d455-9d26-0f2d-3b30"
         }
       ],
       "restrictions": [],
@@ -54489,7 +55679,8 @@ export const DATASET: Dataset = {
             "scope": "primary-catalogue",
             "childId": "707d-5bdf-586e-f704",
             "childName": "New Antioch"
-          }
+          },
+          "originId": "d455-9d26-0f2d-3b30"
         }
       ],
       "restrictions": [],
@@ -56808,7 +57999,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "increment",
@@ -56823,7 +58015,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "decrement",
@@ -56852,7 +58045,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "set",
@@ -56868,7 +58062,8 @@ export const DATASET: Dataset = {
             "childName": "Standard Armour",
             "includeChildSelections": true
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "set",
@@ -56888,7 +58083,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         },
         {
           "op": "set",
@@ -56917,7 +58113,8 @@ export const DATASET: Dataset = {
               }
             ]
           },
-          "comment": "armour adjustments"
+          "comment": "armour adjustments",
+          "originId": "7b50-3c72-1794-64bb"
         }
       ],
       "restrictions": [
@@ -57524,7 +58721,8 @@ export const DATASET: Dataset = {
                 "childName": "Attack Dog"
               }
             ]
-          }
+          },
+          "originId": "e023-b74f-24ed-98b8"
         }
       ],
       "restrictions": [],
@@ -60030,7 +61228,8 @@ export const DATASET: Dataset = {
             "childId": "52bc-6b21-136a-608d",
             "childName": "War Pilgrimage of Saint Methodius",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "increment",
@@ -60045,7 +61244,8 @@ export const DATASET: Dataset = {
             "childId": "4863-d3e6-bda5-f230",
             "childName": "Sacred Geometry",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "increment",
@@ -60060,7 +61260,8 @@ export const DATASET: Dataset = {
             "childId": "3564-70ed-8e9e-6ee8",
             "childName": "Ranged Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "increment",
@@ -60075,7 +61276,8 @@ export const DATASET: Dataset = {
             "childId": "2a4f-c258-5d70-a3c5",
             "childName": "Melee Proficiency [7]",
             "includeChildSelections": true
-          }
+          },
+          "originId": "3d17-425a-2ba2-daf2"
         },
         {
           "op": "set",
@@ -60090,7 +61292,8 @@ export const DATASET: Dataset = {
             "childId": "52bc-6b21-136a-608d",
             "childName": "War Pilgrimage of Saint Methodius",
             "includeChildSelections": true
-          }
+          },
+          "originId": "ca00-3c87-ba97-103d"
         }
       ],
       "restrictions": [],
@@ -65940,6 +67143,121 @@ export const DATASET: Dataset = {
       "unspentLost": true,
       "forgoesExplorationAndQuartermaster": true
     },
+    "quartermaster": {
+      "retireInjured": {
+        "atScars": 2,
+        "text": "You can retire any model in your Warband that has 2 Battle Scars. If you decide to do so, remove the model from your Warband Roster. You can sell or reallocate their Battlekit or Glory Items before you retire them if you wish, or allow them to retire with their Battlekit in honour of the service they have performed."
+      },
+      "gloryItems": {
+        "needsDiscovery": true,
+        "text": "Glory Items are pieces of Battlekit. They are similar in many ways to the Battlekit that can only be purchased with ☼ that are found in the Armoury Tables of a Faction List. However, Glory Items can only be purchased during a campaign and if the Warband has made a discovery from an Exploration Table that allows them to take a Glory Item for free or purchase it in the Quartermaster Step. For example, the Trench Merchant discovery on the Common Exploration Locations Table allows a Warband to purchase Glory Items costing 5 ☼ or less."
+      }
+    },
+    "scenarioTables": {
+      "bands": [
+        {
+          "name": "Early Campaign",
+          "from": 1,
+          "to": 3,
+          "rows": [
+            {
+              "roll": 1,
+              "scenario": "Claim No Man’s Land"
+            },
+            {
+              "roll": 2,
+              "scenario": "Hunt for Heroes"
+            },
+            {
+              "roll": 3,
+              "scenario": "The High Ground"
+            },
+            {
+              "roll": 4,
+              "scenario": "Relic Hunt"
+            },
+            {
+              "roll": 5,
+              "scenario": "Supply Raid"
+            },
+            {
+              "roll": 6,
+              "choose": true,
+              "text": "The player who has played fewer games chooses one of the scenarios listed above. If tied, roll-off and the winner chooses."
+            }
+          ]
+        },
+        {
+          "name": "Mid-Campaign",
+          "from": 4,
+          "to": 8,
+          "rows": [
+            {
+              "roll": 1,
+              "scenario": "Hunt for Heroes"
+            },
+            {
+              "roll": 2,
+              "scenario": "Armoured Train"
+            },
+            {
+              "roll": 3,
+              "scenario": "Trench Warfare"
+            },
+            {
+              "roll": 4,
+              "scenario": "Claim No Man’s Land"
+            },
+            {
+              "roll": 5,
+              "scenario": "Dragon Hunt"
+            },
+            {
+              "roll": 6,
+              "choose": true,
+              "text": "The player who has played fewer games chooses one of the scenarios listed above. If tied, roll-off and the winner chooses."
+            }
+          ]
+        },
+        {
+          "name": "Endgame",
+          "from": 9,
+          "to": 11,
+          "rows": [
+            {
+              "roll": 1,
+              "scenario": "Trench Warfare"
+            },
+            {
+              "roll": 2,
+              "scenario": "Dragon Hunt"
+            },
+            {
+              "roll": 3,
+              "scenario": "From Below"
+            },
+            {
+              "roll": 4,
+              "scenario": "Fields of Glory"
+            },
+            {
+              "roll": 5,
+              "scenario": "Don’t Breathe"
+            },
+            {
+              "roll": 6,
+              "choose": true,
+              "text": "The player who has played fewer games chooses one of the scenarios listed above. If tied, roll-off and the winner chooses."
+            }
+          ]
+        }
+      ],
+      "final": {
+        "name": "Final Battle",
+        "game": 12,
+        "scenario": "Great War"
+      }
+    },
     "phaseSteps": [
       {
         "name": "Trauma Step",
@@ -66623,6 +67941,152 @@ export const DATASET: Dataset = {
             "glory": 1
           },
           "restrictions": []
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Book of Battle Prayers",
+          "weaponId": "e900-d699-609f-10c2",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 7
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Ducal Winged Armour",
+          "weaponId": "303c-e35a-9668-0fe8",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 8
+          },
+          "restrictions": [
+            "Battlefield Title or Knighthood only, Limit: 1",
+            "Only a model that already has a Battlefield Title or a Knighthood can have Ducal Winged Armour."
+          ]
+        },
+        {
+          "name": "Field Hospital",
+          "weaponId": "caee-8b72-72be-c864",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 10
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Great Banner of New Antioch",
+          "weaponId": "cc1a-f917-862d-26dc",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 12
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Resurrection Engine",
+          "weaponId": "f10c-88b8-0b18-3833",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 11
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 2"
+          ]
+        },
+        {
+          "name": "Salvage Golem",
+          "weaponId": "a465-cc89-17eb-185c",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Smokescreen",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Sniper Scope",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -67113,6 +68577,67 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Bayonet Lug, Shield Combo, Limit: 1"
           ]
+        },
+        {
+          "name": "Donkey’s Jawbone",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Holy Grenade",
+          "weaponId": "de1c-c937-a89f-d76c",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 3"
+          ]
+        },
+        {
+          "name": "Horn of Joshua",
+          "weaponId": "6989-ce35-b217-5676",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 9
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -67583,6 +69108,115 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Limit: 2"
           ]
+        },
+        {
+          "name": "Damascus Armour",
+          "weaponId": "8b57-bf47-6a34-7732",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Field Hospital",
+          "weaponId": "caee-8b72-72be-c864",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 10
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Kilij",
+          "weaponId": "a68a-42a0-7fd5-d633",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "ELITE only, Limit: 2"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Masterwork Jezzail",
+          "weaponId": "599f-5738-a80b-64ab",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 2"
+          ]
+        },
+        {
+          "name": "Sniper Scope",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Mobile Sultanate Grand Cannon",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 10
+          },
+          "restrictions": [
+            "Brazen Bull only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -68065,6 +69699,128 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Consumable"
           ]
+        },
+        {
+          "name": "Armour of Cobar",
+          "weaponId": "90f7-bbfc-d41c-2fb8",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 8
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Demonic Aura Grenade",
+          "weaponId": "4c95-f212-101f-f07f",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 3
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Executioner’s Axe",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 6
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Sniper Scope",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "The Mark of Cain",
+          "weaponId": "d31f-9638-3044-4892",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Tormentor Chain",
+          "weaponId": "36d4-9b55-fd0a-150f",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 3
+          },
+          "restrictions": [
+            "Limit: 2"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1",
+            "This item may not be taken by Trench Ghost Warbands."
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -68423,6 +70179,103 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Consumable"
           ]
+        },
+        {
+          "name": "Armour of the Fly",
+          "weaponId": "6f72-4947-54b8-efc7",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 7
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Beelzebub’s Embrace",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 12
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Cup of Filth",
+          "weaponId": "fe6e-1c07-510c-52ea",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Locust Spitter",
+          "weaponId": "cd74-1e16-33db-01b6",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 6
+          },
+          "restrictions": [
+            "Limit: 1"
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     },
@@ -68813,6 +70666,128 @@ export const DATASET: Dataset = {
           "restrictions": [
             "Consumable"
           ]
+        },
+        {
+          "name": "Battlefield Title",
+          "weaponId": "06c4-5a96-4182-9c79",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 5
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Bestial Skin Cloak",
+          "weaponId": "d4f7-37c4-ce83-0e37",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 6
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Cruel Helmet",
+          "weaponId": "6155-24e1-c8ac-e4fc",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Wretched only, Headgear, Limit: 2"
+          ]
+        },
+        {
+          "name": "Knighthood",
+          "weaponId": "ca1b-2007-8968-9d4b",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 4
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Koraktor, the Great Tome of Hell",
+          "weaponId": "c05f-a1a1-50f7-afab",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 8
+          },
+          "restrictions": [
+            "Sorcerer only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Lordship of This World",
+          "weaponId": "7735-5567-9b74-b8f2",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 9
+          },
+          "restrictions": [
+            "Praetors & Sorcerers only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Piece of Silver",
+          "weaponId": "583b-2a75-d7f7-e227",
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 12
+          },
+          "restrictions": [
+            "ELITE only, Limit: 1"
+          ]
+        },
+        {
+          "name": "Restraining Muzzle",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Yoke Fiends only, Limit: 3",
+            "A Warband can have up to 3 Restraining Muzzles purchased with ☼ in addition to up to 3 Restaining Muzzles purchased with 👑 ."
+          ]
+        },
+        {
+          "name": "Rocket-Propelled Grenade",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 2
+          },
+          "restrictions": [
+            "Consumable, Limit: 1"
+          ]
+        },
+        {
+          "name": "Trench Dog",
+          "weaponId": null,
+          "section": "Glory Items",
+          "cost": {
+            "ducats": 0,
+            "glory": 1
+          },
+          "restrictions": [
+            "Limit: 1"
+          ],
+          "priceRange": "1-3 ☼"
         }
       ]
     }
@@ -69100,6 +71075,16 @@ export const DATASET: Dataset = {
           "op": "set",
           "target": {
             "kind": "unit",
+            "id": "4173-8d52-ff32-03d8",
+            "name": "Winged Thrall"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
             "id": "8f23-4665-3322-ca92",
             "name": "Heralds of Beelzebub"
           },
@@ -69165,6 +71150,16 @@ export const DATASET: Dataset = {
           },
           "field": "hidden",
           "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "7e0b-de14-f14c-8ea0",
+            "name": "Corpse Guard"
+          },
+          "field": "hidden",
+          "value": "false"
         },
         {
           "op": "set",
@@ -71245,6 +73240,36 @@ export const DATASET: Dataset = {
           "value": "false"
         },
         {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "579e-2810-d1cf-454b",
+            "name": "Shocktrooper"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
           "op": "increment",
           "target": {
             "kind": "unit",
@@ -71773,7 +73798,37 @@ export const DATASET: Dataset = {
             "name": "Yoke Fiend"
           },
           "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
           "value": "true"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "658a-8247-8e8a-8f85",
+            "name": "Yoke Fiend"
+          },
+          "field": "hidden",
+          "value": "false"
         },
         {
           "op": "set",
@@ -71801,6 +73856,46 @@ export const DATASET: Dataset = {
             "kind": "unit",
             "id": "4c27-9424-de7d-b905",
             "name": "Faceless"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
+          },
+          "field": "hidden",
+          "value": "false"
+        },
+        {
+          "op": "set",
+          "target": {
+            "kind": "unit",
+            "id": "fb1c-94da-c9c8-be8e",
+            "name": "Stalker"
           },
           "field": "hidden",
           "value": "false"

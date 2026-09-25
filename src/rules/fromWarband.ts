@@ -348,13 +348,28 @@ export function toRoster(warband: Warband, dataset: Dataset): RosterConversion {
     allowThirdParty: warband.allowThirdParty,
     earnedRecruitment: warband.earnedRecruitment,
     units,
+    /*
+      The Arsenal, with its QUANTITIES.
+
+      `buyToStash` stacks a second copy onto the row it already holds rather
+      than adding a second row, so three Grenade Launchers in the Arsenal are
+      one row reading `quantity: 3`. This mapped every row to 1, which made the
+      roster-wide `Limit: N` count (RR-13) read three copies as one and raise
+      nothing — the rule was enforced only against an Arsenal that happened to
+      hold its copies in separate rows.
+
+      The NAME travels too, because a Glory Item and any other row the
+      catalogues cannot name has no `weaponId` for the limit check to count by.
+    */
     stash: (warband.armoryStash ?? []).map((s) => {
-      const w = dataset.weapons.find((x) => key(x.name) === key((s as { name?: string }).name ?? ''));
+      const name = (s as { name?: string }).name ?? '';
+      const w = dataset.weapons.find((x) => key(x.name) === key(name));
       return {
         weaponId: w?.id,
+        name: name || undefined,
         cost: w ? (priceOf(armouryFor(dataset, warband.factionId), w) ?? w.cost)
                 : { ducats: 0, glory: 0 },
-        quantity: 1,
+        quantity: Math.max(1, Math.floor((s as { quantity?: number }).quantity ?? 1) || 1),
       };
     }),
     budget: {

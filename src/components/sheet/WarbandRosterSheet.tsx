@@ -347,12 +347,27 @@ export const RosterSheetView: React.FC<{ sheet: RosterSheetModel }> = ({ sheet }
 
       {sheet.fallen.length > 0 && (
         <div className="bg-theme-surface border border-theme-border p-4 space-y-2 bevel-container">
-          <h3 className="font-gothic text-lg text-theme-text">The Fallen</h3>
+          <h3 className="font-gothic text-lg text-theme-text">
+            The Fallen &amp; the Retired
+          </h3>
+          {/*
+            Two ways off the roster, said apart. `removeFromRoster` writes
+            `isDead` for both, so the flag is the only thing that distinguishes
+            a model sent home by the Quartermaster Step (#114) from one the
+            Trauma Step killed — and a memorial that merges them buries the
+            living.
+          */}
           <ul className="font-mono text-xs space-y-1">
             {sheet.fallen.map((f, i) => (
               <li key={`${f.name}-${i}`} className="text-theme-muted">
                 <span className="text-theme-text">{f.name}</span>
                 {f.profileName && f.profileName !== f.name && ` — ${f.profileName}`}
+                {f.retired && (
+                  <span className="text-theme-muted">
+                    {' · retired'}
+                    {f.retiredAtGame !== undefined && `, game ${f.retiredAtGame}`}
+                  </span>
+                )}
               </li>
             ))}
           </ul>

@@ -265,6 +265,21 @@ export interface ActiveUnit {
    * moved by the load-time migration, which has a flag and no battle.
    */
   diedInMatchId?: string;
+  /**
+   * Sent home rather than killed — the Quartermaster Step's Retire Injured
+   * Models (p.123).
+   *
+   * Set on the way to `fallen`, beside the `isDead` that `removeFromRoster`
+   * writes. Both are true of a retired model in the only sense the roster
+   * cares about — it is off the roster — and this is what lets a memorial say
+   * which of the two happened. A Warband that has lost six models and retired
+   * two has lost six, and a screen that cannot tell them apart says eight.
+   *
+   * Absent on every model that left the roster any other way.
+   */
+  retired?: boolean;
+  /** The campaign game the model was retired in, from `campaignGameOf`. */
+  retiredAtGame?: number;
   totalCost: number; // calculated ducats
 
   /**

@@ -130,6 +130,36 @@ All five committed:
 | `all-out-war.pdf` | 23 | Multiplayer scenario pack. **Confirms the app's existing All Out War data is correct** (see [`FEATURES.md`](FEATURES.md)). |
 | `warband-roster-sheet.pdf` | 3 | **The official paper Warband Roster Sheet**, supplied by the owner on 20 September 2026. The layout FD-12 in `FIX-DESIGNS-2026-09-20.md` mirrors in the app: the campaign table (its Threshold and Field Strength rows equal `campaign.thresholds`), the Experience track (eighteen boxes, circles at `campaign.experience.advancementAt`), the Scars boxes and the unit card sections. Text at `extracted/warband-roster-sheet.txt`; the box pattern is graphical and was read from the page. |
 
+### What the digital rulebook gives, page by page
+
+The pages the pipeline parses out of `trench-crusade-digital-rulebook.txt`,
+beyond the tables listed above. Each is derived by a named function that throws
+on a wording that stops saying what it says, because a section that read as
+absent would silently become a rule the app does not apply.
+
+| Pages | What | Parser |
+|---|---|---|
+| 95 | Campaign Victory Points | `parseCampaignVictoryPoints` |
+| 96 | **The Campaign Scenario tables** — three D6 bands and the Final Battle | `parseCampaignScenarioTables` |
+| 101, 107 | The Trauma Table and the Trauma Step's procedure | `parseTraumaTable`, `parseTraumaProcedure` |
+| 113–115 | Exploration: the dice bands, the Locations, the seven Skills | `parseExploration` |
+| 119 | The Reinforcements Sequence | `parseReinforcementsSequence` |
+| 123, 125 | **The Quartermaster Step**: retiring at two Battle Scars, and the Glory Item gate | `parseQuartermasterStep` |
+| 125–127 | **The six Glory Item Tables**, 54 rows | `parseGloryItemTables` |
+
+The last three landed together, and the middle one is why: the Glory Item gate
+could not be applied because the Glory Item Tables had never been parsed at all.
+The dataset carried Glory-*priced* rows — the Troop Flag, Martyrdom Pills, a
+Field Shrine — and those come from the faction Armoury Tables in the Warbands
+book, which page 125 is at pains to distinguish from Glory Items with a
+"However". Reading "priced in Glory" as "is a Glory Item" would have put three
+Armoury rows per faction behind a gate the book does not put them behind.
+
+See [`RULESET-MODEL.md`](RULESET-MODEL.md) §7 for the shapes each of these
+emits and for the three extraction hazards in the Glory Item Tables — a
+footnote marker the PDF superscripts and the extraction glues to a limit, a name
+wrapped across two lines, and a price printed as a range.
+
 ### The Warbands book is parseable, not just searchable
 
 This was the open risk in the original plan, and it resolved well. The official

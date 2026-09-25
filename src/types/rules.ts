@@ -23,11 +23,34 @@ export interface Ability {
   id: string;
   name: string;
   description: string;
+  /**
+   * The Variants — or the roster selections — whose reveal is this ability's
+   * only route onto the entry (DA-01).
+   *
+   * Present only on an ability listed under `variantAbilities`, where it is the
+   * label that makes the list mean anything: "Axe Mastery (Remnants of
+   * Byzantium)" is a reason to pick a Variant, and "Axe Mastery" on its own is
+   * the bug.
+   */
+  variantOnly?: string[];
 }
 
 export interface WeaponProfile {
   id: string;
   name: string;
+  /**
+   * The offer came from a faction's **Glory Item Table**, not its Armoury Table
+   * (p.125, RR-14).
+   *
+   * Kept beside the kind rather than instead of it. `category` says what the
+   * item IS — a Ducal Winged Armour is Armour and belongs in the armour slot —
+   * and this says which table sold it, which is what needs a discovery before
+   * it can be bought and what the equip sheet labels. Filing the kind as
+   * `Glory Items` did neither job: all 54 fell through to the weapons list and
+   * a suit of armour could not reach the armour slot.
+   */
+  gloryItem?: boolean;
+
   type: 'Melee' | 'Ranged' | 'Both';
   range: string; // e.g. "Melee" or "24\""
   modifiers: string; // e.g. "+1 Melee" or "-"
@@ -62,6 +85,19 @@ export interface WeaponProfile {
 export interface ArmourProfile {
   id: string;
   name: string;
+  /**
+   * The offer came from a faction's **Glory Item Table**, not its Armoury Table
+   * (p.125, RR-14).
+   *
+   * Kept beside the kind rather than instead of it. `category` says what the
+   * item IS — a Ducal Winged Armour is Armour and belongs in the armour slot —
+   * and this says which table sold it, which is what needs a discovery before
+   * it can be bought and what the equip sheet labels. Filing the kind as
+   * `Glory Items` did neither job: all 54 fell through to the weapons list and
+   * a suit of armour could not reach the armour slot.
+   */
+  gloryItem?: boolean;
+
   armourModifier?: string; // e.g. "-1 Injury Modifier"
   modifier?: string;
   category?: string;
@@ -93,6 +129,19 @@ export interface ArmourProfile {
 export interface EquipmentItem {
   id: string;
   name: string;
+  /**
+   * The offer came from a faction's **Glory Item Table**, not its Armoury Table
+   * (p.125, RR-14).
+   *
+   * Kept beside the kind rather than instead of it. `category` says what the
+   * item IS — a Ducal Winged Armour is Armour and belongs in the armour slot —
+   * and this says which table sold it, which is what needs a discovery before
+   * it can be bought and what the equip sheet labels. Filing the kind as
+   * `Glory Items` did neither job: all 54 fell through to the weapons list and
+   * a suit of armour could not reach the armour slot.
+   */
+  gloryItem?: boolean;
+
   cost: number;
   /**
    * Glory, where the entry is priced in it. Trench Crusade has two currencies
@@ -213,6 +262,19 @@ export interface UnitProfile {
    */
   mercenaryMayBuy?: 'Melee'[];
   innateAbilities?: Ability[];
+  /**
+   * Abilities this entry carries that the Warband's Variant does not reveal,
+   * each labelled with what would (DA-01).
+   *
+   * Not rules this model has — that is `innateAbilities`, and mixing the two is
+   * the defect this pair exists to end: a standard New Antioch Shocktrooper's
+   * card printed four Varangian Guard rules as its own. This is the other half
+   * of the same fact, shown where a player is CHOOSING: the recruit sheet lists
+   * them under the entry so that "Remnants of Byzantium turns this into a
+   * Varangian Guard" is visible before the Variant is picked, rather than being
+   * a discovery made afterwards.
+   */
+  variantAbilities?: Ability[];
   /**
    * Gear the model always has, from the catalogue's `min="1"` entryLinks.
    *

@@ -21,14 +21,33 @@ const sultanate = recruitable(DATASET, 'iron-sultanate', APP_FACTIONS);
 describe('what a player can recruit', () => {
   it('comes from the catalogues, not from a hand-written list', () => {
     /*
-      Every unit in the dataset except the secondary profiles — a Martyr
-      Penitent is a resurrected Leper-Pilgrim and a Heretic Raider Legionnaire
-      is an upgraded Raider, so neither is a recruit. Asserted as the whole
-      list minus exactly those, so a unit going missing for any other reason
-      still fails here.
+      Every unit in the dataset except the secondary profiles, which are the
+      statlines a model can take rather than models a player can hire.
+
+      The Carcass Front pair were the first two: a Martyr Penitent is a
+      resurrected Leper-Pilgrim, a Heretic Raider Legionnaire an upgraded
+      Raider. DA-02 added the eight the CATALOGUES state the same way and the
+      parser was emitting as recruits:
+
+        Winged Thrall              the second Unit profile on the Grail Thrall
+                                   entry — the book prints "Grail Thralls / Fly
+                                   Thralls", one entry, one cost
+        the seven dog types        Guard, Mercy, Attack, Martyrdom, Hellhound.
+                                   Page 121: "When you give a Trench Dog to a
+                                   model, you can give the Trench Dog one of the
+                                   following special abilities at a Cost of
+                                   +1 ☼" — special abilities, not models
+
+      Asserted as the whole list minus exactly those, so a unit going missing
+      for any other reason still fails here.
     */
     const secondary = DATASET.units.filter((u) => u.secondaryProfile);
-    expect(secondary.map((u) => u.name)).toEqual(['Martyr Penitent', 'Heretic Raider Legionnaire']);
+    expect(secondary.map((u) => u.name)).toEqual([
+      'Winged Thrall',
+      'Guard Dog', 'Martyrdom Dog', 'Mercy Dog', 'Hellhound',
+      'Guard Dog', 'Mercy Dog', 'Attack Dog',
+      'Martyr Penitent', 'Heretic Raider Legionnaire',
+    ]);
 
     /*
       And minus the entries the catalogue gates behind a PREREQUISITE rather

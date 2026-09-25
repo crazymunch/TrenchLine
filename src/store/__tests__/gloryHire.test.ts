@@ -89,9 +89,21 @@ beforeEach(() => {
 });
 
 describe('the shipped entries this is about', () => {
+  /*
+    Thirteen, where this said seventeen. The four that left are the Mercenaries'
+    dog specializations — Guard Dog, Mercy Dog, Martyrdom Dog and Hellhound, one
+    Glory apiece — which DA-02 established are not recruits at all. Page 121:
+    "When you give a Trench Dog to a model, you can give the Trench Dog one of
+    the following special abilities at a Cost of +1 ☼." They are the Trench
+    Dog's own upgrade, and `recruitable` no longer offers them as models.
+
+    The thing this test is actually about is unchanged: every entry priced in
+    Glory is priced at zero Ducats, which is why a Glory hire used to cost
+    nothing at all.
+  */
   it('price every Glory recruit at zero Ducats, which is why nothing was charged', () => {
     const priced = SULTANATE.units.filter((u) => (u.gloryCost ?? 0) > 0);
-    expect(priced).toHaveLength(17);
+    expect(priced).toHaveLength(13);
     expect(priced.every((u) => u.baseCost === 0)).toBe(true);
   });
 

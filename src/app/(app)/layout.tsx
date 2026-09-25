@@ -93,10 +93,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // The Variant too: it renames entries, bans some and raises the limits on
   // others, so the recruit list is a different list under a different one.
   const variantId = getActiveWarband()?.variantId;
+  /*
+    And what this Warband has DISCOVERED, because a Glory Item Table is shut
+    until an Exploration discovery opens it (p.125, RR-14). The Trench Merchant
+    opens it to 5 Glory, the Black Market to 8, the Black Network Contact to 12
+    — each number read from that Location's own sentence, not from here.
+  */
+  const explorationEffects = getActiveWarband()?.explorationEffects;
 
   useEffect(() => {
-    if (dataset) hydrateCatalogs(dataset, factionId, variantId);
-  }, [dataset, factionId, variantId, hydrateCatalogs]);
+    if (dataset) hydrateCatalogs(dataset, factionId, variantId, explorationEffects);
+  }, [dataset, factionId, variantId, explorationEffects, hydrateCatalogs]);
 
   useEffect(() => {
     syncUserWarbandsWithCloud(session?.user?.email || undefined, session?.user?.name || undefined);
