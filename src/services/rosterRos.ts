@@ -28,7 +28,7 @@
  * somebody does, this is a candidate format and the report says so.
  */
 import {
-  modelIdentity, resolveSelection,
+  modelIdentity, resolveSelection, knownEntry,
   type ResolvedSelection, type RosterPathLayer, type Selection,
 } from './rosterPaths';
 import type { Warband, ActiveUnit } from '../types/warband';
@@ -151,6 +151,22 @@ function grantOf(unit: ActiveUnit, name: string): string | undefined {
   return all.find((x) => x.name === name)?.grantedBy;
 }
 
+/**
+ * The catalogue selection an imported item came from, where one was recorded.
+ *
+ * All four lists, unlike `grantOf`: `entryId` is the line's own identity, and
+ * a Formula has one as surely as a rifle does. Absent on anything bought in
+ * the app and on every warband imported before EXP-1 — see
+ * `WeaponProfile.entryId`.
+ */
+function entryOf(unit: ActiveUnit, name: string): string | undefined {
+  const all = [
+    ...(unit.equippedWeapons ?? []), ...(unit.equippedArmour ?? []),
+    ...(unit.equippedEquipment ?? []), ...(unit.specialUpgrades ?? []),
+  ];
+  return all.find((x) => x.name === name)?.entryId;
+}
+
 /** `50 Ducats`, `2 Glory`, `15 Ducats + 2 Glory` — for a warning that owes a number. */
 function shortPrice(price: { ducats: number; glory: number }): string {
   const parts = [
@@ -181,11 +197,38 @@ function priceOf(unit: ActiveUnit, name: string): { ducats: number; glory: numbe
 export function forceCatalogue(
   layer: RosterPathLayer, models: ActiveUnit[], units: CatalogueUnit[]
 ): { catalogueId?: string; spans: string[] } {
+  /*
+    Two passes, because a Mercenary is reachable from every catalogue that may
+    hire it and the first placement is an arbitrary one of them (EXP-1).
+
+    The Scripture Guardian has placements in all six faction catalogues. Taking
+    `placements[0]` attributed the owner's Iron Sultanate warband's Guardian to
+    the Black Grail and reported the force as spanning two catalogues it does
+    not — a warning that names nothing true, on the one roster it was measured
+    against.
+
+    So: the models with a single catalogue decide what the force is, and a
+    model reachable from that one is counted there. A model reachable from
+    several and from none of the settled ones still contributes its first, and
+    that is a real span.
+  */
+  const options = models
+    .map((u) => [...new Set(pathsFor(layer, u, units)?.placements.map((p) => p.catalogueId) ?? [])])
+    .filter((ids) => ids.length);
+
   const counts = new Map<string, number>();
-  for (const u of models) {
-    const id = pathsFor(layer, u, units)?.placements[0]?.catalogueId;
-    if (id) counts.set(id, (counts.get(id) ?? 0) + 1);
+  for (const ids of options) {
+    if (ids.length === 1) counts.set(ids[0], (counts.get(ids[0]) ?? 0) + 1);
   }
+  const settled = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0];
+
+  for (const ids of options) {
+    if (ids.length === 1) continue;
+    const pick = settled && ids.includes(settled) ? settled : ids[0];
+    counts.set(pick, (counts.get(pick) ?? 0) + 1);
+  }
+
   const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
   return { catalogueId: ranked[0]?.[0], spans: ranked.map(([id]) => id) };
 }
@@ -204,25 +247,51 @@ const livingUnits = (warband: Warband) => (warband.units ?? []).filter(takesTheF
 /**
  * The catalogue entry a model is an instance of.
  *
- * By id first and by name second, and both are needed because each covers the
- * other's blind spot.
+ * Three answers in order, and each covers the others' blind spot.
  *
- * *Id*: a saved warband's `baseProfileId` is the id of the profile it was
- * recruited from. In the running app, hydration re-keys the catalogue — the
- * Amalgam is `e5d5-c4bb-4b99-020d` in the dataset and `036b-eb9f-9b58-fa7e` in
- * a hydrated store — so this misses there and the name carries it.
+ * *The model's own id*: a saved warband's `baseProfileId` is the id of the
+ * profile it was recruited from. In the running app, hydration re-keys the
+ * catalogue — the Amalgam is `e5d5-c4bb-4b99-020d` in the dataset and
+ * `036b-eb9f-9b58-fa7e` in a hydrated store — so this misses there.
  *
- * *Name*: a model imported from somebody else's roster carries the name that
- * roster RENDERED, not the catalogue's. Modifiers rename entries: the Iron
- * Sultanate's `Azeb` is written into a NewRecruit file as `Kavass`, and a
- * promoted one as `Favoured Kavass`, all three being entry
- * `0e7e-9167-f044-9493`. So this misses there and the id carries it.
+ * *The entry it names*: since IMPORT-1 an IMPORTED model's `baseProfileId` is
+ * the catalogue entry id, which the first lookup never matches.
+ *
+ * *The name*: a warband old enough to carry neither. A model imported from
+ * somebody else's roster carries the name that roster RENDERED, not the
+ * catalogue's — modifiers rename entries, so the Iron Sultanate's `Azeb` is
+ * written into a NewRecruit file as `Kavass` and a promoted one as `Favoured
+ * Kavass`, all three being entry `0e7e-9167-f044-9493`. It is last because it
+ * is the one that can be wrong: six entries are called `Homunculus`.
  */
 export function catalogueEntryFor(
   unit: ActiveUnit, units: CatalogueUnit[]
 ): CatalogueUnit | undefined {
   const byId = units.find((u) => u.id === unit.baseProfileId);
   if (byId?.entryId) return byId;
+
+  /*
+    The catalogue ENTRY id, before the name (EXP-1).
+
+    Since IMPORT-1 an imported model's `baseProfileId` IS the entry id, so the
+    lookup above matches nothing at all for an imported warband — measured on
+    the owner's file, twelve models out of twelve — and every one of them fell
+    through to the name. Six catalogue entries are called `Homunculus`, and
+    the first of them belongs to the Court of the Seven-Headed Serpent: so
+    Al-Masyukh, a Takwin Homunculus of the Iron Sultanate, was measured
+    against the Court's entry, which offers neither the Titan Zulfiqar nor Two
+    Heads. Both came back as gear the catalogues do not offer this model, and
+    the force was reported as spanning three catalogues it does not touch.
+
+    ID-1 fixed exactly this for the builder, in `rules/catalogueUnit.ts`. This
+    module resolves against the `.ros` exporter's narrower row and so cannot
+    call it, but the ORDER is the same and must stay the same: the model's own
+    id, then the entry it names, then — only for a warband old enough to carry
+    neither — the name.
+  */
+  const byEntry = units.find((u) => u.entryId === unit.baseProfileId);
+  if (byEntry) return byEntry;
+
   const name = unit.profileSnapshot?.name;
   return units.find((u) => u.name === name && u.entryId) ?? byId;
 }
@@ -314,6 +383,33 @@ export function rosReport(
           why: `${grant} allows this, and no catalogue selection under this model can `
             + `name it; written without it, so this model costs `
             + `${shortPrice(priceOf(u, name))} less in the file than in TrenchLine`,
+        });
+        continue;
+      }
+      /*
+        A line from a catalogue this exporter does not place (EXP-1).
+
+        Different from the fatal below, and a warning rather than a refusal.
+        That one says the model was given something its entry does not offer —
+        a roster naming it would be a roster of a different model. This says
+        the exporter has no identity for the line under ANY model, so the file
+        cannot carry it and the roster is nevertheless a true record.
+
+        The owner's Sniper Scope is the whole of the case on both fixtures: a
+        Glory Item in the `Campaign Rules` catalogue's own group, won in a
+        campaign rather than bought from an Armoury. `docs/ROS-EXPORT.md`
+        records the open question — what a `.ros` should say about the
+        campaign half of a warband — and until that is designed, naming it is
+        the honest answer.
+      */
+      if (!knownEntry(layer, entryOf(u, name))) {
+        warnings.push({
+          level: 'warning',
+          model: named,
+          subject: name,
+          why: 'won or granted outside the faction catalogues — no BattleScribe entry '
+            + 'this exporter maps names it, so it is left out of the file; the '
+            + 'campaign half of a roster is not yet designed (docs/ROS-EXPORT.md)',
         });
         continue;
       }

@@ -239,6 +239,35 @@ export interface ModelIdentity {
  * chosen, and ties keep the first. That is a choice about which of several
  * true identities to write, not a guess at an unknown one.
  */
+/**
+ * Has this layer ever seen this catalogue entry, anywhere?
+ *
+ * `entryId` is a roster's own path — `39cf-…::4509-…::4ada-…`, the chain of
+ * `entryLink` ids with the entry's own id last — and the last segment is the
+ * only part that identifies the entry rather than the route to it.
+ *
+ * The question is deliberately weak: not "can this model take it", which
+ * `modelIdentity` answers, but "is it in the walk at all". A `false` says the
+ * exporter has no identity for the line under ANY model, which is a different
+ * finding from a model being offered the wrong thing, and deserves a
+ * different word. The owner's Sniper Scope is the case — a Glory Item in the
+ * `Campaign Rules` catalogue's own `Glory Items` group, 0 Ducats and 2 Glory,
+ * which sits at the catalogue's top level rather than under any force root,
+ * so the walk never reaches it and no model can name it.
+ *
+ * `undefined` answers `true`: a warband saved before the importer recorded
+ * the selection has no path to test, and absence of evidence must not become
+ * a finding of its own.
+ */
+export function knownEntry(
+  layer: RosterPathLayer, entryId: string | undefined,
+): boolean {
+  if (!entryId) return true;
+  const own = String(entryId).split('::').filter(Boolean).pop();
+  if (!own) return true;
+  return layer.segments.includes(own);
+}
+
 export function modelIdentity(
   layer: RosterPathLayer, entryId: string, itemNames: string[]
 ): ModelIdentity | null {

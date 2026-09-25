@@ -214,10 +214,23 @@ describe('the admin role', () => {
     expect(isUserAdmin('commander@trenchline.org')).toBe(false);
   });
 
-  it('lets the environment replace the default entirely', () => {
-    expect(isUserAdmin('crazymunch@gmail.com')).toBe(true);
+  /*
+    ADM-1. There is no default at all, so an unconfigured deployment grants
+    admin to nobody — not to the maintainer, not to anyone. Asserted on an
+    address nothing has ever listed AND on the one the module used to carry,
+    which `env.ts`'s own suite names.
+  */
+  it('grants admin to nobody when nothing is configured', () => {
+    delete process.env.TRENCHLINE_ADMIN_EMAILS;
+    for (const who of ['boss@example.org', 'maintainer@example.org', 'a@b.c']) {
+      expect(isUserAdmin(who), who).toBe(false);
+    }
+  });
+
+  it('grants only the addresses the environment lists', () => {
     process.env.TRENCHLINE_ADMIN_EMAILS = 'someone-else@example.org';
-    expect(isUserAdmin('crazymunch@gmail.com')).toBe(false);
+    expect(isUserAdmin('someone-else@example.org')).toBe(true);
+    expect(isUserAdmin('boss@example.org')).toBe(false);
   });
 });
 

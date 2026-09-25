@@ -518,10 +518,31 @@ function parseNewRecruitJson(
       Weapon profile is a weapon, a Battlekit profile is armour or equipment,
       and an Ability profile is something the model IS, not something it holds.
     */
-    const specialUpgrades: { id: string; name: string; cost: number; category: string }[] = [];
+    const specialUpgrades: NonNullable<ActiveUnit['specialUpgrades']> = [];
     const advancements: string[] = [];
     const injuries: string[] = [];
     let xp = 0;
+
+    /*
+      A child that exists only to attach a profile to its parent (EXP-1).
+
+      The Sultanate Sapper's Shovel is the case: the roster records the
+      selection `Shovel`, and nested inside it a child called
+      `Include Weapon Profile?` whose only content is a Weapon profile named
+      `Weaponized Shovel`. Treated as a selection of its own it became a
+      second item on the model, named after the profile — a Weaponized Shovel
+      the player never chose, priced and listed beside the Shovel they did.
+
+      Narrow on purpose: a profile, no cost, no group and no children of its
+      own. A genuine free sub-option has a group or children; a question mark
+      wrapped round a profile has neither.
+    */
+    const isProfileCarrier = (sub: NrSelection): boolean => Boolean(
+      sub.profiles?.length
+      && !sub.selections?.length
+      && !sub.group
+      && !(sub.costs ?? []).some((c) => (c.value ?? 0) !== 0),
+    );
 
     function parseSubSelections(subList: NrSelection[] | undefined) {
       if (!Array.isArray(subList)) return;
@@ -529,6 +550,17 @@ function parseNewRecruitJson(
       subList.forEach((sub) => {
         const subName = sub.name || '';
         const subGroup = sub.group || '';
+
+        /*
+          Every profile this selection prints — its own, and its
+          profile-carrier children's. The profiles say what KIND of thing it
+          is and supply the statline; the SELECTION says what it is called.
+        */
+        const carried = [
+          ...(sub.profiles ?? []),
+          ...(sub.selections ?? []).filter(isProfileCarrier)
+            .flatMap((c) => c.profiles ?? []),
+        ];
 
         // Experience counter
         if (subName === 'Experience') {
@@ -547,7 +579,7 @@ function parseNewRecruitJson(
         }
 
         // Weapon profiles
-        const wepProf = sub.profiles?.find((p) => p.typeName === 'Weapon');
+        const wepProf = carried.find((p) => p.typeName === 'Weapon');
         if (wepProf || subGroup.includes('Weapons')) {
           const wChars: Record<string, string> = {};
           (wepProf?.characteristics || []).forEach((c) => { wChars[c.name ?? ''] = c.$text || ''; });
@@ -558,7 +590,8 @@ function parseNewRecruitJson(
 
           equippedWeapons.push({
             id: `w-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-            name: wepProf?.name || subName,
+            name: subName || wepProf?.name || '',
+            entryId: sub.entryId,
             type: isMelee ? 'Melee' : 'Ranged',
             hands: is2Handed ? 2 : 1,
             range: wChars['Range'] || (isMelee ? 'Melee (1")' : '12"'),
@@ -572,14 +605,15 @@ function parseNewRecruitJson(
         }
 
         // Armour / Shield profiles
-        const bKitProf = sub.profiles?.find((p) => p.typeName === 'Battlekit');
+        const bKitProf = carried.find((p) => p.typeName === 'Battlekit');
         if (subGroup.includes('Armour') || subGroup.includes('Shields') || bKitProf?.name?.toLowerCase().includes('armour') || bKitProf?.name?.toLowerCase().includes('shield')) {
           const bChars: Record<string, string> = {};
           (bKitProf?.characteristics || []).forEach((c) => { bChars[c.name ?? ''] = c.$text || ''; });
 
           equippedArmour.push({
             id: `a-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-            name: bKitProf?.name || subName,
+            name: subName || bKitProf?.name || '',
+            entryId: sub.entryId,
             armourModifier: bChars['Keywords']?.includes('INJURY MODIFIER') ? bChars['Keywords'] : '-1 Injury Modifier',
             cost: sub.costs?.find((c) => c.name === 'Ducats')?.value || 0,
             keywords: bChars['Keywords'] ? bChars['Keywords'].split(',').map((k: string) => k.trim()) : [],
@@ -599,12 +633,13 @@ function parseNewRecruitJson(
           name at all, so requiring one would put every `.ros` import back
           where it started.
         */
-        const abilityProf = sub.profiles?.find((p) => p.typeName === 'Ability');
+        const abilityProf = carried.find((p) => p.typeName === 'Ability');
         const isWargearGroup = /Weapons|Armour|Shields|Equipment|Battlekit/i.test(subGroup);
         if ((abilityProf && !bKitProf && !isWargearGroup) || OPTION_GROUP.test(subGroup)) {
           specialUpgrades.push({
             id: `su-${subName.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`,
             name: subName,
+            entryId: sub.entryId,
             cost: sub.costs?.find((c) => c.name === 'Ducats')?.value || 0,
             // The catalogue's own group name where the export gives one, so
             // the advancement sheet can head these the way it heads the ones
@@ -622,7 +657,8 @@ function parseNewRecruitJson(
 
           equippedEquipment.push({
             id: `e-${Date.now()}-${Math.random().toString(36).substr(2, 5)}`,
-            name: bKitProf?.name || subName,
+            name: subName || bKitProf?.name || '',
+            entryId: sub.entryId,
             // The group is tested three lines above to decide whether to keep
             // this selection, and used to be dropped here. Everything
             // downstream then had to guess from the name.
@@ -634,9 +670,13 @@ function parseNewRecruitJson(
           });
         }
 
-        // Recurse into nested sub-selections
+        /*
+          Recurse — but never into a profile carrier, whose profiles this
+          selection has already absorbed. Descending would re-emit them as the
+          separate item the fold exists to prevent.
+        */
         if (sub.selections) {
-          parseSubSelections(sub.selections);
+          parseSubSelections(sub.selections.filter((c) => !isProfileCarrier(c)));
         }
       });
     }

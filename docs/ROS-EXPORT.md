@@ -121,7 +121,7 @@ muster budget, and writing it as one would be a claim nobody made.
 ## What a warband can hold that a `.ros` cannot say
 
 Measured against the real thirteen-model campaign warband in
-`data-sources/fixtures/newrecruit/`. Nine of its 95 selections have no place in
+`data-sources/fixtures/newrecruit/`. Eight of its 95 selections have no place in
 the layer's wargear vocabulary, and not one is an oversight:
 
 | | |
@@ -129,8 +129,31 @@ the layer's wargear vocabulary, and not one is an oversight:
 | `Ranged Proficiency [7]`, `Assassinate [4]`, `Skill & Expertise [7]`, `Strength of Samson [8]` | campaign advancements and skills, held in the campaign tables |
 | `Leg Wound [31]`, `Lost Arm [26]` | injuries, likewise |
 | `Alchemical Ammuntion (Loaded)` | a BattleScribe counter — a hidden entry a modifier increments, which a player cannot choose |
-| `Sniper Scope` | an exploration find from `Campaign Rules.cat` |
-| `Fierce Lion` | an ability, not armoury gear |
+| `Sniper Scope` | a **Glory Item** in the `Campaign Rules` catalogue's own group, 0 Ducats and 2 Glory — won in a campaign, not bought from an Armoury |
+
+`Fierce Lion` was the ninth and is not on this list any more. It was never
+"an ability, not armoury gear": it is a real `selectionEntry` the Lion of
+Jabir offers for +5 Ducats (`Iron Sultanate.cat` L5676), and the option parser
+read only entries inside a `selectionEntryGroup`. Fourteen upgrades across the
+six faction catalogues were in that position — see
+[`ROSTER-PATHS.md`](ROSTER-PATHS.md#an-upgrade-with-no-group-round-it).
+
+### The one that is left is a warning, not a refusal
+
+`rosReport` used to call any name the layer could not place under a model
+**fatal**, which is right when the model was given something its entry does
+not offer: a roster naming it would be a roster of a different model. It is
+not right for the Sniper Scope, where the exporter has no identity for the
+line under *any* model. The two are told apart by `knownEntry`, which asks
+whether the layer has ever seen the item's own entry id — recorded on the item
+by the importer since EXP-1 — and the second is warned about and left out:
+
+> won or granted outside the faction catalogues — no BattleScribe entry this
+> exporter maps names it, so it is left out of the file; the campaign half of
+> a roster is not yet designed
+
+That open question is this document's, below. The roster is a true record
+either way; what is missing is a place in the `.ros` format to say it.
 
 ### A Weapon Collections pick NewRecruit does not offer
 
@@ -197,8 +220,44 @@ the format would agree with itself and pass.
 
 ## Acceptance
 
-Unchanged from where [E3](EXPORT-CODEX-REVIEW.md) put it, and not something code
-can clear:
+### EXP-1: the owner's own roster exports
+
+Driving both fixtures through the real importer and then this report gave
+**eight fatal findings** on each. Each turned out to belong to one of four
+classes, and only one of the four was where the design expected it:
+
+| what was reported | on | what it really was |
+| --- | --- | --- |
+| `Coordinated Engagement` ×2 | Idris, Jawhar | the selections are `Fireteam: Mamluk-Guarded` and `Assigned Sword`; both print a `Coordinated Engagement` Battlekit profile, and the importer named the item after the **profile** |
+| `Weaponized Shovel` | The Iron Needle | the selection is `Shovel`, whose child `Include Weapon Profile?` prints a `Weaponized Shovel` weapon profile |
+| `Polearm` | Jawhar | the selection is the `Polearm and Shield` bundle, which prints a `Shield` and a `Polearm` profile |
+| `Titan Zulfiqar`, `Two Heads` | Al-Masyukh | **entry identity.** Since IMPORT-1 an imported model's `baseProfileId` is the catalogue entry id, which `catalogueEntryFor` did not look up — so all twelve models fell through to a name match, and the first of the six entries called `Homunculus` belongs to the Court of the Seven-Headed Serpent |
+| `Fierce Lion` | Dhi'b al-Nafud | a real option the parser never read — above |
+| `Sniper Scope` | Kasim | a campaign Glory Item — above |
+
+Three fixes, at the source rather than in the report:
+
+1. **An imported item is named after the SELECTION**, never after the first
+   profile that selection prints, and it keeps that selection's entry id. A
+   child whose only content is a profile folds into its parent instead of
+   becoming an item of its own. Four of the eight.
+2. **`catalogueEntryFor` resolves the entry id** before falling back to the
+   name. Two of the eight, and it also stopped the force reporting itself as
+   spanning catalogues it does not touch.
+3. **`optionsOf` reads an upgrade stated with no group round it.** One of the
+   eight, and fourteen options recovered across the catalogues.
+
+Both files now export with **no fatal finding**. What remains is the two
+standing differences this exporter reports on every file, the per-item "this
+is reachable more than one way" notes, and the Sniper Scope.
+
+`src/services/__tests__/importAcceptance.test.ts` holds it, and names each of
+the eight rather than counting them: a count passes while one of them comes
+back.
+
+### The acceptance that code cannot clear
+
+Unchanged from where [E3](EXPORT-CODEX-REVIEW.md) put it:
 
 > Open it in NewRecruit, check every model, loadout and cost, edit a selection,
 > save, reopen, and find nothing lost or changed.

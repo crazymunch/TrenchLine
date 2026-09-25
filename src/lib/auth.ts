@@ -12,10 +12,11 @@ import bcrypt from 'bcryptjs';
 /**
  * Who may hold the admin role.
  *
- * Configured by `TRENCHLINE_ADMIN_EMAILS`, which replaces the default list
- * outright when it is set. It used to be a constant in this file listing
- * `crazymunch@gmail.com` and `commander@trenchline.org`, which was the second
- * half of an unauthenticated admin takeover:
+ * Configured by `TRENCHLINE_ADMIN_EMAILS`, and by nothing else: with it unset
+ * the deployment has no administrator (ADM-1). It used to be a constant in
+ * this file listing the maintainer's own address and
+ * `commander@trenchline.org`, and the second of those was the second half of
+ * an unauthenticated admin takeover:
  *
  *   1. `POST /api/custom-rules` and `POST /api/campaigns` upserted a user
  *      `commander@trenchline.org` for any SIGNED-OUT caller, with no password.
@@ -31,9 +32,11 @@ import bcrypt from 'bcryptjs';
  *
  * All three steps are closed. `commander@trenchline.org` is off the list for
  * good — it is the identity the signed-out routes shared, so it must never be
- * an address that carries authority. The remaining default is the maintainer's
- * own address, which a deployment can replace or drop entirely; a persisted,
- * auditable role on the user record is what finally retires this.
+ * an address that carries authority. There is no remaining default of any
+ * kind: a built-in one grants authority from source code, which a deployment
+ * cannot revoke without a release and which every fork inherits. A persisted,
+ * auditable role on the user record is what finally retires the address as an
+ * identity for a role.
  */
 export function isUserAdmin(email?: string | null): boolean {
   return emailGrantsAdmin(email);

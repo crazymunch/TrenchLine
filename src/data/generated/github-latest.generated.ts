@@ -9967,6 +9967,43 @@ export const DATASET: Dataset = {
       ],
       "options": [
         {
+          "id": "2947-3143-19a4-59a0",
+          "name": "Banshee",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "e9e3-64e9-c6b6-b0f5",
+          "description": "All enemy models within 8” of the Banshee suffer additional +1 DICE when any Injury roll is made against them.",
+          "constraints": [
+            {
+              "id": "75ab-16f3-3e6d-d3d8",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "eee9-35a4-9eda-70e9",
+                "childName": "Trench Ghosts",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
           "id": "de31-881e-fc7e-2bf4",
           "name": "Trench Shrine",
           "group": "Equipment",
@@ -16164,6 +16201,131 @@ export const DATASET: Dataset = {
           "modifiers": []
         },
         {
+          "id": "3fdd-747a-7297-115a",
+          "name": "Janissary Veteran",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "8f21-dc64-88f6-1183",
+          "description": "You can make the Yüzbaşı a Janissary Veteran with the STRONG Keyword and the Janissary Counter-Charge ability at a cost of +10 Ducats.",
+          "constraints": [
+            {
+              "id": "3298-41bc-1cf3-7dfb",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "true",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "afcc-5f24-1c7c-63c4",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
+          "id": "a0bc-2879-6cde-b11f",
+          "name": "Akinji-Bey",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 0,
+            "glory": 0
+          },
+          "profileId": "3147-3cb8-b5b3-159d",
+          "description": "The first time during a Turn this model successfully deals a BLOOD MARKER to an enemy model, all Ranged Attack and Melee Attack Success Rolls made by friendly models in your warband made against the same model gain +1 DICE until the end of the current round.",
+          "constraints": [
+            {
+              "id": "1eac-6910-9b32-0f19",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "5df2-4c17-7c8c-4f1e",
+                "childName": "Ghazi of the Golden Path",
+                "includeChildSelections": true
+              }
+            }
+          ]
+        },
+        {
+          "id": "0f27-f803-965a-e559",
+          "name": "Janissary Veteran",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 10,
+            "glory": 0
+          },
+          "profileId": "f37a-4529-5e64-5407",
+          "description": "The Nomads of Al-Badia's Yüzbaşı gains the STRONG Keyword and choose between two abilities: Counter-Charge or Shield Training.",
+          "constraints": [
+            {
+              "id": "5e63-70f2-ea45-5ef1",
+              "type": "max",
+              "value": 1,
+              "scope": "parent",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": [
+            {
+              "op": "set",
+              "field": "hidden",
+              "value": "false",
+              "origin": "entry",
+              "when": {
+                "type": "atLeast",
+                "value": "1",
+                "field": "selections",
+                "scope": "roster",
+                "childId": "7091-3f28-368f-eace",
+                "childName": "Nomads of Al-Badia",
+                "includeChildSelections": true
+              }
+            },
+            {
+              "op": "add",
+              "field": "category",
+              "value": "afcc-5f24-1c7c-63c4",
+              "origin": "entry",
+              "scope": "model"
+            }
+          ]
+        },
+        {
           "id": "b749-592d-a7c0-aa2e",
           "name": "Marid Shovel",
           "group": "Equipment",
@@ -17121,7 +17283,29 @@ export const DATASET: Dataset = {
           "description": "A Lion of Jabir can make a Melee Attack even though it does not have any Melee Weapons."
         }
       ],
-      "options": [],
+      "options": [
+        {
+          "id": "b3f6-f405-6579-9ff9",
+          "name": "Fierce Lion",
+          "group": "Upgrades",
+          "cost": {
+            "ducats": 5,
+            "glory": 0
+          },
+          "profileId": "1ccc-289e-d82d-c641",
+          "description": "You can upgrade any Lion of Jabir into a Fierce Lion of Jabir at the cost of +5 ducats. Fierce Lions gains the Keyword FEAR.",
+          "constraints": [
+            {
+              "id": "5fb2-5995-bee6-b465",
+              "type": "max",
+              "value": 1,
+              "scope": "self",
+              "includeChildSelections": false
+            }
+          ],
+          "modifiers": []
+        }
+      ],
       "battlekit": [],
       "constraints": [
         {
@@ -64962,6 +65146,13 @@ export const DATASET: Dataset = {
         "STRONG"
       ],
       "raw": "The musculature of the Homunculus is reinforced, replaced and strengthened. Give this Takwin Homunculus the STRONG Keyword, change its Melee Characteristic to +1 DICE, and increase its base size to 32mm"
+    },
+    {
+      "name": "Janissary Veteran",
+      "grants": [
+        "STRONG"
+      ],
+      "raw": "The Nomads of Al-Badia's Yüzbaşı gains the STRONG Keyword and choose between two abilities: Counter-Charge or Shield Training."
     }
   ],
   "battlekitLimits": {
