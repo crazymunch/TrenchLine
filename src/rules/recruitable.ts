@@ -570,6 +570,9 @@ export function recruitable(
       armour.push({
         id, name: row.name, cost: row.cost.ducats,
         gloryCost: row.cost.glory || undefined,
+        /* The catalogue's other spellings for it, for a reader that has one
+           of those rather than this row's name. See `WeaponProfile.aliases`. */
+        ...(p?.aliases?.length ? { aliases: p.aliases } : {}),
         // The published Injury Modifier, from the keyword line. Absent where
         // neither source states one — never defaulted to a plausible -1.
         modifier: (b?.keywords ?? p?.keywords ?? []).find((kw) => /INJURY MODIFIER/i.test(kw)),
@@ -587,6 +590,7 @@ export function recruitable(
       equipment.push({
         id, name: row.name, cost: row.cost.ducats,
         gloryCost: row.cost.glory || undefined,
+        ...(p?.aliases?.length ? { aliases: p.aliases } : {}),
         /*
           `effect` is required by the legacy shape. The rules text where there
           is one, the keyword line otherwise, and an empty string rather than
@@ -618,6 +622,7 @@ export function recruitable(
     weapons.push({
       id, name: row.name, cost: row.cost.ducats,
       gloryCost: row.cost.glory || undefined,
+      ...(p?.aliases?.length ? { aliases: p.aliases } : {}),
       type: weaponType(range),
       range,
       // The legacy shape wants a single "modifiers" string. The keywords *are*

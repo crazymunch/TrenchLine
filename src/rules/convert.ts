@@ -190,14 +190,33 @@ type Lookup<T> =
   | { kind: 'none' }
   | { kind: 'many' };
 
+/**
+ * By name, and then — only where no name answered at all — by the other names
+ * the catalogue prints the same entry under.
+ *
+ * `aliases` is the containing `selectionEntry`'s name where it differs from
+ * the profile's: the Iron Sultanate's `Elixer of Al-Khidr` wrapping a profile
+ * called `Elixir of Al-Khidr`. A conversion that could not find the second
+ * spelling reported the item LOST and refunded it, which is worse than either
+ * answer — the ruleset has the item, under a name of its own.
+ *
+ * Names first, and `many` stops the search: an ambiguous name is still
+ * ambiguous, and an alias must not be allowed to pick a winner between two
+ * entries that both hold the name outright.
+ */
 function byName<T>(list: T[], nameOf: (x: T) => string, keys: string[]): Lookup<T> {
-  for (const key of keys) {
-    if (!key) continue;
-    const hits = list.filter((x) => nameKey(nameOf(x)) === key);
-    if (hits.length === 1) return { kind: 'one', hit: hits[0] };
-    if (hits.length > 1) return { kind: 'many' };
-  }
-  return { kind: 'none' };
+  const pass = (namesOf: (x: T) => string[]): Lookup<T> => {
+    for (const key of keys) {
+      if (!key) continue;
+      const hits = list.filter((x) => namesOf(x).some((n) => nameKey(n) === key));
+      if (hits.length === 1) return { kind: 'one', hit: hits[0] };
+      if (hits.length > 1) return { kind: 'many' };
+    }
+    return { kind: 'none' };
+  };
+  const byOwnName = pass((x) => [nameOf(x)]);
+  if (byOwnName.kind !== 'none') return byOwnName;
+  return pass((x) => (x as { aliases?: string[] }).aliases ?? []);
 }
 
 /** The single candidate carrying one of these names, or nothing. */

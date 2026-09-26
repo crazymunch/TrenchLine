@@ -174,6 +174,22 @@ so `authRequiresVerification()` ties the requirement to the capability. That is
 a real limitation, and it is the thing to fix before inviting public sign-ups:
 add a `Transport` in `src/lib/mail.ts` and a case in `mailer()`.
 
+## What the deployment does not carry
+
+`.vercelignore` keeps `data-sources/`, `docs/`, `scratch/`, `stitch_designs/`
+and the tests out of every upload — Deployment Storage is cumulative, and this
+project reached Vercel's ceiling at 63 GB with roughly 50 MB per deployment
+being source material the running app never reads.
+
+**So nothing under `src/` may import or read from `data-sources/`**: a value the
+app needs travels as generated output — read from `data-sources/` by
+`scripts/rules-build.mjs`, where its citations live, and emitted into
+`src/data/generated/`, which is committed and shipped. The rule bites silently
+otherwise, because CI has the whole checkout and passes: the Trench Companion id
+equivalence table was imported straight from `data-sources/` and the Vercel
+build failed twice, forty seconds in, while `check` was green.
+`src/__tests__/deployedSources.test.ts` fails on the next one.
+
 ## Database changes
 
 Never `prisma db push` against a database anyone else uses. Migrations are

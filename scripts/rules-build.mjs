@@ -53,6 +53,29 @@ const CAT_DIR = 'data-sources/battlescribe';
 const OUT_DIR = 'src/data/generated';
 const REPORT_DIR = 'reports';
 
+/*
+  The Trench Companion id equivalence table, which the app reads and therefore
+  cannot read from `data-sources/`.
+
+  `.vercelignore` excludes that whole directory from every deployment, and says
+  why in its own header: Deployment Storage is cumulative, roughly 50 MB of it
+  was source material the running app never reads, and the test for whether a
+  file belongs there is whether `prisma generate && next build` reads it. The
+  app reads the GENERATED output in `src/data/generated/`.
+
+  So an `import … from '../../data-sources/…'` under `src/` builds in CI, which
+  has the whole checkout, and fails on Vercel, which does not. It did: both
+  heads of the pack-E1b branch failed the deployment forty seconds into
+  `next build` while `check` passed.
+
+  The table therefore travels the way `promotion-model-names.json` does — read
+  here from `data-sources/`, where its citations live, and emitted into the
+  generated output the app is allowed to read. `src/__tests__/deployedSources.test.ts`
+  fails on the next file that forgets.
+*/
+const TC_IDS_SRC = 'data-sources/trench-companion/id-name-equivalence.json';
+const TC_IDS_OUT = 'trench-companion-ids.generated.ts';
+
 const argv = process.argv.slice(2);
 const checkOnly = argv.includes('--check');
 const onlyRuleset = argv.includes('--ruleset') ? argv[argv.indexOf('--ruleset') + 1] : null;
@@ -501,14 +524,35 @@ for (const ruleset of RULESETS) {
     }
   }
   /*
-    `entryName` is scaffolding for the pass above and nothing in the app reads
-    it, so it does not ship: the dataset is fetched over the wire, and 226 of
-    these is weight every phone pays for on a field only this file used.
+    The entry's own name ships as `aliases`, where it differs from the
+    profile's.
+
+    It used to be deleted as scaffolding for the pass above. What that lost is
+    a name OUR OWN catalogue carries: the Iron Sultanate's `selectionEntry
+    name="Elixer of Al-Khidr"` (`Iron Sultanate.cat:77`) wraps a profile named
+    `Elixir of Al-Khidr` (`:90`) — their misspelling and ours, in one entry —
+    and a Trench Companion warband that carries `eq_exlixerofalkhidr` has no
+    other route to it. Without this the only way to resolve that item was a
+    hand-written equivalence, which is a mapping the project has a rule about;
+    with it the answer is derived from the catalogue, like every other name.
+
+    Only where it differs, so the field is on the few hundred entries that have
+    something to say rather than on every one; and only as an ALIAS, consulted
+    after every name has failed. That ordering is what makes it safe. An
+    earlier attempt made the entry name the entry's NAME and produced
+    `Automatic Pistol -> Stolen: Automatic Pistol` and
+    `Melee -> Knight Companion of the Bladed Fly` (see `parse-battlescribe.mjs`,
+    the bundle note) — redirections that a lookup consulting names first can no
+    longer make, because the ordinary name answers first.
+
     `profileName` stays on the three that were renamed — that one is provenance,
     and it is what tells a reader why the app's name differs from the
     catalogue's.
   */
-  for (const w of base.weapons ?? []) delete w.entryName;
+  for (const w of base.weapons ?? []) {
+    if (w.entryName && w.entryName !== w.name) w.aliases = [w.entryName];
+    delete w.entryName;
+  }
 
   const kitByName = new Map(battlekit.entries.map((b) => [nameKey(b.name), b]));
   for (const e of warbandsKit.entries) {
@@ -1942,6 +1986,36 @@ for (const ruleset of RULESETS) {
     for (const c of v.conflicts) lines.push(`| ${c.key} | ${c.ours} | ${c.book} |`);
   }
   fs.writeFileSync(path.join(REPORT_DIR, `crosscheck-${ruleset.id}.md`), lines.join('\n') + '\n');
+}
+
+/*
+  The id equivalence table, copied into the generated output verbatim.
+
+  Not per ruleset: it is one file of theirs-to-ours name equivalences, and
+  whether an entry is still EARNED is a question about a ruleset that
+  `trenchCompanionEquivalence.test.ts` asks of the source file. What this emit
+  owes is exactness, so it is `JSON.parse` → `JSON.stringify` of the whole file,
+  prose keys and all, and the guard asserts the two are deep-equal.
+*/
+if (!checkOnly && !failed) {
+  const table = JSON.parse(fs.readFileSync(TC_IDS_SRC, 'utf8'));
+  fs.mkdirSync(OUT_DIR, { recursive: true });
+  fs.writeFileSync(path.join(OUT_DIR, TC_IDS_OUT),
+    '// GENERATED FILE — DO NOT EDIT.\n'
+    + `// Produced by \`npm run rules:build\` from ${TC_IDS_SRC}.\n`
+    + '//\n'
+    + '// The app may not read `data-sources/` — `.vercelignore` keeps that\n'
+    + '// directory out of every deployment, so an import of it builds in CI and\n'
+    + '// fails on Vercel. Edit the source file; this is its shipped copy, and\n'
+    + '// `trenchCompanionEquivalence.test.ts` asserts the two are identical.\n'
+    + '// See docs/TRENCH-COMPANION-IMPORT.md and docs/DEPLOYMENT.md.\n\n'
+    + 'export const TRENCH_COMPANION_IDS: {\n'
+    + '  ids: Record<string, { ours: string | null; theirs: string; why: string; cites: string }>;\n'
+    + '  /** The prose keys the source file carries for a human reading it. */\n'
+    + '  [note: string]: unknown;\n'
+    + `} = ${JSON.stringify(table, null, 2)};\n\n`
+    + 'export default TRENCH_COMPANION_IDS;\n');
+  console.log(`  wrote ${path.join(OUT_DIR, TC_IDS_OUT)}`);
 }
 
 console.log(`\nreports written to ${REPORT_DIR}/`);

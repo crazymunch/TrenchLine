@@ -23,19 +23,19 @@ const refused = (input: string) => {
 
 describe('parseTrenchCompanionRef', () => {
   it('takes a bare id', () => {
-    expect(ok('225201')).toBe('225201');
-    expect(ok('  225201  ')).toBe('225201');
+    expect(ok('505410')).toBe('505410');
+    expect(ok('  505410  ')).toBe('505410');
   });
 
   it('takes a share link, with or without a scheme or a query', () => {
-    expect(ok('https://trench-companion.com/warband/detail/225201')).toBe('225201');
-    expect(ok('trench-companion.com/warband/detail/225201')).toBe('225201');
-    expect(ok('https://trench-companion.com/warband/detail/225201?from=chat')).toBe('225201');
-    expect(ok('https://www.trench-companion.com/warband/detail/225201')).toBe('225201');
+    expect(ok('https://trench-companion.com/warband/detail/505410')).toBe('505410');
+    expect(ok('trench-companion.com/warband/detail/505410')).toBe('505410');
+    expect(ok('https://trench-companion.com/warband/detail/505410?from=chat')).toBe('505410');
+    expect(ok('https://www.trench-companion.com/warband/detail/505410')).toBe('505410');
   });
 
   it('refuses a link to somebody else\'s host, naming it', () => {
-    expect(refused('https://example.com/warband/detail/225201')).toContain('example.com');
+    expect(refused('https://example.com/warband/detail/505410')).toContain('example.com');
   });
 
   it('refuses a Trench Companion link that is not a warband', () => {
@@ -53,14 +53,14 @@ describe('parseTrenchCompanionRef', () => {
   });
 
   it('refuses a warband path with anything extra on it', () => {
-    expect(refused('https://trench-companion.com/warband/detail/225201/edit'))
+    expect(refused('https://trench-companion.com/warband/detail/505410/edit'))
       .toMatch(/not a warband share link/);
-    expect(refused('https://trench-companion.com/x/warband/detail/225201'))
+    expect(refused('https://trench-companion.com/x/warband/detail/505410'))
       .toMatch(/not a warband share link/);
   });
 
   it('refuses a subdomain that is not their site proper', () => {
-    expect(refused('https://evil.trench-companion.com/warband/detail/225201'))
+    expect(refused('https://evil.trench-companion.com/warband/detail/505410'))
       .toMatch(/not trench-companion\.com/);
   });
 
@@ -78,14 +78,14 @@ describe('parseTrenchCompanionRef', () => {
     const refusal =
       /neither a warband id nor a link|not a warband share link|not trench-companion\.com/;
     expect(refused('../../wp-json/synod/v1/user/1')).toMatch(refusal);
-    expect(refused('225201/../../admin')).toMatch(refusal);
-    expect(refused('https://trench-companion.com/warband/detail/225201/../../x')).toMatch(refusal);
+    expect(refused('505410/../../admin')).toMatch(refusal);
+    expect(refused('https://trench-companion.com/warband/detail/505410/../../x')).toMatch(refusal);
   });
 });
 
 describe('trenchCompanionUrl', () => {
   it('builds the endpoint their share page is served from', () => {
-    expect(trenchCompanionUrl('225201'))
-      .toBe('https://synod.trench-companion.com/wp-json/synod/v1/warband/225201');
+    expect(trenchCompanionUrl('505410'))
+      .toBe('https://synod.trench-companion.com/wp-json/synod/v1/warband/505410');
   });
 });

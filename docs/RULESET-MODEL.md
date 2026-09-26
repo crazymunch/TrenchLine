@@ -282,6 +282,32 @@ is through `target.kind`.
 Writing the Dispatch patch file is therefore transcription, not interpretation —
 which is exactly the property we want, because transcription is checkable.
 
+### The entry's name ships beside the profile's, as `aliases`
+
+The same fact one rung further down. A `selectionEntry` wraps a profile, and
+the two names differ on a few hundred entries — the Iron Sultanate's
+`Elixer of Al-Khidr` (`Iron Sultanate.cat:77`) wraps a profile called
+`Elixir of Al-Khidr` (`:90`), one letter apart, both of them the catalogue's
+own word for the item.
+
+Where the two are *nearly* the same and exactly one of them is printed in a
+book, the build takes the attested one as the name and records the other as
+`profileName` — that pass is above. Everything it does not rule on used to have
+its entry name **deleted** as scaffolding. What that lost is a name our own
+source data carries: an import whose file uses the entry's spelling had no
+derived route to the item at all, and the only alternative was a hand-written
+mapping, which is the thing
+[rule 1](../CLAUDE.md#1-never-write-game-data-by-hand) exists to keep out.
+
+So `WeaponProfile.aliases` now ships the entry's name wherever it differs from
+the profile's, and readers consult it **only after every name has failed** —
+`rules/convert.ts`'s `byName`, and the Trench Companion importer's shelves. The
+ordering is the safety. An earlier attempt made the entry name the entry's NAME
+and produced `Automatic Pistol -> Stolen: Automatic Pistol` and
+`Melee -> Knight Companion of the Bladed Fly`; a lookup that answers names
+first can no longer make that redirection, because the entry holding the name
+outright always wins.
+
 ### `status: 'speculative'` — predicted rules
 
 A layer may be built from **community reporting rather than a published source**:

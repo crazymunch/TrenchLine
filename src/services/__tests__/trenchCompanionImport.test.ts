@@ -92,6 +92,7 @@ const envelope = (over: Record<string, unknown> = {}) => ({
           model: 'md_grailthrall_flybereaved',
           elite: false,
           experience: 0,
+          active: 'active',
           equipment: [],
         },
       },
@@ -139,11 +140,14 @@ describe('what the import reads', () => {
     expect(r.warband.units[0].equippedEquipment[0].cost).toBe(MASK.cost);
   });
 
-  it('reports every price that differs, and only those', () => {
+  it('reports every price that differs, and only those, naming where each is', () => {
+    /* One line per item, and the line says which models carry it — see
+       `PriceDifference.where`. */
     expect(r.priceDifferences.map(priceDifferenceLine).sort()).toEqual([
-      `Gas Mask: ${THEIR_MASK} Ducats in Trench Companion, ${MASK.cost} Ducats here.`,
+      `Gas Mask: ${THEIR_MASK} Ducats in Trench Companion, ${MASK.cost} Ducats here. `
+        + 'On Heretic Trooper.',
       `Heretic Trooper: ${THEIR_TROOPER} Ducats in Trench Companion, `
-        + `${TROOPER.baseCost} Ducats here.`,
+        + `${TROOPER.baseCost} Ducats here. On Heretic Trooper.`,
     ].sort());
   });
 });
@@ -193,7 +197,7 @@ describe('the ledger, opened as migrateFoundingPot opens one', () => {
       ['quartermaster', -407, -4],
     ]);
     expect(out.warband.gloryPoints).toBe(7);
-    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(false);
+    expect(out.warnings.some((w) => /do not reconcile/.test(w))).toBe(false);
   });
 
   it('debits bank less spare, so a warband with a stash lands on their Strongbox', () => {
@@ -217,7 +221,7 @@ describe('the ledger, opened as migrateFoundingPot opens one', () => {
       ['quartermaster', -467],
     ]);
     expect(out.warband.treasuryDucats).toBe(233);
-    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(false);
+    expect(out.warnings.some((w) => /do not reconcile/.test(w))).toBe(false);
   });
 
   it('names both of their figures in the quartermaster entry', () => {
@@ -250,7 +254,7 @@ describe('the ledger, opened as migrateFoundingPot opens one', () => {
     /* Their page says the Strongbox holds 100, and that is what it holds
        here — whatever their roster and stash figures add up to. */
     expect(out.warband.treasuryDucats).toBe(100);
-    expect(out.warnings.some((w) => /do not add up/.test(w))).toBe(true);
+    expect(out.warnings.some((w) => /do not reconcile/.test(w))).toBe(true);
   });
 });
 
@@ -347,10 +351,14 @@ describe('the report', () => {
     expect(r.warnings.some((w) => /debt of 25 Ducats/.test(w))).toBe(true);
   });
 
-  it('lists the three per-model fields it does not map, every time', () => {
+  it('lists the field it still does not map, every time', () => {
+    /* `scar_reserves` and `active` were measured on the owner's own warband
+       and now map; `stat_selections` was empty on all thirteen, so there is
+       nothing to read it from and it waits. */
     const r = run();
-    for (const field of ['scar_reserves', 'stat_selections', 'active']) {
-      expect(r.unmapped.some((u) => u.startsWith(`${field}:`))).toBe(true);
+    expect(r.unmapped.some((u) => u.startsWith('stat_selections:'))).toBe(true);
+    for (const mapped of ['scar_reserves:', 'active:']) {
+      expect(r.unmapped.some((u) => u.startsWith(mapped))).toBe(false);
     }
   });
 
@@ -361,7 +369,7 @@ describe('the report', () => {
       models: [{
         purchase: {},
         model: {
-          name: 'Heretic Trooper', model: 'md_heretictrooper', equipment: [],
+          name: 'Heretic Trooper', model: 'md_heretictrooper', active: 'active', equipment: [],
         },
       }],
     });
@@ -376,12 +384,12 @@ describe('the report', () => {
       models: [{
         purchase: purchase(TROOPER.baseCost),
         model: {
-          name: 'Heretic Trooper', model: 'md_heretictrooper',
+          name: 'Heretic Trooper', model: 'md_heretictrooper', active: 'active',
           list_skills: [{ object_id: 'sk_nosuchskill' }], equipment: [],
         },
       }],
     });
-    expect(r.unmatched).toContain("Heretic Trooper: Skill 'sk_nosuchskill'");
+    expect(r.unmatched).toContain("Skill 'sk_nosuchskill', on Heretic Trooper");
     expect(r.warband.units[0].skills).toBeUndefined();
   });
 
@@ -390,7 +398,7 @@ describe('the report', () => {
       models: [{
         purchase: purchase(TROOPER.baseCost),
         model: {
-          name: 'Heretic Trooper', model: 'md_heretictrooper',
+          name: 'Heretic Trooper', model: 'md_heretictrooper', active: 'active',
           equipment: [{
             purchase: purchase(9),
             equipment: { id: 'eq_nosuchthing', name: 'Tide-Caller Horn' },
@@ -398,7 +406,7 @@ describe('the report', () => {
         },
       }],
     });
-    expect(r.unmatched).toContain('Heretic Trooper: Tide-Caller Horn');
+    expect(r.unmatched).toContain('Tide-Caller Horn, on Heretic Trooper');
     expect(r.warband.units[0].equippedWeapons).toEqual([]);
     expect(r.warband.units[0].equippedEquipment).toEqual([]);
     expect(r.warband.units[0].totalCost).toBe(TROOPER.baseCost);

@@ -395,6 +395,23 @@ purchase the item goes to the Arsenal priced as it was bought. The two halves
 had to land together: writing `price` at the removal sites while the equip still
 debited Ducats only would have **created** Glory, half of it, on every sale.
 
+### `StashedItem.grantedBy` — what the Warband did not pay for
+
+Four Exploration Locations put an item in the Arsenal outright — *"Add Curative
+Fluids to your Warband's Arsenal"* — and an Arsenal row that records only a name
+and a price cannot say which of its rows was bought. That matters when one is
+sold, when a ruleset is converted (`convert.ts` refunds nothing for a thing that
+cost nothing), and when a player reads the list: an imported Warband that holds
+the Sniper's Lair has a Siege Jezzail and an Alchemical Ammunition in its Arsenal
+at no cost, because that Location's text names both for its faction and the
+record it came from prices them at nothing.
+
+So a granted row carries the granter's own name, spelled as
+`explorationDiscoveries` records it, and a price of nothing. Absent on every row
+the Warband bought, which is what an Arsenal written before this says about all
+of its rows — and the right thing for it to say, since a purchased row is
+exactly what `grantedBy` is absent from.
+
 ## `explorationEffects` — the Exploration Skills a Warband has gained
 
 Page 115 prints seven Exploration Skills, and `Warband` had nowhere to put one.

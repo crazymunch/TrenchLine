@@ -350,6 +350,20 @@ export interface WeaponProfile {
    * own answer to an Armoury row's "X only" shorthand. See rules/restrictions.
    */
   unlockedBy?: string[];
+  /**
+   * Other names this entry is printed under in the catalogue.
+   *
+   * Today that is the containing `selectionEntry`'s name where it differs from
+   * the profile's: the Iron Sultanate's entry `Elixer of Al-Khidr` wraps a
+   * profile named `Elixir of Al-Khidr`, one letter apart, and an import whose
+   * file uses the entry's spelling has no other derived route to the item.
+   *
+   * Consulted only after every name has failed — see `rules/convert.ts`'s
+   * `byName` and the Trench Companion importer's `uniqueByNameOrAlias`. The
+   * ordering is the safety: a name is always answered by the entry that has
+   * it, and an alias can only fill a gap.
+   */
+  aliases?: string[];
 }
 
 /** One piece of gear a model always has. See `UnitProfile.battlekit`. */

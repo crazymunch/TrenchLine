@@ -369,6 +369,20 @@ export interface StashedItem {
    */
   price?: Cost;
   quantity: number;
+  /**
+   * The rule or Location that GAVE the Warband this, where it was not bought.
+   *
+   * Four Exploration Locations put an item in the Arsenal outright — "Add
+   * Curative Fluids to your Warband's Arsenal" — and an Arsenal that records
+   * only a name and a price cannot say which of its rows the Warband paid for.
+   * That matters when one is sold or a ruleset is converted: a thing that cost
+   * nothing refunds nothing (`convert.ts`), and a player looking at the list
+   * should be able to see where it came from.
+   *
+   * The granter's own name, as `explorationDiscoveries` records it, so the two
+   * lists can be read against each other.
+   */
+  grantedBy?: string;
 }
 
 /**
